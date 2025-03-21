@@ -23,6 +23,17 @@ Snapshot <- R6::R6Class(
       cli::cli_alert_info("Reading snapshot from {.file {path}}")
       self$path <- path
       self$data <- jsonlite::fromJSON(txt = path, simplifyDataFrame = FALSE)
+
+      # Initialize compounds list during snapshot initialization
+      if (is.null(self$data$Compounds)) {
+        private$.compounds <- list()
+      } else {
+        # Create compound objects and store in an unnamed list
+        private$.compounds <- lapply(self$data$Compounds, function(compound_data) {
+          Compound$new(compound_data)
+        })
+      }
+
       cli::cli_alert_success("Snapshot loaded successfully")
     },
     #' @description
@@ -69,35 +80,33 @@ Snapshot <- R6::R6Class(
   active = list(
     #' @field pksim_version The human-readable PKSIM version corresponding to the snapshot version
     pksim_version = function() {
-      private$.get_pksim_version()
+      if(is.null(private$.pksim_version)) {
+        private$.pksim_version <- private$.get_pksim_version()
+      } else {
+        private$.pksim_version
+      }
     },
 
     #' @field compounds List of Compound objects in the snapshot
     compounds = function(value = NULL) {
-      if (is.null(private$.compounds)) {
-        if (is.null(self$data$Compounds)) {
-          private$.compounds <- list()
-        } else {
-          result <- lapply(self$data$Compounds, function(compound_data) {
-            Compound$new(compound_data)
-          })
-
-          names(result) <- vapply(self$data$Compounds, function(x) x$Name, character(1))
-          private$.compounds <- result
-        }
+      # Build the named list if it doesn't exist yet
+      if (is.null(private$.compounds_named)) {
+        private$.build_compounds_named_list()
       }
+
       if (is.null(value)) {
-        class(private$.compounds) <- c("compound_collection", "list")
-        return(private$.compounds)
+        return(private$.compounds_named)
       } else {
-        return(private$.compounds[[value]])
+        return(private$.compounds_named[[value]])
       }
     }
   ),
   private = list(
+    .pkim_version = NULL,
     # Convert the raw version number to a human-readable PKSIM version
     # Returns a string with the human-readable PKSIM version
     .get_pksim_version = function() {
+
       version_num <- as.integer(self$data$Version)
 
       pksim_version <- switch(as.character(version_num),
@@ -109,8 +118,52 @@ Snapshot <- R6::R6Class(
 
       return(pksim_version)
     },
+    # Build the named list of compounds with disambiguated names
+    .build_compounds_named_list = function() {
+      # Create a named list with compound names, handling duplicates
+      compounds_named <- list()
+      compound_names <- sapply(private$.compounds, function(x) x$name)
 
-    # Store compound objects
-    .compounds = NULL
+      # Track name occurrences to handle duplicates
+      name_counts <- table(compound_names)
+      name_indices <- list()
+
+      for (i in seq_along(private$.compounds)) {
+        name <- compound_names[i]
+
+        # Initialize counter for this name if not already done
+        if (is.null(name_indices[[name]])) {
+          name_indices[[name]] <- 0
+        }
+
+        # Increment counter
+        name_indices[[name]] <- name_indices[[name]] + 1
+
+        # Construct the final name (with suffix if needed)
+        if (name_counts[name] > 1) {
+          final_name <- paste0(name, "_", name_indices[[name]])
+        } else {
+          final_name <- name
+        }
+
+        compounds_named[[final_name]] <- private$.compounds[[i]]
+      }
+
+      class(compounds_named) <- c("compound_collection", "list")
+      private$.compounds_named <- compounds_named
+    },
+
+    # Method to modify compounds list and invalidate the named cache
+    .set_compounds = function(new_compounds) {
+      private$.compounds <- new_compounds
+      # Invalidate the named list cache so it will be rebuilt on next access
+      private$.compounds_named <- NULL
+    },
+
+    # Store compound objects in an unnamed list
+    .compounds = NULL,
+
+    # Cache for the named compounds list with disambiguated names
+    .compounds_named = NULL
   )
 )

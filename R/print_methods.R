@@ -6,7 +6,7 @@
 #' @export
 print.compound_collection <- function(x, ...) {
   cli::cli_h1("Compounds ({length(x)})")
-  
+
   if (length(x) > 0) {
     # Create a simple bullet point list with just the names
     for (name in names(x)) {
@@ -15,8 +15,5 @@ print.compound_collection <- function(x, ...) {
   } else {
     cli::cli_alert_info("No compounds found")
   }
-  
-  cli::cli_text("\nUse $compounds$compound_name to access individual compound details")
-  
   invisible(x)
-} 
+}
