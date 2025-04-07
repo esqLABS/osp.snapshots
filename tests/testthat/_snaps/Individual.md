@@ -18,7 +18,8 @@
       
       -- Parameters --
       
-      * Organism|Liver|EHC continuous fraction
+      * Organism|Liver|EHC continuous fraction: 1
+      * Organism|Kidney|GFR: 120.5 ml/min
       
       -- Expression Profiles --
       
@@ -51,11 +52,12 @@
       * Height: 175 cm
       * Weight: 70 kg
       * Disease State: CKD
-      * eGFR: 45 ml/min/1.73m<U+00B2>
+      * eGFR: 45 ml/min/1.73m²
       
       -- Parameters --
       
-      * Organism|Liver|EHC continuous fraction
+      * Organism|Liver|EHC continuous fraction: 1
+      * Organism|Kidney|GFR: 120.5 ml/min
       
       -- Expression Profiles --
       
@@ -82,7 +84,8 @@
       
       -- Parameters --
       
-      * Organism|Liver|EHC continuous fraction
+      * Organism|Liver|EHC continuous fraction: 1
+      * Organism|Kidney|GFR: 120.5 ml/min
       
       -- Expression Profiles --
       
@@ -109,7 +112,8 @@
       
       -- Parameters --
       
-      * Organism|Liver|EHC continuous fraction
+      * Organism|Liver|EHC continuous fraction: 1
+      * Organism|Kidney|GFR: 120.5 ml/min
       
       -- Expression Profiles --
       
@@ -134,11 +138,12 @@
       * Height: 175 cm
       * Weight: 70 kg
       * Disease State: CKD
-      * eGFR: 45 ml/min/1.73m<U+00B2>
+      * eGFR: 45 ml/min/1.73m²
       
       -- Parameters --
       
-      * Organism|Liver|EHC continuous fraction
+      * Organism|Liver|EHC continuous fraction: 1
+      * Organism|Kidney|GFR: 120.5 ml/min
       
       -- Expression Profiles --
       

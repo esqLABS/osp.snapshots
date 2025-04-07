@@ -28,9 +28,12 @@ Snapshot <- R6::R6Class(
         private$.compounds <- list()
       } else {
         # Create compound objects and store in an unnamed list
-        private$.compounds <- lapply(self$data$Compounds, function(compound_data) {
-          Compound$new(compound_data)
-        })
+        private$.compounds <- lapply(
+          self$data$Compounds,
+          function(compound_data) {
+            Compound$new(compound_data)
+          }
+        )
       }
 
       cli::cli_alert_success("Snapshot loaded successfully")
@@ -70,7 +73,13 @@ Snapshot <- R6::R6Class(
     #' @param path Path to save the JSON file
     #' @return Invisibly returns the object
     export = function(path) {
-      jsonlite::write_json(self$data, path, auto_unbox = TRUE, pretty = TRUE)
+      jsonlite::write_json(
+        self$data,
+        path,
+        auto_unbox = TRUE,
+        pretty = TRUE,
+        digits = NA
+      )
       cli::cli_alert_success("Snapshot exported to {.file {path}}")
       invisible(self)
     }
@@ -100,13 +109,14 @@ Snapshot <- R6::R6Class(
     }
   ),
   private = list(
-    .pkim_version = NULL,
+    .pksim_version = NULL,
     # Convert the raw version number to a human-readable PKSIM version
     # Returns a string with the human-readable PKSIM version
     .get_pksim_version = function() {
       version_num <- as.integer(self$data$Version)
 
-      pksim_version <- switch(as.character(version_num),
+      pksim_version <- switch(
+        as.character(version_num),
         "80" = "12.0",
         "79" = "11.2",
         "78" = "10.0",

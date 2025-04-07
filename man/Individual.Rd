@@ -39,7 +39,7 @@ and display a summary of its information.
 
 \item{\code{disease_state_parameters}}{The disease state parameters of the individual}
 
-\item{\code{parameters}}{The ParameterCollection object containing all parameters}
+\item{\code{parameters}}{The list of parameter objects with a custom print method}
 
 \item{\code{expression_profiles}}{The expression profiles of the individual (read-only)}
 }

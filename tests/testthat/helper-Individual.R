@@ -15,6 +15,16 @@ complete_individual_data <- list(
       Path = "Organism|Liver|EHC continuous fraction",
       Value = 1.0,
       ValueOrigin = list(Source = "Unknown")
+    ),
+    list(
+      Path = "Organism|Kidney|GFR",
+      Value = 120.5,
+      Unit = "ml/min",
+      ValueOrigin = list(
+        Source = "Publication",
+        Description = "Standard reference value from ICRP 2002",
+        Id = 42
+      )
     )
   ),
   ExpressionProfiles = c(

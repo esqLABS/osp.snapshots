@@ -86,12 +86,14 @@ Individual <- R6::R6Class(
 
         # Display parameters if available
         if (
-          !is.null(private$parameter_collection) &&
-            length(private$parameter_collection$parameters) > 0
+          !is.null(private$.parameters) &&
+            length(private$.parameters) > 0
         ) {
           cli::cli_h2("Parameters")
-          for (param in private$parameter_collection$parameters) {
-            cli::cli_li("{param$path}")
+          for (param in private$.parameters) {
+            unit_display <- if (is.null(param$unit)) "" else
+              paste0(" ", param$unit)
+            cli::cli_li("{param$path}: {param$value}{unit_display}")
           }
         }
 
@@ -111,56 +113,75 @@ Individual <- R6::R6Class(
       invisible(self)
     }
   ),
-
   private = list(
     .data = NULL,
-    parameter_collection = NULL,
-
+    .parameters = NULL,
     initialize_parameters = function() {
       if (!is.null(private$.data$Parameters)) {
-        private$parameter_collection <- ParameterCollection$new(
-          parameters = private$.data$Parameters
+        # Create parameters list
+        private$.parameters <- lapply(
+          private$.data$Parameters,
+          function(param_data) Parameter$new(param_data)
         )
+        # Name the parameters by their paths for easier access
+        names(private$.parameters) <- vapply(
+          private$.parameters,
+          function(p) p$path,
+          character(1)
+        )
+        # Add collection class for custom printing
+        class(private$.parameters) <- c("parameter_collection", "list")
       }
     }
   ),
-
   active = list(
     #' @field data The raw data of the individual (read-only)
     data = function(value) {
-      if (missing(value)) return(private$.data)
+      if (missing(value)) {
+        return(private$.data)
+      }
       cli::cli_abort("data is read-only")
     },
 
     #' @field name The name of the individual
     name = function(value) {
-      if (missing(value)) return(private$.data$Name)
+      if (missing(value)) {
+        return(private$.data$Name)
+      }
       private$.data$Name <- value
     },
 
     #' @field seed The simulation seed for the individual
     seed = function(value) {
-      if (missing(value)) return(private$.data$Seed)
+      if (missing(value)) {
+        return(private$.data$Seed)
+      }
       private$.data$Seed <- value
     },
 
     #' @field species The species of the individual
     species = function(value) {
-      if (missing(value)) return(private$.data$OriginData$Species)
+      if (missing(value)) {
+        return(private$.data$OriginData$Species)
+      }
       validate_species(value)
       private$.data$OriginData$Species <- value
     },
 
     #' @field population The population of the individual
     population = function(value) {
-      if (missing(value)) return(private$.data$OriginData$Population)
+      if (missing(value)) {
+        return(private$.data$OriginData$Population)
+      }
       validate_population(value)
       private$.data$OriginData$Population <- value
     },
 
     #' @field gender The gender of the individual
     gender = function(value) {
-      if (missing(value)) return(private$.data$OriginData$Gender)
+      if (missing(value)) {
+        return(private$.data$OriginData$Gender)
+      }
       validate_gender(value)
       private$.data$OriginData$Gender <- value
     },
@@ -168,7 +189,9 @@ Individual <- R6::R6Class(
     #' @field age The age value of the individual
     age = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Age)) return(NULL)
+        if (is.null(private$.data$OriginData$Age)) {
+          return(NULL)
+        }
         return(private$.data$OriginData$Age$Value)
       }
       private$.data$OriginData$Age$Value <- value
@@ -180,7 +203,9 @@ Individual <- R6::R6Class(
     #' @field age_unit The age unit of the individual
     age_unit = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Age)) return(NULL)
+        if (is.null(private$.data$OriginData$Age)) {
+          return(NULL)
+        }
         return(private$.data$OriginData$Age$Unit)
       }
       # Validate unit
@@ -191,7 +216,9 @@ Individual <- R6::R6Class(
     #' @field weight The weight value of the individual
     weight = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Weight)) return(NULL)
+        if (is.null(private$.data$OriginData$Weight)) {
+          return(NULL)
+        }
         return(private$.data$OriginData$Weight$Value)
       }
       private$.data$OriginData$Weight$Value <- value
@@ -203,7 +230,9 @@ Individual <- R6::R6Class(
     #' @field weight_unit The weight unit of the individual
     weight_unit = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Weight)) return(NULL)
+        if (is.null(private$.data$OriginData$Weight)) {
+          return(NULL)
+        }
         return(private$.data$OriginData$Weight$Unit)
       }
       # Validate unit
@@ -214,7 +243,9 @@ Individual <- R6::R6Class(
     #' @field height The height value of the individual
     height = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Height)) return(NULL)
+        if (is.null(private$.data$OriginData$Height)) {
+          return(NULL)
+        }
         return(private$.data$OriginData$Height$Value)
       }
       private$.data$OriginData$Height$Value <- value
@@ -226,7 +257,9 @@ Individual <- R6::R6Class(
     #' @field height_unit The height unit of the individual
     height_unit = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Height)) return(NULL)
+        if (is.null(private$.data$OriginData$Height)) {
+          return(NULL)
+        }
         return(private$.data$OriginData$Height$Unit)
       }
       # Validate unit
@@ -236,35 +269,47 @@ Individual <- R6::R6Class(
 
     #' @field disease_state The disease state of the individual
     disease_state = function(value) {
-      if (missing(value)) return(private$.data$OriginData$DiseaseState)
+      if (missing(value)) {
+        return(private$.data$OriginData$DiseaseState)
+      }
       private$.data$OriginData$DiseaseState <- value
     },
 
     #' @field disease_state_parameters The disease state parameters of the individual
     disease_state_parameters = function(value) {
-      if (missing(value))
+      if (missing(value)) {
         return(private$.data$OriginData$DiseaseStateParameters)
+      }
       private$.data$OriginData$DiseaseStateParameters <- value
     },
 
-    #' @field parameters The ParameterCollection object containing all parameters
+    #' @field parameters The list of parameter objects with a custom print method
     parameters = function(value) {
       if (missing(value)) {
-        if (is.null(private$parameter_collection)) {
-          private$parameter_collection <- ParameterCollection$new()
+        if (is.null(private$.parameters)) {
+          private$.parameters <- list()
+          class(private$.parameters) <- c("parameter_collection", "list")
         }
-        return(private$parameter_collection$parameters)
+        return(private$.parameters)
       }
-      if (is.null(private$parameter_collection)) {
-        private$parameter_collection <- ParameterCollection$new()
+
+      if (is.null(value)) {
+        private$.parameters <- list()
+      } else {
+        private$.parameters <- value
       }
-      private$parameter_collection$parameters <- value
+
+      # Ensure class for custom printing
+      if (!inherits(private$.parameters, "parameter_collection")) {
+        class(private$.parameters) <- c("parameter_collection", "list")
+      }
+
       # Update raw data to reflect parameter changes
       private$.data$Parameters <- lapply(
-        private$parameter_collection$parameters,
+        private$.parameters,
         function(param) param$data
       )
-      private$parameter_collection$parameters
+      private$.parameters
     },
 
     #' @field expression_profiles The expression profiles of the individual (read-only)
