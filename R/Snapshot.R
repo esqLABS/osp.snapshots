@@ -7,7 +7,6 @@
 #' @export
 Snapshot <- R6::R6Class(
   classname = "Snapshot",
-
   public = list(
     #' @field data The raw data of the snapshot
     data = NULL,
@@ -76,11 +75,10 @@ Snapshot <- R6::R6Class(
       invisible(self)
     }
   ),
-
   active = list(
     #' @field pksim_version The human-readable PKSIM version corresponding to the snapshot version
     pksim_version = function() {
-      if(is.null(private$.pksim_version)) {
+      if (is.null(private$.pksim_version)) {
         private$.pksim_version <- private$.get_pksim_version()
       } else {
         private$.pksim_version
@@ -106,15 +104,15 @@ Snapshot <- R6::R6Class(
     # Convert the raw version number to a human-readable PKSIM version
     # Returns a string with the human-readable PKSIM version
     .get_pksim_version = function() {
-
       version_num <- as.integer(self$data$Version)
 
       pksim_version <- switch(as.character(version_num),
-                             "80" = "12.0",
-                             "79" = "11.2",
-                             "78" = "10.0",
-                             "77" = "9.1",
-                             "Unknown")
+        "80" = "12.0",
+        "79" = "11.2",
+        "78" = "10.0",
+        "77" = "9.1",
+        "Unknown"
+      )
 
       return(pksim_version)
     },
