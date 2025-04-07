@@ -22,16 +22,24 @@ Snapshot <- R6::R6Class(
     initialize = function(path) {
       cli::cli_alert_info("Reading snapshot from {.file {path}}")
       self$path <- path
-      self$data <- jsonlite::fromJSON(txt = path, simplifyDataFrame = FALSE)
+      self$data <- jsonlite::fromJSON(
+        txt = path,
+        simplifyDataFrame = FALSE,
+        simplifyVector = FALSE,
+        simplifyMatrix = FALSE
+      )
 
       # Initialize compounds list during snapshot initialization
       if (is.null(self$data$Compounds)) {
         private$.compounds <- list()
       } else {
         # Create compound objects and store in an unnamed list
-        private$.compounds <- lapply(self$data$Compounds, function(compound_data) {
-          Compound$new(compound_data)
-        })
+        private$.compounds <- lapply(
+          self$data$Compounds,
+          function(compound_data) {
+            Compound$new(compound_data)
+          }
+        )
       }
 
       cli::cli_alert_success("Snapshot loaded successfully")
@@ -71,7 +79,13 @@ Snapshot <- R6::R6Class(
     #' @param path Path to save the JSON file
     #' @return Invisibly returns the object
     export = function(path) {
-      jsonlite::write_json(self$data, path, auto_unbox = TRUE, pretty = TRUE)
+      jsonlite::write_json(
+        self$data,
+        path,
+        auto_unbox = TRUE,
+        pretty = TRUE,
+        digits = NA
+      )
       cli::cli_alert_success("Snapshot exported to {.file {path}}")
       invisible(self)
     }
@@ -80,7 +94,7 @@ Snapshot <- R6::R6Class(
   active = list(
     #' @field pksim_version The human-readable PKSIM version corresponding to the snapshot version
     pksim_version = function() {
-      if(is.null(private$.pksim_version)) {
+      if (is.null(private$.pksim_version)) {
         private$.pksim_version <- private$.get_pksim_version()
       } else {
         private$.pksim_version
@@ -102,19 +116,20 @@ Snapshot <- R6::R6Class(
     }
   ),
   private = list(
-    .pkim_version = NULL,
+    .pksim_version = NULL,
     # Convert the raw version number to a human-readable PKSIM version
     # Returns a string with the human-readable PKSIM version
     .get_pksim_version = function() {
-
       version_num <- as.integer(self$data$Version)
 
-      pksim_version <- switch(as.character(version_num),
-                             "80" = "12.0",
-                             "79" = "11.2",
-                             "78" = "10.0",
-                             "77" = "9.1",
-                             "Unknown")
+      pksim_version <- switch(
+        as.character(version_num),
+        "80" = "12.0",
+        "79" = "11.2",
+        "78" = "10.0",
+        "77" = "9.1",
+        "Unknown"
+      )
 
       return(pksim_version)
     },
