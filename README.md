@@ -3,6 +3,9 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/esqLABS/osp.snapshots/graph/badge.svg)](https://app.codecov.io/gh/esqLABS/osp.snapshots)
 <!-- badges: end -->
 
 The goal of osp.snapshots is to provide an R interface to work with
@@ -34,7 +37,7 @@ For this demo, we’ll use a test snapshot included with the package:
 ``` r
 library(osp.snapshots)
 
-# Load the test snapshot 
+# Load the test snapshot
 snapshot_path <- system.file("extdata", "test_snapshot.json", package = "osp.snapshots")
 snapshot <- load_snapshot(snapshot_path)
 #> ℹ Reading snapshot from '/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/osp.snapshots/extdata/test_snapshot.json'
