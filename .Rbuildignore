@@ -6,3 +6,7 @@
 ^\.github$
 ^README\.Rmd$
 ^codecov\.yml$
+^\.cursor$
+^\.cursor/
+^legacy_code$
+^legacy_code/
