@@ -15,6 +15,7 @@ create_individual(
   weight_unit = "kg",
   height = NULL,
   height_unit = "cm",
+  calculation_methods = NULL,
   disease_state = NULL,
   disease_state_parameters = NULL,
   seed = NULL
@@ -40,6 +41,8 @@ create_individual(
 \item{height}{Numeric. Height of the individual}
 
 \item{height_unit}{Character. Unit for height (must be valid unit for "Length")}
+
+\item{calculation_methods}{Character vector. Calculation methods used for the individual}
 
 \item{disease_state}{Character. Disease state of the individual (optional)}
 
@@ -67,6 +70,12 @@ individual <- create_individual(
   age = 30,
   weight = 70,
   height = 175
+)
+
+# Create an individual with calculation methods
+individual <- create_individual(
+  name = "Test Individual",
+  calculation_methods = c("Method 1", "Method 2", "Method 3")
 )
 
 # Create an individual with disease state

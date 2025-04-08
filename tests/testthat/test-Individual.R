@@ -407,3 +407,46 @@ test_that("Individual parameters maintain sync with raw data", {
   individual$parameters$param_1$unit <- "g"
   expect_equal(individual$data$Parameters[[1]]$Unit, "g")
 })
+
+test_that("Individual print method displays calculation methods", {
+  # Create an individual with calculation methods
+  individual_data <- list(
+    Name = "Test Individual with Methods",
+    OriginData = list(
+      Species = "Human",
+      CalculationMethods = c(
+        "Method 1",
+        "Method 2",
+        "Method 3"
+      )
+    )
+  )
+
+  test_individual <- Individual$new(individual_data)
+
+  # Test that calculation methods are accessible
+  expect_equal(
+    test_individual$calculation_methods,
+    c("Method 1", "Method 2", "Method 3")
+  )
+
+  # Test calculation methods appear in print output
+  expect_snapshot(print(test_individual))
+})
+
+test_that("Individual can be created with calculation methods", {
+  # Create individual using the create_individual function with calculation methods
+  individual <- create_individual(
+    name = "Method Test Individual",
+    calculation_methods = c("Test Method 1", "Test Method 2")
+  )
+
+  # Check the calculation methods were set correctly
+  expect_equal(
+    individual$calculation_methods,
+    c("Test Method 1", "Test Method 2")
+  )
+
+  # Test print output shows the methods
+  expect_snapshot(print(individual))
+})

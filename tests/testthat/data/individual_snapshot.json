@@ -1,18 +1,18 @@
 {
     "Individuals": [
         {
-            "Name": "European (P-gp modified, CYP3A4 36 h)",
-            "Seed": 17189110,
+            "Name": "Mouly2002",
+            "Seed": 1300547185,
             "OriginData": {
                 "CalculationMethods": [
                     "SurfaceAreaPlsInt_VAR1",
                     "Body surface area - Mosteller"
                 ],
                 "Species": "Human",
-                "Population": "European_ICRP_2002",
+                "Population": "WhiteAmerican_NHANES_1997",
                 "Gender": "MALE",
                 "Age": {
-                    "Value": 30.0,
+                    "Value": 29.9,
                     "Unit": "year(s)"
                 }
             },
@@ -35,69 +35,13 @@
                 }
             ],
             "ExpressionProfiles": [
-                "CYP3A4|Human|Healthy",
-                "AADAC|Human|Healthy",
-                "P-gp|Human|Healthy",
-                "OATP1B1|Human|Healthy",
-                "ATP1A2|Human|Healthy",
-                "UGT1A4|Human|Healthy",
-                "GABRG2|Human|Healthy"
+                "CYP1A2|Human|Healthy",
+                "CYP2B6|Human|Healthy"
             ]
         },
         {
-            "Name": "Korean (Yu 2004 study)",
-            "Seed": 52995890,
-            "OriginData": {
-                "CalculationMethods": [
-                    "SurfaceAreaPlsInt_VAR1",
-                    "Body surface area - Mosteller"
-                ],
-                "Species": "Human",
-                "Population": "Asian_Tanaka_1996",
-                "Gender": "MALE",
-                "Age": {
-                    "Value": 23.3,
-                    "Unit": "year(s)"
-                },
-                "Weight": {
-                    "Value": 66.9,
-                    "Unit": "kg"
-                },
-                "Height": {
-                    "Value": 172.9,
-                    "Unit": "cm"
-                }
-            },
-            "Parameters": [
-                {
-                    "Path": "Organism|Liver|EHC continuous fraction",
-                    "Value": 1.0,
-                    "ValueOrigin": {
-                        "Source": "Unknown"
-                    }
-                },
-                {
-                    "Path": "Organism|Ontogeny factor (albumin)",
-                    "Value": 0.89,
-                    "ValueOrigin": {
-                        "Source": "Publication",
-                        "Description": "R24-4081"
-                    }
-                }
-            ],
-            "ExpressionProfiles": [
-                "CYP3A4|Human|Korean (Yu 2004 study)",
-                "AADAC|Human|Korean (Yu 2004 study)",
-                "P-gp|Human|Korean (Yu 2004 study)",
-                "OATP1B1|Human|Korean (Yu 2004 study)",
-                "ATP1A2|Human|Korean (Yu 2004 study)",
-                "UGT1A4|Human|Korean (Yu 2004 study)",
-                "GABRG2|Human|Korean (Yu 2004 study)"
-            ]
-        },
-        {
-            "Name": "CKD",
-            "Seed": 391487890,
+            "Name": "European",
+            "Seed": 186687441,
             "OriginData": {
                 "CalculationMethods": [
                     "SurfaceAreaPlsInt_VAR1",
@@ -107,73 +51,14 @@
                 "Population": "European_ICRP_2002",
                 "Gender": "MALE",
                 "Age": {
-                    "Value": 50.0,
+                    "Value": 30.0,
                     "Unit": "year(s)"
-                },
-                "Weight": {
-                    "Value": 70.0,
-                    "Unit": "kg"
-                },
-                "Height": {
-                    "Value": 178.0,
-                    "Unit": "cm"
-                },
-                "DiseaseState": "CKD",
-                "DiseaseStateParameters": [
-                    {
-                        "Name": "eGFR",
-                        "Value": 45.0,
-                        "Unit": "ml/min/1.73m²"
-                    }
-                ]
-            },
-            "Parameters": [
-                {
-                    "Path": "Organism|Liver|Interstitial|pH",
-                    "Value": 7.2456,
-                    "ValueOrigin": {
-                        "Source": "Database",
-                        "Description": "Assumed"
-                    }
                 }
-            ],
+            },
             "ExpressionProfiles": [
-                "CYP3A4|Human|Korean (Yu 2004 study)"
+                "CYP1A2|Human|Healthy",
+                "CYP2B6|Human|Healthy"
             ]
-        },
-        {
-            "Name": "ind_modified",
-            "Seed": 487796515,
-            "OriginData": {
-                "CalculationMethods": [
-                    "SurfaceAreaPlsInt_VAR1",
-                    "Body surface area - Mosteller"
-                ],
-                "Species": "Human",
-                "Population": "BlackAmerican_NHANES_1997",
-                "Gender": "MALE",
-                "Age": {
-                    "Value": 56.0,
-                    "Unit": "year(s)"
-                },
-                "Height": {
-                    "Value": 180.0,
-                    "Unit": "cm"
-                }
-            },
-            "Parameters": [
-                {
-                    "Path": "Organism|Kidney|GFR (specific)",
-                    "Value": 33.0,
-                    "Unit": "ml/min/100g organ",
-                    "ValueOrigin": {
-                        "Id": 15,
-                        "Source": "Other",
-                        "Description": "Assumed"
-                    }
-                }
-            ],
-            "ExpressionProfiles": []
         }
     ]
 }

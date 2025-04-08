@@ -7,11 +7,23 @@
 An R6 class that represents an OSP snapshot file. This class provides
 methods to access different components of the snapshot and visualize its structure.
 }
+\examples{
+
+## ------------------------------------------------
+## Method `Snapshot$add_individual`
+## ------------------------------------------------
+
+\dontrun{
+# Create a new individual
+ind <- create_individual(name = "New Patient", age = 35, weight = 70)
+
+# Add the individual to a snapshot
+snapshot$add_individual(ind)
+}
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{data}}{The raw data of the snapshot}
-
 \item{\code{path}}{The path to the snapshot file}
 }
 \if{html}{\out{</div>}}
@@ -19,9 +31,13 @@ methods to access different components of the snapshot and visualize its structu
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{data}}{The aggregated data of the snapshot from all components}
+
 \item{\code{pksim_version}}{The human-readable PKSIM version corresponding to the snapshot version}
 
 \item{\code{compounds}}{List of Compound objects in the snapshot}
+
+\item{\code{individuals}}{List of Individual objects in the snapshot}
 }
 \if{html}{\out{</div>}}
 }
@@ -31,6 +47,7 @@ methods to access different components of the snapshot and visualize its structu
 \item \href{#method-Snapshot-new}{\code{Snapshot$new()}}
 \item \href{#method-Snapshot-print}{\code{Snapshot$print()}}
 \item \href{#method-Snapshot-export}{\code{Snapshot$export()}}
+\item \href{#method-Snapshot-add_individual}{\code{Snapshot$add_individual()}}
 \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
 }
 }
@@ -93,6 +110,40 @@ Export the snapshot to a JSON file
 \subsection{Returns}{
 Invisibly returns the object
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_individual"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_individual}{}}}
+\subsection{Method \code{add_individual()}}{
+Add an Individual object to the snapshot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$add_individual(individual)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{individual}}{An Individual object created with create_individual()}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns the object
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+# Create a new individual
+ind <- create_individual(name = "New Patient", age = 35, weight = 70)
+
+# Add the individual to a snapshot
+snapshot$add_individual(ind)
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-clone"></a>}}

@@ -4,11 +4,10 @@
       print(complete_individual)
     Output
       
-      -- Individual: Test Individual -------------------------------------------------
+      -- Individual: Test Individual | Seed: 12345 -----------------------------------
       
       -- Origin Data --
       
-      * Seed: 12345
       * Species: Human
       * Population: European_ICRP_2002
       * Gender: MALE
@@ -32,7 +31,7 @@
       print(minimal_individual)
     Output
       
-      -- Individual: Minimal Individual ----------------------------------------------
+      -- Individual: Minimal Individual | Seed:  -------------------------------------
 
 # Individual creation with modified data works
 
@@ -40,11 +39,10 @@
       print(modified_individual)
     Output
       
-      -- Individual: Test Individual -------------------------------------------------
+      -- Individual: Test Individual | Seed: 12345 -----------------------------------
       
       -- Origin Data --
       
-      * Seed: 12345
       * Species: Human
       * Population: European_ICRP_2002
       * Gender: MALE
@@ -70,11 +68,10 @@
       print(test_individual)
     Output
       
-      -- Individual: Modified Name ---------------------------------------------------
+      -- Individual: Modified Name | Seed: 54321 -------------------------------------
       
       -- Origin Data --
       
-      * Seed: 54321
       * Species: Beagle
       * Population: Asian_Tanaka_1996
       * Gender: FEMALE
@@ -98,11 +95,10 @@
       print(test_individual)
     Output
       
-      -- Individual: Test Individual -------------------------------------------------
+      -- Individual: Test Individual | Seed: 12345 -----------------------------------
       
       -- Origin Data --
       
-      * Seed: 12345
       * Species: Human
       * Population: European_ICRP_2002
       * Gender: MALE
@@ -126,11 +122,10 @@
       print(test_individual)
     Output
       
-      -- Individual: Test Individual -------------------------------------------------
+      -- Individual: Test Individual | Seed: 12345 -----------------------------------
       
       -- Origin Data --
       
-      * Seed: 12345
       * Species: Human
       * Population: European_ICRP_2002
       * Gender: MALE
@@ -149,4 +144,34 @@
       
       * CYP3A4|Human|Healthy
       * P-gp|Human|Healthy
+
+# Individual print method displays calculation methods
+
+    Code
+      print(test_individual)
+    Output
+      
+      -- Individual: Test Individual with Methods | Seed:  ---------------------------
+      
+      -- Origin Data --
+      
+      * Species: Human
+      * Calculation Methods:
+        * Method 1
+        * Method 2
+        * Method 3
+
+# Individual can be created with calculation methods
+
+    Code
+      print(individual)
+    Output
+      
+      -- Individual: Method Test Individual | Seed:  ---------------------------------
+      
+      -- Origin Data --
+      
+      * Calculation Methods:
+        * Test Method 1
+        * Test Method 2
 

@@ -41,6 +41,8 @@ and display a summary of its information.
 
 \item{\code{parameters}}{The list of parameter objects with a custom print method}
 
+\item{\code{calculation_methods}}{The calculation methods of the individual}
+
 \item{\code{expression_profiles}}{The expression profiles of the individual (read-only)}
 }
 \if{html}{\out{</div>}}

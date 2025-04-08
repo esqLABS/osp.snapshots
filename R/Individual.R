@@ -24,16 +24,11 @@ Individual <- R6::R6Class(
     #' @return Invisibly returns the object
     print = function(...) {
       output <- cli::cli_format_method({
-        cli::cli_h1("Individual: {self$name}")
+        cli::cli_h1("Individual: {self$name} | Seed: {self$seed}")
 
         # Display origin data if available
         if (!is.null(self$data$OriginData)) {
           cli::cli_h2("Origin Data")
-
-          # Display seed if available
-          if (!is.null(self$seed)) {
-            cli::cli_li("Seed: {self$seed}")
-          }
 
           # Display species and population if available
           if (!is.null(self$species)) {
@@ -65,6 +60,19 @@ Individual <- R6::R6Class(
             cli::cli_li(
               "Weight: {self$weight} {self$weight_unit}"
             )
+          }
+
+          # Display calculation methods if available
+          if (
+            !is.null(self$calculation_methods) &&
+              length(self$calculation_methods) > 0
+          ) {
+            cli::cli_li("Calculation Methods:")
+            indented_list <- cli::cli_ul()
+            for (method in self$calculation_methods) {
+              cli::cli_li("{method}")
+            }
+            cli::cli_end(indented_list)
           }
 
           # Display disease state if available
@@ -312,6 +320,14 @@ Individual <- R6::R6Class(
       private$.parameters
     },
 
+    #' @field calculation_methods The calculation methods of the individual
+    calculation_methods = function(value) {
+      if (missing(value)) {
+        return(private$.data$OriginData$CalculationMethods)
+      }
+      private$.data$OriginData$CalculationMethods <- value
+    },
+
     #' @field expression_profiles The expression profiles of the individual (read-only)
     expression_profiles = function() {
       private$.data$ExpressionProfiles
@@ -335,6 +351,7 @@ Individual <- R6::R6Class(
 #' @param weight_unit Character. Unit for weight (must be valid unit for "Mass")
 #' @param height Numeric. Height of the individual
 #' @param height_unit Character. Unit for height (must be valid unit for "Length")
+#' @param calculation_methods Character vector. Calculation methods used for the individual
 #' @param disease_state Character. Disease state of the individual (optional)
 #' @param disease_state_parameters List. Parameters for disease state (optional)
 #' @param seed Integer. Simulation seed (optional)
@@ -357,6 +374,12 @@ Individual <- R6::R6Class(
 #'   height = 175
 #' )
 #'
+#' # Create an individual with calculation methods
+#' individual <- create_individual(
+#'   name = "Test Individual",
+#'   calculation_methods = c("Method 1", "Method 2", "Method 3")
+#' )
+#'
 #' # Create an individual with disease state
 #' individual <- create_individual(
 #'   name = "Patient",
@@ -376,6 +399,7 @@ create_individual <- function(
   weight_unit = "kg",
   height = NULL,
   height_unit = "cm",
+  calculation_methods = NULL,
   disease_state = NULL,
   disease_state_parameters = NULL,
   seed = NULL
@@ -405,6 +429,11 @@ create_individual <- function(
   }
   if (!is.null(height)) {
     origin_data$Height <- list(Value = height, Unit = height_unit)
+  }
+
+  # Add calculation methods if provided
+  if (!is.null(calculation_methods)) {
+    origin_data$CalculationMethods <- calculation_methods
   }
 
   # Add disease state information if provided

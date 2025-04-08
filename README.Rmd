@@ -2,8 +2,6 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -16,9 +14,10 @@ knitr::opts_chunk$set(
 # osp.snapshots
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
-The goal of osp.snapshots is to ...
+The goal of osp.snapshots is to provide an R interface to work with PK-Sim project snapshots.
 
 ## Installation
 
@@ -27,4 +26,94 @@ You can install the development version of osp.snapshots from [GitHub](https://g
 ``` r
 # install.packages("pak")
 pak::pak("esqLABS/osp.snapshots")
+```
+
+## Basic Usage
+
+### Importing a Snapshot
+
+```{r, include=FALSE}
+# Copy the test snapshot file to the package's extdata directory
+file.copy(
+  from = file.path("tests/testthat/data/test_snapshot.json"),
+  to = file.path("inst", "extdata", "test_snapshot.json"),
+  overwrite = TRUE
+)
+```
+
+```{r, eval=FALSE}
+library(osp.snapshots)
+
+# Load a snapshot from a JSON file
+snapshot <- load_snapshot("path/to/snapshot.json")
+```
+
+For this demo, we'll use a test snapshot included with the package:
+
+```{r}
+library(osp.snapshots)
+
+# Load the test snapshot 
+snapshot_path <- system.file("extdata", "test_snapshot.json", package = "osp.snapshots")
+snapshot <- load_snapshot(snapshot_path)
+
+# View snapshot overview
+snapshot
+```
+
+### Exploring Snapshot Contents
+
+```{r}
+# List all individuals in the snapshot
+snapshot$individuals
+
+# Get a detailed view of a building block
+snapshot$individuals$Mouly2002
+
+# All fields are accessible as list elements
+snapshot$individuals$Mouly2002$age
+snapshot$individuals$Mouly2002$gender
+
+# Parameters are also accessible as list element but they have their own nested structure and behavior
+snapshot$individuals$Mouly2002$parameters
+
+# They can be accessed by path
+snapshot$individuals$Mouly2002$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`
+```
+
+
+### Modifying Building Blocks
+All these elements are mutable and can be modified in place.
+
+```{r}
+snapshot$individuals$Mouly2002$age <- 35
+
+snapshot$individuals$Mouly2002$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`$value <- 0.6
+
+snapshot$individuals$Mouly2002
+```
+
+## Creating new building blocks
+### Creating a New Individual
+
+```{r}
+# Create a new individual
+new_individual <- create_individual(
+  name = "Patient_001",
+  species = "Human",
+  population = "European_ICRP_2002",
+  gender = "MALE",
+  age = 45,
+  weight = 85,
+  height = 180
+)
+
+# Display the new individual
+new_individual
+
+# Add to snapshot
+add_individual_to_snapshot(snapshot, new_individual)
+
+# Verify it was added
+snapshot$individuals
 ```
