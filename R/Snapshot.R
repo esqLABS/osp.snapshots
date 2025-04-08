@@ -165,7 +165,6 @@ Snapshot <- R6::R6Class(
     #' @field pksim_version The human-readable PKSIM version corresponding to the snapshot version
     pksim_version = function() {
       if (is.null(private$.pksim_version)) {
-      if (is.null(private$.pksim_version)) {
         private$.pksim_version <- private$.get_pksim_version()
       } else {
         private$.pksim_version
