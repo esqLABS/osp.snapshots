@@ -1,8 +1,3 @@
----
-output: github_document
----
-
-
 
 # osp.snapshots
 
@@ -10,11 +5,13 @@ output: github_document
 
 <!-- badges: end -->
 
-The goal of osp.snapshots is to provide an R interface to work with PK-Sim project snapshots.
+The goal of osp.snapshots is to provide an R interface to work with
+PK-Sim project snapshots.
 
 ## Installation
 
-You can install the development version of osp.snapshots from [GitHub](https://github.com/) with:
+You can install the development version of osp.snapshots from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("pak")
@@ -25,9 +22,6 @@ pak::pak("esqLABS/osp.snapshots")
 
 ### Importing a Snapshot
 
-
-
-
 ``` r
 library(osp.snapshots)
 
@@ -35,8 +29,7 @@ library(osp.snapshots)
 snapshot <- load_snapshot("path/to/snapshot.json")
 ```
 
-For this demo, we'll use a test snapshot included with the package:
-
+For this demo, we’ll use a test snapshot included with the package:
 
 ``` r
 library(osp.snapshots)
@@ -44,13 +37,13 @@ library(osp.snapshots)
 # Load the test snapshot 
 snapshot_path <- system.file("extdata", "test_snapshot.json", package = "osp.snapshots")
 snapshot <- load_snapshot(snapshot_path)
-#> ℹ Reading snapshot from '/Users/felix/Code/osp.snapshots/inst/extdata/test_snapshot.json'
+#> ℹ Reading snapshot from '/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/osp.snapshots/extdata/test_snapshot.json'
 #> ✔ Snapshot loaded successfully
 
 # View snapshot overview
 snapshot
 #> 
-#> ── PKSIM Snapshot ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── PKSIM Snapshot ──────────────────────────────────────────────────────────────
 #> ℹ Version: 80 (PKSIM 12.0)
 #> • Compounds: 2
 #> • ExpressionProfiles: 2
@@ -63,19 +56,18 @@ snapshot
 
 ### Exploring Snapshot Contents
 
-
 ``` r
 # List all individuals in the snapshot
 snapshot$individuals
 #> 
-#> ── Individuals (2) ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Individuals (2) ─────────────────────────────────────────────────────────────
 #> • Mouly2002
 #> • European
 
 # Get a detailed view of a building block
 snapshot$individuals$Mouly2002
 #> 
-#> ── Individual: Mouly2002 | Seed: 1300547185 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Individual: Mouly2002 | Seed: 1300547185 ────────────────────────────────────
 #> 
 #> ── Origin Data ──
 #> 
@@ -120,10 +112,9 @@ snapshot$individuals$Mouly2002$parameters$`Organism|Gallbladder|Gallbladder ejec
 #> • Description: R24-4081
 ```
 
-
 ### Modifying Building Blocks
-All these elements are mutable and can be modified in place.
 
+All these elements are mutable and can be modified in place.
 
 ``` r
 snapshot$individuals$Mouly2002$age <- 35
@@ -132,7 +123,7 @@ snapshot$individuals$Mouly2002$parameters$`Organism|Gallbladder|Gallbladder ejec
 
 snapshot$individuals$Mouly2002
 #> 
-#> ── Individual: Mouly2002 | Seed: 1300547185 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Individual: Mouly2002 | Seed: 1300547185 ────────────────────────────────────
 #> 
 #> ── Origin Data ──
 #> 
@@ -156,8 +147,8 @@ snapshot$individuals$Mouly2002
 ```
 
 ## Creating new building blocks
-### Creating a New Individual
 
+### Creating a New Individual
 
 ``` r
 # Create a new individual
@@ -174,7 +165,7 @@ new_individual <- create_individual(
 # Display the new individual
 new_individual
 #> 
-#> ── Individual: Patient_001 | Seed:  ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Individual: Patient_001 | Seed:  ────────────────────────────────────────────
 #> 
 #> ── Origin Data ──
 #> 
@@ -192,7 +183,7 @@ add_individual_to_snapshot(snapshot, new_individual)
 # Verify it was added
 snapshot$individuals
 #> 
-#> ── Individuals (3) ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Individuals (3) ─────────────────────────────────────────────────────────────
 #> • Mouly2002
 #> • European
 #> • Patient_001
