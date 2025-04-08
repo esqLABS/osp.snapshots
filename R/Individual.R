@@ -26,7 +26,11 @@ Individual <- R6::R6Class(
     #' @return Invisibly returns the Individual object for method chaining
     print = function(...) {
       output <- cli::cli_format_method({
-        cli::cli_h1("Individual: {self$name} | Seed: {self$seed}")
+        if (is.null(self$seed)) {
+          cli::cli_h1("Individual: {self$name}")
+        } else {
+          cli::cli_h1("Individual: {self$name} | Seed: {self$seed}")
+        }
 
         # Display origin data if available
         if (!is.null(self$data$OriginData)) {
@@ -394,20 +398,21 @@ Individual <- R6::R6Class(
 #'   )
 #' )
 create_individual <- function(
-    name = "New Individual",
-    species = NULL,
-    population = NULL,
-    gender = NULL,
-    age = NULL,
-    age_unit = "year(s)",
-    weight = NULL,
-    weight_unit = "kg",
-    height = NULL,
-    height_unit = "cm",
-    calculation_methods = NULL,
-    disease_state = NULL,
-    disease_state_parameters = NULL,
-    seed = NULL) {
+  name = "New Individual",
+  species = NULL,
+  population = NULL,
+  gender = NULL,
+  age = NULL,
+  age_unit = "year(s)",
+  weight = NULL,
+  weight_unit = "kg",
+  height = NULL,
+  height_unit = "cm",
+  calculation_methods = NULL,
+  disease_state = NULL,
+  disease_state_parameters = NULL,
+  seed = NULL
+) {
   # Validate inputs if provided
   if (!is.null(species)) validate_species(species)
   if (!is.null(population)) validate_population(population)

@@ -335,7 +335,7 @@ test_that("load_snapshot handles URL input", {
 
   # Test with an invalid URL
   expect_error(
-    load_snapshot("https://not-a-real-url.example/snapshot.json"),
+    suppressWarnings(load_snapshot("https://not-a-real-url.example/snapshot.json")),
     "Failed to download snapshot from URL"
   )
 })
