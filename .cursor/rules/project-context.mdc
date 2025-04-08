@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Objective
+This project aims to create a convenient R interface for ospsuite project snapshots.
+
+# Context
+PKSIM project snapshot are json files exported from the PKSIM software.
+User want to also be able to interact with these snapshot programatically through R.
+However, due to their nested structure, they are not easy to interact with.
+Thus, this project aims to make these snapshots more interoperable with the ospsuite R framework.
+
+# Main Features
+This package should be able to:
+
+- Read and import all data in snapshot files
+- Conveniently represent snapshot structure and content
+- Convert parts of the snapshot to dataframe
+- Export the snapshot representation back to snapshot file
+
+
+# Technical Stack
+- This project is an R package
+- Any class should be created with the R6 package
+- Everything should be documented using roxygen2 and tested using testthat packages
+- All debug, info, warning and stop messages should be generated using the cli package
+
