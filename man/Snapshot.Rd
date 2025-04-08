@@ -24,7 +24,7 @@ snapshot$add_individual(ind)
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{path}}{The path to the snapshot file}
+\item{\code{path}}{The path to the snapshot file if loaded from file, NULL otherwise}
 }
 \if{html}{\out{</div>}}
 }
@@ -55,15 +55,15 @@ snapshot$add_individual(ind)
 \if{html}{\out{<a id="method-Snapshot-new"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-new}{}}}
 \subsection{Method \code{new()}}{
-Create a new Snapshot object from a JSON file
+Create a new Snapshot object from a JSON file or a list
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$new(path)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$new(input)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{path}}{Path to the snapshot JSON file}
+\item{\code{input}}{Path to the snapshot JSON file, URL, template name, or a list containing snapshot data}
 }
 \if{html}{\out{</div>}}
 }

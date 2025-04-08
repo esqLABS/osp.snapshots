@@ -8,20 +8,27 @@
 Snapshot <- R6::R6Class(
   classname = "Snapshot",
   public = list(
-    #' @field path The path to the snapshot file
+    #' @field path The path to the snapshot file if loaded from file, NULL otherwise
     path = NULL,
 
     #' @description
-    #' Create a new Snapshot object from a JSON file
-    #' @param path Path to the snapshot JSON file
+    #' Create a new Snapshot object from a JSON file or a list
+    #' @param input Path to the snapshot JSON file, URL, template name, or a list containing snapshot data
     #' @return A new Snapshot object
-    initialize = function(path) {
-      cli::cli_alert_info("Reading snapshot from {.file {path}}")
-      self$path <- path
-      private$.original_data <- jsonlite::fromJSON(
-        txt = path,
-        simplifyDataFrame = FALSE
-      )
+    initialize = function(input) {
+      if (is.character(input)) {
+        cli::cli_alert_info("Reading snapshot from {.file {input}}")
+        self$path <- input
+        private$.original_data <- jsonlite::fromJSON(
+          txt = input,
+          simplifyDataFrame = FALSE
+        )
+      } else if (is.list(input)) {
+        cli::cli_alert_info("Creating snapshot from list data")
+        private$.original_data <- input
+      } else {
+        cli::cli_abort("Input must be either a path to a JSON file or a list")
+      }
 
       # Initialize compounds list during snapshot initialization
       if (is.null(private$.original_data$Compounds)) {
@@ -86,13 +93,6 @@ Snapshot <- R6::R6Class(
     #' @param path Path to save the JSON file
     #' @return Invisibly returns the object
     export = function(path) {
-      jsonlite::write_json(
-        self$data,
-        path,
-        auto_unbox = TRUE,
-        pretty = TRUE,
-        digits = NA
-      )
       jsonlite::write_json(
         self$data,
         path,
@@ -224,6 +224,14 @@ Snapshot <- R6::R6Class(
     .build_compounds_named_list = function() {
       # Create a named list with compound names, handling duplicates
       compounds_named <- list()
+
+      # Handle empty compound list
+      if (length(private$.compounds) == 0) {
+        class(compounds_named) <- c("compound_collection", "list")
+        private$.compounds_named <- compounds_named
+        return()
+      }
+
       compound_names <- sapply(private$.compounds, function(x) x$name)
 
       # Track name occurrences to handle duplicates
@@ -259,6 +267,14 @@ Snapshot <- R6::R6Class(
     .build_individuals_named_list = function() {
       # Create a named list with individual names, handling duplicates
       individuals_named <- list()
+
+      # Handle empty individuals list
+      if (length(private$.individuals) == 0) {
+        class(individuals_named) <- c("individual_collection", "list")
+        private$.individuals_named <- individuals_named
+        return()
+      }
+
       individual_names <- sapply(private$.individuals, function(x) x$name)
 
       # Track name occurrences to handle duplicates
@@ -313,8 +329,6 @@ Snapshot <- R6::R6Class(
 #'   - Path to a local file (.json)
 #'   - URL to a remote snapshot file
 #'   - Name of a template from the OSPSuite.BuildingBlockTemplates repository
-#' @param temp_dir Character string. Path to a temporary directory for downloading files.
-#'   Defaults to a subdirectory in the R session's temporary directory.
 #' @return A Snapshot object
 #' @export
 #'
@@ -329,18 +343,9 @@ Snapshot <- R6::R6Class(
 #' # Load a predefined template by name
 #' snapshot <- load_snapshot("Midazolam")
 #' }
-load_snapshot <- function(
-  source
-) {
-  temp_dir = file.path(tempdir(), "osp_snapshots")
-
+load_snapshot <- function(source) {
   if (is.null(source) || !is.character(source) || length(source) != 1) {
     cli::cli_abort("Source must be a single character string")
-  }
-
-  # Create the temp directory if it doesn't exist
-  if (!dir.exists(temp_dir)) {
-    dir.create(temp_dir, recursive = TRUE)
   }
 
   # Check if source is a local file
@@ -350,12 +355,12 @@ load_snapshot <- function(
 
   # Check if source is a URL
   if (grepl("^https?://", source)) {
-    temp_file <- file.path(temp_dir, basename(source))
+    cli::cli_alert_info("Downloading snapshot from URL: {.url {source}}")
     tryCatch(
       {
-        cli::cli_alert_info("Downloading snapshot from URL: {.url {source}}")
-        utils::download.file(source, temp_file, mode = "wb", quiet = TRUE)
-        return(Snapshot$new(temp_file))
+        # Download and parse JSON directly without saving to file
+        json_data <- jsonlite::fromJSON(source, simplifyDataFrame = FALSE)
+        return(Snapshot$new(json_data))
       },
       error = function(e) {
         cli::cli_abort(
@@ -369,16 +374,10 @@ load_snapshot <- function(
   cli::cli_alert_info("Looking for template: {source}")
   templates_url <- "https://raw.githubusercontent.com/Open-Systems-Pharmacology/OSPSuite.BuildingBlockTemplates/refs/heads/develop/templates.json"
 
-  temp_templates <- file.path(temp_dir, "templates.json")
   tryCatch(
     {
-      utils::download.file(
-        templates_url,
-        temp_templates,
-        mode = "wb",
-        quiet = TRUE
-      )
-      templates <- jsonlite::fromJSON(temp_templates)
+      # Download and parse templates JSON directly
+      templates <- jsonlite::fromJSON(templates_url)
 
       # Find the template with matching name (case insensitive)
       template_idx <- which(
@@ -392,10 +391,9 @@ load_snapshot <- function(
       template_url <- templates$Templates$Url[template_idx[1]]
       cli::cli_alert_info("Found template: {template_url}")
 
-      # Download the template
-      temp_file <- file.path(temp_dir, paste0(source, ".json"))
-      utils::download.file(template_url, temp_file, mode = "wb", quiet = TRUE)
-      return(Snapshot$new(temp_file))
+      # Download and parse template JSON directly
+      json_data <- jsonlite::fromJSON(template_url, simplifyDataFrame = FALSE)
+      return(Snapshot$new(json_data))
     },
     error = function(e) {
       cli::cli_abort(

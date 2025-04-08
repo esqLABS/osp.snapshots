@@ -79,7 +79,7 @@ A new Individual object
 \if{html}{\out{<a id="method-Individual-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Individual-print}{}}}
 \subsection{Method \code{print()}}{
-Print a summary of the individual
+Print a summary of the individual including its properties and parameters.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Individual$print(...)}\if{html}{\out{</div>}}
 }
@@ -92,7 +92,7 @@ Print a summary of the individual
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisibly returns the object
+Invisibly returns the Individual object for method chaining
 }
 }
 \if{html}{\out{<hr>}}

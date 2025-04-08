@@ -450,3 +450,119 @@ test_that("Individual can be created with calculation methods", {
   # Test print output shows the methods
   expect_snapshot(print(individual))
 })
+
+test_that("Individual creation with null values works", {
+  # Test creating an individual with various combinations of null values
+  null_individual <- create_individual(
+    name = "Null Test",
+    seed = 12345
+  )
+
+  # Check null fields return NULL
+  expect_null(null_individual$species)
+  expect_null(null_individual$population)
+  expect_null(null_individual$gender)
+  expect_null(null_individual$age)
+  expect_null(null_individual$weight)
+  expect_null(null_individual$height)
+  expect_null(null_individual$disease_state)
+  expect_null(null_individual$disease_state_parameters)
+  expect_null(null_individual$calculation_methods)
+
+  # Test that setting new values works correctly
+  null_individual$species <- "Human"
+  expect_equal(null_individual$species, "Human")
+
+  null_individual$age <- 45
+  expect_equal(null_individual$age, 45)
+  expect_equal(null_individual$age_unit, "year(s)")
+
+  null_individual$weight <- 80
+  expect_equal(null_individual$weight, 80)
+  expect_equal(null_individual$weight_unit, "kg")
+
+  null_individual$height <- 180
+  expect_equal(null_individual$height, 180)
+  expect_equal(null_individual$height_unit, "cm")
+})
+
+test_that("Individual parameters can be modified", {
+  # Create a test individual with parameters
+  test_individual <- Individual$new(complete_individual_data)
+  param_list <- test_individual$parameters
+
+  # Get first parameter
+  first_param <- param_list[[1]]
+  original_value <- first_param$value
+
+  # Modify the parameter
+  first_param$value <- original_value * 2
+
+  # Check that parameter was modified in the parameters list
+  expect_equal(param_list[[1]]$value, original_value * 2)
+
+  # Set parameters to NULL
+  test_individual$parameters <- NULL
+  expect_length(test_individual$parameters, 0)
+  expect_equal(test_individual$data$Parameters, list())
+
+  # Set parameters to a new list
+  new_params <- list(
+    Parameter$new(list(Path = "Test|Path", Value = 123))
+  )
+  names(new_params) <- "Test|Path"
+  class(new_params) <- c("parameter_collection", "list")
+
+  test_individual$parameters <- new_params
+  expect_equal(test_individual$parameters, new_params)
+  expect_equal(test_individual$data$Parameters[[1]]$Path, "Test|Path")
+  expect_equal(test_individual$data$Parameters[[1]]$Value, 123)
+})
+
+test_that("Individual expression_profiles is read-only", {
+  # Create a test individual with expression profiles
+  test_individual <- Individual$new(complete_individual_data)
+
+  # Check expression profiles are returned correctly
+  expect_equal(
+    test_individual$expression_profiles,
+    complete_individual_data$ExpressionProfiles
+  )
+})
+
+test_that("create_individual validates all inputs properly", {
+  # Test valid inputs with all parameters
+  expect_no_error(
+    create_individual(
+      name = "Valid Individual",
+      species = "Human",
+      population = ospsuite::HumanPopulation[1],
+      gender = ospsuite::Gender[1],
+      age = 30,
+      age_unit = "year(s)",
+      weight = 70,
+      weight_unit = "kg",
+      height = 180,
+      height_unit = "cm",
+      calculation_methods = c("Method1", "Method2"),
+      disease_state = "CKD",
+      disease_state_parameters = list(
+        list(Name = "eGFR", Value = 45, Unit = "ml/min/1.73m²")
+      ),
+      seed = 12345
+    )
+  )
+
+  # Test invalid units
+  expect_error(
+    create_individual(age_unit = "invalid_unit")
+  )
+
+  expect_error(
+    create_individual(weight_unit = "invalid_unit")
+  )
+
+  expect_error(
+    create_individual(height_unit = "invalid_unit")
+  )
+})

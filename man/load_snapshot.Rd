@@ -11,9 +11,6 @@ load_snapshot(source)
 - Path to a local file (.json)
 - URL to a remote snapshot file
 - Name of a template from the OSPSuite.BuildingBlockTemplates repository}
-
-\item{temp_dir}{Character string. Path to a temporary directory for downloading files.
-Defaults to a subdirectory in the R session's temporary directory.}
 }
 \value{
 A Snapshot object
