@@ -20,9 +20,11 @@ Imports:
     R6,
     jsonlite,
     cli,
-    ospsuite (>= 12.2.0)
+    ospsuite (>= 12.2.0),
+    tibble,
+    dplyr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Remotes:  
+Remotes: 
     ospsuite=Open-Systems-Pharmacology/OSPSuite-R

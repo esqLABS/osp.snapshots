@@ -5,6 +5,7 @@
 #' This class provides methods to access different properties of an individual
 #' and display a summary of its information.
 #'
+#' @importFrom tibble tibble as_tibble
 #' @export
 Individual <- R6::R6Class(
   classname = "Individual",
@@ -128,6 +129,107 @@ Individual <- R6::R6Class(
 
       cat(output, sep = "\n")
       invisible(self)
+    },
+
+    #' @description
+    #' Convert individual data to tibbles
+    #' @param type Character. Type of data to convert: "all" (default), "origin", "parameters", or "expressions"
+    #' @return A list of tibbles containing the requested data
+    to_df = function(type = "all") {
+      # Validate type argument
+      valid_types <- c("all", "origin", "parameters", "expressions")
+      if (!type %in% valid_types) {
+        cli::cli_abort(
+          "type must be one of: {paste(valid_types, collapse = ', ')}"
+        )
+      }
+
+      # Get the individual name to use as ID
+      individual_id <- self$name
+
+      # Initialize result list
+      result <- list()
+
+      # Add origin data if requested
+      if (type %in% c("all", "origin")) {
+        # Create a list to store the data
+        data_list <- list(
+          individual_id = individual_id,
+          name = self$name,
+          seed = self$seed %||% NA_integer_,
+          species = self$species %||% NA_character_,
+          population = self$population %||% NA_character_,
+          gender = self$gender %||% NA_character_,
+          age = self$age %||% NA_real_,
+          age_unit = self$age_unit %||% NA_character_,
+          weight = self$weight %||% NA_real_,
+          weight_unit = self$weight_unit %||% NA_character_,
+          height = self$height %||% NA_real_,
+          height_unit = self$height_unit %||% NA_character_,
+          disease_state = self$disease_state %||% NA_character_
+        )
+
+        # Convert calculation methods to a single string if present
+        if (!is.null(self$calculation_methods)) {
+          data_list$calculation_methods <- paste(
+            self$calculation_methods,
+            collapse = "; "
+          )
+        } else {
+          data_list$calculation_methods <- NA_character_
+        }
+
+        result$origin <- tibble::as_tibble(data_list)
+      }
+
+      # Add parameters data if requested
+      if (type %in% c("all", "parameters")) {
+        if (length(self$parameters) == 0) {
+          result$parameters <- tibble::tibble(
+            individual_id = character(0),
+            path = character(0),
+            value = numeric(0),
+            unit = character(0),
+            source = character(0),
+            description = character(0),
+            source_id = integer(0)
+          )
+        } else {
+          # Extract parameter data using Parameter's to_df method
+          param_data <- lapply(self$parameters, function(param) {
+            param$to_df(individual_id)
+          })
+          result$parameters <- dplyr::bind_rows(param_data)
+        }
+      }
+
+      # Add expression profiles data if requested
+      if (type %in% c("all", "expressions")) {
+        if (
+          is.null(self$expression_profiles) ||
+            length(self$expression_profiles) == 0
+        ) {
+          result$expressions <- tibble::tibble(
+            individual_id = character(0),
+            profile = character(0)
+          )
+        } else {
+          result$expressions <- tibble::tibble(
+            individual_id = rep(
+              individual_id,
+              length(self$expression_profiles)
+            ),
+            profile = self$expression_profiles
+          )
+        }
+      }
+
+      # If only one type requested, return just that tibble
+      if (type != "all") {
+        return(result[[type]])
+      }
+
+      result
     }
   ),
   private = list(

@@ -168,7 +168,7 @@ new_individual <- create_individual(
 # Display the new individual
 new_individual
 #> 
-#> ── Individual: Patient_001 | Seed:  ────────────────────────────────────────────
+#> ── Individual: Patient_001 ─────────────────────────────────────────────────────
 #> 
 #> ── Origin Data ──
 #> 
@@ -191,3 +191,166 @@ snapshot$individuals
 #> • European
 #> • Patient_001
 ```
+
+## Converting to Data Frames
+
+You can convert snapshot elements to data frames for easier analysis,
+visualization, and integration with other R tools.
+
+### Converting Individuals
+
+You can convert all individuals in a snapshot to combined data frames:
+
+``` r
+# Get data frames for all individuals in the snapshot
+dfs <- get_individuals_df(snapshot)
+dfs
+```
+
+<table class="kable_wrapper">
+
+<tbody>
+
+<tr>
+
+<td>
+
+| individual_id | name | seed | species | population | gender | age | age_unit | weight | weight_unit | height | height_unit | disease_state | calculation_methods |
+|:---|:---|---:|:---|:---|:---|---:|:---|---:|:---|---:|:---|:---|:---|
+| Mouly2002 | Mouly2002 | 1300547185 | Human | WhiteAmerican_NHANES_1997 | MALE | 35 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
+| European | European | 186687441 | Human | European_ICRP_2002 | MALE | 30 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
+| Patient_001 | Patient_001 | NA | Human | European_ICRP_2002 | MALE | 45 | year(s) | 85 | kg | 180 | cm | NA | NA |
+
+</td>
+
+<td>
+
+| individual_id | path | value | unit | source | description | source_id |
+|:---|:---|---:|:---|:---|:---|---:|
+| Mouly2002 | Organism\|Gallbladder\|Gallbladder ejection fraction | 0.6 | NA | Publication | R24-4081 | NA |
+| Mouly2002 | Organism\|Liver\|EHC continuous fraction | 1.0 | NA | Publication | R24-4081 | NA |
+
+</td>
+
+<td>
+
+| individual_id | profile                |
+|:--------------|:-----------------------|
+| Mouly2002     | CYP1A2\|Human\|Healthy |
+| Mouly2002     | CYP2B6\|Human\|Healthy |
+| European      | CYP1A2\|Human\|Healthy |
+| European      | CYP2B6\|Human\|Healthy |
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<table class="kable_wrapper">
+
+<tbody>
+
+<tr>
+
+<td>
+
+| individual_id | name | seed | species | population | gender | age | age_unit | weight | weight_unit | height | height_unit | disease_state | calculation_methods |
+|:---|:---|---:|:---|:---|:---|---:|:---|---:|:---|---:|:---|:---|:---|
+| Mouly2002 | Mouly2002 | 1300547185 | Human | WhiteAmerican_NHANES_1997 | MALE | 35 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
+| European | European | 186687441 | Human | European_ICRP_2002 | MALE | 30 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
+| Patient_001 | Patient_001 | NA | Human | European_ICRP_2002 | MALE | 45 | year(s) | 85 | kg | 180 | cm | NA | NA |
+
+</td>
+
+<td>
+
+| individual_id | path | value | unit | source | description | source_id |
+|:---|:---|---:|:---|:---|:---|---:|
+| Mouly2002 | Organism\|Gallbladder\|Gallbladder ejection fraction | 0.6 | NA | Publication | R24-4081 | NA |
+| Mouly2002 | Organism\|Liver\|EHC continuous fraction | 1.0 | NA | Publication | R24-4081 | NA |
+
+</td>
+
+<td>
+
+| individual_id | profile                |
+|:--------------|:-----------------------|
+| Mouly2002     | CYP1A2\|Human\|Healthy |
+| Mouly2002     | CYP2B6\|Human\|Healthy |
+| European      | CYP1A2\|Human\|Healthy |
+| European      | CYP2B6\|Human\|Healthy |
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<table class="kable_wrapper">
+
+<tbody>
+
+<tr>
+
+<td>
+
+| individual_id | name | seed | species | population | gender | age | age_unit | weight | weight_unit | height | height_unit | disease_state | calculation_methods |
+|:---|:---|---:|:---|:---|:---|---:|:---|---:|:---|---:|:---|:---|:---|
+| Mouly2002 | Mouly2002 | 1300547185 | Human | WhiteAmerican_NHANES_1997 | MALE | 35 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
+| European | European | 186687441 | Human | European_ICRP_2002 | MALE | 30 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
+| Patient_001 | Patient_001 | NA | Human | European_ICRP_2002 | MALE | 45 | year(s) | 85 | kg | 180 | cm | NA | NA |
+
+</td>
+
+<td>
+
+| individual_id | path | value | unit | source | description | source_id |
+|:---|:---|---:|:---|:---|:---|---:|
+| Mouly2002 | Organism\|Gallbladder\|Gallbladder ejection fraction | 0.6 | NA | Publication | R24-4081 | NA |
+| Mouly2002 | Organism\|Liver\|EHC continuous fraction | 1.0 | NA | Publication | R24-4081 | NA |
+
+</td>
+
+<td>
+
+| individual_id | profile                |
+|:--------------|:-----------------------|
+| Mouly2002     | CYP1A2\|Human\|Healthy |
+| Mouly2002     | CYP2B6\|Human\|Healthy |
+| European      | CYP1A2\|Human\|Healthy |
+| European      | CYP2B6\|Human\|Healthy |
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+It is also possible to get dataframe for a specific individual using
+`to_df()` method on an individual object:
+
+``` r
+individual_df <- snapshot$individuals[[1]]$to_df()
+individual_df
+```
+
+| individual_id | name | seed | species | population | gender | age | age_unit | weight | weight_unit | height | height_unit | disease_state | calculation_methods |
+|:---|:---|---:|:---|:---|:---|---:|:---|---:|:---|---:|:---|:---|:---|
+| Mouly2002 | Mouly2002 | 1300547185 | Human | WhiteAmerican_NHANES_1997 | MALE | 35 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
+
+| individual_id | path | value | unit | source | description |
+|:---|:---|---:|:---|:---|:---|
+| Mouly2002 | Organism\|Gallbladder\|Gallbladder ejection fraction | 0.6 | NA | Publication | R24-4081 |
+| Mouly2002 | Organism\|Liver\|EHC continuous fraction | 1.0 | NA | Publication | R24-4081 |
+
+| individual_id | profile                |
+|:--------------|:-----------------------|
+| Mouly2002     | CYP1A2\|Human\|Healthy |
+| Mouly2002     | CYP2B6\|Human\|Healthy |

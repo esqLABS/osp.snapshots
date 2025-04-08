@@ -5,6 +5,7 @@
 #' This class provides methods to access different properties of a parameter
 #' and display a summary of its information.
 #'
+#' @importFrom tibble tibble as_tibble
 #' @export
 Parameter <- R6::R6Class(
   classname = "Parameter",
@@ -43,6 +44,25 @@ Parameter <- R6::R6Class(
 
       cat(output, sep = "\n")
       invisible(self)
+    },
+
+    #' @description
+    #' Convert parameter data to a tibble row
+    #' @param individual_id Character. ID of the individual this parameter belongs to
+    #' @return A tibble with one row containing the parameter data
+    to_df = function(individual_id) {
+      tibble::tibble(
+        individual_id = individual_id,
+        path = self$path,
+        value = self$value,
+        unit = self$unit %||% NA_character_,
+        source = if (!is.null(self$value_origin)) self$value_origin$Source else
+          NA_character_,
+        description = if (!is.null(self$value_origin))
+          self$value_origin$Description else NA_character_,
+        source_id = if (!is.null(self$value_origin)) self$value_origin$Id else
+          NA_integer_
+      )
     }
   ),
   active = list(
@@ -135,12 +155,13 @@ Parameter <- R6::R6Class(
 #'   description = "Reference XYZ"
 #' )
 create_parameter <- function(
-    path,
-    value,
-    unit = NULL,
-    source = NULL,
-    description = NULL,
-    source_id = NULL) {
+  path,
+  value,
+  unit = NULL,
+  source = NULL,
+  description = NULL,
+  source_id = NULL
+) {
   # Create the data structure
   data <- list(
     Path = path,

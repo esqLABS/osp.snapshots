@@ -52,6 +52,7 @@ and display a summary of its information.
 \itemize{
 \item \href{#method-Individual-new}{\code{Individual$new()}}
 \item \href{#method-Individual-print}{\code{Individual$print()}}
+\item \href{#method-Individual-to_df}{\code{Individual$to_df()}}
 \item \href{#method-Individual-clone}{\code{Individual$clone()}}
 }
 }
@@ -93,6 +94,26 @@ Print a summary of the individual including its properties and parameters.
 }
 \subsection{Returns}{
 Invisibly returns the Individual object for method chaining
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Individual-to_df"></a>}}
+\if{latex}{\out{\hypertarget{method-Individual-to_df}{}}}
+\subsection{Method \code{to_df()}}{
+Convert individual data to tibbles
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Individual$to_df(type = "all")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{Character. Type of data to convert: "all" (default), "origin", "parameters", or "expressions"}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of tibbles containing the requested data
 }
 }
 \if{html}{\out{<hr>}}

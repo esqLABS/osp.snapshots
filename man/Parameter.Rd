@@ -33,6 +33,7 @@ and display a summary of its information.
 \itemize{
 \item \href{#method-Parameter-new}{\code{Parameter$new()}}
 \item \href{#method-Parameter-print}{\code{Parameter$print()}}
+\item \href{#method-Parameter-to_df}{\code{Parameter$to_df()}}
 \item \href{#method-Parameter-clone}{\code{Parameter$clone()}}
 }
 }
@@ -74,6 +75,26 @@ Print a summary of the parameter
 }
 \subsection{Returns}{
 Invisibly returns the object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Parameter-to_df"></a>}}
+\if{latex}{\out{\hypertarget{method-Parameter-to_df}{}}}
+\subsection{Method \code{to_df()}}{
+Convert parameter data to a tibble row
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Parameter$to_df(individual_id)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{individual_id}}{Character. ID of the individual this parameter belongs to}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A tibble with one row containing the parameter data
 }
 }
 \if{html}{\out{<hr>}}
