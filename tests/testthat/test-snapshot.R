@@ -11,8 +11,7 @@ test_that("Snapshot class works", {
   # Test pksim_version mapping
   if (!is.null(snapshot$data$Version)) {
     raw_version <- as.integer(snapshot$data$Version)
-    expected_version <- switch(
-      as.character(raw_version),
+    expected_version <- switch(as.character(raw_version),
       "80" = "12.0",
       "79" = "11.2",
       "78" = "10.0",

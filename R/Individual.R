@@ -101,8 +101,11 @@ Individual <- R6::R6Class(
         ) {
           cli::cli_h2("Parameters")
           for (param in private$.parameters) {
-            unit_display <- if (is.null(param$unit)) "" else
+            unit_display <- if (is.null(param$unit)) {
+              ""
+            } else {
               paste0(" ", param$unit)
+            }
             cli::cli_li("{param$path}: {param$value}{unit_display}")
           }
         }
@@ -391,21 +394,20 @@ Individual <- R6::R6Class(
 #'   )
 #' )
 create_individual <- function(
-  name = "New Individual",
-  species = NULL,
-  population = NULL,
-  gender = NULL,
-  age = NULL,
-  age_unit = "year(s)",
-  weight = NULL,
-  weight_unit = "kg",
-  height = NULL,
-  height_unit = "cm",
-  calculation_methods = NULL,
-  disease_state = NULL,
-  disease_state_parameters = NULL,
-  seed = NULL
-) {
+    name = "New Individual",
+    species = NULL,
+    population = NULL,
+    gender = NULL,
+    age = NULL,
+    age_unit = "year(s)",
+    weight = NULL,
+    weight_unit = "kg",
+    height = NULL,
+    height_unit = "cm",
+    calculation_methods = NULL,
+    disease_state = NULL,
+    disease_state_parameters = NULL,
+    seed = NULL) {
   # Validate inputs if provided
   if (!is.null(species)) validate_species(species)
   if (!is.null(population)) validate_population(population)

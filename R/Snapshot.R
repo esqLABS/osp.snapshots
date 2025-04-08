@@ -209,8 +209,7 @@ Snapshot <- R6::R6Class(
     .get_pksim_version = function() {
       version_num <- as.integer(private$.original_data$Version)
 
-      pksim_version <- switch(
-        as.character(version_num),
+      pksim_version <- switch(as.character(version_num),
         "80" = "12.0",
         "79" = "11.2",
         "78" = "10.0",
