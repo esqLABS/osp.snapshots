@@ -93,6 +93,13 @@ Snapshot <- R6::R6Class(
         pretty = TRUE,
         digits = NA
       )
+      jsonlite::write_json(
+        self$data,
+        path,
+        auto_unbox = TRUE,
+        pretty = TRUE,
+        digits = NA
+      )
       cli::cli_alert_success("Snapshot exported to {.file {path}}")
       invisible(self)
     },
@@ -157,6 +164,7 @@ Snapshot <- R6::R6Class(
 
     #' @field pksim_version The human-readable PKSIM version corresponding to the snapshot version
     pksim_version = function() {
+      if (is.null(private$.pksim_version)) {
       if (is.null(private$.pksim_version)) {
         private$.pksim_version <- private$.get_pksim_version()
       } else {
