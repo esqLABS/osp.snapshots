@@ -31,7 +31,7 @@
       print(minimal_individual)
     Output
       
-      -- Individual: Minimal Individual | Seed:  -------------------------------------
+      -- Individual: Minimal Individual ----------------------------------------------
 
 # Individual creation with modified data works
 
@@ -151,7 +151,7 @@
       print(test_individual)
     Output
       
-      -- Individual: Test Individual with Methods | Seed:  ---------------------------
+      -- Individual: Test Individual with Methods ------------------------------------
       
       -- Origin Data --
       
@@ -167,7 +167,7 @@
       print(individual)
     Output
       
-      -- Individual: Method Test Individual | Seed:  ---------------------------------
+      -- Individual: Method Test Individual ------------------------------------------
       
       -- Origin Data --
       

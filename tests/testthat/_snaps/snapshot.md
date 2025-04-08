@@ -25,7 +25,7 @@
       * Individual 2
       * Individual 3
 
-# Individuals can be modified from the snapshot object
+# Individuals can be modified from the snapshot object and snapshot data is updated
 
     Code
       snapshot$data$Individuals[[1]]
