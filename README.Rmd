@@ -136,7 +136,7 @@ dfs
 
 ```{r, results='asis', echo=FALSE}
 for (df in dfs) {
-  print(knitr::kable(dfs))
+  print(knitr::kable(df))
 }
 ```
 
