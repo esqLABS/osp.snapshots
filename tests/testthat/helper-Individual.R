@@ -38,6 +38,22 @@ minimal_individual_data <- list(
   Name = "Minimal Individual"
 )
 
+# Create test data for a preterm individual with gestational age
+preterm_individual_data <- list(
+  Name = "Preterm Baby",
+  Seed = 54321,
+  OriginData = list(
+    Species = "Human",
+    Population = "Preterm",
+    Gender = "MALE",
+    Age = list(Value = 10.0, Unit = "day(s)"),
+    GestationalAge = list(Value = 30.0, Unit = "week(s)"),
+    Weight = list(Value = 1.5, Unit = "kg"),
+    Height = list(Value = 40, Unit = "cm")
+  )
+)
+
 # Create test individuals that will be used across tests
 complete_individual <- Individual$new(complete_individual_data)
 minimal_individual <- Individual$new(minimal_individual_data)
+preterm_individual <- Individual$new(preterm_individual_data)

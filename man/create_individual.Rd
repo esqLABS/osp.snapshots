@@ -15,6 +15,8 @@ create_individual(
   weight_unit = "kg",
   height = NULL,
   height_unit = "cm",
+  gestational_age = NULL,
+  gestational_age_unit = "week(s)",
   calculation_methods = NULL,
   disease_state = NULL,
   disease_state_parameters = NULL,
@@ -41,6 +43,10 @@ create_individual(
 \item{height}{Numeric. Height of the individual}
 
 \item{height_unit}{Character. Unit for height (must be valid unit for "Length")}
+
+\item{gestational_age}{Numeric. Gestational age of the individual (for infant/preterm individuals)}
+
+\item{gestational_age_unit}{Character. Unit for gestational age (must be valid unit for "Time")}
 
 \item{calculation_methods}{Character vector. Calculation methods used for the individual}
 

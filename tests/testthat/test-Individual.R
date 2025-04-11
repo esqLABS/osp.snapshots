@@ -91,6 +91,11 @@ test_that("Individual fields can be modified through active bindings", {
   expect_equal(test_individual$height, 180)
   expect_equal(test_individual$height_unit, "cm") # Default unit preserved
 
+  # Test modifying gestational age
+  test_individual$gestational_age <- 28
+  expect_equal(test_individual$gestational_age, 28)
+  expect_equal(test_individual$gestational_age_unit, "week(s)") # Default unit preserved
+
   # Test the print output after modifications
   expect_snapshot(print(test_individual))
 })
@@ -154,10 +159,17 @@ test_that("Individual measurement units can be modified", {
   expect_equal(test_individual$height_unit, "m")
   expect_equal(test_individual$height, 175) # Value preserved
 
+  # Test modifying gestational age unit
+  test_individual$gestational_age <- 30 # First set a value
+  test_individual$gestational_age_unit <- "day(s)"
+  expect_equal(test_individual$gestational_age_unit, "day(s)")
+  expect_equal(test_individual$gestational_age, 30) # Value preserved
+
   # Test invalid units
   expect_error(test_individual$age_unit <- "invalid")
   expect_error(test_individual$weight_unit <- "invalid")
   expect_error(test_individual$height_unit <- "invalid")
+  expect_error(test_individual$gestational_age_unit <- "invalid")
 
   # Test the print output after unit modifications
   expect_snapshot(print(test_individual))
@@ -565,4 +577,44 @@ test_that("create_individual validates all inputs properly", {
   expect_error(
     create_individual(height_unit = "invalid_unit")
   )
+})
+
+test_that("create_individual supports gestational age", {
+  # Create an individual with gestational age
+  individual <- create_individual(
+    name = "Preterm Baby",
+    species = "Human",
+    population = "Preterm",
+    gender = "MALE",
+    age = 10.0,
+    age_unit = "day(s)",
+    gestational_age = 30.0,
+    gestational_age_unit = "week(s)",
+    weight = 1.5,
+    height = 40
+  )
+
+  # Test that gestational age was set correctly
+  expect_equal(individual$gestational_age, 30.0)
+  expect_equal(individual$gestational_age_unit, "week(s)")
+
+  # Test the print output for preterm individual
+  expect_snapshot(print(individual))
+})
+
+test_that("Individual handles gestational age correctly", {
+  # Test that preterm individual has correct gestational age
+  expect_equal(preterm_individual$gestational_age, 30.0)
+  expect_equal(preterm_individual$gestational_age_unit, "week(s)")
+
+  # Test gestational age can be modified
+  preterm_individual$gestational_age <- 32.0
+  expect_equal(preterm_individual$gestational_age, 32.0)
+
+  # Test gestational age unit can be modified
+  preterm_individual$gestational_age_unit <- "day(s)"
+  expect_equal(preterm_individual$gestational_age_unit, "day(s)")
+
+  # Test print output shows gestational age
+  expect_snapshot(print(preterm_individual))
 })

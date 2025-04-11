@@ -10,7 +10,7 @@
       * Events: 10
       * ExpressionProfiles: 14
       * Formulations: 9
-      * Individuals: 4
+      * Individuals: 5
       * ObservedData: 64
       * ObservedDataClassifications: 20
       * ObserverSets: 1

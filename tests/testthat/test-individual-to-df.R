@@ -124,6 +124,38 @@ test_that("to_df handles missing values", {
     })
 })
 
+test_that("to_df includes gestational age", {
+    # Create individual with gestational age
+    ind <- create_individual(
+        name = "Preterm Baby",
+        species = "Human",
+        population = "Preterm",
+        gender = "MALE",
+        age = 10.0,
+        age_unit = "day(s)",
+        gestational_age = 30.0,
+        gestational_age_unit = "week(s)",
+        weight = 1.5,
+        weight_unit = "kg",
+        height = 40,
+        height_unit = "cm"
+    )
+
+    # Get origin data
+    origin_df <- ind$to_df("origin")
+
+    # Check that gestational age is included
+    expect_true("gestational_age" %in% names(origin_df))
+    expect_true("gestational_age_unit" %in% names(origin_df))
+
+    # Check values
+    expect_equal(origin_df$gestational_age, 30.0)
+    expect_equal(origin_df$gestational_age_unit, "week(s)")
+
+    # Snapshot the origin dataframe
+    expect_snapshot(print(origin_df, width = Inf))
+})
+
 test_that("to_df validates type argument", {
     ind <- create_individual("Test")
     expect_error(

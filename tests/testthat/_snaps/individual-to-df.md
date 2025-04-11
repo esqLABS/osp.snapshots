@@ -3,13 +3,16 @@
     Code
       print(dfs$origin, width = Inf)
     Output
-      # A tibble: 1 x 15
+      # A tibble: 1 x 17
         individual_id name            seed species population                gender
         <chr>         <chr>          <dbl> <chr>   <chr>                     <chr> 
       1 Mouly2002     Mouly2002 1300547185 Human   WhiteAmerican_NHANES_1997 MALE  
-          age age_unit weight weight_unit height height_unit disease_state
-        <dbl> <chr>     <dbl> <chr>        <dbl> <chr>       <chr>        
-      1  29.9 year(s)      70 kg             175 cm          Healthy      
+          age age_unit gestational_age gestational_age_unit weight weight_unit height
+        <dbl> <chr>              <dbl> <chr>                 <dbl> <chr>        <dbl>
+      1  29.9 year(s)               NA <NA>                     70 kg             175
+        height_unit disease_state
+        <chr>       <chr>        
+      1 cm          Healthy      
         calculation_methods                                   disease_state_parameters
         <chr>                                                 <chr>                   
       1 SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller <NA>                    
@@ -39,13 +42,16 @@
     Code
       print(origin_df, width = Inf)
     Output
-      # A tibble: 1 x 15
+      # A tibble: 1 x 17
         individual_id name          seed species population         gender   age
         <chr>         <chr>        <dbl> <chr>   <chr>              <chr>  <dbl>
       1 European      European 186687441 Human   European_ICRP_2002 MALE      30
-        age_unit weight weight_unit height height_unit disease_state
-        <chr>     <dbl> <chr>        <dbl> <chr>       <chr>        
-      1 year(s)      NA <NA>            NA <NA>        <NA>         
+        age_unit gestational_age gestational_age_unit weight weight_unit height
+        <chr>              <dbl> <chr>                 <dbl> <chr>        <dbl>
+      1 year(s)               NA <NA>                     NA <NA>            NA
+        height_unit disease_state
+        <chr>       <chr>        
+      1 <NA>        <NA>         
         calculation_methods                                   disease_state_parameters
         <chr>                                                 <chr>                   
       1 SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller <NA>                    
@@ -74,16 +80,16 @@
     Code
       print(dfs$origin, width = Inf)
     Output
-      # A tibble: 1 x 15
-        individual_id name     seed species population gender   age age_unit weight
-        <chr>         <chr>   <int> <chr>   <chr>      <chr>  <dbl> <chr>     <dbl>
-      1 Minimal       Minimal    NA <NA>    <NA>       <NA>      NA <NA>         NA
-        weight_unit height height_unit disease_state calculation_methods
-        <chr>        <dbl> <chr>       <chr>         <chr>              
-      1 <NA>            NA <NA>        <NA>          <NA>               
-        disease_state_parameters
-        <chr>                   
-      1 <NA>                    
+      # A tibble: 1 x 17
+        individual_id name     seed species population gender   age age_unit
+        <chr>         <chr>   <int> <chr>   <chr>      <chr>  <dbl> <chr>   
+      1 Minimal       Minimal    NA <NA>    <NA>       <NA>      NA <NA>    
+        gestational_age gestational_age_unit weight weight_unit height height_unit
+                  <dbl> <chr>                 <dbl> <chr>        <dbl> <chr>      
+      1              NA <NA>                     NA <NA>            NA <NA>       
+        disease_state calculation_methods disease_state_parameters
+        <chr>         <chr>               <chr>                   
+      1 <NA>          <NA>                <NA>                    
     Code
       print(dfs$parameters, width = Inf)
     Output
@@ -95,20 +101,40 @@
       # A tibble: 0 x 2
       # i 2 variables: individual_id <chr>, profile <chr>
 
+# to_df includes gestational age
+
+    Code
+      print(origin_df, width = Inf)
+    Output
+      # A tibble: 1 x 17
+        individual_id name          seed species population gender   age age_unit
+        <chr>         <chr>        <int> <chr>   <chr>      <chr>  <dbl> <chr>   
+      1 Preterm Baby  Preterm Baby    NA Human   Preterm    MALE      10 day(s)  
+        gestational_age gestational_age_unit weight weight_unit height height_unit
+                  <dbl> <chr>                 <dbl> <chr>        <dbl> <chr>      
+      1              30 week(s)                 1.5 kg              40 cm         
+        disease_state calculation_methods disease_state_parameters
+        <chr>         <chr>               <chr>                   
+      1 <NA>          <NA>                <NA>                    
+
 # get_individuals_dfs returns combined data frames from all individuals
 
     Code
       print(dfs$origin, width = Inf)
     Output
-      # A tibble: 2 x 15
+      # A tibble: 2 x 17
         individual_id name            seed species population                gender
         <chr>         <chr>          <dbl> <chr>   <chr>                     <chr> 
       1 Mouly2002     Mouly2002 1300547185 Human   WhiteAmerican_NHANES_1997 MALE  
       2 European      European   186687441 Human   European_ICRP_2002        MALE  
-          age age_unit weight weight_unit height height_unit disease_state
-        <dbl> <chr>     <dbl> <chr>        <dbl> <chr>       <chr>        
-      1  29.9 year(s)      NA <NA>            NA <NA>        <NA>         
-      2  30   year(s)      NA <NA>            NA <NA>        <NA>         
+          age age_unit gestational_age gestational_age_unit weight weight_unit height
+        <dbl> <chr>              <dbl> <chr>                 <dbl> <chr>        <dbl>
+      1  29.9 year(s)               NA <NA>                     NA <NA>            NA
+      2  30   year(s)               NA <NA>                     NA <NA>            NA
+        height_unit disease_state
+        <chr>       <chr>        
+      1 <NA>        <NA>         
+      2 <NA>        <NA>         
         calculation_methods                                   disease_state_parameters
         <chr>                                                 <chr>                   
       1 SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller <NA>                    
@@ -159,13 +185,16 @@
     Code
       print(origin_df, width = Inf)
     Output
-      # A tibble: 1 x 15
+      # A tibble: 1 x 17
         individual_id name            seed species population                gender
         <chr>         <chr>          <dbl> <chr>   <chr>                     <chr> 
       1 Mouly2002     Mouly2002 1300547185 Human   WhiteAmerican_NHANES_1997 MALE  
-          age age_unit weight weight_unit height height_unit disease_state
-        <dbl> <chr>     <dbl> <chr>        <dbl> <chr>       <chr>        
-      1  29.9 year(s)      NA <NA>            NA <NA>        <NA>         
+          age age_unit gestational_age gestational_age_unit weight weight_unit height
+        <dbl> <chr>              <dbl> <chr>                 <dbl> <chr>        <dbl>
+      1  29.9 year(s)               NA <NA>                     NA <NA>            NA
+        height_unit disease_state
+        <chr>       <chr>        
+      1 <NA>        <NA>         
         calculation_methods                                   disease_state_parameters
         <chr>                                                 <chr>                   
       1 SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller <NA>                    

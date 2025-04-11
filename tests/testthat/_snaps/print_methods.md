@@ -27,11 +27,12 @@
       print(test_snapshot$individuals)
     Message
       
-      -- Individuals (4) -------------------------------------------------------------
+      -- Individuals (5) -------------------------------------------------------------
       * European (P-gp modified, CYP3A4 36 h)
       * Korean (Yu 2004 study)
       * CKD
       * ind_modified
+      * baby
 
 # print.individual_collection works with empty collection
 

@@ -57,6 +57,13 @@ Individual <- R6::R6Class(
             )
           }
 
+          # Display gestational age if available
+          if (!is.null(self$gestational_age)) {
+            cli::cli_li(
+              "Gestational Age: {self$gestational_age} {self$gestational_age_unit}"
+            )
+          }
+
           # Display height and weight if available
           if (!is.null(self$height)) {
             cli::cli_li(
@@ -162,6 +169,8 @@ Individual <- R6::R6Class(
           gender = self$gender %||% NA_character_,
           age = self$age %||% NA_real_,
           age_unit = self$age_unit %||% NA_character_,
+          gestational_age = self$gestational_age %||% NA_real_,
+          gestational_age_unit = self$gestational_age_unit %||% NA_character_,
           weight = self$weight %||% NA_real_,
           weight_unit = self$weight_unit %||% NA_character_,
           height = self$height %||% NA_real_,
@@ -407,6 +416,33 @@ Individual <- R6::R6Class(
       private$.data$OriginData$Height$Unit <- value
     },
 
+    #' @field gestational_age The gestational age value of the individual
+    gestational_age = function(value) {
+      if (missing(value)) {
+        if (is.null(private$.data$OriginData$GestationalAge)) {
+          return(NULL)
+        }
+        return(private$.data$OriginData$GestationalAge$Value)
+      }
+      private$.data$OriginData$GestationalAge$Value <- value
+      if (is.null(private$.data$OriginData$GestationalAge$Unit)) {
+        private$.data$OriginData$GestationalAge$Unit <- "week(s)"
+      }
+    },
+
+    #' @field gestational_age_unit The gestational age unit of the individual
+    gestational_age_unit = function(value) {
+      if (missing(value)) {
+        if (is.null(private$.data$OriginData$GestationalAge)) {
+          return(NULL)
+        }
+        return(private$.data$OriginData$GestationalAge$Unit)
+      }
+      # Validate unit
+      validate_unit(value, "Time")
+      private$.data$OriginData$GestationalAge$Unit <- value
+    },
+
     #' @field disease_state The disease state of the individual
     disease_state = function(value) {
       if (missing(value)) {
@@ -483,6 +519,8 @@ Individual <- R6::R6Class(
 #' @param weight_unit Character. Unit for weight (must be valid unit for "Mass")
 #' @param height Numeric. Height of the individual
 #' @param height_unit Character. Unit for height (must be valid unit for "Length")
+#' @param gestational_age Numeric. Gestational age of the individual (for infant/preterm individuals)
+#' @param gestational_age_unit Character. Unit for gestational age (must be valid unit for "Time")
 #' @param calculation_methods Character vector. Calculation methods used for the individual
 #' @param disease_state Character. Disease state of the individual (optional)
 #' @param disease_state_parameters List. Parameters for disease state (optional)
@@ -531,6 +569,8 @@ create_individual <- function(
   weight_unit = "kg",
   height = NULL,
   height_unit = "cm",
+  gestational_age = NULL,
+  gestational_age_unit = "week(s)",
   calculation_methods = NULL,
   disease_state = NULL,
   disease_state_parameters = NULL,
@@ -543,6 +583,8 @@ create_individual <- function(
   if (!is.null(age_unit)) validate_unit(age_unit, "Age in years")
   if (!is.null(weight_unit)) validate_unit(weight_unit, "Mass")
   if (!is.null(height_unit)) validate_unit(height_unit, "Length")
+  if (!is.null(gestational_age_unit))
+    validate_unit(gestational_age_unit, "Time")
 
   # Create origin data structure
   origin_data <- list()
@@ -561,6 +603,12 @@ create_individual <- function(
   }
   if (!is.null(height)) {
     origin_data$Height <- list(Value = height, Unit = height_unit)
+  }
+  if (!is.null(gestational_age)) {
+    origin_data$GestationalAge <- list(
+      Value = gestational_age,
+      Unit = gestational_age_unit
+    )
   }
 
   # Add calculation methods if provided

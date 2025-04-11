@@ -35,6 +35,10 @@ and display a summary of its information.
 
 \item{\code{height_unit}}{The height unit of the individual}
 
+\item{\code{gestational_age}}{The gestational age value of the individual}
+
+\item{\code{gestational_age_unit}}{The gestational age unit of the individual}
+
 \item{\code{disease_state}}{The disease state of the individual}
 
 \item{\code{disease_state_parameters}}{The disease state parameters of the individual}
