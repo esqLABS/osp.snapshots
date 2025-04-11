@@ -1,4 +1,4 @@
-test_snapshot_path <- test_path("data", "test_snapshot.json")
+test_snapshot_path <- testthat::test_path("data", "test_snapshot.json")
 test_snapshot <- Snapshot$new(test_snapshot_path)
 
 # Create a minimal snapshot data for tests that need a simple snapshot

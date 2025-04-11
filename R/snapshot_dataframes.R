@@ -1,34 +1,34 @@
-#' Get data frames from all individuals in a snapshot
+#' Get all individuals in a snapshot as data frames
 #'
 #' @description
-#' Extract data from all individuals in a snapshot and combine them into data frames
-#' by type (origin, parameters, expressions).
+#' This function extracts all individuals from a snapshot and converts them to
+#' data frames for easier analysis and visualization.
 #'
-#' @param snapshot A snapshot object
+#' @param snapshot A Snapshot object
 #'
-#' @return A list of data frames containing combined data from all individuals:
+#' @return A list containing three data frames:
 #' \itemize{
-#'   \item origin: General information about individuals
-#'   \item parameters: Parameter values for all individuals
-#'   \item expressions: Expression profile data for all individuals
+#'   \item origin: Basic information about each individual
+#'   \item parameters: All parameters for all individuals
+#'   \item expressions: Expression profiles for all individuals
 #' }
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Load a snapshot from a file
-#' snapshot <- read_snapshot("path/to/snapshot.json")
+#' # Load a snapshot
+#' snapshot <- load_snapshot("path/to/snapshot.json")
 #'
 #' # Get all individual data as data frames
-#' dfs <- get_individuals_df(snapshot)
+#' dfs <- get_individuals_dfs(snapshot)
 #'
 #' # Access specific data frames
 #' origin_df <- dfs$origin
 #' parameters_df <- dfs$parameters
 #' expressions_df <- dfs$expressions
 #' }
-get_individuals_df <- function(snapshot) {
+get_individuals_dfs <- function(snapshot) {
     # Check if input is a snapshot
     if (!inherits(snapshot, "Snapshot")) {
         cli::cli_abort("Input must be a Snapshot object")
@@ -105,7 +105,7 @@ get_individuals_df <- function(snapshot) {
 #'
 #' @export
 get_origin_df <- function(snapshot) {
-    get_individuals_df(snapshot)$origin
+    get_individuals_dfs(snapshot)$origin
 }
 
 #' Get parameter data for all individuals in a snapshot
@@ -119,7 +119,7 @@ get_origin_df <- function(snapshot) {
 #'
 #' @export
 get_parameters_df <- function(snapshot) {
-    get_individuals_df(snapshot)$parameters
+    get_individuals_dfs(snapshot)$parameters
 }
 
 #' Get expression profile data for all individuals in a snapshot
@@ -133,5 +133,5 @@ get_parameters_df <- function(snapshot) {
 #'
 #' @export
 get_expressions_df <- function(snapshot) {
-    get_individuals_df(snapshot)$expressions
+    get_individuals_dfs(snapshot)$expressions
 }

@@ -203,15 +203,15 @@ You can convert all individuals in a snapshot to combined data frames:
 
 ``` r
 # Get data frames for all individuals in the snapshot
-dfs <- get_individuals_df(snapshot)
+dfs <- get_individuals_dfs(snapshot)
 dfs
 ```
 
-| individual_id | name | seed | species | population | gender | age | age_unit | weight | weight_unit | height | height_unit | disease_state | calculation_methods |
-|:---|:---|---:|:---|:---|:---|---:|:---|---:|:---|---:|:---|:---|:---|
-| Mouly2002 | Mouly2002 | 1300547185 | Human | WhiteAmerican_NHANES_1997 | MALE | 35 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
-| European | European | 186687441 | Human | European_ICRP_2002 | MALE | 30 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
-| Patient_001 | Patient_001 | NA | Human | European_ICRP_2002 | MALE | 45 | year(s) | 85 | kg | 180 | cm | NA | NA |
+| individual_id | name | seed | species | population | gender | age | age_unit | weight | weight_unit | height | height_unit | disease_state | calculation_methods | disease_state_parameters |
+|:---|:---|---:|:---|:---|:---|---:|:---|---:|:---|---:|:---|:---|:---|:---|
+| Mouly2002 | Mouly2002 | 1300547185 | Human | WhiteAmerican_NHANES_1997 | MALE | 35 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller | NA |
+| European | European | 186687441 | Human | European_ICRP_2002 | MALE | 30 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller | NA |
+| Patient_001 | Patient_001 | NA | Human | European_ICRP_2002 | MALE | 45 | year(s) | 85 | kg | 180 | cm | NA | NA | NA |
 
 | individual_id | path | value | unit | source | description | source_id |
 |:---|:---|---:|:---|:---|:---|---:|
@@ -233,9 +233,9 @@ individual_df <- snapshot$individuals[[1]]$to_df()
 individual_df
 ```
 
-| individual_id | name | seed | species | population | gender | age | age_unit | weight | weight_unit | height | height_unit | disease_state | calculation_methods |
-|:---|:---|---:|:---|:---|:---|---:|:---|---:|:---|---:|:---|:---|:---|
-| Mouly2002 | Mouly2002 | 1300547185 | Human | WhiteAmerican_NHANES_1997 | MALE | 35 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller |
+| individual_id | name | seed | species | population | gender | age | age_unit | weight | weight_unit | height | height_unit | disease_state | calculation_methods | disease_state_parameters |
+|:---|:---|---:|:---|:---|:---|---:|:---|---:|:---|---:|:---|:---|:---|:---|
+| Mouly2002 | Mouly2002 | 1300547185 | Human | WhiteAmerican_NHANES_1997 | MALE | 35 | year(s) | NA | NA | NA | NA | NA | SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller | NA |
 
 | individual_id | path | value | unit | source | description |
 |:---|:---|---:|:---|:---|:---|

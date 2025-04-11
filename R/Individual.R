@@ -179,6 +179,27 @@ Individual <- R6::R6Class(
           data_list$calculation_methods <- NA_character_
         }
 
+        # Convert disease state parameters to a single string if present
+        if (!is.null(self$disease_state_parameters)) {
+          data_list$disease_state_parameters <- paste(
+            vapply(
+              self$disease_state_parameters,
+              function(param) {
+                sprintf(
+                  "%s: %g %s",
+                  param$Name,
+                  param$Value,
+                  param$Unit %||% ""
+                )
+              },
+              character(1)
+            ),
+            collapse = "; "
+          )
+        } else {
+          data_list$disease_state_parameters <- NA_character_
+        }
+
         result$origin <- tibble::as_tibble(data_list)
       }
 

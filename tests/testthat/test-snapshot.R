@@ -11,7 +11,8 @@ test_that("Snapshot class works", {
   # Test pksim_version mapping
   if (!is.null(snapshot$data$Version)) {
     raw_version <- as.integer(snapshot$data$Version)
-    expected_version <- switch(as.character(raw_version),
+    expected_version <- switch(
+      as.character(raw_version),
       "80" = "12.0",
       "79" = "11.2",
       "78" = "10.0",
@@ -335,7 +336,9 @@ test_that("load_snapshot handles URL input", {
 
   # Test with an invalid URL
   expect_error(
-    suppressWarnings(load_snapshot("https://not-a-real-url.example/snapshot.json")),
+    suppressWarnings(load_snapshot(
+      "https://not-a-real-url.example/snapshot.json"
+    )),
     "Failed to download snapshot from URL"
   )
 })

@@ -5,13 +5,18 @@
     Message
       
       -- PKSIM Snapshot --------------------------------------------------------------
-      i Version: 80 (PKSIM 12.0)
-      * Compounds: 2
-      * ExpressionProfiles: 2
-      * Formulations: 2
-      * Individuals: 2
-      * Protocols: 2
-      * SimulationClassifications: 2
+      i Version: 79 (PKSIM 11.2)
+      * Compounds: 6
+      * Events: 10
+      * ExpressionProfiles: 14
+      * Formulations: 9
+      * Individuals: 4
+      * ObservedData: 64
+      * ObservedDataClassifications: 20
+      * ObserverSets: 1
+      * ParameterIdentifications: 1
+      * Populations: 6
+      * Protocols: 9
       * Simulations: 2
 
 # Individual collection print method works
@@ -31,10 +36,10 @@
       snapshot$data$Individuals[[1]]
     Output
       $Name
-      [1] "Mouly2002_modified"
+      [1] "European (P-gp modified, CYP3A4 36 h)_modified"
       
       $Seed
-      [1] 1300547185
+      [1] 17189110
       
       $OriginData
       $OriginData$CalculationMethods
@@ -57,7 +62,7 @@
       
       $OriginData$Age
       $OriginData$Age$Value
-      [1] 39.9
+      [1] 40
       
       $OriginData$Age$Unit
       [1] "year(s)"
@@ -115,7 +120,9 @@
       
       
       $ExpressionProfiles
-      [1] "CYP1A2|Human|Healthy" "CYP2B6|Human|Healthy"
+      [1] "CYP3A4|Human|Healthy"  "AADAC|Human|Healthy"   "P-gp|Human|Healthy"   
+      [4] "OATP1B1|Human|Healthy" "ATP1A2|Human|Healthy"  "UGT1A4|Human|Healthy" 
+      [7] "GABRG2|Human|Healthy" 
       
 
 ---
@@ -124,14 +131,14 @@
       snapshot$individuals[[1]]
     Output
       
-      -- Individual: Mouly2002_modified | Seed: 1300547185 ---------------------------
+      -- Individual: European (P-gp modified, CYP3A4 36 h)_modified | Seed: 17189110 -
       
       -- Origin Data --
       
       * Species: Beagle
       * Population: Asian_Tanaka_1996
       * Gender: FEMALE
-      * Age: 39.9 year(s)
+      * Age: 40 year(s)
       * Height: cm
       * Weight: kg
       * Calculation Methods:
@@ -145,6 +152,11 @@
       
       -- Expression Profiles --
       
-      * CYP1A2|Human|Healthy
-      * CYP2B6|Human|Healthy
+      * CYP3A4|Human|Healthy
+      * AADAC|Human|Healthy
+      * P-gp|Human|Healthy
+      * OATP1B1|Human|Healthy
+      * ATP1A2|Human|Healthy
+      * UGT1A4|Human|Healthy
+      * GABRG2|Human|Healthy
 

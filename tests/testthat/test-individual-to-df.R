@@ -132,7 +132,7 @@ test_that("to_df validates type argument", {
     )
 })
 
-test_that("get_individuals_df returns combined data frames from all individuals", {
+test_that("get_individuals_dfs returns combined data frames from all individuals", {
     # Create a test snapshot with minimal data structure
     snapshot_data <- list(Version = "80", Individuals = list())
     snapshot <- Snapshot$new(snapshot_data)
@@ -205,7 +205,7 @@ test_that("get_individuals_df returns combined data frames from all individuals"
     snapshot$add_individual(ind2)
 
     # Get combined data frames
-    dfs <- get_individuals_df(snapshot)
+    dfs <- get_individuals_dfs(snapshot)
 
     # Verify structure
     expect_type(dfs, "list")
@@ -227,13 +227,13 @@ test_that("get_individuals_df returns combined data frames from all individuals"
     })
 })
 
-test_that("get_individuals_df handles empty snapshot", {
+test_that("get_individuals_dfs handles empty snapshot", {
     # Create empty snapshot
     snapshot_data <- list(Version = "80", Individuals = list())
     snapshot <- Snapshot$new(snapshot_data)
 
     # Get data frames
-    dfs <- get_individuals_df(snapshot)
+    dfs <- get_individuals_dfs(snapshot)
 
     # Verify structure
     expect_type(dfs, "list")

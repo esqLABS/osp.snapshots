@@ -130,7 +130,7 @@ You can convert all individuals in a snapshot to combined data frames:
 
 ```{r,results='hide'}
 # Get data frames for all individuals in the snapshot
-dfs <- get_individuals_df(snapshot)
+dfs <- get_individuals_dfs(snapshot)
 dfs
 ```
 
