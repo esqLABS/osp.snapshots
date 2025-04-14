@@ -1,9 +1,27 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://esqlabs.github.io/osp.snapshots/404.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/LICENSE-text.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/authors.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/index.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/Compound.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/Individual.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/Parameter.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/Snapshot.html</loc></url>
-<url><loc>https://esqlabs.github.io/osp.snapshots/reference/hello.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/add_individual_to_snapshot.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_individual.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_parameter.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/get_expressions_df.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/get_individuals_dfs.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/get_origin_df.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/get_parameters_df.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/index.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/load_snapshot.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/print.compound_collection.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/print.individual_collection.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/print.parameter_collection.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/validate_gender.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/validate_population.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/validate_species.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/validate_unit.html</loc></url>
 </urlset>
 

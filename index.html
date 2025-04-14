@@ -48,8 +48,8 @@
 <div class="page-header"><h1 id="ospsnapshots">osp.snapshots<a class="anchor" aria-label="anchor" href="#ospsnapshots"></a>
 </h1></div>
 <!-- badges: start -->
-<!-- badges: end -->
-<p>The goal of osp.snapshots is to …</p>
+
+<p>The goal of osp.snapshots is to provide an R interface to work with PK-Sim project snapshots.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -58,11 +58,460 @@
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"esqLABS/osp.snapshots"</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level2">
+<h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
+</h2>
+<div class="section level3">
+<h3 id="importing-a-snapshot">Importing a Snapshot<a class="anchor" aria-label="anchor" href="#importing-a-snapshot"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://esqlabs.github.io/osp.snapshots/">osp.snapshots</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load a snapshot from a JSON file</span></span>
+<span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="st">"path/to/snapshot.json"</span><span class="op">)</span></span></code></pre></div>
+<p>For this demo, we’ll use a test snapshot included with the package:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://esqlabs.github.io/osp.snapshots/">osp.snapshots</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load the test snapshot</span></span>
+<span><span class="va">snapshot_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"test_snapshot.json"</span>, package <span class="op">=</span> <span class="st">"osp.snapshots"</span><span class="op">)</span></span>
+<span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="va">snapshot_path</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ Reading snapshot from '/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/osp.snapshots/extdata/test_snapshot.json'</span></span>
+<span><span class="co">#&gt; ✔ Snapshot loaded successfully</span></span>
+<span></span>
+<span><span class="co"># View snapshot overview</span></span>
+<span><span class="va">snapshot</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── PKSIM Snapshot ──────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ℹ Version: 80 (PKSIM 12.0)</span></span>
+<span><span class="co">#&gt; • Compounds: 2</span></span>
+<span><span class="co">#&gt; • ExpressionProfiles: 2</span></span>
+<span><span class="co">#&gt; • Formulations: 2</span></span>
+<span><span class="co">#&gt; • Individuals: 2</span></span>
+<span><span class="co">#&gt; • Protocols: 2</span></span>
+<span><span class="co">#&gt; • SimulationClassifications: 2</span></span>
+<span><span class="co">#&gt; • Simulations: 2</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="exploring-snapshot-contents">Exploring Snapshot Contents<a class="anchor" aria-label="anchor" href="#exploring-snapshot-contents"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># List all individuals in the snapshot</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Individuals (2) ─────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • Mouly2002</span></span>
+<span><span class="co">#&gt; • European</span></span>
+<span></span>
+<span><span class="co"># Get a detailed view of a building block</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Individual: Mouly2002 | Seed: 1300547185 ────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Origin Data ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Species: Human</span></span>
+<span><span class="co">#&gt; • Population: WhiteAmerican_NHANES_1997</span></span>
+<span><span class="co">#&gt; • Gender: MALE</span></span>
+<span><span class="co">#&gt; • Age: 29.9 year(s)</span></span>
+<span><span class="co">#&gt; • Calculation Methods:</span></span>
+<span><span class="co">#&gt;   • SurfaceAreaPlsInt_VAR1</span></span>
+<span><span class="co">#&gt;   • Body surface area - Mosteller</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Parameters ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Organism|Gallbladder|Gallbladder ejection fraction: 0.8</span></span>
+<span><span class="co">#&gt; • Organism|Liver|EHC continuous fraction: 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Expression Profiles ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • CYP1A2|Human|Healthy</span></span>
+<span><span class="co">#&gt; • CYP2B6|Human|Healthy</span></span>
+<span></span>
+<span><span class="co"># All fields are accessible as list elements</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">age</span></span>
+<span><span class="co">#&gt; [1] 29.9</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">gender</span></span>
+<span><span class="co">#&gt; [1] "MALE"</span></span>
+<span></span>
+<span><span class="co"># Parameters are also accessible as list element but they have their own nested structure and behavior</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">parameters</span></span>
+<span><span class="co">#&gt; Parameter Collection with 2 parameters:</span></span>
+<span><span class="co">#&gt; Path                                     | Value           | Unit</span></span>
+<span><span class="co">#&gt; -----------------------------------------|-----------------|----------------</span></span>
+<span><span class="co">#&gt; ...bladder|Gallbladder ejection fraction | 0.8             | </span></span>
+<span><span class="co">#&gt; Organism|Liver|EHC continuous fraction   | 1               |</span></span>
+<span></span>
+<span><span class="co"># They can be accessed by path</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">`Organism|Gallbladder|Gallbladder ejection fraction`</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Parameter: Organism|Gallbladder|Gallbladder ejection fraction </span></span>
+<span><span class="co">#&gt; • Value: 0.8</span></span>
+<span><span class="co">#&gt; • Source: Publication</span></span>
+<span><span class="co">#&gt; • Description: R24-4081</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="modifying-building-blocks">Modifying Building Blocks<a class="anchor" aria-label="anchor" href="#modifying-building-blocks"></a>
+</h3>
+<p>All these elements are mutable and can be modified in place.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="fl">35</span></span>
+<span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">`Organism|Gallbladder|Gallbladder ejection fraction`</span><span class="op">$</span><span class="va">value</span> <span class="op">&lt;-</span> <span class="fl">0.6</span></span>
+<span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Individual: Mouly2002 | Seed: 1300547185 ────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Origin Data ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Species: Human</span></span>
+<span><span class="co">#&gt; • Population: WhiteAmerican_NHANES_1997</span></span>
+<span><span class="co">#&gt; • Gender: MALE</span></span>
+<span><span class="co">#&gt; • Age: 35 year(s)</span></span>
+<span><span class="co">#&gt; • Calculation Methods:</span></span>
+<span><span class="co">#&gt;   • SurfaceAreaPlsInt_VAR1</span></span>
+<span><span class="co">#&gt;   • Body surface area - Mosteller</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Parameters ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Organism|Gallbladder|Gallbladder ejection fraction: 0.6</span></span>
+<span><span class="co">#&gt; • Organism|Liver|EHC continuous fraction: 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Expression Profiles ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • CYP1A2|Human|Healthy</span></span>
+<span><span class="co">#&gt; • CYP2B6|Human|Healthy</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="creating-new-building-blocks">Creating new building blocks<a class="anchor" aria-label="anchor" href="#creating-new-building-blocks"></a>
+</h2>
+<div class="section level3">
+<h3 id="creating-a-new-individual">Creating a New Individual<a class="anchor" aria-label="anchor" href="#creating-a-new-individual"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a new individual</span></span>
+<span><span class="va">new_individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_individual.html">create_individual</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"Patient_001"</span>,</span>
+<span>  species <span class="op">=</span> <span class="st">"Human"</span>,</span>
+<span>  population <span class="op">=</span> <span class="st">"European_ICRP_2002"</span>,</span>
+<span>  gender <span class="op">=</span> <span class="st">"MALE"</span>,</span>
+<span>  age <span class="op">=</span> <span class="fl">45</span>,</span>
+<span>  weight <span class="op">=</span> <span class="fl">85</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">180</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Display the new individual</span></span>
+<span><span class="va">new_individual</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Individual: Patient_001 ─────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Origin Data ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Species: Human</span></span>
+<span><span class="co">#&gt; • Population: European_ICRP_2002</span></span>
+<span><span class="co">#&gt; • Gender: MALE</span></span>
+<span><span class="co">#&gt; • Age: 45 year(s)</span></span>
+<span><span class="co">#&gt; • Height: 180 cm</span></span>
+<span><span class="co">#&gt; • Weight: 85 kg</span></span>
+<span></span>
+<span><span class="co"># Add to snapshot</span></span>
+<span><span class="fu"><a href="reference/add_individual_to_snapshot.html">add_individual_to_snapshot</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="va">new_individual</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✔ Added individual 'Patient_001' to the snapshot</span></span>
+<span></span>
+<span><span class="co"># Verify it was added</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Individuals (3) ─────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • Mouly2002</span></span>
+<span><span class="co">#&gt; • European</span></span>
+<span><span class="co">#&gt; • Patient_001</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="converting-to-data-frames">Converting to Data Frames<a class="anchor" aria-label="anchor" href="#converting-to-data-frames"></a>
+</h2>
+<p>You can convert snapshot elements to data frames for easier analysis, visualization, and integration with other R tools.</p>
+<div class="section level3">
+<h3 id="converting-individuals">Converting Individuals<a class="anchor" aria-label="anchor" href="#converting-individuals"></a>
+</h3>
+<p>You can convert all individuals in a snapshot to combined data frames:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get data frames for all individuals in the snapshot</span></span>
+<span><span class="va">dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_individuals_dfs.html">get_individuals_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<span><span class="va">dfs</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">individual_id</th>
+<th align="left">name</th>
+<th align="right">seed</th>
+<th align="left">species</th>
+<th align="left">population</th>
+<th align="left">gender</th>
+<th align="right">age</th>
+<th align="left">age_unit</th>
+<th align="right">weight</th>
+<th align="left">weight_unit</th>
+<th align="right">height</th>
+<th align="left">height_unit</th>
+<th align="left">disease_state</th>
+<th align="left">calculation_methods</th>
+<th align="left">disease_state_parameters</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mouly2002</td>
+<td align="left">Mouly2002</td>
+<td align="right">1300547185</td>
+<td align="left">Human</td>
+<td align="left">WhiteAmerican_NHANES_1997</td>
+<td align="left">MALE</td>
+<td align="right">35</td>
+<td align="left">year(s)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">European</td>
+<td align="left">European</td>
+<td align="right">186687441</td>
+<td align="left">Human</td>
+<td align="left">European_ICRP_2002</td>
+<td align="left">MALE</td>
+<td align="right">30</td>
+<td align="left">year(s)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Patient_001</td>
+<td align="left">Patient_001</td>
+<td align="right">NA</td>
+<td align="left">Human</td>
+<td align="left">European_ICRP_2002</td>
+<td align="left">MALE</td>
+<td align="right">45</td>
+<td align="left">year(s)</td>
+<td align="right">85</td>
+<td align="left">kg</td>
+<td align="right">180</td>
+<td align="left">cm</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">individual_id</th>
+<th align="left">path</th>
+<th align="right">value</th>
+<th align="left">unit</th>
+<th align="left">source</th>
+<th align="left">description</th>
+<th align="right">source_id</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mouly2002</td>
+<td align="left">Organism|Gallbladder|Gallbladder ejection fraction</td>
+<td align="right">0.6</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">R24-4081</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Mouly2002</td>
+<td align="left">Organism|Liver|EHC continuous fraction</td>
+<td align="right">1.0</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">R24-4081</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<thead><tr class="header">
+<th align="left">individual_id</th>
+<th align="left">profile</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mouly2002</td>
+<td align="left">CYP1A2|Human|Healthy</td>
+</tr>
+<tr class="even">
+<td align="left">Mouly2002</td>
+<td align="left">CYP2B6|Human|Healthy</td>
+</tr>
+<tr class="odd">
+<td align="left">European</td>
+<td align="left">CYP1A2|Human|Healthy</td>
+</tr>
+<tr class="even">
+<td align="left">European</td>
+<td align="left">CYP2B6|Human|Healthy</td>
+</tr>
+</tbody>
+</table>
+<p>It is also possible to get dataframe for a specific individual using <code>to_df()</code> method on an individual object:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">individual_df</span> <span class="op">&lt;-</span> <span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">individual_df</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">individual_id</th>
+<th align="left">name</th>
+<th align="right">seed</th>
+<th align="left">species</th>
+<th align="left">population</th>
+<th align="left">gender</th>
+<th align="right">age</th>
+<th align="left">age_unit</th>
+<th align="right">weight</th>
+<th align="left">weight_unit</th>
+<th align="right">height</th>
+<th align="left">height_unit</th>
+<th align="left">disease_state</th>
+<th align="left">calculation_methods</th>
+<th align="left">disease_state_parameters</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="left">Mouly2002</td>
+<td align="left">Mouly2002</td>
+<td align="right">1300547185</td>
+<td align="left">Human</td>
+<td align="left">WhiteAmerican_NHANES_1997</td>
+<td align="left">MALE</td>
+<td align="right">35</td>
+<td align="left">year(s)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
+<td align="left">NA</td>
+</tr></tbody>
+</table>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">individual_id</th>
+<th align="left">path</th>
+<th align="right">value</th>
+<th align="left">unit</th>
+<th align="left">source</th>
+<th align="left">description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mouly2002</td>
+<td align="left">Organism|Gallbladder|Gallbladder ejection fraction</td>
+<td align="right">0.6</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">R24-4081</td>
+</tr>
+<tr class="even">
+<td align="left">Mouly2002</td>
+<td align="left">Organism|Liver|EHC continuous fraction</td>
+<td align="right">1.0</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">R24-4081</td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<thead><tr class="header">
+<th align="left">individual_id</th>
+<th align="left">profile</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mouly2002</td>
+<td align="left">CYP1A2|Human|Healthy</td>
+</tr>
+<tr class="even">
+<td align="left">Mouly2002</td>
+<td align="left">CYP2B6|Human|Healthy</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li>What license is it under?</li>
+<li>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
 
@@ -81,7 +530,13 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/esqLABS/osp.snapshots" class="external-link"><img src="https://codecov.io/gh/esqLABS/osp.snapshots/graph/badge.svg" alt="Codecov test coverage"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>

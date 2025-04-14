@@ -41,24 +41,28 @@ methods to access different components of the snapshot and visualize its structu
 
     <div class="section level2">
     <h2 id="public-fields">Public fields<a class="anchor" aria-label="anchor" href="#public-fields"></a></h2>
-    <p></p><div class="r6-fields"><dl><dt><code>data</code></dt>
-<dd><p>The raw data of the snapshot</p></dd>
-
-
-<dt><code>path</code></dt>
-<dd><p>The path to the snapshot file</p></dd>
+    <p></p><div class="r6-fields"><dl><dt><code>path</code></dt>
+<dd><p>The path to the snapshot file if loaded from file, NULL otherwise</p></dd>
 
 
 </dl><p></p></div>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
-    <p></p><div class="r6-active-bindings"><dl><dt><code>pksim_version</code></dt>
+    <p></p><div class="r6-active-bindings"><dl><dt><code>data</code></dt>
+<dd><p>The aggregated data of the snapshot from all components</p></dd>
+
+
+<dt><code>pksim_version</code></dt>
 <dd><p>The human-readable PKSIM version corresponding to the snapshot version</p></dd>
 
 
 <dt><code>compounds</code></dt>
 <dd><p>List of Compound objects in the snapshot</p></dd>
+
+
+<dt><code>individuals</code></dt>
+<dd><p>List of Individual objects in the snapshot</p></dd>
 
 
 </dl><p></p></div>
@@ -72,18 +76,19 @@ methods to access different components of the snapshot and visualize its structu
 <ul><li><p><a href="#method-Snapshot-new"><code>Snapshot$new()</code></a></p></li>
 <li><p><a href="#method-Snapshot-print"><code>Snapshot$print()</code></a></p></li>
 <li><p><a href="#method-Snapshot-export"><code>Snapshot$export()</code></a></p></li>
+<li><p><a href="#method-Snapshot-add_individual"><code>Snapshot$add_individual()</code></a></p></li>
 <li><p><a href="#method-Snapshot-clone"><code>Snapshot$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-Snapshot-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
-<p>Create a new Snapshot object from a JSON file</p><div class="section">
+<p>Create a new Snapshot object from a JSON file or a list</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Snapshot.html">Snapshot</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Snapshot.html">Snapshot</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">input</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>path</code></dt>
-<dd><p>Path to the snapshot JSON file</p></dd>
+<p></p><div class="arguments"><dl><dt><code>input</code></dt>
+<dd><p>Path to the snapshot JSON file, URL, template name, or a list containing snapshot data</p></dd>
 
 
 </dl><p></p></div>
@@ -133,15 +138,47 @@ methods to access different components of the snapshot and visualize its structu
 <p>Invisibly returns the object</p>
 </div>
 
-</div><p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-Snapshot-add_individual"></a><div class="section">
+<h3 id="method-add-individual-">Method <code>add_individual()</code><a class="anchor" aria-label="anchor" href="#method-add-individual-"></a></h3>
+<p>Add an Individual object to the snapshot</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">individual</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>individual</code></dt>
+<dd><p>An Individual object created with create_individual()</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
+<p>Invisibly returns the object</p>
+</div>
+<div class="section">
+<h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
+# Create a new individual
+ind &lt;- create_individual(name = "New Patient", age = 35, weight = 70)
+
+# Add the individual to a snapshot
+snapshot$add_individual(ind)
+}
+</code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -153,6 +190,22 @@ methods to access different components of the snapshot and visualize its structu
 
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Snapshot$add_individual`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Create a new individual</span></span></span>
+<span class="r-in"><span><span class="va">ind</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_individual.html">create_individual</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"New Patient"</span>, age <span class="op">=</span> <span class="fl">35</span>, weight <span class="op">=</span> <span class="fl">70</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add the individual to a snapshot</span></span></span>
+<span class="r-in"><span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">ind</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
