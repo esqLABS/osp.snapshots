@@ -11,17 +11,21 @@ Authors@R: c(
   )
 Description: More about what it does (maybe more than one line).
     Continuation lines should be indented.
-License: What license is it under?
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://esqlabs.github.io/osp.snapshots/
 RoxygenNote: 7.3.2
 Imports:
-    tibble,
     R6,
     jsonlite,
     cli,
+    ospsuite (>= 12.2.0),
+    tibble,
     dplyr
 Suggests: 
+    devtools,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Remotes: 
+    ospsuite=Open-Systems-Pharmacology/OSPSuite-R

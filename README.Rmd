@@ -2,8 +2,6 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -16,9 +14,12 @@ knitr::opts_chunk$set(
 # osp.snapshots
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/esqLABS/osp.snapshots/graph/badge.svg)](https://app.codecov.io/gh/esqLABS/osp.snapshots)
 <!-- badges: end -->
 
-The goal of osp.snapshots is to ...
+The goal of osp.snapshots is to provide an R interface to work with PK-Sim project snapshots.
 
 ## Installation
 
@@ -27,4 +28,126 @@ You can install the development version of osp.snapshots from [GitHub](https://g
 ``` r
 # install.packages("pak")
 pak::pak("esqLABS/osp.snapshots")
+```
+
+## Basic Usage
+
+### Importing a Snapshot
+
+```{r, include=FALSE}
+# Copy the test snapshot file to the package's extdata directory
+file.copy(
+  from = file.path("tests/testthat/data/test_snapshot.json"),
+  to = file.path("inst", "extdata", "test_snapshot.json"),
+  overwrite = TRUE
+)
+```
+
+```{r, eval=FALSE}
+library(osp.snapshots)
+
+# Load a snapshot from a JSON file
+snapshot <- load_snapshot("path/to/snapshot.json")
+```
+
+For this demo, we'll use a test snapshot included with the package:
+
+```{r}
+library(osp.snapshots)
+
+# Load the test snapshot
+snapshot_path <- system.file("extdata", "test_snapshot.json", package = "osp.snapshots")
+snapshot <- load_snapshot(snapshot_path)
+
+# View snapshot overview
+snapshot
+```
+
+### Exploring Snapshot Contents
+
+```{r}
+# List all individuals in the snapshot
+snapshot$individuals
+
+# Get a detailed view of a building block
+snapshot$individuals$Mouly2002
+
+# All fields are accessible as list elements
+snapshot$individuals$Mouly2002$age
+snapshot$individuals$Mouly2002$gender
+
+# Parameters are also accessible as list element but they have their own nested structure and behavior
+snapshot$individuals$Mouly2002$parameters
+
+# They can be accessed by path
+snapshot$individuals$Mouly2002$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`
+```
+
+
+### Modifying Building Blocks
+All these elements are mutable and can be modified in place.
+
+```{r}
+snapshot$individuals$Mouly2002$age <- 35
+
+snapshot$individuals$Mouly2002$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`$value <- 0.6
+
+snapshot$individuals$Mouly2002
+```
+
+## Creating new building blocks
+### Creating a New Individual
+
+```{r}
+# Create a new individual
+new_individual <- create_individual(
+  name = "Patient_001",
+  species = "Human",
+  population = "European_ICRP_2002",
+  gender = "MALE",
+  age = 45,
+  weight = 85,
+  height = 180
+)
+
+# Display the new individual
+new_individual
+
+# Add to snapshot
+add_individual_to_snapshot(snapshot, new_individual)
+
+# Verify it was added
+snapshot$individuals
+```
+
+## Converting to Data Frames
+
+You can convert snapshot elements to data frames for easier analysis, visualization, and integration with other R tools.
+
+### Converting Individuals
+
+You can convert all individuals in a snapshot to combined data frames:
+
+```{r,results='hide'}
+# Get data frames for all individuals in the snapshot
+dfs <- get_individuals_dfs(snapshot)
+dfs
+```
+
+```{r, results='asis', echo=FALSE}
+for (df in dfs) {
+  print(knitr::kable(df))
+}
+```
+
+It is also possible to get dataframe for a specific individual using `to_df()` method on an individual object:
+
+```{r, results="hide"}
+individual_df <- snapshot$individuals[[1]]$to_df()
+individual_df
+```
+```{r, results='asis', echo=FALSE}
+for (df in individual_df) {
+  print(knitr::kable(df))
+}
 ```

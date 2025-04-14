@@ -8,7 +8,6 @@
 #' @export
 Compound <- R6::R6Class(
   classname = "Compound",
-
   public = list(
     #' @field data The raw data of the compound
     data = NULL,
@@ -29,14 +28,14 @@ Compound <- R6::R6Class(
       # First, display simple properties (non-list fields)
       # Get all fields that are not lists or are empty lists
       non_list_fields <- names(self$data)[vapply(self$data, function(x) !is.list(x) || length(x) == 0, logical(1))]
-      
+
       # Display all non-list fields except Name
       for (field in non_list_fields) {
         # Skip Name field as it's already displayed in the header
         if (field == "Name") {
           next
         }
-        
+
         formatted_field <- gsub("([a-z])([A-Z])", "\\1 \\2", field)
         cli::cli_li("{formatted_field}: {self$data[[field]]}")
       }
@@ -48,19 +47,19 @@ Compound <- R6::R6Class(
 
       # Then, display list fields as categories with counts
       cli::cat_line() # Add a blank line
-      
+
       # Get all fields that are lists and not empty
       list_fields <- names(self$data)[vapply(self$data, function(x) is.list(x) && length(x) > 0, logical(1))]
-      
+
       for (field in list_fields) {
         # Get count of items in the list
         count <- length(self$data[[field]])
-        
+
         # Format field name for display
         formatted_field <- gsub("([a-z])([A-Z])", "\\1 \\2", field)
         cli::cli_li("{formatted_field}: {count}")
       }
-      
+
       # Return the object invisibly
       invisible(self)
     }

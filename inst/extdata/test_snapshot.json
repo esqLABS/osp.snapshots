@@ -2747,28 +2747,6 @@
         }
       ],
       "ExpressionProfiles": []
-    },
-    {
-      "Name": "baby",
-      "Seed": 1987729687,
-      "OriginData": {
-        "CalculationMethods": [
-          "SurfaceAreaPlsInt_VAR1",
-          "Body surface area - Mosteller"
-        ],
-        "Species": "Human",
-        "Population": "Preterm",
-        "Gender": "MALE",
-        "Age": {
-          "Value": 10.0,
-          "Unit": "day(s)"
-        },
-        "GestationalAge": {
-          "Value": 30.0,
-          "Unit": "week(s)"
-        }
-      },
-      "ExpressionProfiles": []
     }
   ],
   "Populations": [
