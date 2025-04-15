@@ -80,7 +80,7 @@ print.parameter_collection <- function(x, ...) {
   )
 
   # Create a summary table
-  cat(sprintf("%-40s | %-15s | %s\n", "Path", "Value", "Unit"))
+  cat(sprintf("%-40s | %-15s | %s\n", "Name", "Value", "Unit"))
   cat(sprintf(
     "%-40s-|-%-15s-|-%s\n",
     paste(rep("-", 40), collapse = ""),
@@ -90,11 +90,11 @@ print.parameter_collection <- function(x, ...) {
 
   for (param in x) {
     # Truncate long paths for display
-    disp_path <- param$path
-    if (nchar(disp_path) > 40) {
-      disp_path <- paste0(
+    disp_name <- param$name
+    if (nchar(disp_name) > 40) {
+      disp_name <- paste0(
         "...",
-        substr(disp_path, nchar(disp_path) - 36, nchar(disp_path))
+        substr(disp_name, nchar(disp_name) - 36, nchar(disp_name))
       )
     }
 
@@ -103,7 +103,7 @@ print.parameter_collection <- function(x, ...) {
 
     cat(sprintf(
       "%-40s | %-15s | %s\n",
-      disp_path,
+      disp_name,
       format(param$value, digits = 4),
       unit_display
     ))

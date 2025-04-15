@@ -27,7 +27,7 @@ Parameter <- R6::R6Class(
     #' @return Invisibly returns the object
     print = function(...) {
       output <- cli::cli_format_method({
-        cli::cli_h3("Parameter: {self$path}")
+        cli::cli_h3("Parameter: {self$name}")
         cli::cli_li("Value: {self$value}")
         if (!is.null(self$unit)) {
           cli::cli_li("Unit: {self$unit}")
@@ -53,7 +53,7 @@ Parameter <- R6::R6Class(
     to_df = function(individual_id) {
       tibble::tibble(
         individual_id = individual_id,
-        path = self$path,
+        name = self$name,
         value = self$value,
         unit = self$unit %||% NA_character_,
         source = if (!is.null(self$value_origin)) self$value_origin$Source else
@@ -66,8 +66,8 @@ Parameter <- R6::R6Class(
     }
   ),
   active = list(
-    #' @field path The path of the parameter
-    path = function(value) {
+    #' @field name The name of the parameter
+    name = function(value) {
       if (missing(value)) {
         return(self$data$Path)
       }
@@ -120,9 +120,9 @@ Parameter <- R6::R6Class(
 #'
 #' @description
 #' Create a new parameter with the specified properties.
-#' All arguments except path and value are optional.
+#' All arguments except name and value are optional.
 #'
-#' @param path Character. Path of the parameter
+#' @param name Character. Name of the parameter
 #' @param value Numeric. Value of the parameter
 #' @param unit Character. Unit of the parameter (optional)
 #' @param source Character. Source of the value (optional)
@@ -135,27 +135,27 @@ Parameter <- R6::R6Class(
 #' @examples
 #' # Create a basic parameter
 #' param <- create_parameter(
-#'   path = "Organism|Liver|Volume",
+#'   name = "Organism|Liver|Volume",
 #'   value = 1.5
 #' )
 #'
 #' # Create a parameter with unit
 #' param <- create_parameter(
-#'   path = "Organism|Liver|Volume",
+#'   name = "Organism|Liver|Volume",
 #'   value = 1.5,
 #'   unit = "L"
 #' )
 #'
 #' # Create a parameter with value origin
 #' param <- create_parameter(
-#'   path = "Organism|Liver|Volume",
+#'   name = "Organism|Liver|Volume",
 #'   value = 1.5,
 #'   unit = "L",
 #'   source = "Publication",
 #'   description = "Reference XYZ"
 #' )
 create_parameter <- function(
-  path,
+  name,
   value,
   unit = NULL,
   source = NULL,
@@ -164,7 +164,7 @@ create_parameter <- function(
 ) {
   # Create the data structure
   data <- list(
-    Path = path,
+    Path = name,
     Value = value
   )
 

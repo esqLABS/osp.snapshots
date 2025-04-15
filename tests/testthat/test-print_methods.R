@@ -61,7 +61,7 @@ test_that("print.parameter_collection works with parameters", {
   )
 
   # Set names to the paths
-  names(params) <- sapply(params, function(p) p$path)
+  names(params) <- sapply(params, function(p) p$name)
 
   # Set the class
   class(params) <- c("parameter_collection", "list")
@@ -101,7 +101,7 @@ test_that("print.parameter_collection formats values correctly", {
   )
 
   # Set names to the paths
-  names(params) <- sapply(params, function(p) p$path)
+  names(params) <- sapply(params, function(p) p$name)
 
   # Set the class
   class(params) <- c("parameter_collection", "list")
@@ -114,19 +114,19 @@ test_that("print.parameter_collection formats values correctly", {
   expect_type(output, "character")
 
   # Check that the proper headers are included
-  expect_true(any(grepl("Path", output, fixed = TRUE)))
+  expect_true(any(grepl("Name", output, fixed = TRUE)))
   expect_true(any(grepl("Value", output, fixed = TRUE)))
   expect_true(any(grepl("Unit", output, fixed = TRUE)))
 
   # Check that all parameters are included
   for (param in params) {
     expect_true(any(
-      grepl(param$path, output, fixed = TRUE) |
+      grepl(param$name, output, fixed = TRUE) |
         grepl(
           substr(
-            param$path,
-            nchar(param$path) - 36,
-            nchar(param$path)
+            param$name,
+            nchar(param$name) - 36,
+            nchar(param$name)
           ),
           output,
           fixed = TRUE

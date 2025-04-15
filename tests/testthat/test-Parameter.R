@@ -34,7 +34,7 @@ test_that("Parameter active bindings work correctly", {
   ))
 
   # Test each active binding
-  expect_equal(param$path, "Organism|Liver|Volume")
+  expect_equal(param$name, "Organism|Liver|Volume")
   expect_equal(param$value, 1.5)
   expect_equal(param$unit, "L")
   expect_equal(
@@ -62,18 +62,18 @@ test_that("Parameter print method returns formatted output", {
 test_that("create_parameter creates parameters correctly", {
   # Test basic parameter
   basic_param <- create_parameter(
-    path = "Organism|Liver|Volume",
+    name = "Organism|Liver|Volume",
     value = 1.5
   )
   expect_s3_class(basic_param, "Parameter")
-  expect_equal(basic_param$path, "Organism|Liver|Volume")
+  expect_equal(basic_param$name, "Organism|Liver|Volume")
   expect_equal(basic_param$value, 1.5)
   expect_null(basic_param$unit)
   expect_null(basic_param$value_origin)
 
   # Test parameter with unit
   unit_param <- create_parameter(
-    path = "Organism|Liver|Volume",
+    name = "Organism|Liver|Volume",
     value = 1.5,
     unit = "L"
   )
@@ -81,7 +81,7 @@ test_that("create_parameter creates parameters correctly", {
 
   # Test parameter with value origin
   full_param <- create_parameter(
-    path = "Organism|Liver|Volume",
+    name = "Organism|Liver|Volume",
     value = 1.5,
     unit = "L",
     source = "Publication",
@@ -101,13 +101,13 @@ test_that("create_parameter creates parameters correctly", {
 test_that("Parameter fields can be modified", {
   # Create parameter object
   param <- create_parameter(
-    path = "Organism|Liver|Volume",
+    name = "Organism|Liver|Volume",
     value = 1.5
   )
 
-  # Test modifying path
-  param$path <- "Organism|Liver|Weight"
-  expect_equal(param$path, "Organism|Liver|Weight")
+  # Test modifying name
+  param$name <- "Organism|Liver|Weight"
+  expect_equal(param$name, "Organism|Liver|Weight")
 
   # Test modifying value
   param$value <- 2.0

@@ -75,7 +75,7 @@
       print(params)
     Output
       Parameter Collection with 3 parameters:
-      Path                                     | Value           | Unit
+      Name                                     | Value           | Unit
       -----------------------------------------|-----------------|----------------
       Test|Path1                               | 123.5           | mg
       ...ry|Long|Name|That|Should|Be|Truncated | 0.1235          | mg/ml
@@ -94,7 +94,7 @@
       print(params)
     Output
       Parameter Collection with 4 parameters:
-      Path                                     | Value           | Unit
+      Name                                     | Value           | Unit
       -----------------------------------------|-----------------|----------------
       Test|Integer                             | 123             | count
       Test|Decimal                             | 123.5           | mg

@@ -118,7 +118,7 @@ Individual <- R6::R6Class(
             } else {
               paste0(" ", param$unit)
             }
-            cli::cli_li("{param$path}: {param$value}{unit_display}")
+            cli::cli_li("{param$name}: {param$value}{unit_display}")
           }
         }
 
@@ -217,7 +217,7 @@ Individual <- R6::R6Class(
         if (length(self$parameters) == 0) {
           result$parameters <- tibble::tibble(
             individual_id = character(0),
-            path = character(0),
+            name = character(0),
             value = numeric(0),
             unit = character(0),
             source = character(0),
@@ -275,7 +275,7 @@ Individual <- R6::R6Class(
         # Name the parameters by their paths for easier access
         names(private$.parameters) <- vapply(
           private$.parameters,
-          function(p) p$path,
+          function(p) p$name,
           character(1)
         )
         # Add collection class for custom printing

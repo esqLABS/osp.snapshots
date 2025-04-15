@@ -20,7 +20,7 @@
       print(dfs$parameters, width = Inf)
     Output
       # A tibble: 2 x 6
-        individual_id path                                               value unit 
+        individual_id name                                               value unit 
         <chr>         <chr>                                              <dbl> <chr>
       1 Mouly2002     Organism|Gallbladder|Gallbladder ejection fraction   0.8 <NA> 
       2 Mouly2002     Organism|Liver|EHC continuous fraction               1   <NA> 
@@ -62,7 +62,7 @@
       print(params_df, width = Inf)
     Output
       # A tibble: 0 x 7
-      # i 7 variables: individual_id <chr>, path <chr>, value <dbl>, unit <chr>, source <chr>, description <chr>, source_id <int>
+      # i 7 variables: individual_id <chr>, name <chr>, value <dbl>, unit <chr>, source <chr>, description <chr>, source_id <int>
 
 ---
 
@@ -94,7 +94,7 @@
       print(dfs$parameters, width = Inf)
     Output
       # A tibble: 0 x 7
-      # i 7 variables: individual_id <chr>, path <chr>, value <dbl>, unit <chr>, source <chr>, description <chr>, source_id <int>
+      # i 7 variables: individual_id <chr>, name <chr>, value <dbl>, unit <chr>, source <chr>, description <chr>, source_id <int>
     Code
       print(dfs$expressions, width = Inf)
     Output
@@ -143,7 +143,7 @@
       print(dfs$parameters, width = Inf)
     Output
       # A tibble: 2 x 7
-        individual_id path                                               value unit 
+        individual_id name                                               value unit 
         <chr>         <chr>                                              <dbl> <chr>
       1 Mouly2002     Organism|Gallbladder|Gallbladder ejection fraction   0.8 <NA> 
       2 Mouly2002     Organism|Liver|EHC continuous fraction               1   <NA> 
@@ -173,7 +173,7 @@
       print(dfs$parameters, width = Inf)
     Output
       # A tibble: 0 x 4
-      # i 4 variables: individual_id <chr>, path <chr>, value <dbl>, unit <chr>
+      # i 4 variables: individual_id <chr>, name <chr>, value <dbl>, unit <chr>
     Code
       print(dfs$expressions, width = Inf)
     Output
@@ -205,7 +205,7 @@
       print(param_df, width = Inf)
     Output
       # A tibble: 1 x 6
-        individual_id path                                               value unit 
+        individual_id name                                               value unit 
         <chr>         <chr>                                              <dbl> <chr>
       1 Mouly2002     Organism|Gallbladder|Gallbladder ejection fraction   0.8 <NA> 
         source      description

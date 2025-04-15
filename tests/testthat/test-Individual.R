@@ -239,14 +239,14 @@ test_that("Individual initializes parameters correctly", {
 
   # Test parameter values through direct access
   expect_equal(
-    individual$parameters[["Organism|Liver|Volume"]]$path,
+    individual$parameters[["Organism|Liver|Volume"]]$name,
     "Organism|Liver|Volume"
   )
   expect_equal(individual$parameters[["Organism|Liver|Volume"]]$value, 1.5)
   expect_equal(individual$parameters[["Organism|Liver|Volume"]]$unit, "L")
 
   expect_equal(
-    individual$parameters[["Organism|Kidney|GFR"]]$path,
+    individual$parameters[["Organism|Kidney|GFR"]]$name,
     "Organism|Kidney|GFR"
   )
   expect_equal(individual$parameters[["Organism|Kidney|GFR"]]$value, 120)

@@ -55,7 +55,7 @@ get_individuals_dfs <- function(snapshot) {
         ),
         parameters = tibble::tibble(
             individual_id = character(0),
-            path = character(0),
+            name = character(0),
             value = numeric(0),
             unit = character(0)
         ),
