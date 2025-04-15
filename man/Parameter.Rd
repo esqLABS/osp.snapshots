@@ -20,11 +20,15 @@ and display a summary of its information.
 \describe{
 \item{\code{path}}{The path of the parameter}
 
+\item{\code{name}}{The name of the parameter (same as path)}
+
 \item{\code{value}}{The value of the parameter}
 
 \item{\code{unit}}{The unit of the parameter (if any)}
 
 \item{\code{value_origin}}{The origin information for the parameter value}
+
+\item{\code{table_formula}}{The table formula data for table parameters}
 }
 \if{html}{\out{</div>}}
 }
@@ -83,16 +87,9 @@ Invisibly returns the object
 \subsection{Method \code{to_df()}}{
 Convert parameter data to a tibble row
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Parameter$to_df(individual_id)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Parameter$to_df()}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{individual_id}}{Character. ID of the individual this parameter belongs to}
-}
-\if{html}{\out{</div>}}
-}
 \subsection{Returns}{
 A tibble with one row containing the parameter data
 }

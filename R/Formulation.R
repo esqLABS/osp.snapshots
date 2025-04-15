@@ -1,3 +1,17 @@
+# Map from PK-Sim formulation types to human-readable types
+FORMULATION_TYPE_MAP <- list(
+    "Formulation_Dissolved" = "Dissolved",
+    "Formulation_Tablet_Weibull" = "Weibull",
+    "Formulation_Tablet_Lint80" = "Lint80",
+    "Formulation_Particles" = "Particle",
+    "Formulation_Table" = "Table",
+    "Formulation_ZeroOrder" = "Zero Order",
+    "Formulation_FirstOrder" = "First Order"
+)
+
+# Valid formulation types (PK-Sim formulation types)
+VALID_FORMULATION_TYPES <- names(FORMULATION_TYPE_MAP)
+
 #' Formulation class for OSP snapshot formulations
 #'
 #' @description
@@ -39,18 +53,18 @@ Formulation <- R6::R6Class(
                 if (length(self$parameters) > 0) {
                     cli::cli_h2("Parameters")
                     for (param in self$parameters) {
-                        unit_display <- if (is.null(param$Unit)) {
+                        unit_display <- if (is.null(param$unit)) {
                             ""
                         } else {
-                            paste0(" ", param$Unit)
+                            glue::glue(" {param$unit}")
                         }
-                        cli::cli_li("{param$Name}: {param$Value}{unit_display}")
+                        cli::cli_li("{param$name}: {param$value}{unit_display}")
 
                         # Display table points if available (for table-based formulations)
-                        if (!is.null(param$TableFormula)) {
+                        if (!is.null(param$data$TableFormula)) {
                             cli::cli_li("Release profile:")
-                            points <- param$TableFormula$Points
-                            x_unit <- param$TableFormula$XUnit
+                            points <- param$data$TableFormula$Points
+                            x_unit <- param$data$TableFormula$XUnit
 
                             # Create a table with time and fraction data
                             time_points <- sapply(points, function(p) p$X)
@@ -60,13 +74,13 @@ Formulation <- R6::R6Class(
                             cat("\n")
                             cat(sprintf(
                                 "    %-12s | %s\n",
-                                paste0("Time [", x_unit, "]"),
+                                glue::glue("Time [{x_unit}]"),
                                 "Fraction (dose)"
                             ))
                             cat(sprintf(
                                 "    %-12s-|-%s\n",
-                                paste(rep("-", 12), collapse = ""),
-                                paste(rep("-", 15), collapse = "")
+                                glue::glue_collapse(rep("-", 12)),
+                                glue::glue_collapse(rep("-", 15))
                             ))
 
                             for (i in seq_along(time_points)) {
@@ -102,9 +116,7 @@ Formulation <- R6::R6Class(
             # Validate type argument
             valid_types <- c("all", "parameters")
             if (!type %in% valid_types) {
-                cli::cli_abort(
-                    "type must be one of: {paste(valid_types, collapse = ', ')}"
-                )
+                cli::cli_abort("{.arg type} must be one of: {valid_types}")
             }
 
             # Get the formulation name to use as ID
@@ -140,9 +152,9 @@ Formulation <- R6::R6Class(
                     param_rows <- lapply(self$parameters, function(param) {
                         list(
                             formulation_id = formulation_id,
-                            name = param$Name,
-                            value = param$Value,
-                            unit = param$Unit %||% NA_character_
+                            name = param$name,
+                            value = param$value,
+                            unit = param$unit %||% NA_character_
                         )
                     })
                     result$parameters <- tibble::as_tibble(dplyr::bind_rows(
@@ -163,19 +175,8 @@ Formulation <- R6::R6Class(
         #' Get human-readable formulation type
         #' @return Character string with human-readable formulation type
         get_human_formulation_type = function() {
-            # Map from PK-Sim formulation types to human-readable types
-            formulation_type_map <- list(
-                "Formulation_Dissolved" = "Dissolved",
-                "Formulation_Tablet_Weibull" = "Weibull",
-                "Formulation_Tablet_Lint80" = "Lint80",
-                "Formulation_Particles" = "Particle",
-                "Formulation_Table" = "Table",
-                "Formulation_ZeroOrder" = "Zero Order",
-                "Formulation_FirstOrder" = "First Order"
-            )
-
             # Return human-readable type or the original if not found
-            formulation_type_map[[self$formulation_type]] %||%
+            FORMULATION_TYPE_MAP[[self$formulation_type]] %||%
                 self$formulation_type
         }
     ),
@@ -184,10 +185,47 @@ Formulation <- R6::R6Class(
         .parameters = NULL,
         initialize_parameters = function() {
             if (!is.null(private$.data$Parameters)) {
-                private$.parameters <- private$.data$Parameters
+                # Convert each parameter to a Parameter object
+                private$.parameters <- lapply(
+                    private$.data$Parameters,
+                    function(param) {
+                        # Map formulation parameter fields to Parameter structure
+                        param_data <- list(
+                            Path = param$Name, # Use Name as Path for parameters
+                            Value = param$Value
+                        )
+
+                        # Add Unit if present
+                        if (!is.null(param$Unit)) {
+                            param_data$Unit <- param$Unit
+                        }
+
+                        # Add ValueOrigin if present
+                        if (!is.null(param$ValueOrigin)) {
+                            param_data$ValueOrigin <- param$ValueOrigin
+                        }
+
+                        # Create Parameter object
+                        param_obj <- Parameter$new(param_data)
+
+                        # Store TableFormula as a custom attribute if present
+                        if (!is.null(param$TableFormula)) {
+                            param_obj$data$TableFormula <- param$TableFormula
+                        }
+
+                        param_obj
+                    }
+                )
+
+                # Name the parameters by their name
+                names(private$.parameters) <- sapply(
+                    private$.parameters,
+                    function(p) p$name
+                )
+
                 # Add collection class for custom printing
                 class(private$.parameters) <- c(
-                    "formulation_parameter_collection",
+                    "parameter_collection",
                     "list"
                 )
             }
@@ -216,17 +254,11 @@ Formulation <- R6::R6Class(
                 return(private$.data$FormulationType)
             }
             # Validate formulation type
-            valid_types <- c(
-                "Formulation_Dissolved",
-                "Formulation_Tablet_Weibull",
-                "Formulation_Tablet_Lint80",
-                "Formulation_Particles",
-                "Formulation_Table",
-                "Formulation_ZeroOrder",
-                "Formulation_FirstOrder"
-            )
-            if (!(value %in% valid_types)) {
-                cli::cli_abort("Invalid formulation type: {value}")
+            if (!(value %in% VALID_FORMULATION_TYPES)) {
+                cli::cli_abort(
+                    "Invalid formulation type: {value}",
+                    "Formulation type must be one of {VALID_FORMULATION_TYPES}"
+                )
             }
             private$.data$FormulationType <- value
         },
@@ -237,7 +269,7 @@ Formulation <- R6::R6Class(
                 if (is.null(private$.parameters)) {
                     private$.parameters <- list()
                     class(private$.parameters) <- c(
-                        "formulation_parameter_collection",
+                        "parameter_collection",
                         "list"
                     )
                 }
@@ -254,17 +286,45 @@ Formulation <- R6::R6Class(
             if (
                 !inherits(
                     private$.parameters,
-                    "formulation_parameter_collection"
+                    "parameter_collection"
                 )
             ) {
                 class(private$.parameters) <- c(
-                    "formulation_parameter_collection",
+                    "parameter_collection",
                     "list"
                 )
             }
 
             # Update raw data to reflect parameter changes
-            private$.data$Parameters <- private$.parameters
+            # Convert Parameter objects back to the format expected in .data
+            private$.data$Parameters <- lapply(
+                private$.parameters,
+                function(param) {
+                    # Extract the data from Parameter object
+                    raw_param <- list(
+                        Name = param$name,
+                        Value = param$value
+                    )
+
+                    # Add Unit if present
+                    if (!is.null(param$unit)) {
+                        raw_param$Unit <- param$unit
+                    }
+
+                    # Add ValueOrigin if present
+                    if (!is.null(param$value_origin)) {
+                        raw_param$ValueOrigin <- param$value_origin
+                    }
+
+                    # Copy TableFormula if present
+                    if (!is.null(param$data$TableFormula)) {
+                        raw_param$TableFormula <- param$data$TableFormula
+                    }
+
+                    raw_param
+                }
+            )
+
             private$.parameters
         }
     )
@@ -378,33 +438,20 @@ Formulation <- R6::R6Class(
 #'   )
 #' )
 create_formulation <- function(name, type, parameters = NULL) {
-    # Map human-readable types to PK-Sim formulation types
-    type_map <- list(
-        "Dissolved" = "Formulation_Dissolved",
-        "Weibull" = "Formulation_Tablet_Weibull",
-        "Lint80" = "Formulation_Tablet_Lint80",
-        "Particle" = "Formulation_Particles",
-        "Table" = "Formulation_Table",
-        "ZeroOrder" = "Formulation_ZeroOrder",
-        "FirstOrder" = "Formulation_FirstOrder"
-    )
-
     # Convert human-readable type to PK-Sim formulation type if needed
-    pk_sim_type <- type_map[[type]] %||% type
+    # Use the inverse mapping of FORMULATION_TYPE_MAP
+    inverse_map <- stats::setNames(
+        names(FORMULATION_TYPE_MAP),
+        FORMULATION_TYPE_MAP
+    )
+    pk_sim_type <- inverse_map[[type]] %||% type
 
     # Validate formulation type
-    valid_types <- c(
-        "Formulation_Dissolved",
-        "Formulation_Tablet_Weibull",
-        "Formulation_Tablet_Lint80",
-        "Formulation_Particles",
-        "Formulation_Table",
-        "Formulation_ZeroOrder",
-        "Formulation_FirstOrder"
-    )
-
-    if (!(pk_sim_type %in% valid_types)) {
-        cli::cli_abort("Invalid formulation type: {type}")
+    if (!(pk_sim_type %in% VALID_FORMULATION_TYPES)) {
+        cli::cli_abort(
+            "Invalid formulation type: {type}",
+            "Formulation type must be one of {VALID_FORMULATION_TYPES}"
+        )
     }
 
     # Define valid parameters for each formulation type
@@ -447,22 +494,20 @@ create_formulation <- function(name, type, parameters = NULL) {
     )
 
     # Check if there are any invalid parameters for this formulation type
-    if (!is.null(parameters)) {
-        if (!is.list(parameters)) {
-            cli::cli_abort("Parameters must be provided as a named list")
-        }
+    if (!is.null(parameters) && !is.list(parameters)) {
+        cli::cli_abort("Parameters must be provided as a named list")
+    }
 
-        param_names <- names(parameters)
-        if (length(param_names) > 0) {
-            invalid_params <- param_names[
-                !param_names %in% valid_params[[pk_sim_type]]
-            ]
-            if (length(invalid_params) > 0) {
-                cli::cli_abort(c(
-                    "Invalid parameters for {type} formulation: {paste(invalid_params, collapse = ', ')}",
-                    "i" = "Valid parameters are: {paste(valid_params[[pk_sim_type]], collapse = ', ')}"
-                ))
-            }
+    param_names <- names(parameters)
+    if (length(param_names) > 0) {
+        invalid_params <- param_names[
+            !param_names %in% valid_params[[pk_sim_type]]
+        ]
+        if (length(invalid_params) > 0) {
+            cli::cli_abort(c(
+                "Invalid parameters for {type} formulation: {invalid_params}",
+                "i" = "Valid parameters are: {valid_params[[pk_sim_type]]}"
+            ))
         }
     }
 
@@ -486,7 +531,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             dissolution_time <- parameters$dissolution_time
         } else {
             cli::cli_inform(
-                "No dissolution_time provided, using default value of 240 min"
+                "No dissolution_time provided, using default value of {dissolution_time} {dissolution_time_unit}"
             )
         }
 
@@ -494,7 +539,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             dissolution_time_unit <- parameters$dissolution_time_unit
         } else {
             cli::cli_inform(
-                "No dissolution_time_unit provided, using default unit of 'min'"
+                "No dissolution_time_unit provided, using default unit of {dissolution_time_unit}"
             )
         }
 
@@ -502,7 +547,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             lag_time <- parameters$lag_time
         } else {
             cli::cli_inform(
-                "No lag_time provided, using default value of 0 min"
+                "No lag_time provided, using default value of {lag_time}"
             )
         }
 
@@ -510,7 +555,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             lag_time_unit <- parameters$lag_time_unit
         } else {
             cli::cli_inform(
-                "No lag_time_unit provided, using default unit of 'min'"
+                "No lag_time_unit provided, using default unit of {lag_time_unit}"
             )
         }
 
@@ -518,7 +563,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             suspension <- parameters$suspension
         } else {
             cli::cli_inform(
-                "No suspension parameter provided, using default value of TRUE"
+                "No suspension parameter provided, using default value of {suspension}"
             )
         }
 
@@ -550,7 +595,7 @@ create_formulation <- function(name, type, parameters = NULL) {
                 dissolution_shape <- parameters$dissolution_shape
             } else {
                 cli::cli_inform(
-                    "No dissolution_shape provided, using default value of 0.92"
+                    "No dissolution_shape provided, using default value of {dissolution_shape}"
                 )
             }
 
@@ -597,7 +642,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             thickness <- parameters$thickness
         } else {
             cli::cli_inform(
-                "No thickness provided, using default value of 30 µm"
+                "No thickness provided, using default value of {thickness}"
             )
         }
 
@@ -605,7 +650,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             thickness_unit <- parameters$thickness_unit
         } else {
             cli::cli_inform(
-                "No thickness_unit provided, using default unit of 'µm'"
+                "No thickness_unit provided, using default unit of {thickness_unit}"
             )
         }
 
@@ -616,21 +661,23 @@ create_formulation <- function(name, type, parameters = NULL) {
             }
         } else {
             cli::cli_inform(
-                "No distribution_type provided, using default of 'mono'"
+                "No distribution_type provided, using default of {distribution_type}"
             )
         }
 
         if (!is.null(parameters$radius)) {
             radius <- parameters$radius
         } else {
-            cli::cli_inform("No radius provided, using default value of 10 µm")
+            cli::cli_inform(
+                "No radius provided, using default value of {radius}"
+            )
         }
 
         if (!is.null(parameters$radius_unit)) {
             radius_unit <- parameters$radius_unit
         } else {
             cli::cli_inform(
-                "No radius_unit provided, using default unit of 'µm'"
+                "No radius_unit provided, using default unit of {radius_unit}"
             )
         }
 
@@ -673,7 +720,7 @@ create_formulation <- function(name, type, parameters = NULL) {
                 }
             } else {
                 cli::cli_inform(
-                    "No particle_size_distribution provided, using default of 'normal'"
+                    "No particle_size_distribution provided, using default of {particle_size_distribution}"
                 )
             }
 
@@ -696,7 +743,7 @@ create_formulation <- function(name, type, parameters = NULL) {
                     radius_sd <- parameters$radius_sd
                 } else {
                     cli::cli_inform(
-                        "No radius_sd provided, using default value of 3 µm"
+                        "No radius_sd provided, using default value of {radius_sd}"
                     )
                 }
 
@@ -704,7 +751,7 @@ create_formulation <- function(name, type, parameters = NULL) {
                     radius_sd_unit <- parameters$radius_sd_unit
                 } else {
                     cli::cli_inform(
-                        "No radius_sd_unit provided, using default unit of 'µm'"
+                        "No radius_sd_unit provided, using default unit of {radius_sd_unit}"
                     )
                 }
 
@@ -723,7 +770,7 @@ create_formulation <- function(name, type, parameters = NULL) {
                     radius_cv <- parameters$radius_cv
                 } else {
                     cli::cli_inform(
-                        "No radius_cv provided, using default value of 1.5"
+                        "No radius_cv provided, using default value of {radius_cv}"
                     )
                 }
 
@@ -743,7 +790,7 @@ create_formulation <- function(name, type, parameters = NULL) {
                 radius_min <- parameters$radius_min
             } else {
                 cli::cli_inform(
-                    "No radius_min provided, using default value of 1 µm"
+                    "No radius_min provided, using default value of {radius_min}"
                 )
             }
 
@@ -751,7 +798,7 @@ create_formulation <- function(name, type, parameters = NULL) {
                 radius_min_unit <- parameters$radius_min_unit
             } else {
                 cli::cli_inform(
-                    "No radius_min_unit provided, using default unit of 'µm'"
+                    "No radius_min_unit provided, using default unit of {radius_min_unit}"
                 )
             }
 
@@ -759,7 +806,7 @@ create_formulation <- function(name, type, parameters = NULL) {
                 radius_max <- parameters$radius_max
             } else {
                 cli::cli_inform(
-                    "No radius_max provided, using default value of 19 µm"
+                    "No radius_max provided, using default value of {radius_max}"
                 )
             }
 
@@ -767,14 +814,16 @@ create_formulation <- function(name, type, parameters = NULL) {
                 radius_max_unit <- parameters$radius_max_unit
             } else {
                 cli::cli_inform(
-                    "No radius_max_unit provided, using default unit of 'µm'"
+                    "No radius_max_unit provided, using default unit of {radius_max_unit}"
                 )
             }
 
             if (!is.null(parameters$n_bins)) {
                 n_bins <- parameters$n_bins
             } else {
-                cli::cli_inform("No n_bins provided, using default value of 3")
+                cli::cli_inform(
+                    "No n_bins provided, using default value of {n_bins}"
+                )
             }
 
             param_list <- c(
@@ -854,7 +903,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             end_time <- parameters$end_time
         } else {
             cli::cli_inform(
-                "No end_time provided, using default value of 60 min"
+                "No end_time provided, using default value of {end_time}"
             )
         }
 
@@ -862,7 +911,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             end_time_unit <- parameters$end_time_unit
         } else {
             cli::cli_inform(
-                "No end_time_unit provided, using default unit of 'min'"
+                "No end_time_unit provided, using default unit of {end_time_unit}"
             )
         }
 
@@ -882,7 +931,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             thalf <- parameters$thalf
         } else {
             cli::cli_inform(
-                "No thalf provided, using default value of 0.01 min"
+                "No thalf provided, using default value of {thalf}"
             )
         }
 
@@ -890,7 +939,7 @@ create_formulation <- function(name, type, parameters = NULL) {
             thalf_unit <- parameters$thalf_unit
         } else {
             cli::cli_inform(
-                "No thalf_unit provided, using default unit of 'min'"
+                "No thalf_unit provided, using default unit of {thalf_unit}"
             )
         }
 

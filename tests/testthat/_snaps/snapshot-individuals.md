@@ -15,7 +15,7 @@
       snapshot$data$Individuals[[1]]
     Output
       $Name
-      [1] "European (P-gp modified, CYP3A4 36 h)_modified"
+      European (P-gp modified, CYP3A4 36 h)_modified
       
       $Seed
       [1] 17189110

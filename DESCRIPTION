@@ -22,7 +22,8 @@ Imports:
     cli,
     ospsuite (>= 12.2.0),
     tibble,
-    dplyr
+    dplyr,
+    glue
 Suggests: 
     devtools,
     testthat (>= 3.0.0)

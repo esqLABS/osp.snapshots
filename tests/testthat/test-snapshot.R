@@ -157,9 +157,9 @@ test_that("Snapshot handles duplicated individual and compound names correctly",
     # Check that the names are disambiguated
     individual_names <- names(snapshot$individuals)
     expect_true(
-      paste0(first_individual$name, "_1") %in%
+      glue::glue("{first_individual$name}_1") %in%
         individual_names ||
-        paste0(first_individual$name, "_2") %in% individual_names
+        glue::glue("{first_individual$name}_2") %in% individual_names
     )
   }
 })
@@ -208,7 +208,7 @@ test_that("load_snapshot handles URL input", {
       expect_true("Individuals" %in% names(snapshot$data))
     },
     error = function(e) {
-      skip(paste("Could not access test URL:", e$message))
+      skip(glue::glue("Could not access test URL: {e$message}"))
     }
   )
 
@@ -261,7 +261,7 @@ test_that("load_snapshot handles template names", {
       )
     },
     error = function(e) {
-      skip(paste("Could not test template functionality:", e$message))
+      skip(glue::glue("Could not test template functionality: {e$message}"))
     }
   )
 })

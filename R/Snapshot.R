@@ -409,7 +409,7 @@ Snapshot <- R6::R6Class(
 
         # Construct the final name (with suffix if needed)
         if (name_counts[name] > 1) {
-          final_name <- paste0(name, "_", name_indices[[name]])
+          final_name <- glue::glue("{name}_{name_indices[[name]]}")
         } else {
           final_name <- name
         }
@@ -452,7 +452,7 @@ Snapshot <- R6::R6Class(
 
         # Construct the final name (with suffix if needed)
         if (name_counts[name] > 1) {
-          final_name <- paste0(name, "_", name_indices[[name]])
+          final_name <- glue::glue("{name}_{name_indices[[name]]}")
         } else {
           final_name <- name
         }
@@ -495,7 +495,7 @@ Snapshot <- R6::R6Class(
 
         # Construct the final name (with suffix if needed)
         if (name_counts[name] > 1) {
-          final_name <- paste0(name, "_", name_indices[[name]])
+          final_name <- glue::glue("{name}_{name_indices[[name]]}")
         } else {
           final_name <- name
         }

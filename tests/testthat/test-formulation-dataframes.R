@@ -15,29 +15,9 @@ test_that("get_formulations_dfs returns combined data frames from all formulatio
     # Verify structure
     expect_type(dfs, "list")
     expect_named(dfs, c("basic", "parameters"))
-    expect_s3_class(dfs$basic, "tbl_df")
-    expect_s3_class(dfs$parameters, "tbl_df")
 
-    # Check number of rows
-    expect_equal(nrow(dfs$basic), 4)
-
-    # Check that formulation names are included in basic df
-    form_names <- dfs$basic$name
-    expect_true("Test Tablet" %in% form_names)
-    expect_true("Oral Solution" %in% form_names)
-    expect_true("Custom Release" %in% form_names)
-    expect_true("Particle Formulation" %in% form_names)
-
-    # Check formulation_id is used to link tables
-    expect_true(all(
-        dfs$parameters$formulation_id %in% dfs$basic$formulation_id
-    ))
-
-    # Test snapshot for all data frames
-    expect_snapshot({
-        print(dfs$basic, width = Inf)
-        print(dfs$parameters, width = Inf)
-    })
+    # Use expect_snapshot to verify dataframe structure and content
+    expect_snapshot(dfs)
 })
 
 test_that("get_formulations_dfs handles snapshots with no formulations", {
@@ -51,18 +31,9 @@ test_that("get_formulations_dfs handles snapshots with no formulations", {
     # Verify structure
     expect_type(dfs, "list")
     expect_named(dfs, c("basic", "parameters"))
-    expect_s3_class(dfs$basic, "tbl_df")
-    expect_s3_class(dfs$parameters, "tbl_df")
 
-    # Check that data frames are empty
-    expect_equal(nrow(dfs$basic), 0)
-    expect_equal(nrow(dfs$parameters), 0)
-
-    # Snapshot empty data frames
-    expect_snapshot({
-        print(dfs$basic, width = Inf)
-        print(dfs$parameters, width = Inf)
-    })
+    # Use expect_snapshot to verify empty dataframes
+    expect_snapshot(dfs)
 })
 
 
@@ -72,14 +43,13 @@ test_that("to_df returns specific tables when requested", {
     # Test parameters data
     params_df <- complete_formulation$to_df("parameters")
     expect_s3_class(params_df, "tbl_df")
-    expect_snapshot(print(params_df, width = Inf))
+    expect_snapshot(params_df)
 
     # Test "all" returns all tables
     all_dfs <- complete_formulation$to_df("all")
     expect_type(all_dfs, "list")
     expect_named(all_dfs, c("basic", "parameters"))
-    expect_s3_class(all_dfs$basic, "tbl_df")
-    expect_snapshot(print(all_dfs$basic, width = Inf))
+    expect_snapshot(all_dfs)
 })
 
 test_that("to_df handles formulations without parameters", {
@@ -90,9 +60,6 @@ test_that("to_df handles formulations without parameters", {
     expect_type(dfs, "list")
     expect_named(dfs, c("basic", "parameters"))
 
-    # Snapshot all tables
-    expect_snapshot({
-        print(dfs$basic, width = Inf)
-        print(dfs$parameters, width = Inf)
-    })
+    # Use expect_snapshot to verify dataframes
+    expect_snapshot(dfs)
 })

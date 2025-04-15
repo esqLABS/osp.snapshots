@@ -53,16 +53,9 @@ test_that("to_df returns all tables by default", {
     # Check structure
     expect_type(dfs, "list")
     expect_named(dfs, c("origin", "parameters", "expressions"))
-    expect_s3_class(dfs$origin, "tbl_df")
-    expect_s3_class(dfs$parameters, "tbl_df")
-    expect_s3_class(dfs$expressions, "tbl_df")
 
-    # Snapshot all tables
-    expect_snapshot({
-        print(dfs$origin, width = Inf)
-        print(dfs$parameters, width = Inf)
-        print(dfs$expressions, width = Inf)
-    })
+    # Use expect_snapshot to verify dataframe structure and content
+    expect_snapshot(dfs)
 })
 
 test_that("to_df returns specific tables when requested", {
@@ -92,17 +85,17 @@ test_that("to_df returns specific tables when requested", {
     # Test origin data
     origin_df <- ind$to_df("origin")
     expect_s3_class(origin_df, "tbl_df")
-    expect_snapshot(print(origin_df, width = Inf))
+    expect_snapshot(origin_df)
 
     # Test parameters data
     params_df <- ind$to_df("parameters")
     expect_s3_class(params_df, "tbl_df")
-    expect_snapshot(print(params_df, width = Inf))
+    expect_snapshot(params_df)
 
     # Test expression profiles data
     expr_df <- ind$to_df("expressions")
     expect_s3_class(expr_df, "tbl_df")
-    expect_snapshot(print(expr_df, width = Inf))
+    expect_snapshot(expr_df)
 })
 
 test_that("to_df handles missing values", {
@@ -117,11 +110,7 @@ test_that("to_df handles missing values", {
     expect_named(dfs, c("origin", "parameters", "expressions"))
 
     # Snapshot all tables
-    expect_snapshot({
-        print(dfs$origin, width = Inf)
-        print(dfs$parameters, width = Inf)
-        print(dfs$expressions, width = Inf)
-    })
+    expect_snapshot(dfs)
 })
 
 test_that("to_df includes gestational age", {
@@ -148,12 +137,8 @@ test_that("to_df includes gestational age", {
     expect_true("gestational_age" %in% names(origin_df))
     expect_true("gestational_age_unit" %in% names(origin_df))
 
-    # Check values
-    expect_equal(origin_df$gestational_age, 30.0)
-    expect_equal(origin_df$gestational_age_unit, "week(s)")
-
-    # Snapshot the origin dataframe
-    expect_snapshot(print(origin_df, width = Inf))
+    # Use expect_snapshot to verify dataframe content
+    expect_snapshot(origin_df)
 })
 
 test_that("to_df validates type argument", {
@@ -242,21 +227,9 @@ test_that("get_individuals_dfs returns combined data frames from all individuals
     # Verify structure
     expect_type(dfs, "list")
     expect_named(dfs, c("origin", "parameters", "expressions"))
-    expect_s3_class(dfs$origin, "tbl_df")
-    expect_s3_class(dfs$parameters, "tbl_df")
-    expect_s3_class(dfs$expressions, "tbl_df")
 
-    # Check number of rows
-    expect_equal(nrow(dfs$origin), 2)
-    expect_equal(nrow(dfs$parameters), 2)
-    expect_equal(nrow(dfs$expressions), 4)
-
-    # Test snapshot for all data frames
-    expect_snapshot({
-        print(dfs$origin, width = Inf)
-        print(dfs$parameters, width = Inf)
-        print(dfs$expressions, width = Inf)
-    })
+    # Use expect_snapshot to verify dataframe content
+    expect_snapshot(dfs)
 })
 
 test_that("get_individuals_dfs handles empty snapshot", {
@@ -271,112 +244,6 @@ test_that("get_individuals_dfs handles empty snapshot", {
     expect_type(dfs, "list")
     expect_named(dfs, c("origin", "parameters", "expressions"))
 
-    # Check that all data frames are empty but have correct structure
-    expect_equal(nrow(dfs$origin), 0)
-    expect_equal(nrow(dfs$parameters), 0)
-    expect_equal(nrow(dfs$expressions), 0)
-
-    # Snapshot empty data frames
-    expect_snapshot({
-        print(dfs$origin, width = Inf)
-        print(dfs$parameters, width = Inf)
-        print(dfs$expressions, width = Inf)
-    })
-})
-
-test_that("get_origin_df returns only origin data", {
-    # Create a test snapshot with an individual
-    snapshot_data <- list(Version = "80", Individuals = list())
-    snapshot <- Snapshot$new(snapshot_data)
-
-    # Create a more complete individual based on test_snapshot.json
-    ind <- create_individual(
-        name = "Mouly2002",
-        species = "Human",
-        population = "WhiteAmerican_NHANES_1997",
-        gender = "MALE",
-        age = 29.9,
-        age_unit = "year(s)",
-        calculation_methods = c(
-            "SurfaceAreaPlsInt_VAR1",
-            "Body surface area - Mosteller"
-        ),
-        seed = 1300547185
-    )
-
-    snapshot$add_individual(ind)
-
-    # Get origin data
-    origin_df <- get_origin_df(snapshot)
-
-    # Verify result
-    expect_s3_class(origin_df, "tbl_df")
-    expect_equal(nrow(origin_df), 1)
-
-    # Use snapshot to verify content
-    expect_snapshot({
-        print(origin_df, width = Inf)
-    })
-})
-
-test_that("get_parameters_df returns only parameter data", {
-    # Create a test snapshot with an individual that has parameters
-    snapshot_data <- list(Version = "80", Individuals = list())
-    snapshot <- Snapshot$new(snapshot_data)
-
-    # Create individual with test_snapshot.json parameters
-    ind <- create_individual(name = "Mouly2002")
-    ind$parameters <- list(
-        Parameter$new(list(
-            Path = "Organism|Gallbladder|Gallbladder ejection fraction",
-            Value = 0.8,
-            ValueOrigin = list(
-                Source = "Publication",
-                Description = "R24-4081"
-            )
-        ))
-    )
-    snapshot$add_individual(ind)
-
-    # Get parameter data
-    param_df <- get_parameters_df(snapshot)
-
-    # Verify result
-    expect_s3_class(param_df, "tbl_df")
-    expect_equal(nrow(param_df), 1)
-
-    # Use snapshot to verify content
-    expect_snapshot({
-        print(param_df, width = Inf)
-    })
-})
-
-test_that("get_expressions_df returns only expression data", {
-    # Create a test snapshot with an individual that has expression profiles
-    snapshot_data <- list(Version = "80", Individuals = list())
-    snapshot <- Snapshot$new(snapshot_data)
-
-    # Add expression profiles from test_snapshot.json
-    ind_data <- list(
-        Name = "Mouly2002",
-        OriginData = list(),
-        ExpressionProfiles = c(
-            "CYP1A2|Human|Healthy",
-            "CYP2B6|Human|Healthy"
-        )
-    )
-    ind <- Individual$new(ind_data)
-    snapshot$add_individual(ind)
-
-    # Get expression data
-    expr_df <- get_expressions_df(snapshot)
-
-    # Verify result
-    expect_s3_class(expr_df, "tbl_df")
-    expect_equal(nrow(expr_df), 2)
-
-    # Use snapshot to verify content
-    expect_snapshot({
-        print(expr_df, width = Inf)
-    })
+    # Use expect_snapshot to verify empty dataframes
+    expect_snapshot(dfs)
 })

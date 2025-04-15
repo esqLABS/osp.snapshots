@@ -92,47 +92,6 @@ get_individuals_dfs <- function(snapshot) {
     return(result)
 }
 
-#' Get origin data for all individuals in a snapshot
-#'
-#' @description
-#' Extract origin data from all individuals in a snapshot and combine them into a single data frame.
-#'
-#' @param snapshot A snapshot object
-#'
-#' @return A tibble containing origin data for all individuals
-#'
-#' @export
-get_origin_df <- function(snapshot) {
-    get_individuals_dfs(snapshot)$origin
-}
-
-#' Get parameter data for all individuals in a snapshot
-#'
-#' @description
-#' Extract parameter data from all individuals in a snapshot and combine them into a single data frame.
-#'
-#' @param snapshot A snapshot object
-#'
-#' @return A tibble containing parameter data for all individuals
-#'
-#' @export
-get_parameters_df <- function(snapshot) {
-    get_individuals_dfs(snapshot)$parameters
-}
-
-#' Get expression profile data for all individuals in a snapshot
-#'
-#' @description
-#' Extract expression profile data from all individuals in a snapshot and combine them into a single data frame.
-#'
-#' @param snapshot A snapshot object
-#'
-#' @return A tibble containing expression profile data for all individuals
-#'
-#' @export
-get_expressions_df <- function(snapshot) {
-    get_individuals_dfs(snapshot)$expressions
-}
 
 #' Get all formulations in a snapshot as data frames
 #'

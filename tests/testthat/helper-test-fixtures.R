@@ -49,7 +49,7 @@ skip_if_offline <- function(host = "www.r-project.org") {
         {
             # Use withr to ensure connection is properly closed even on error
             withr::with_connection(
-                con <- url(paste0("https://", host)),
+                con <- url(glue::glue("https://{host}")),
                 {
                     open(con)
                     TRUE

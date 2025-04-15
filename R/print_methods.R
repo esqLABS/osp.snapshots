@@ -83,18 +83,17 @@ print.parameter_collection <- function(x, ...) {
   cat(sprintf("%-40s | %-15s | %s\n", "Name", "Value", "Unit"))
   cat(sprintf(
     "%-40s-|-%-15s-|-%s\n",
-    paste(rep("-", 40), collapse = ""),
-    paste(rep("-", 15), collapse = ""),
-    paste(rep("-", 15), collapse = "")
+    glue::glue_collapse(rep("-", 40)),
+    glue::glue_collapse(rep("-", 15)),
+    glue::glue_collapse(rep("-", 15))
   ))
 
   for (param in x) {
     # Truncate long paths for display
     disp_name <- param$name
     if (nchar(disp_name) > 40) {
-      disp_name <- paste0(
-        "...",
-        substr(disp_name, nchar(disp_name) - 36, nchar(disp_name))
+      disp_name <- glue::glue(
+        "...{substr(disp_name, nchar(disp_name) - 36, nchar(disp_name))}"
       )
     }
 
@@ -104,60 +103,8 @@ print.parameter_collection <- function(x, ...) {
     cat(sprintf(
       "%-40s | %-15s | %s\n",
       disp_name,
-      format(param$value, digits = 4),
-      unit_display
-    ))
-  }
-
-  invisible(x)
-}
-
-#' Print method for formulation parameter collections
-#'
-#' @param x A formulation_parameter_collection object
-#' @param ... Additional arguments passed to print methods
-#'
-#' @return Invisibly returns the object
-#'
-#' @export
-print.formulation_parameter_collection <- function(x, ...) {
-  if (length(x) == 0) {
-    cat("Empty Formulation Parameter Collection\n")
-    return(invisible(x))
-  }
-
-  cat(
-    "Formulation Parameter Collection with",
-    length(x),
-    "parameters:\n"
-  )
-
-  # Create a summary table
-  cat(sprintf("%-40s | %-15s | %s\n", "Name", "Value", "Unit"))
-  cat(sprintf(
-    "%-40s-|-%-15s-|-%s\n",
-    paste(rep("-", 40), collapse = ""),
-    paste(rep("-", 15), collapse = ""),
-    paste(rep("-", 15), collapse = "")
-  ))
-
-  for (param in x) {
-    # Truncate long names for display
-    disp_name <- param$Name
-    if (nchar(disp_name) > 40) {
-      disp_name <- paste0(
-        "...",
-        substr(disp_name, nchar(disp_name) - 36, nchar(disp_name))
-      )
-    }
-
-    # Handle NULL units
-    unit_display <- if (is.null(param$Unit)) "" else param$Unit
-
-    cat(sprintf(
-      "%-40s | %-15s | %s\n",
-      disp_name,
-      format(param$Value, digits = 4),
+      if (!is.null(param$table_formula)) "Table" else
+        format(param$value, digits = 4),
       unit_display
     ))
   }

@@ -72,7 +72,7 @@ test_that("Individuals can be modified from the snapshot object and snapshot dat
     individual <- snapshot$individuals[[1]]
 
     # Changes properties
-    individual$name <- paste0(individual$name, "_modified")
+    individual$name <- glue::glue("{individual$name}_modified")
     individual$age <- individual$age + 10
     individual$species <- ospsuite::Species[1]
     # Modify weight and height

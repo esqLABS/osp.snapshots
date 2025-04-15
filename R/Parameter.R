@@ -27,17 +27,64 @@ Parameter <- R6::R6Class(
     #' @return Invisibly returns the object
     print = function(...) {
       output <- cli::cli_format_method({
-        cli::cli_h3("Parameter: {self$name}")
-        cli::cli_li("Value: {self$value}")
-        if (!is.null(self$unit)) {
-          cli::cli_li("Unit: {self$unit}")
-        }
-        if (!is.null(self$value_origin)) {
-          cli::cli_li("Source: {self$value_origin$Source}")
-          if (!is.null(self$value_origin$Description)) {
-            cli::cli_li(
-              "Description: {self$value_origin$Description}"
-            )
+        cli::cli_h3("Parameter: {self$path}")
+
+        # Different display for regular parameters vs table parameters
+        if (is.null(self$table_formula)) {
+          # Regular parameter display
+          cli::cli_li("Value: {self$value}")
+          if (!is.null(self$unit)) {
+            cli::cli_li("Unit: {self$unit}")
+          }
+          if (!is.null(self$value_origin)) {
+            cli::cli_li("Source: {self$value_origin$Source}")
+            if (!is.null(self$value_origin$Description)) {
+              cli::cli_li(
+                "Description: {self$value_origin$Description}"
+              )
+            }
+          }
+        } else {
+          # Create a simple table to display points
+          points <- self$table_formula$Points
+          if (length(points) > 0) {
+            # Create descriptive headers with dimension information
+            x_header <- self$table_formula$XName
+            if (!is.null(self$table_formula$XUnit)) {
+              x_header <- glue::glue(
+                "{x_header} ({self$table_formula$XUnit})"
+              )
+            }
+
+            y_header <- self$table_formula$YName
+            if (!is.null(self$table_formula$YUnit)) {
+              y_header <- glue::glue(
+                "{y_header} ({self$table_formula$YUnit})"
+              )
+            }
+
+            # Format table headers with the descriptive headers
+            cat(sprintf("%-25s | %-25s\n", x_header, y_header))
+            cat(sprintf(
+              "%-25s-|-%-25s\n",
+              glue::glue_collapse(rep("-", 25)),
+              glue::glue_collapse(rep("-", 25))
+            ))
+
+            # Print each row of data
+            for (point in points) {
+              # Format the X value with unit if available
+              x_value <- format(point$X, digits = 4)
+              if (!is.null(self$table_formula$XUnit)) {
+                x_value <- glue::glue("{x_value}")
+              }
+
+              cat(sprintf(
+                "%-25s | %-25s\n",
+                x_value,
+                format(point$Y, digits = 4)
+              ))
+            }
           }
         }
       })
@@ -48,13 +95,12 @@ Parameter <- R6::R6Class(
 
     #' @description
     #' Convert parameter data to a tibble row
-    #' @param individual_id Character. ID of the individual this parameter belongs to
     #' @return A tibble with one row containing the parameter data
-    to_df = function(individual_id) {
-      tibble::tibble(
-        individual_id = individual_id,
-        name = self$name,
-        value = self$value,
+    to_df = function() {
+      # Basic parameter info
+      result <- tibble::tibble(
+        path = self$path,
+        value = if (!is.null(self$table_formula)) "Table" else self$value,
         unit = self$unit %||% NA_character_,
         source = if (!is.null(self$value_origin)) self$value_origin$Source else
           NA_character_,
@@ -63,10 +109,47 @@ Parameter <- R6::R6Class(
         source_id = if (!is.null(self$value_origin)) self$value_origin$Id else
           NA_integer_
       )
+
+      # For table parameters, also create separate dataframe of points
+      if (
+        !is.null(self$table_formula) && length(self$table_formula$Points) > 0
+      ) {
+        # Extract table points
+        points_df <- do.call(
+          rbind,
+          lapply(self$table_formula$Points, function(p) {
+            data.frame(
+              parameter_path = self$path,
+              x = p$X,
+              y = p$Y,
+              x_name = self$table_formula$XName,
+              y_name = self$table_formula$YName,
+              x_unit = self$table_formula$XUnit %||% NA_character_,
+              stringsAsFactors = FALSE
+            )
+          })
+        )
+
+        # Return list with both dataframes
+        return(list(
+          parameter = result,
+          points = points_df
+        ))
+      }
+
+      return(result)
     }
   ),
   active = list(
-    #' @field name The name of the parameter
+    #' @field path The path of the parameter
+    path = function(value) {
+      if (missing(value)) {
+        return(self$data$Path)
+      }
+      self$data$Path <- value
+    },
+
+    #' @field name The name of the parameter (same as path)
     name = function(value) {
       if (missing(value)) {
         return(self$data$Path)
@@ -112,6 +195,18 @@ Parameter <- R6::R6Class(
       } else {
         self$data$ValueOrigin <- NULL
       }
+    },
+
+    #' @field table_formula The table formula data for table parameters
+    table_formula = function(value) {
+      if (missing(value)) {
+        return(self$data$TableFormula)
+      }
+      if (!is.null(value)) {
+        self$data$TableFormula <- value
+      } else {
+        self$data$TableFormula <- NULL
+      }
     }
   )
 )
@@ -128,6 +223,13 @@ Parameter <- R6::R6Class(
 #' @param source Character. Source of the value (optional)
 #' @param description Character. Description of the value origin (optional)
 #' @param source_id Integer. ID of the source (optional)
+#' @param table_formula List. Table formula data for table parameters (optional)
+#' @param table_points List. Points for table parameters, a list of x,y pairs (optional)
+#' @param x_name Character. Name of X axis for table parameters (optional)
+#' @param y_name Character. Name of Y axis for table parameters (optional)
+#' @param x_unit Character. Unit for X axis for table parameters (optional)
+#' @param x_dimension Character. Dimension for X axis for table parameters (optional)
+#' @param y_dimension Character. Dimension for Y axis for table parameters (optional)
 #'
 #' @return A Parameter object
 #' @export
@@ -154,13 +256,37 @@ Parameter <- R6::R6Class(
 #'   source = "Publication",
 #'   description = "Reference XYZ"
 #' )
+#'
+#' # Create a table parameter
+#' param <- create_parameter(
+#'   name = "Fraction (dose)",
+#'   value = 0.0,
+#'   table_points = list(
+#'     list(x = 0.0, y = 0.0),
+#'     list(x = 1.0, y = 0.5),
+#'     list(x = 2.0, y = 0.8),
+#'     list(x = 4.0, y = 1.0)
+#'   ),
+#'   x_name = "Time",
+#'   y_name = "Fraction (dose)",
+#'   x_unit = "h",
+#'   x_dimension = "Time",
+#'   y_dimension = "Dimensionless"
+#' )
 create_parameter <- function(
   name,
   value,
   unit = NULL,
   source = NULL,
   description = NULL,
-  source_id = NULL
+  source_id = NULL,
+  table_formula = NULL,
+  table_points = NULL,
+  x_name = NULL,
+  y_name = NULL,
+  x_unit = NULL,
+  x_dimension = NULL,
+  y_dimension = NULL
 ) {
   # Create the data structure
   data <- list(
@@ -180,6 +306,39 @@ create_parameter <- function(
     if (!is.null(description)) value_origin$Description <- description
     if (!is.null(source_id)) value_origin$Id <- source_id
     data$ValueOrigin <- value_origin
+  }
+
+  # Add table formula if table points are provided
+  if (!is.null(table_points) || !is.null(table_formula)) {
+    if (!is.null(table_formula)) {
+      # Use provided table formula directly
+      data$TableFormula <- table_formula
+    } else if (!is.null(table_points)) {
+      # Convert table_points to required format
+      points <- lapply(table_points, function(point) {
+        list(
+          X = point$x,
+          Y = point$y,
+          RestartSolver = FALSE
+        )
+      })
+
+      # Create table formula structure
+      data$TableFormula <- list(
+        Name = name,
+        XName = x_name %||% "X",
+        YName = y_name %||% "Y",
+        XDimension = x_dimension %||% "Dimensionless",
+        YDimension = y_dimension %||% "Dimensionless",
+        UseDerivedValues = TRUE,
+        Points = points
+      )
+
+      # Add X unit if provided
+      if (!is.null(x_unit)) {
+        data$TableFormula$XUnit <- x_unit
+      }
+    }
   }
 
   # Create and return the Parameter object
