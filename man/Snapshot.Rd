@@ -20,6 +20,36 @@ ind <- create_individual(name = "New Patient", age = 35, weight = 70)
 # Add the individual to a snapshot
 snapshot$add_individual(ind)
 }
+
+## ------------------------------------------------
+## Method `Snapshot$remove_individual`
+## ------------------------------------------------
+
+\dontrun{
+# Remove an individual from the snapshot
+snapshot$remove_individual("Subject_001")
+}
+
+## ------------------------------------------------
+## Method `Snapshot$add_formulation`
+## ------------------------------------------------
+
+\dontrun{
+# Create a new formulation
+form <- create_formulation(name = "Tablet", type = "Weibull")
+
+# Add the formulation to a snapshot
+snapshot$add_formulation(form)
+}
+
+## ------------------------------------------------
+## Method `Snapshot$remove_formulation`
+## ------------------------------------------------
+
+\dontrun{
+# Remove a formulation from the snapshot
+snapshot$remove_formulation("Tablet")
+}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -38,6 +68,8 @@ snapshot$add_individual(ind)
 \item{\code{compounds}}{List of Compound objects in the snapshot}
 
 \item{\code{individuals}}{List of Individual objects in the snapshot}
+
+\item{\code{formulations}}{List of Formulation objects in the snapshot}
 }
 \if{html}{\out{</div>}}
 }
@@ -48,6 +80,9 @@ snapshot$add_individual(ind)
 \item \href{#method-Snapshot-print}{\code{Snapshot$print()}}
 \item \href{#method-Snapshot-export}{\code{Snapshot$export()}}
 \item \href{#method-Snapshot-add_individual}{\code{Snapshot$add_individual()}}
+\item \href{#method-Snapshot-remove_individual}{\code{Snapshot$remove_individual()}}
+\item \href{#method-Snapshot-add_formulation}{\code{Snapshot$add_formulation()}}
+\item \href{#method-Snapshot-remove_formulation}{\code{Snapshot$remove_formulation()}}
 \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
 }
 }
@@ -138,6 +173,102 @@ ind <- create_individual(name = "New Patient", age = 35, weight = 70)
 
 # Add the individual to a snapshot
 snapshot$add_individual(ind)
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_individual"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_individual}{}}}
+\subsection{Method \code{remove_individual()}}{
+Remove an individual from the snapshot by name
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_individual(individual_name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{individual_name}}{Character vector of individual name(s) to remove}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns the object
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+# Remove an individual from the snapshot
+snapshot$remove_individual("Subject_001")
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_formulation"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_formulation}{}}}
+\subsection{Method \code{add_formulation()}}{
+Add a Formulation object to the snapshot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$add_formulation(formulation)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{formulation}}{A Formulation object created with create_formulation()}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns the object
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+# Create a new formulation
+form <- create_formulation(name = "Tablet", type = "Weibull")
+
+# Add the formulation to a snapshot
+snapshot$add_formulation(form)
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_formulation"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_formulation}{}}}
+\subsection{Method \code{remove_formulation()}}{
+Remove a formulation from the snapshot by name
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_formulation(formulation_name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{formulation_name}}{Character vector of formulation name(s) to remove}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns the object
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+# Remove a formulation from the snapshot
+snapshot$remove_formulation("Tablet")
 }
 }
 \if{html}{\out{</div>}}

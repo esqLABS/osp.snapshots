@@ -30,9 +30,7 @@
 #' }
 get_individuals_dfs <- function(snapshot) {
     # Check if input is a snapshot
-    if (!inherits(snapshot, "Snapshot")) {
-        cli::cli_abort("Input must be a Snapshot object")
-    }
+    validate_snapshot(snapshot)
 
     # Get all individuals from the snapshot
     individuals <- snapshot$individuals
@@ -166,9 +164,7 @@ get_expressions_df <- function(snapshot) {
 #' }
 get_formulations_dfs <- function(snapshot) {
     # Check if input is a snapshot
-    if (!inherits(snapshot, "Snapshot")) {
-        cli::cli_abort("Input must be a Snapshot object")
-    }
+    validate_snapshot(snapshot)
 
     # Get all formulations from the snapshot
     formulations <- snapshot$formulations
@@ -210,32 +206,4 @@ get_formulations_dfs <- function(snapshot) {
     }
 
     return(result)
-}
-
-#' Get basic data for all formulations in a snapshot
-#'
-#' @description
-#' Extract basic data from all formulations in a snapshot and combine them into a single data frame.
-#'
-#' @param snapshot A snapshot object
-#'
-#' @return A tibble containing basic data for all formulations
-#'
-#' @export
-get_formulations_basic_df <- function(snapshot) {
-    get_formulations_dfs(snapshot)$basic
-}
-
-#' Get parameter data for all formulations in a snapshot
-#'
-#' @description
-#' Extract parameter data from all formulations in a snapshot and combine them into a single data frame.
-#'
-#' @param snapshot A snapshot object
-#'
-#' @return A tibble containing parameter data for all formulations
-#'
-#' @export
-get_formulations_parameters_df <- function(snapshot) {
-    get_formulations_dfs(snapshot)$parameters
 }

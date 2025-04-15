@@ -56,6 +56,19 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Initialize formulations list during snapshot initialization
+      if (is.null(private$.original_data$Formulations)) {
+        private$.formulations <- list()
+      } else {
+        # Create formulation objects and store in an unnamed list
+        private$.formulations <- lapply(
+          private$.original_data$Formulations,
+          function(formulation_data) {
+            Formulation$new(formulation_data)
+          }
+        )
+      }
+
       cli::cli_alert_success("Snapshot loaded successfully")
     },
     #' @description
@@ -135,6 +148,127 @@ Snapshot <- R6::R6Class(
         "Added individual '{individual$name}' to the snapshot"
       )
       invisible(self)
+    },
+
+    #' @description
+    #' Remove an individual from the snapshot by name
+    #' @param individual_name Character vector of individual name(s) to remove
+    #' @return Invisibly returns the object
+    #' @examples
+    #' \dontrun{
+    #' # Remove an individual from the snapshot
+    #' snapshot$remove_individual("Subject_001")
+    #' }
+    remove_individual = function(individual_name) {
+      if (length(private$.individuals) == 0) {
+        cli::cli_warn("No individuals to remove")
+        return(invisible(self))
+      }
+
+      # Get current individual names
+      current_names <- sapply(private$.individuals, function(i) i$name)
+
+      # Check if requested individuals exist
+      for (name in individual_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Individual '{name}' not found in snapshot")
+        }
+      }
+
+      # Remove the requested individuals
+      keep_indices <- which(!(current_names %in% individual_name))
+
+      if (length(keep_indices) == 0) {
+        private$.individuals <- list()
+      } else {
+        private$.individuals <- private$.individuals[keep_indices]
+      }
+
+      # Reset the named list
+      private$.individuals_named <- NULL
+      private$.build_individuals_named_list()
+
+      cli::cli_alert_success(
+        "Removed {length(individual_name)} individual(s)"
+      )
+      invisible(self)
+    },
+
+    #' @description
+    #' Add a Formulation object to the snapshot
+    #' @param formulation A Formulation object created with create_formulation()
+    #' @return Invisibly returns the object
+    #' @examples
+    #' \dontrun{
+    #' # Create a new formulation
+    #' form <- create_formulation(name = "Tablet", type = "Weibull")
+    #'
+    #' # Add the formulation to a snapshot
+    #' snapshot$add_formulation(form)
+    #' }
+    add_formulation = function(formulation) {
+      # Validate that the input is a Formulation object
+      if (!inherits(formulation, "Formulation")) {
+        cli::cli_abort(
+          "Expected a Formulation object, but got {.cls {class(formulation)[1]}}"
+        )
+      }
+
+      # Add the formulation to the list
+      private$.formulations <- c(private$.formulations, list(formulation))
+
+      # Reset the named list to include the new formulation
+      private$.formulations_named <- NULL
+      private$.build_formulations_named_list()
+
+      cli::cli_alert_success(
+        "Added formulation '{formulation$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    #' @description
+    #' Remove a formulation from the snapshot by name
+    #' @param formulation_name Character vector of formulation name(s) to remove
+    #' @return Invisibly returns the object
+    #' @examples
+    #' \dontrun{
+    #' # Remove a formulation from the snapshot
+    #' snapshot$remove_formulation("Tablet")
+    #' }
+    remove_formulation = function(formulation_name) {
+      if (length(private$.formulations) == 0) {
+        cli::cli_warn("No formulations to remove")
+        return(invisible(self))
+      }
+
+      # Get current formulation names
+      current_names <- sapply(private$.formulations, function(f) f$name)
+
+      # Check if requested formulations exist
+      for (name in formulation_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Formulation '{name}' not found in snapshot")
+        }
+      }
+
+      # Remove the requested formulations
+      keep_indices <- which(!(current_names %in% formulation_name))
+
+      if (length(keep_indices) == 0) {
+        private$.formulations <- list()
+      } else {
+        private$.formulations <- private$.formulations[keep_indices]
+      }
+
+      # Reset the named list
+      private$.formulations_named <- NULL
+      private$.build_formulations_named_list()
+
+      cli::cli_alert_success(
+        "Removed {length(formulation_name)} formulation(s)"
+      )
+      invisible(self)
     }
   ),
   active = list(
@@ -155,6 +289,16 @@ Snapshot <- R6::R6Class(
         # Extract raw data from each individual object
         individual_data <- lapply(private$.individuals, function(ind) ind$data)
         result$Individuals <- individual_data
+      }
+
+      # Update with current formulation data
+      if (length(private$.formulations) > 0) {
+        # Extract raw data from each formulation object
+        formulation_data <- lapply(
+          private$.formulations,
+          function(form) form$data
+        )
+        result$Formulations <- formulation_data
       }
 
       # Additional components could be added here in the future
@@ -199,6 +343,20 @@ Snapshot <- R6::R6Class(
         private$.build_individuals_named_list()
         return(private$.individuals_named)
       }
+    },
+
+    #' @field formulations List of Formulation objects in the snapshot
+    formulations = function(value = NULL) {
+      # Build the named list
+      private$.build_formulations_named_list()
+
+      if (is.null(value)) {
+        return(private$.formulations_named)
+      } else {
+        private$.formulations <- value
+        private$.build_formulations_named_list()
+        return(private$.formulations_named)
+      }
     }
   ),
   private = list(
@@ -209,7 +367,8 @@ Snapshot <- R6::R6Class(
     .get_pksim_version = function() {
       version_num <- as.integer(private$.original_data$Version)
 
-      pksim_version <- switch(as.character(version_num),
+      pksim_version <- switch(
+        as.character(version_num),
         "80" = "12.0",
         "79" = "11.2",
         "78" = "10.0",
@@ -305,6 +464,49 @@ Snapshot <- R6::R6Class(
       private$.individuals_named <- individuals_named
     },
 
+    # Build the named list of formulations with disambiguated names
+    .build_formulations_named_list = function() {
+      # Create a named list with formulation names, handling duplicates
+      formulations_named <- list()
+
+      # Handle empty formulations list
+      if (length(private$.formulations) == 0) {
+        class(formulations_named) <- c("formulation_collection", "list")
+        private$.formulations_named <- formulations_named
+        return()
+      }
+
+      formulation_names <- sapply(private$.formulations, function(x) x$name)
+
+      # Track name occurrences to handle duplicates
+      name_counts <- table(formulation_names)
+      name_indices <- list()
+
+      for (i in seq_along(private$.formulations)) {
+        name <- formulation_names[i]
+
+        # Initialize counter for this name if not already done
+        if (is.null(name_indices[[name]])) {
+          name_indices[[name]] <- 0
+        }
+
+        # Increment counter
+        name_indices[[name]] <- name_indices[[name]] + 1
+
+        # Construct the final name (with suffix if needed)
+        if (name_counts[name] > 1) {
+          final_name <- paste0(name, "_", name_indices[[name]])
+        } else {
+          final_name <- name
+        }
+
+        formulations_named[[final_name]] <- private$.formulations[[i]]
+      }
+
+      class(formulations_named) <- c("formulation_collection", "list")
+      private$.formulations_named <- formulations_named
+    },
+
     # Store compound objects in an unnamed list
     .compounds = NULL,
 
@@ -315,7 +517,13 @@ Snapshot <- R6::R6Class(
     .individuals = NULL,
 
     # Cache for the named individuals list with disambiguated names
-    .individuals_named = NULL
+    .individuals_named = NULL,
+
+    # Store formulation objects in an unnamed list
+    .formulations = NULL,
+
+    # Cache for the named formulations list with disambiguated names
+    .formulations_named = NULL
   )
 )
 
@@ -422,18 +630,117 @@ load_snapshot <- function(source) {
 #' ind <- create_individual(name = "New Patient", age = 35, weight = 70)
 #'
 #' # Add the individual to the snapshot
-#' snapshot <- add_individual_to_snapshot(snapshot, ind)
+#' snapshot <- add_individual(snapshot, ind)
 #' }
-add_individual_to_snapshot <- function(snapshot, individual) {
+add_individual <- function(snapshot, individual) {
   # Validate that the snapshot is a Snapshot object
-  if (!inherits(snapshot, "Snapshot")) {
-    cli::cli_abort(
-      "Expected a Snapshot object, but got {.cls {class(snapshot)[1]}}"
-    )
-  }
+  validate_snapshot(snapshot)
 
   # Call the add_individual method of the Snapshot class
   snapshot$add_individual(individual)
+
+  # Return the updated snapshot
+  invisible(snapshot)
+}
+
+#' Remove individuals from a snapshot
+#'
+#' @description
+#' Remove one or more individuals from a Snapshot by name.
+#'
+#' @param snapshot A Snapshot object
+#' @param individual_name Character vector of individual names to remove
+#' @return The updated Snapshot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' # Remove a single individual
+#' snapshot <- remove_individual(snapshot, "Subject_001")
+#'
+#' # Remove multiple individuals
+#' snapshot <- remove_individual(
+#'   snapshot,
+#'   c("Subject_001", "Subject_002")
+#' )
+#' }
+remove_individual <- function(snapshot, individual_name) {
+  # Validate that the snapshot is a Snapshot object
+  validate_snapshot(snapshot)
+
+  # Call the remove_individual method of the Snapshot class
+  snapshot$remove_individual(individual_name)
+
+  # Return the updated snapshot
+  invisible(snapshot)
+}
+
+#' Add a formulation to a snapshot
+#'
+#' @description
+#' Add a Formulation object to a Snapshot. This is a convenience function
+#' that calls the add_formulation method of the Snapshot class.
+#'
+#' @param snapshot A Snapshot object
+#' @param formulation A Formulation object created with create_formulation()
+#' @return The updated Snapshot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' # Create a new formulation
+#' form <- create_formulation(name = "Tablet", type = "Weibull")
+#'
+#' # Add the formulation to the snapshot
+#' snapshot <- add_formulation(snapshot, form)
+#' }
+add_formulation <- function(snapshot, formulation) {
+  # Validate that the snapshot is a Snapshot object
+  validate_snapshot(snapshot)
+
+  # Call the add_formulation method of the Snapshot class
+  snapshot$add_formulation(formulation)
+
+  # Return the updated snapshot
+  invisible(snapshot)
+}
+
+#' Remove formulations from a snapshot
+#'
+#' @description
+#' Remove one or more formulations from a Snapshot by name.
+#'
+#' @param snapshot A Snapshot object
+#' @param formulation_name Character vector of formulation names to remove
+#' @return The updated Snapshot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' # Remove a single formulation
+#' snapshot <- remove_formulation(snapshot, "Tablet")
+#'
+#' # Remove multiple formulations
+#' snapshot <- remove_formulation(
+#'   snapshot,
+#'   c("Tablet", "Oral solution")
+#' )
+#' }
+remove_formulation <- function(snapshot, formulation_name) {
+  # Validate that the snapshot is a Snapshot object
+  validate_snapshot(snapshot)
+
+  # Call the remove_formulation method of the Snapshot class
+  snapshot$remove_formulation(formulation_name)
 
   # Return the updated snapshot
   invisible(snapshot)

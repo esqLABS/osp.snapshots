@@ -1,13 +1,5 @@
 # Test for compound_collection print method
 test_that("print.compound_collection works with compounds", {
-  # Skip if there are no compounds in the test snapshot
-  if (
-    is.null(test_snapshot$data$Compounds) ||
-      length(test_snapshot$data$Compounds) == 0
-  ) {
-    skip("Test snapshot does not contain compounds")
-  }
-
   # Test the print method
   expect_snapshot(print(test_snapshot$compounds))
 })
@@ -23,14 +15,6 @@ test_that("print.compound_collection works with empty collection", {
 
 # Test for individual_collection print method
 test_that("print.individual_collection works with individuals", {
-  # Skip if there are no individuals in the test snapshot
-  if (
-    is.null(test_snapshot$data$Individuals) ||
-      length(test_snapshot$data$Individuals) == 0
-  ) {
-    skip("Test snapshot does not contain individuals")
-  }
-
   # Test the print method
   expect_snapshot(print(test_snapshot$individuals))
 })
@@ -42,6 +26,21 @@ test_that("print.individual_collection works with empty collection", {
 
   # Test the print method with empty collection
   expect_snapshot(print(individuals_named))
+})
+
+# Test for formulation_collection print method
+test_that("print.formulation_collection works with formulations", {
+  # Test the print method
+  expect_snapshot(print(test_snapshot$formulations))
+})
+
+test_that("print.formulation_collection works with empty collection", {
+  # Create an empty formulation collection
+  formulations_named <- list()
+  class(formulations_named) <- c("formulation_collection", "list")
+
+  # Test the print method with empty collection
+  expect_snapshot(print(formulations_named))
 })
 
 # Test for parameter_collection print method
