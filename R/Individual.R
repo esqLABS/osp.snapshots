@@ -148,7 +148,7 @@ Individual <- R6::R6Class(
       valid_types <- c("all", "origin", "parameters", "expressions")
       if (!type %in% valid_types) {
         cli::cli_abort(
-          "type must be one of: {glue::glue_collapse(valid_types, sep = ', ')}"
+          "type must be one of: {valid_types}"
         )
       }
 
