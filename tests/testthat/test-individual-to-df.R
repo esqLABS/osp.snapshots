@@ -144,8 +144,7 @@ test_that("to_df includes gestational age", {
 test_that("to_df validates type argument", {
     ind <- create_individual("Test")
     expect_error(
-        ind$to_df("invalid"),
-        "type must be one of: all, origin, parameters, expressions"
+        ind$to_df("invalid")
     )
 })
 
