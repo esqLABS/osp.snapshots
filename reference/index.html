@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,6 +16,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
       </ul></div>
@@ -48,6 +49,12 @@
         <dd>Compound class for OSP snapshot compounds</dd>
       </dl><dl><dt>
 
+          <code><a href="Formulation.html">Formulation</a></code>
+
+        </dt>
+        <dd>Formulation class for OSP snapshot formulations</dd>
+      </dl><dl><dt>
+
           <code><a href="Individual.html">Individual</a></code>
 
         </dt>
@@ -66,10 +73,22 @@
         <dd>Snapshot class for OSP snapshots</dd>
       </dl><dl><dt>
 
-          <code><a href="add_individual_to_snapshot.html">add_individual_to_snapshot()</a></code>
+          <code><a href="add_formulation.html">add_formulation()</a></code>
+
+        </dt>
+        <dd>Add a formulation to a snapshot</dd>
+      </dl><dl><dt>
+
+          <code><a href="add_individual.html">add_individual()</a></code>
 
         </dt>
         <dd>Add an individual to a snapshot</dd>
+      </dl><dl><dt>
+
+          <code><a href="create_formulation.html">create_formulation()</a></code>
+
+        </dt>
+        <dd>Create a new formulation</dd>
       </dl><dl><dt>
 
           <code><a href="create_individual.html">create_individual()</a></code>
@@ -84,10 +103,10 @@
         <dd>Create a new parameter</dd>
       </dl><dl><dt>
 
-          <code><a href="get_expressions_df.html">get_expressions_df()</a></code>
+          <code><a href="get_formulations_dfs.html">get_formulations_dfs()</a></code>
 
         </dt>
-        <dd>Get expression profile data for all individuals in a snapshot</dd>
+        <dd>Get all formulations in a snapshot as data frames</dd>
       </dl><dl><dt>
 
           <code><a href="get_individuals_dfs.html">get_individuals_dfs()</a></code>
@@ -96,16 +115,10 @@
         <dd>Get all individuals in a snapshot as data frames</dd>
       </dl><dl><dt>
 
-          <code><a href="get_origin_df.html">get_origin_df()</a></code>
+          <code><a href="load_formulations.html">load_formulations()</a></code>
 
         </dt>
-        <dd>Get origin data for all individuals in a snapshot</dd>
-      </dl><dl><dt>
-
-          <code><a href="get_parameters_df.html">get_parameters_df()</a></code>
-
-        </dt>
-        <dd>Get parameter data for all individuals in a snapshot</dd>
+        <dd>Load formulations from a list</dd>
       </dl><dl><dt>
 
           <code><a href="load_snapshot.html">load_snapshot()</a></code>
@@ -120,6 +133,12 @@
         <dd>S3 print method for compound collections</dd>
       </dl><dl><dt>
 
+          <code><a href="print.formulation_collection.html">print(<i>&lt;formulation_collection&gt;</i>)</a></code>
+
+        </dt>
+        <dd>S3 print method for formulation collections</dd>
+      </dl><dl><dt>
+
           <code><a href="print.individual_collection.html">print(<i>&lt;individual_collection&gt;</i>)</a></code>
 
         </dt>
@@ -132,6 +151,18 @@
         <dd>Print method for parameter collections</dd>
       </dl><dl><dt>
 
+          <code><a href="remove_formulation.html">remove_formulation()</a></code>
+
+        </dt>
+        <dd>Remove formulations from a snapshot</dd>
+      </dl><dl><dt>
+
+          <code><a href="remove_individual.html">remove_individual()</a></code>
+
+        </dt>
+        <dd>Remove individuals from a snapshot</dd>
+      </dl><dl><dt>
+
           <code><a href="validate_gender.html">validate_gender()</a></code>
 
         </dt>
@@ -142,6 +173,12 @@
 
         </dt>
         <dd>Validate that a population is valid</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_snapshot.html">validate_snapshot()</a></code>
+
+        </dt>
+        <dd>Validate that an object is a Snapshot</dd>
       </dl><dl><dt>
 
           <code><a href="validate_species.html">validate_species()</a></code>

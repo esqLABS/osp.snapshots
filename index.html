@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -83,13 +84,18 @@
 <span><span class="va">snapshot</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── PKSIM Snapshot ──────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; ℹ Version: 80 (PKSIM 12.0)</span></span>
-<span><span class="co">#&gt; • Compounds: 2</span></span>
-<span><span class="co">#&gt; • ExpressionProfiles: 2</span></span>
-<span><span class="co">#&gt; • Formulations: 2</span></span>
-<span><span class="co">#&gt; • Individuals: 2</span></span>
-<span><span class="co">#&gt; • Protocols: 2</span></span>
-<span><span class="co">#&gt; • SimulationClassifications: 2</span></span>
+<span><span class="co">#&gt; ℹ Version: 79 (PKSIM 11.2)</span></span>
+<span><span class="co">#&gt; • Compounds: 6</span></span>
+<span><span class="co">#&gt; • Events: 10</span></span>
+<span><span class="co">#&gt; • ExpressionProfiles: 14</span></span>
+<span><span class="co">#&gt; • Formulations: 9</span></span>
+<span><span class="co">#&gt; • Individuals: 5</span></span>
+<span><span class="co">#&gt; • ObservedData: 64</span></span>
+<span><span class="co">#&gt; • ObservedDataClassifications: 20</span></span>
+<span><span class="co">#&gt; • ObserverSets: 1</span></span>
+<span><span class="co">#&gt; • ParameterIdentifications: 1</span></span>
+<span><span class="co">#&gt; • Populations: 6</span></span>
+<span><span class="co">#&gt; • Protocols: 9</span></span>
 <span><span class="co">#&gt; • Simulations: 2</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -99,21 +105,24 @@
 <code class="sourceCode R"><span><span class="co"># List all individuals in the snapshot</span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Individuals (2) ─────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; • Mouly2002</span></span>
-<span><span class="co">#&gt; • European</span></span>
+<span><span class="co">#&gt; ── Individuals (5) ─────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • European (P-gp modified, CYP3A4 36 h)</span></span>
+<span><span class="co">#&gt; • Korean (Yu 2004 study)</span></span>
+<span><span class="co">#&gt; • CKD</span></span>
+<span><span class="co">#&gt; • ind_modified</span></span>
+<span><span class="co">#&gt; • baby</span></span>
 <span></span>
 <span><span class="co"># Get a detailed view of a building block</span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Individual: Mouly2002 | Seed: 1300547185 ────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── Individual: European (P-gp modified, CYP3A4 36 h) | Seed: 17189110 ──────────</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Origin Data ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; • Species: Human</span></span>
-<span><span class="co">#&gt; • Population: WhiteAmerican_NHANES_1997</span></span>
+<span><span class="co">#&gt; • Population: European_ICRP_2002</span></span>
 <span><span class="co">#&gt; • Gender: MALE</span></span>
-<span><span class="co">#&gt; • Age: 29.9 year(s)</span></span>
+<span><span class="co">#&gt; • Age: 30 year(s)</span></span>
 <span><span class="co">#&gt; • Calculation Methods:</span></span>
 <span><span class="co">#&gt;   • SurfaceAreaPlsInt_VAR1</span></span>
 <span><span class="co">#&gt;   • Body surface area - Mosteller</span></span>
@@ -125,17 +134,22 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Expression Profiles ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • CYP1A2|Human|Healthy</span></span>
-<span><span class="co">#&gt; • CYP2B6|Human|Healthy</span></span>
+<span><span class="co">#&gt; • CYP3A4|Human|Healthy</span></span>
+<span><span class="co">#&gt; • AADAC|Human|Healthy</span></span>
+<span><span class="co">#&gt; • P-gp|Human|Healthy</span></span>
+<span><span class="co">#&gt; • OATP1B1|Human|Healthy</span></span>
+<span><span class="co">#&gt; • ATP1A2|Human|Healthy</span></span>
+<span><span class="co">#&gt; • UGT1A4|Human|Healthy</span></span>
+<span><span class="co">#&gt; • GABRG2|Human|Healthy</span></span>
 <span></span>
 <span><span class="co"># All fields are accessible as list elements</span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">age</span></span>
-<span><span class="co">#&gt; [1] 29.9</span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">gender</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">age</span></span>
+<span><span class="co">#&gt; [1] 30</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">gender</span></span>
 <span><span class="co">#&gt; [1] "MALE"</span></span>
 <span></span>
 <span><span class="co"># Parameters are also accessible as list element but they have their own nested structure and behavior</span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">parameters</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">parameters</span></span>
 <span><span class="co">#&gt; Parameter Collection with 2 parameters:</span></span>
 <span><span class="co">#&gt; Path                                     | Value           | Unit</span></span>
 <span><span class="co">#&gt; -----------------------------------------|-----------------|----------------</span></span>
@@ -143,7 +157,7 @@
 <span><span class="co">#&gt; Organism|Liver|EHC continuous fraction   | 1               |</span></span>
 <span></span>
 <span><span class="co"># They can be accessed by path</span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">`Organism|Gallbladder|Gallbladder ejection fraction`</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">`Organism|Gallbladder|Gallbladder ejection fraction`</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Parameter: Organism|Gallbladder|Gallbladder ejection fraction </span></span>
 <span><span class="co">#&gt; • Value: 0.8</span></span>
@@ -155,18 +169,18 @@
 </h3>
 <p>All these elements are mutable and can be modified in place.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="fl">35</span></span>
+<code class="sourceCode R"><span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="fl">35</span></span>
 <span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">`Organism|Gallbladder|Gallbladder ejection fraction`</span><span class="op">$</span><span class="va">value</span> <span class="op">&lt;-</span> <span class="fl">0.6</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">`Organism|Gallbladder|Gallbladder ejection fraction`</span><span class="op">$</span><span class="va">value</span> <span class="op">&lt;-</span> <span class="fl">0.6</span></span>
 <span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">Mouly2002</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Individual: Mouly2002 | Seed: 1300547185 ────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── Individual: European (P-gp modified, CYP3A4 36 h) | Seed: 17189110 ──────────</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Origin Data ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; • Species: Human</span></span>
-<span><span class="co">#&gt; • Population: WhiteAmerican_NHANES_1997</span></span>
+<span><span class="co">#&gt; • Population: European_ICRP_2002</span></span>
 <span><span class="co">#&gt; • Gender: MALE</span></span>
 <span><span class="co">#&gt; • Age: 35 year(s)</span></span>
 <span><span class="co">#&gt; • Calculation Methods:</span></span>
@@ -180,8 +194,13 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Expression Profiles ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • CYP1A2|Human|Healthy</span></span>
-<span><span class="co">#&gt; • CYP2B6|Human|Healthy</span></span></code></pre></div>
+<span><span class="co">#&gt; • CYP3A4|Human|Healthy</span></span>
+<span><span class="co">#&gt; • AADAC|Human|Healthy</span></span>
+<span><span class="co">#&gt; • P-gp|Human|Healthy</span></span>
+<span><span class="co">#&gt; • OATP1B1|Human|Healthy</span></span>
+<span><span class="co">#&gt; • ATP1A2|Human|Healthy</span></span>
+<span><span class="co">#&gt; • UGT1A4|Human|Healthy</span></span>
+<span><span class="co">#&gt; • GABRG2|Human|Healthy</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -217,16 +236,75 @@
 <span><span class="co">#&gt; • Weight: 85 kg</span></span>
 <span></span>
 <span><span class="co"># Add to snapshot</span></span>
-<span><span class="fu"><a href="reference/add_individual_to_snapshot.html">add_individual_to_snapshot</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="va">new_individual</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/add_individual.html">add_individual</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="va">new_individual</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ✔ Added individual 'Patient_001' to the snapshot</span></span>
 <span></span>
 <span><span class="co"># Verify it was added</span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Individuals (3) ─────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; • Mouly2002</span></span>
-<span><span class="co">#&gt; • European</span></span>
+<span><span class="co">#&gt; ── Individuals (6) ─────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • European (P-gp modified, CYP3A4 36 h)</span></span>
+<span><span class="co">#&gt; • Korean (Yu 2004 study)</span></span>
+<span><span class="co">#&gt; • CKD</span></span>
+<span><span class="co">#&gt; • ind_modified</span></span>
+<span><span class="co">#&gt; • baby</span></span>
 <span><span class="co">#&gt; • Patient_001</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="creating-a-new-formulation">Creating a New Formulation<a class="anchor" aria-label="anchor" href="#creating-a-new-formulation"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a simple dissolved formulation</span></span>
+<span><span class="va">dissolved_form</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_formulation.html">create_formulation</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"Oral Solution"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"Dissolved"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create a tablet formulation with Weibull dissolution profile</span></span>
+<span><span class="va">tablet_form</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_formulation.html">create_formulation</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"Standard Tablet"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"Weibull"</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    dissolution_time <span class="op">=</span> <span class="fl">60</span>,</span>
+<span>    dissolution_time_unit <span class="op">=</span> <span class="st">"min"</span>,</span>
+<span>    lag_time <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>    lag_time_unit <span class="op">=</span> <span class="st">"min"</span>,</span>
+<span>    dissolution_shape <span class="op">=</span> <span class="fl">0.92</span>,</span>
+<span>    suspension <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Display the tablet formulation</span></span>
+<span><span class="va">tablet_form</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Formulation: Standard Tablet ────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • Type: Weibull</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Parameters ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Dissolution time (50% dissolved): 60 min</span></span>
+<span><span class="co">#&gt; • Lag time: 10 min</span></span>
+<span><span class="co">#&gt; • Dissolution shape: 0.92</span></span>
+<span><span class="co">#&gt; • Use as suspension: 1</span></span>
+<span></span>
+<span><span class="co"># Add to snapshot</span></span>
+<span><span class="fu"><a href="reference/add_formulation.html">add_formulation</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="va">tablet_form</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✔ Added formulation 'Standard Tablet' to the snapshot</span></span>
+<span></span>
+<span><span class="co"># Verify it was added</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">formulations</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Formulations (10) ───────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • Tablet (Dormicum) (Weibull)</span></span>
+<span><span class="co">#&gt; • Oral solution (Dissolved)</span></span>
+<span><span class="co">#&gt; • form_dissolved (Dissolved)</span></span>
+<span><span class="co">#&gt; • form_Lint80 (Lint80)</span></span>
+<span><span class="co">#&gt; • form-partdiss (Particle)</span></span>
+<span><span class="co">#&gt; • form-table (Table)</span></span>
+<span><span class="co">#&gt; • form-ZO (Zero Order)</span></span>
+<span><span class="co">#&gt; • form-FO (First Order)</span></span>
+<span><span class="co">#&gt; • form-partdiss2 (Particle)</span></span>
+<span><span class="co">#&gt; • Standard Tablet (Weibull)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -237,27 +315,29 @@
 <h3 id="converting-individuals">Converting Individuals<a class="anchor" aria-label="anchor" href="#converting-individuals"></a>
 </h3>
 <p>You can convert all individuals in a snapshot to combined data frames:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get data frames for all individuals in the snapshot</span></span>
 <span><span class="va">dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_individuals_dfs.html">get_individuals_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
 <span><span class="va">dfs</span></span></code></pre></div>
-<table style="width:100%;" class="table">
+<table class="table">
 <colgroup>
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">individual_id</th>
@@ -268,6 +348,8 @@
 <th align="left">gender</th>
 <th align="right">age</th>
 <th align="left">age_unit</th>
+<th align="right">gestational_age</th>
+<th align="left">gestational_age_unit</th>
 <th align="right">weight</th>
 <th align="left">weight_unit</th>
 <th align="right">height</th>
@@ -278,14 +360,16 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Mouly2002</td>
-<td align="left">Mouly2002</td>
-<td align="right">1300547185</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="right">17189110</td>
 <td align="left">Human</td>
-<td align="left">WhiteAmerican_NHANES_1997</td>
+<td align="left">European_ICRP_2002</td>
 <td align="left">MALE</td>
-<td align="right">35</td>
+<td align="right">35.0</td>
 <td align="left">year(s)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
 <td align="right">NA</td>
 <td align="left">NA</td>
 <td align="right">NA</td>
@@ -295,14 +379,73 @@
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">European</td>
-<td align="left">European</td>
-<td align="right">186687441</td>
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="right">52995890</td>
+<td align="left">Human</td>
+<td align="left">Asian_Tanaka_1996</td>
+<td align="left">MALE</td>
+<td align="right">23.3</td>
+<td align="left">year(s)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">66.9</td>
+<td align="left">kg</td>
+<td align="right">172.9</td>
+<td align="left">cm</td>
+<td align="left">NA</td>
+<td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CKD</td>
+<td align="left">CKD</td>
+<td align="right">391487890</td>
 <td align="left">Human</td>
 <td align="left">European_ICRP_2002</td>
 <td align="left">MALE</td>
-<td align="right">30</td>
+<td align="right">50.0</td>
 <td align="left">year(s)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">70.0</td>
+<td align="left">kg</td>
+<td align="right">178.0</td>
+<td align="left">cm</td>
+<td align="left">CKD</td>
+<td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
+<td align="left">eGFR: 45 ml/min/1.73m²</td>
+</tr>
+<tr class="even">
+<td align="left">ind_modified</td>
+<td align="left">ind_modified</td>
+<td align="right">487796515</td>
+<td align="left">Human</td>
+<td align="left">BlackAmerican_NHANES_1997</td>
+<td align="left">MALE</td>
+<td align="right">56.0</td>
+<td align="left">year(s)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">180.0</td>
+<td align="left">cm</td>
+<td align="left">NA</td>
+<td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">baby</td>
+<td align="left">baby</td>
+<td align="right">1987729687</td>
+<td align="left">Human</td>
+<td align="left">Preterm</td>
+<td align="left">MALE</td>
+<td align="right">10.0</td>
+<td align="left">day(s)</td>
+<td align="right">30</td>
+<td align="left">week(s)</td>
 <td align="right">NA</td>
 <td align="left">NA</td>
 <td align="right">NA</td>
@@ -311,18 +454,20 @@
 <td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
 <td align="left">NA</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Patient_001</td>
 <td align="left">Patient_001</td>
 <td align="right">NA</td>
 <td align="left">Human</td>
 <td align="left">European_ICRP_2002</td>
 <td align="left">MALE</td>
-<td align="right">45</td>
+<td align="right">45.0</td>
 <td align="left">year(s)</td>
-<td align="right">85</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">85.0</td>
 <td align="left">kg</td>
-<td align="right">180</td>
+<td align="right">180.0</td>
 <td align="left">cm</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
@@ -351,22 +496,58 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Mouly2002</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
 <td align="left">Organism|Gallbladder|Gallbladder ejection fraction</td>
-<td align="right">0.6</td>
+<td align="right">0.6000</td>
 <td align="left">NA</td>
 <td align="left">Publication</td>
 <td align="left">R24-4081</td>
 <td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">Mouly2002</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
 <td align="left">Organism|Liver|EHC continuous fraction</td>
-<td align="right">1.0</td>
+<td align="right">1.0000</td>
 <td align="left">NA</td>
 <td align="left">Publication</td>
 <td align="left">R24-4081</td>
 <td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">Organism|Liver|EHC continuous fraction</td>
+<td align="right">1.0000</td>
+<td align="left">NA</td>
+<td align="left">Unknown</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">Organism|Ontogeny factor (albumin)</td>
+<td align="right">0.8900</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">R24-4081</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CKD</td>
+<td align="left">Organism|Liver|Interstitial|pH</td>
+<td align="right">7.2456</td>
+<td align="left">NA</td>
+<td align="left">Database</td>
+<td align="left">Assumed</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">ind_modified</td>
+<td align="left">Organism|Kidney|GFR (specific)</td>
+<td align="right">33.0000</td>
+<td align="left">ml/min/100g organ</td>
+<td align="left">Other</td>
+<td align="left">Assumed</td>
+<td align="right">15</td>
 </tr>
 </tbody>
 </table>
@@ -377,44 +558,90 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Mouly2002</td>
-<td align="left">CYP1A2|Human|Healthy</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">CYP3A4|Human|Healthy</td>
 </tr>
 <tr class="even">
-<td align="left">Mouly2002</td>
-<td align="left">CYP2B6|Human|Healthy</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">AADAC|Human|Healthy</td>
 </tr>
 <tr class="odd">
-<td align="left">European</td>
-<td align="left">CYP1A2|Human|Healthy</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">P-gp|Human|Healthy</td>
 </tr>
 <tr class="even">
-<td align="left">European</td>
-<td align="left">CYP2B6|Human|Healthy</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">OATP1B1|Human|Healthy</td>
+</tr>
+<tr class="odd">
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">ATP1A2|Human|Healthy</td>
+</tr>
+<tr class="even">
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">UGT1A4|Human|Healthy</td>
+</tr>
+<tr class="odd">
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">GABRG2|Human|Healthy</td>
+</tr>
+<tr class="even">
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">CYP3A4|Human|Korean (Yu 2004 study)</td>
+</tr>
+<tr class="odd">
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">AADAC|Human|Korean (Yu 2004 study)</td>
+</tr>
+<tr class="even">
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">P-gp|Human|Korean (Yu 2004 study)</td>
+</tr>
+<tr class="odd">
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">OATP1B1|Human|Korean (Yu 2004 study)</td>
+</tr>
+<tr class="even">
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">ATP1A2|Human|Korean (Yu 2004 study)</td>
+</tr>
+<tr class="odd">
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">UGT1A4|Human|Korean (Yu 2004 study)</td>
+</tr>
+<tr class="even">
+<td align="left">Korean (Yu 2004 study)</td>
+<td align="left">GABRG2|Human|Korean (Yu 2004 study)</td>
+</tr>
+<tr class="odd">
+<td align="left">CKD</td>
+<td align="left">CYP3A4|Human|Korean (Yu 2004 study)</td>
 </tr>
 </tbody>
 </table>
 <p>It is also possible to get dataframe for a specific individual using <code>to_df()</code> method on an individual object:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">individual_df</span> <span class="op">&lt;-</span> <span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">individual_df</span></span></code></pre></div>
-<table style="width:100%;" class="table">
+<table class="table">
 <colgroup>
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
-<col width="6%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">individual_id</th>
@@ -425,6 +652,8 @@
 <th align="left">gender</th>
 <th align="right">age</th>
 <th align="left">age_unit</th>
+<th align="right">gestational_age</th>
+<th align="left">gestational_age_unit</th>
 <th align="right">weight</th>
 <th align="left">weight_unit</th>
 <th align="right">height</th>
@@ -434,14 +663,16 @@
 <th align="left">disease_state_parameters</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td align="left">Mouly2002</td>
-<td align="left">Mouly2002</td>
-<td align="right">1300547185</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="right">17189110</td>
 <td align="left">Human</td>
-<td align="left">WhiteAmerican_NHANES_1997</td>
+<td align="left">European_ICRP_2002</td>
 <td align="left">MALE</td>
 <td align="right">35</td>
 <td align="left">year(s)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
 <td align="right">NA</td>
 <td align="left">NA</td>
 <td align="right">NA</td>
@@ -470,7 +701,7 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Mouly2002</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
 <td align="left">Organism|Gallbladder|Gallbladder ejection fraction</td>
 <td align="right">0.6</td>
 <td align="left">NA</td>
@@ -478,7 +709,7 @@
 <td align="left">R24-4081</td>
 </tr>
 <tr class="even">
-<td align="left">Mouly2002</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
 <td align="left">Organism|Liver|EHC continuous fraction</td>
 <td align="right">1.0</td>
 <td align="left">NA</td>
@@ -494,12 +725,347 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">Mouly2002</td>
-<td align="left">CYP1A2|Human|Healthy</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">CYP3A4|Human|Healthy</td>
 </tr>
 <tr class="even">
-<td align="left">Mouly2002</td>
-<td align="left">CYP2B6|Human|Healthy</td>
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">AADAC|Human|Healthy</td>
+</tr>
+<tr class="odd">
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">P-gp|Human|Healthy</td>
+</tr>
+<tr class="even">
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">OATP1B1|Human|Healthy</td>
+</tr>
+<tr class="odd">
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">ATP1A2|Human|Healthy</td>
+</tr>
+<tr class="even">
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">UGT1A4|Human|Healthy</td>
+</tr>
+<tr class="odd">
+<td align="left">European (P-gp modified, CYP3A4 36 h)</td>
+<td align="left">GABRG2|Human|Healthy</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="converting-formulations">Converting Formulations<a class="anchor" aria-label="anchor" href="#converting-formulations"></a>
+</h3>
+<p>Similar to individuals, you can convert formulations to data frames:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get data frames for all formulations in the snapshot</span></span>
+<span><span class="va">formulation_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_formulations_dfs.html">get_formulations_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<span><span class="va">formulation_dfs</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">formulation_id</th>
+<th align="left">name</th>
+<th align="left">formulation_type</th>
+<th align="left">formulation_type_human</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Tablet (Dormicum)</td>
+<td align="left">Tablet (Dormicum)</td>
+<td align="left">Formulation_Tablet_Weibull</td>
+<td align="left">Weibull</td>
+</tr>
+<tr class="even">
+<td align="left">Oral solution</td>
+<td align="left">Oral solution</td>
+<td align="left">Formulation_Dissolved</td>
+<td align="left">Dissolved</td>
+</tr>
+<tr class="odd">
+<td align="left">form_dissolved</td>
+<td align="left">form_dissolved</td>
+<td align="left">Formulation_Dissolved</td>
+<td align="left">Dissolved</td>
+</tr>
+<tr class="even">
+<td align="left">form_Lint80</td>
+<td align="left">form_Lint80</td>
+<td align="left">Formulation_Tablet_Lint80</td>
+<td align="left">Lint80</td>
+</tr>
+<tr class="odd">
+<td align="left">form-partdiss</td>
+<td align="left">form-partdiss</td>
+<td align="left">Formulation_Particles</td>
+<td align="left">Particle</td>
+</tr>
+<tr class="even">
+<td align="left">form-table</td>
+<td align="left">form-table</td>
+<td align="left">Formulation_Table</td>
+<td align="left">Table</td>
+</tr>
+<tr class="odd">
+<td align="left">form-ZO</td>
+<td align="left">form-ZO</td>
+<td align="left">Formulation_ZeroOrder</td>
+<td align="left">Zero Order</td>
+</tr>
+<tr class="even">
+<td align="left">form-FO</td>
+<td align="left">form-FO</td>
+<td align="left">Formulation_FirstOrder</td>
+<td align="left">First Order</td>
+</tr>
+<tr class="odd">
+<td align="left">form-partdiss2</td>
+<td align="left">form-partdiss2</td>
+<td align="left">Formulation_Particles</td>
+<td align="left">Particle</td>
+</tr>
+<tr class="even">
+<td align="left">Standard Tablet</td>
+<td align="left">Standard Tablet</td>
+<td align="left">Formulation_Tablet_Weibull</td>
+<td align="left">Weibull</td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="48%">
+<col width="17%">
+<col width="8%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">formulation_id</th>
+<th align="left">name</th>
+<th align="right">value</th>
+<th align="left">unit</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Tablet (Dormicum)</td>
+<td align="left">Dissolution time (50% dissolved)</td>
+<td align="right">0.0107481</td>
+<td align="left">min</td>
+</tr>
+<tr class="even">
+<td align="left">Tablet (Dormicum)</td>
+<td align="left">Lag time</td>
+<td align="right">12.0000000</td>
+<td align="left">min</td>
+</tr>
+<tr class="odd">
+<td align="left">Tablet (Dormicum)</td>
+<td align="left">Dissolution shape</td>
+<td align="right">4.3802943</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Tablet (Dormicum)</td>
+<td align="left">Use as suspension</td>
+<td align="right">1.0000000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">form_Lint80</td>
+<td align="left">Dissolution time (80% dissolved)</td>
+<td align="right">240.0000000</td>
+<td align="left">min</td>
+</tr>
+<tr class="even">
+<td align="left">form_Lint80</td>
+<td align="left">Lag time</td>
+<td align="right">0.0000000</td>
+<td align="left">min</td>
+</tr>
+<tr class="odd">
+<td align="left">form_Lint80</td>
+<td align="left">Use as suspension</td>
+<td align="right">1.0000000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">form-partdiss</td>
+<td align="left">Thickness (unstirred water layer)</td>
+<td align="right">30.0000000</td>
+<td align="left">µm</td>
+</tr>
+<tr class="odd">
+<td align="left">form-partdiss</td>
+<td align="left">Type of particle size distribution</td>
+<td align="right">0.0000000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">form-partdiss</td>
+<td align="left">Particle radius (mean)</td>
+<td align="right">10.0000000</td>
+<td align="left">µm</td>
+</tr>
+<tr class="odd">
+<td align="left">form-table</td>
+<td align="left">Fraction (dose)</td>
+<td align="right">0.0000000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">form-table</td>
+<td align="left">Use as suspension</td>
+<td align="right">1.0000000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">form-ZO</td>
+<td align="left">End time</td>
+<td align="right">60.0000000</td>
+<td align="left">min</td>
+</tr>
+<tr class="even">
+<td align="left">form-FO</td>
+<td align="left">t1/2</td>
+<td align="right">0.0100000</td>
+<td align="left">min</td>
+</tr>
+<tr class="odd">
+<td align="left">form-partdiss2</td>
+<td align="left">Thickness (unstirred water layer)</td>
+<td align="right">23.0000000</td>
+<td align="left">µm</td>
+</tr>
+<tr class="even">
+<td align="left">form-partdiss2</td>
+<td align="left">Particle size distribution</td>
+<td align="right">0.0000000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">form-partdiss2</td>
+<td align="left">Type of particle size distribution</td>
+<td align="right">1.0000000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">form-partdiss2</td>
+<td align="left">Particle radius (mean)</td>
+<td align="right">10.0000000</td>
+<td align="left">µm</td>
+</tr>
+<tr class="odd">
+<td align="left">form-partdiss2</td>
+<td align="left">Particle radius (SD)</td>
+<td align="right">3.0000000</td>
+<td align="left">µm</td>
+</tr>
+<tr class="even">
+<td align="left">form-partdiss2</td>
+<td align="left">Number of bins</td>
+<td align="right">3.0000000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">form-partdiss2</td>
+<td align="left">Particle radius (min)</td>
+<td align="right">1.0000000</td>
+<td align="left">µm</td>
+</tr>
+<tr class="even">
+<td align="left">form-partdiss2</td>
+<td align="left">Particle radius (max)</td>
+<td align="right">19.0000000</td>
+<td align="left">µm</td>
+</tr>
+<tr class="odd">
+<td align="left">Standard Tablet</td>
+<td align="left">Dissolution time (50% dissolved)</td>
+<td align="right">60.0000000</td>
+<td align="left">min</td>
+</tr>
+<tr class="even">
+<td align="left">Standard Tablet</td>
+<td align="left">Lag time</td>
+<td align="right">10.0000000</td>
+<td align="left">min</td>
+</tr>
+<tr class="odd">
+<td align="left">Standard Tablet</td>
+<td align="left">Dissolution shape</td>
+<td align="right">0.9200000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Standard Tablet</td>
+<td align="left">Use as suspension</td>
+<td align="right">1.0000000</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<p>You can also convert a specific formulation to a data frame:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Convert a specific formulation to data frame</span></span>
+<span><span class="va">form_df</span> <span class="op">&lt;-</span> <span class="va">snapshot</span><span class="op">$</span><span class="va">formulations</span><span class="op">$</span><span class="va">`Standard Tablet`</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">formulation_id</th>
+<th align="left">name</th>
+<th align="left">formulation_type</th>
+<th align="left">formulation_type_human</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="left">Standard Tablet</td>
+<td align="left">Standard Tablet</td>
+<td align="left">Formulation_Tablet_Weibull</td>
+<td align="left">Weibull</td>
+</tr></tbody>
+</table>
+<table class="table">
+<thead><tr class="header">
+<th align="left">formulation_id</th>
+<th align="left">name</th>
+<th align="right">value</th>
+<th align="left">unit</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Standard Tablet</td>
+<td align="left">Dissolution time (50% dissolved)</td>
+<td align="right">60.00</td>
+<td align="left">min</td>
+</tr>
+<tr class="even">
+<td align="left">Standard Tablet</td>
+<td align="left">Lag time</td>
+<td align="right">10.00</td>
+<td align="left">min</td>
+</tr>
+<tr class="odd">
+<td align="left">Standard Tablet</td>
+<td align="left">Dissolution shape</td>
+<td align="right">0.92</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Standard Tablet</td>
+<td align="left">Use as suspension</td>
+<td align="right">1.00</td>
+<td align="left">NA</td>
 </tr>
 </tbody>
 </table>
