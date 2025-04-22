@@ -70,17 +70,17 @@ snapshot
 snapshot$individuals
 
 # Get a detailed view of a building block
-snapshot$individuals$Mouly2002
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 
 # All fields are accessible as list elements
-snapshot$individuals$Mouly2002$age
-snapshot$individuals$Mouly2002$gender
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$gender
 
 # Parameters are also accessible as list element but they have their own nested structure and behavior
-snapshot$individuals$Mouly2002$parameters
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$parameters
 
 # They can be accessed by path
-snapshot$individuals$Mouly2002$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`
 ```
 
 
@@ -88,11 +88,11 @@ snapshot$individuals$Mouly2002$parameters$`Organism|Gallbladder|Gallbladder ejec
 All these elements are mutable and can be modified in place.
 
 ```{r}
-snapshot$individuals$Mouly2002$age <- 35
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age <- 35
 
-snapshot$individuals$Mouly2002$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`$value <- 0.6
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`$value <- 0.6
 
-snapshot$individuals$Mouly2002
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 ```
 
 ## Creating new building blocks
@@ -114,10 +114,43 @@ new_individual <- create_individual(
 new_individual
 
 # Add to snapshot
-add_individual_to_snapshot(snapshot, new_individual)
+add_individual(snapshot, new_individual)
 
 # Verify it was added
 snapshot$individuals
+```
+
+### Creating a New Formulation
+
+```{r}
+# Create a simple dissolved formulation
+dissolved_form <- create_formulation(
+  name = "Oral Solution",
+  type = "Dissolved"
+)
+
+# Create a tablet formulation with Weibull dissolution profile
+tablet_form <- create_formulation(
+  name = "Standard Tablet",
+  type = "Weibull",
+  parameters = list(
+    dissolution_time = 60,
+    dissolution_time_unit = "min",
+    lag_time = 10,
+    lag_time_unit = "min",
+    dissolution_shape = 0.92,
+    suspension = TRUE
+  )
+)
+
+# Display the tablet formulation
+tablet_form
+
+# Add to snapshot
+add_formulation(snapshot, tablet_form)
+
+# Verify it was added
+snapshot$formulations
 ```
 
 ## Converting to Data Frames
@@ -148,6 +181,35 @@ individual_df
 ```
 ```{r, results='asis', echo=FALSE}
 for (df in individual_df) {
+  print(knitr::kable(df))
+}
+```
+
+### Converting Formulations
+
+Similar to individuals, you can convert formulations to data frames:
+
+```{r, results="hide"}
+# Get data frames for all formulations in the snapshot
+formulation_dfs <- get_formulations_dfs(snapshot)
+formulation_dfs
+```
+
+```{r, results='asis', echo=FALSE}
+for (df in formulation_dfs) {
+  print(knitr::kable(df))
+}
+```
+
+You can also convert a specific formulation to a data frame:
+
+```{r, results="hide"}
+# Convert a specific formulation to data frame
+form_df <- snapshot$formulations$`Standard Tablet`$to_df()
+```
+
+```{r, results='asis', echo=FALSE}
+for (df in form_df) {
   print(knitr::kable(df))
 }
 ```

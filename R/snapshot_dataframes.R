@@ -30,9 +30,7 @@
 #' }
 get_individuals_dfs <- function(snapshot) {
     # Check if input is a snapshot
-    if (!inherits(snapshot, "Snapshot")) {
-        cli::cli_abort("Input must be a Snapshot object")
-    }
+    validate_snapshot(snapshot)
 
     # Get all individuals from the snapshot
     individuals <- snapshot$individuals
@@ -57,7 +55,7 @@ get_individuals_dfs <- function(snapshot) {
         ),
         parameters = tibble::tibble(
             individual_id = character(0),
-            path = character(0),
+            name = character(0),
             value = numeric(0),
             unit = character(0)
         ),
@@ -94,44 +92,77 @@ get_individuals_dfs <- function(snapshot) {
     return(result)
 }
 
-#' Get origin data for all individuals in a snapshot
-#'
-#' @description
-#' Extract origin data from all individuals in a snapshot and combine them into a single data frame.
-#'
-#' @param snapshot A snapshot object
-#'
-#' @return A tibble containing origin data for all individuals
-#'
-#' @export
-get_origin_df <- function(snapshot) {
-    get_individuals_dfs(snapshot)$origin
-}
 
-#' Get parameter data for all individuals in a snapshot
+#' Get all formulations in a snapshot as data frames
 #'
 #' @description
-#' Extract parameter data from all individuals in a snapshot and combine them into a single data frame.
+#' This function extracts all formulations from a snapshot and converts them to
+#' data frames for easier analysis and visualization.
 #'
-#' @param snapshot A snapshot object
+#' @param snapshot A Snapshot object
 #'
-#' @return A tibble containing parameter data for all individuals
+#' @return A list containing two data frames:
+#' \itemize{
+#'   \item basic: Basic information about each formulation
+#'   \item parameters: All parameters for all formulations
+#' }
 #'
 #' @export
-get_parameters_df <- function(snapshot) {
-    get_individuals_dfs(snapshot)$parameters
-}
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#'
+#' # Get all formulation data as data frames
+#' dfs <- get_formulations_dfs(snapshot)
+#'
+#' # Access specific data frames
+#' basic_df <- dfs$basic
+#' parameters_df <- dfs$parameters
+#' }
+get_formulations_dfs <- function(snapshot) {
+    # Check if input is a snapshot
+    validate_snapshot(snapshot)
 
-#' Get expression profile data for all individuals in a snapshot
-#'
-#' @description
-#' Extract expression profile data from all individuals in a snapshot and combine them into a single data frame.
-#'
-#' @param snapshot A snapshot object
-#'
-#' @return A tibble containing expression profile data for all individuals
-#'
-#' @export
-get_expressions_df <- function(snapshot) {
-    get_individuals_dfs(snapshot)$expressions
+    # Get all formulations from the snapshot
+    formulations <- snapshot$formulations
+
+    # Initialize empty result list with tibbles for each data type
+    result <- list(
+        basic = tibble::tibble(
+            formulation_id = character(0),
+            name = character(0),
+            formulation_type = character(0),
+            formulation_type_human = character(0)
+        ),
+        parameters = tibble::tibble(
+            formulation_id = character(0),
+            name = character(0),
+            value = numeric(0),
+            unit = character(0)
+        )
+    )
+
+    # If there are no formulations, return the empty tibbles
+    if (length(formulations) == 0) {
+        return(result)
+    }
+
+    # Get data frames for each formulation and combine them
+    form_dfs <- lapply(formulations, function(formulation) {
+        formulation$to_df()
+    })
+
+    # Combine all basic data frames
+    if (length(form_dfs) > 0) {
+        basic_dfs <- lapply(form_dfs, function(df) df$basic)
+        result$basic <- dplyr::bind_rows(basic_dfs)
+
+        # Combine all parameter data frames
+        param_dfs <- lapply(form_dfs, function(df) df$parameters)
+        result$parameters <- dplyr::bind_rows(param_dfs)
+    }
+
+    return(result)
 }

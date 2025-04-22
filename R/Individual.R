@@ -6,6 +6,7 @@
 #' and display a summary of its information.
 #'
 #' @importFrom tibble tibble as_tibble
+#' @importFrom glue glue
 #' @export
 Individual <- R6::R6Class(
   classname = "Individual",
@@ -116,9 +117,9 @@ Individual <- R6::R6Class(
             unit_display <- if (is.null(param$unit)) {
               ""
             } else {
-              paste0(" ", param$unit)
+              glue::glue(" {param$unit}")
             }
-            cli::cli_li("{param$path}: {param$value}{unit_display}")
+            cli::cli_li("{param$name}: {param$value}{unit_display}")
           }
         }
 
@@ -147,7 +148,7 @@ Individual <- R6::R6Class(
       valid_types <- c("all", "origin", "parameters", "expressions")
       if (!type %in% valid_types) {
         cli::cli_abort(
-          "type must be one of: {paste(valid_types, collapse = ', ')}"
+          "type must be one of: {valid_types}"
         )
       }
 
@@ -180,9 +181,9 @@ Individual <- R6::R6Class(
 
         # Convert calculation methods to a single string if present
         if (!is.null(self$calculation_methods)) {
-          data_list$calculation_methods <- paste(
+          data_list$calculation_methods <- glue::glue_collapse(
             self$calculation_methods,
-            collapse = "; "
+            sep = "; "
           )
         } else {
           data_list$calculation_methods <- NA_character_
@@ -190,7 +191,7 @@ Individual <- R6::R6Class(
 
         # Convert disease state parameters to a single string if present
         if (!is.null(self$disease_state_parameters)) {
-          data_list$disease_state_parameters <- paste(
+          data_list$disease_state_parameters <- glue::glue_collapse(
             vapply(
               self$disease_state_parameters,
               function(param) {
@@ -203,7 +204,7 @@ Individual <- R6::R6Class(
               },
               character(1)
             ),
-            collapse = "; "
+            sep = "; "
           )
         } else {
           data_list$disease_state_parameters <- NA_character_
@@ -217,7 +218,7 @@ Individual <- R6::R6Class(
         if (length(self$parameters) == 0) {
           result$parameters <- tibble::tibble(
             individual_id = character(0),
-            path = character(0),
+            name = character(0),
             value = numeric(0),
             unit = character(0),
             source = character(0),
@@ -227,7 +228,9 @@ Individual <- R6::R6Class(
         } else {
           # Extract parameter data using Parameter's to_df method
           param_data <- lapply(self$parameters, function(param) {
-            param$to_df(individual_id)
+            param$to_df() %>%
+              dplyr::mutate(individual_id = individual_id) %>%
+              dplyr::relocate(individual_id)
           })
           result$parameters <- dplyr::bind_rows(param_data)
         }
@@ -245,10 +248,7 @@ Individual <- R6::R6Class(
           )
         } else {
           result$expressions <- tibble::tibble(
-            individual_id = rep(
-              individual_id,
-              length(self$expression_profiles)
-            ),
+            individual_id = individual_id,
             profile = self$expression_profiles
           )
         }

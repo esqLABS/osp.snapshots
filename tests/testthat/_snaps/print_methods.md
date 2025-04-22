@@ -43,13 +43,39 @@
       -- Individuals (0) -------------------------------------------------------------
       i No individuals found
 
+# print.formulation_collection works with formulations
+
+    Code
+      print(test_snapshot$formulations)
+    Message
+      
+      -- Formulations (9) ------------------------------------------------------------
+      * Tablet (Dormicum) (Weibull)
+      * Oral solution (Dissolved)
+      * form_dissolved (Dissolved)
+      * form_Lint80 (Lint80)
+      * form-partdiss (Particle)
+      * form-table (Table)
+      * form-ZO (Zero Order)
+      * form-FO (First Order)
+      * form-partdiss2 (Particle)
+
+# print.formulation_collection works with empty collection
+
+    Code
+      print(formulations_named)
+    Message
+      
+      -- Formulations (0) ------------------------------------------------------------
+      i No formulations found
+
 # print.parameter_collection works with parameters
 
     Code
       print(params)
     Output
       Parameter Collection with 3 parameters:
-      Path                                     | Value           | Unit
+      Name                                     | Value           | Unit
       -----------------------------------------|-----------------|----------------
       Test|Path1                               | 123.5           | mg
       ...ry|Long|Name|That|Should|Be|Truncated | 0.1235          | mg/ml
@@ -68,7 +94,7 @@
       print(params)
     Output
       Parameter Collection with 4 parameters:
-      Path                                     | Value           | Unit
+      Name                                     | Value           | Unit
       -----------------------------------------|-----------------|----------------
       Test|Integer                             | 123             | count
       Test|Decimal                             | 123.5           | mg

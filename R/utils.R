@@ -86,3 +86,21 @@ validate_gender <- function(gender) {
   }
   return(TRUE)
 }
+
+#' Validate that an object is a Snapshot
+#'
+#' @description
+#' Check if an object is a Snapshot instance.
+#' Throws an error if the object is not a Snapshot.
+#'
+#' @param snapshot Object to validate
+#' @return TRUE if valid, throws an error if invalid
+#' @export
+validate_snapshot <- function(snapshot) {
+  if (!inherits(snapshot, "Snapshot")) {
+    cli::cli_abort(
+      "Expected a Snapshot object, but got {.cls {class(snapshot)[1]}}"
+    )
+  }
+  return(TRUE)
+}

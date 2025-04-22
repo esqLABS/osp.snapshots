@@ -1,13 +1,5 @@
 # Test for compound_collection print method
 test_that("print.compound_collection works with compounds", {
-  # Skip if there are no compounds in the test snapshot
-  if (
-    is.null(test_snapshot$data$Compounds) ||
-      length(test_snapshot$data$Compounds) == 0
-  ) {
-    skip("Test snapshot does not contain compounds")
-  }
-
   # Test the print method
   expect_snapshot(print(test_snapshot$compounds))
 })
@@ -23,14 +15,6 @@ test_that("print.compound_collection works with empty collection", {
 
 # Test for individual_collection print method
 test_that("print.individual_collection works with individuals", {
-  # Skip if there are no individuals in the test snapshot
-  if (
-    is.null(test_snapshot$data$Individuals) ||
-      length(test_snapshot$data$Individuals) == 0
-  ) {
-    skip("Test snapshot does not contain individuals")
-  }
-
   # Test the print method
   expect_snapshot(print(test_snapshot$individuals))
 })
@@ -42,6 +26,21 @@ test_that("print.individual_collection works with empty collection", {
 
   # Test the print method with empty collection
   expect_snapshot(print(individuals_named))
+})
+
+# Test for formulation_collection print method
+test_that("print.formulation_collection works with formulations", {
+  # Test the print method
+  expect_snapshot(print(test_snapshot$formulations))
+})
+
+test_that("print.formulation_collection works with empty collection", {
+  # Create an empty formulation collection
+  formulations_named <- list()
+  class(formulations_named) <- c("formulation_collection", "list")
+
+  # Test the print method with empty collection
+  expect_snapshot(print(formulations_named))
 })
 
 # Test for parameter_collection print method
@@ -62,7 +61,7 @@ test_that("print.parameter_collection works with parameters", {
   )
 
   # Set names to the paths
-  names(params) <- sapply(params, function(p) p$path)
+  names(params) <- sapply(params, function(p) p$name)
 
   # Set the class
   class(params) <- c("parameter_collection", "list")
@@ -102,7 +101,7 @@ test_that("print.parameter_collection formats values correctly", {
   )
 
   # Set names to the paths
-  names(params) <- sapply(params, function(p) p$path)
+  names(params) <- sapply(params, function(p) p$name)
 
   # Set the class
   class(params) <- c("parameter_collection", "list")
@@ -115,19 +114,19 @@ test_that("print.parameter_collection formats values correctly", {
   expect_type(output, "character")
 
   # Check that the proper headers are included
-  expect_true(any(grepl("Path", output, fixed = TRUE)))
+  expect_true(any(grepl("Name", output, fixed = TRUE)))
   expect_true(any(grepl("Value", output, fixed = TRUE)))
   expect_true(any(grepl("Unit", output, fixed = TRUE)))
 
   # Check that all parameters are included
   for (param in params) {
     expect_true(any(
-      grepl(param$path, output, fixed = TRUE) |
+      grepl(param$name, output, fixed = TRUE) |
         grepl(
           substr(
-            param$path,
-            nchar(param$path) - 36,
-            nchar(param$path)
+            param$name,
+            nchar(param$name) - 36,
+            nchar(param$name)
           ),
           output,
           fixed = TRUE

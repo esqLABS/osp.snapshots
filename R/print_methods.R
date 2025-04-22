@@ -38,6 +38,27 @@ print.individual_collection <- function(x, ...) {
   invisible(x)
 }
 
+#' S3 print method for formulation collections
+#'
+#' @param x A formulation collection object
+#' @param ... Additional arguments passed to print methods
+#' @return Invisibly returns the formulation collection
+#' @export
+print.formulation_collection <- function(x, ...) {
+  cli::cli_h1("Formulations ({length(x)})")
+
+  if (length(x) > 0) {
+    # Create a bullet point list with names and formulation types
+    for (name in names(x)) {
+      formulation_type_human <- x[[name]]$get_human_formulation_type()
+      cli::cli_li("{name} ({formulation_type_human})")
+    }
+  } else {
+    cli::cli_alert_info("No formulations found")
+  }
+  invisible(x)
+}
+
 #' Print method for parameter collections
 #'
 #' @param x A parameter_collection object
@@ -59,21 +80,20 @@ print.parameter_collection <- function(x, ...) {
   )
 
   # Create a summary table
-  cat(sprintf("%-40s | %-15s | %s\n", "Path", "Value", "Unit"))
+  cat(sprintf("%-40s | %-15s | %s\n", "Name", "Value", "Unit"))
   cat(sprintf(
     "%-40s-|-%-15s-|-%s\n",
-    paste(rep("-", 40), collapse = ""),
-    paste(rep("-", 15), collapse = ""),
-    paste(rep("-", 15), collapse = "")
+    glue::glue_collapse(rep("-", 40)),
+    glue::glue_collapse(rep("-", 15)),
+    glue::glue_collapse(rep("-", 15))
   ))
 
   for (param in x) {
     # Truncate long paths for display
-    disp_path <- param$path
-    if (nchar(disp_path) > 40) {
-      disp_path <- paste0(
-        "...",
-        substr(disp_path, nchar(disp_path) - 36, nchar(disp_path))
+    disp_name <- param$name
+    if (nchar(disp_name) > 40) {
+      disp_name <- glue::glue(
+        "...{substr(disp_name, nchar(disp_name) - 36, nchar(disp_name))}"
       )
     }
 
@@ -82,8 +102,9 @@ print.parameter_collection <- function(x, ...) {
 
     cat(sprintf(
       "%-40s | %-15s | %s\n",
-      disp_path,
-      format(param$value, digits = 4),
+      disp_name,
+      if (!is.null(param$table_formula)) "Table" else
+        format(param$value, digits = 4),
       unit_display
     ))
   }
