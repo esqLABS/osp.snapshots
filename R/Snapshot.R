@@ -285,39 +285,6 @@ Snapshot <- R6::R6Class(
     },
 
     #' @description
-    #' Add a Population object to the snapshot
-    #' @param population A Population object created with create_population()
-    #' @return Invisibly returns the object
-    #' @examples
-    #' \dontrun{
-    #' # Create a new population
-    #' pop <- create_population(name = "Test Population", number_of_individuals = 100)
-    #'
-    #' # Add the population to a snapshot
-    #' snapshot$add_population(pop)
-    #' }
-    add_population = function(population) {
-      # Validate that the input is a Population object
-      if (!inherits(population, "Population")) {
-        cli::cli_abort(
-          "Expected a Population object, but got {.cls {class(population)[1]}}"
-        )
-      }
-
-      # Add the population to the list
-      private$.populations <- c(private$.populations, list(population))
-
-      # Reset the named list to include the new population
-      private$.populations_named <- NULL
-      private$.build_populations_named_list()
-
-      cli::cli_alert_success(
-        "Added population '{population$name}' to the snapshot"
-      )
-      invisible(self)
-    },
-
-    #' @description
     #' Remove a population from the snapshot by name
     #' @param population_name Character vector of population name(s) to remove
     #' @return Invisibly returns the object
@@ -904,45 +871,6 @@ remove_formulation <- function(snapshot, formulation_name) {
 
   # Call the remove_formulation method of the Snapshot class
   snapshot$remove_formulation(formulation_name)
-
-  # Return the updated snapshot
-  invisible(snapshot)
-}
-
-#' Add a population to a snapshot
-#'
-#' @description
-#' Add a Population object to a Snapshot. This is a convenience function
-#' that calls the add_population method of the Snapshot class.
-#'
-#' @param snapshot A Snapshot object
-#' @param population A Population object created with create_population()
-#' @return The updated Snapshot object
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("Midazolam")
-#'
-#' # Create a new population
-#' pop <- create_population(
-#'   name = "Test Population",
-#'   number_of_individuals = 100,
-#'   proportion_of_females = 50,
-#'   age_min = 20,
-#'   age_max = 60
-#' )
-#'
-#' # Add the population to the snapshot
-#' snapshot <- add_population(snapshot, pop)
-#' }
-add_population <- function(snapshot, population) {
-  # Validate that the snapshot is a Snapshot object
-  validate_snapshot(snapshot)
-
-  # Call the add_population method of the Snapshot class
-  snapshot$add_population(population)
 
   # Return the updated snapshot
   invisible(snapshot)

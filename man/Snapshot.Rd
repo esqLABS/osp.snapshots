@@ -52,18 +52,6 @@ snapshot$remove_formulation("Tablet")
 }
 
 ## ------------------------------------------------
-## Method `Snapshot$add_population`
-## ------------------------------------------------
-
-\dontrun{
-# Create a new population
-pop <- create_population(name = "Test Population", number_of_individuals = 100)
-
-# Add the population to a snapshot
-snapshot$add_population(pop)
-}
-
-## ------------------------------------------------
 ## Method `Snapshot$remove_population`
 ## ------------------------------------------------
 
@@ -106,7 +94,6 @@ snapshot$remove_population("pop_1")
 \item \href{#method-Snapshot-remove_individual}{\code{Snapshot$remove_individual()}}
 \item \href{#method-Snapshot-add_formulation}{\code{Snapshot$add_formulation()}}
 \item \href{#method-Snapshot-remove_formulation}{\code{Snapshot$remove_formulation()}}
-\item \href{#method-Snapshot-add_population}{\code{Snapshot$add_population()}}
 \item \href{#method-Snapshot-remove_population}{\code{Snapshot$remove_population()}}
 \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
 }
@@ -294,40 +281,6 @@ Invisibly returns the object
 \preformatted{\dontrun{
 # Remove a formulation from the snapshot
 snapshot$remove_formulation("Tablet")
-}
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Snapshot-add_population"></a>}}
-\if{latex}{\out{\hypertarget{method-Snapshot-add_population}{}}}
-\subsection{Method \code{add_population()}}{
-Add a Population object to the snapshot
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$add_population(population)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{population}}{A Population object created with create_population()}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Create a new population
-pop <- create_population(name = "Test Population", number_of_individuals = 100)
-
-# Add the population to a snapshot
-snapshot$add_population(pop)
 }
 }
 \if{html}{\out{</div>}}

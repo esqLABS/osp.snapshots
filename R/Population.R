@@ -326,14 +326,25 @@ Population <- R6::R6Class(
       if (missing(value)) {
         return(private$.age_range)
       }
+      # If value is NULL, set age_range to NULL and remove from data
       if (is.null(value)) {
         private$.age_range <- NULL
         private$.data$Settings$Age <- NULL
         return(invisible(NULL))
       }
+
+      # If value is not a Range object, check if age_range is empty
       if (!inherits(value, "Range")) {
-        cli::cli_abort("age_range must be a Range object")
+        if (is.null(private$.age_range)) {
+          cli::cli_abort(c(
+            "age_range is empty and individual elements cannot be set",
+            "i" = "Use `...$age_range <- range(...)` to initialize a new range first."
+          ))
+        } else {
+          cli::cli_abort("age_range must be a Range object")
+        }
       }
+      # Set age_range and update data
       private$.age_range <- value
       private$.data$Settings$Age <- list(
         Min = value$min,
@@ -353,8 +364,16 @@ Population <- R6::R6Class(
         return(invisible(NULL))
       }
       if (!inherits(value, "Range")) {
-        cli::cli_abort("weight_range must be a Range object")
+        if (is.null(private$.weight_range)) {
+          cli::cli_abort(c(
+            "weight_range is empty and individual elements cannot be set",
+            "i" = "Use `...$weight_range <- range(...)` to initialize a new range first."
+          ))
+        } else {
+          cli::cli_abort("weight_range must be a Range object")
+        }
       }
+      # Set weight_range and update data
       private$.weight_range <- value
       private$.data$Settings$Weight <- list(
         Min = value$min,
@@ -374,8 +393,16 @@ Population <- R6::R6Class(
         return(invisible(NULL))
       }
       if (!inherits(value, "Range")) {
-        cli::cli_abort("height_range must be a Range object")
+        if (is.null(private$.height_range)) {
+          cli::cli_abort(c(
+            "height_range is empty and individual elements cannot be set",
+            "i" = "Use `...$height_range <- range(...)` to initialize a new range first."
+          ))
+        } else {
+          cli::cli_abort("height_range must be a Range object")
+        }
       }
+      # Set height_range and update data
       private$.height_range <- value
       private$.data$Settings$Height <- list(
         Min = value$min,
@@ -395,8 +422,16 @@ Population <- R6::R6Class(
         return(invisible(NULL))
       }
       if (!inherits(value, "Range")) {
-        cli::cli_abort("bmi_range must be a Range object")
+        if (is.null(private$.bmi_range)) {
+          cli::cli_abort(c(
+            "bmi_range is empty and individual elements cannot be set",
+            "i" = "Use `...$bmi_range <- range(...)` to initialize a new range first."
+          ))
+        } else {
+          cli::cli_abort("bmi_range must be a Range object")
+        }
       }
+      # Set bmi_range and update data
       private$.bmi_range <- value
       private$.data$Settings$BMI <- list(
         Min = value$min,
@@ -685,153 +720,6 @@ AdvancedParameter <- R6::R6Class(
     .data = NULL
   )
 )
-
-#' Create a new population
-#'
-#' @description
-#' Create a new population with the specified properties.
-#' Most arguments are optional and will use default values if not provided.
-#' Note that this function doesn't support creating advanced parameters or
-#' defining template individuals manually. Template individuals are loaded
-#' directly from snapshot files.
-#'
-#' @param name Character. Name of the population
-#' @param number_of_individuals Numeric. Number of individuals in the population
-#' @param proportion_of_females Numeric. Percentage of females in the population (0-100)
-#' @param age_min Numeric. Minimum age for the population
-#' @param age_max Numeric. Maximum age for the population
-#' @param age_unit Character. Unit for age (must be valid unit for "Age in years")
-#' @param weight_min Numeric. Minimum weight for the population (optional)
-#' @param weight_max Numeric. Maximum weight for the population (optional)
-#' @param weight_unit Character. Unit for weight (must be valid unit for "Mass")
-#' @param height_min Numeric. Minimum height for the population (optional)
-#' @param height_max Numeric. Maximum height for the population (optional)
-#' @param height_unit Character. Unit for height (must be valid unit for "Length")
-#' @param seed Integer. Simulation seed (optional)
-#'
-#' @return A Population object
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Create a minimal population
-#' population <- create_population(
-#'   name = "Test Population",
-#'   number_of_individuals = 100,
-#'   proportion_of_females = 50,
-#'   age_min = 18,
-#'   age_max = 65
-#' )
-#'
-#' # Create a more detailed population
-#' population <- create_population(
-#'   name = "Detailed Population",
-#'   number_of_individuals = 50,
-#'   proportion_of_females = 60,
-#'   age_min = 30,
-#'   age_max = 60,
-#'   age_unit = "year(s)",
-#'   weight_min = 60,
-#'   weight_max = 90,
-#'   weight_unit = "kg",
-#'   height_min = 160,
-#'   height_max = 180,
-#'   height_unit = "cm"
-#' )
-#' }
-create_population <- function(
-  name,
-  number_of_individuals = 100,
-  proportion_of_females = 50,
-  age_min = 18,
-  age_max = 65,
-  age_unit = "year(s)",
-  weight_min = NULL,
-  weight_max = NULL,
-  weight_unit = "kg",
-  height_min = NULL,
-  height_max = NULL,
-  height_unit = "cm",
-  seed = NULL
-) {
-  # Validate inputs
-  if (!is.numeric(number_of_individuals) || number_of_individuals < 1) {
-    cli::cli_abort("Number of individuals must be a positive number")
-  }
-
-  if (
-    !is.numeric(proportion_of_females) ||
-      proportion_of_females < 0 ||
-      proportion_of_females > 100
-  ) {
-    cli::cli_abort(
-      "Proportion of females must be a number between 0 and 100"
-    )
-  }
-
-  if (!is.numeric(age_min) || !is.numeric(age_max) || age_min >= age_max) {
-    cli::cli_abort("Age min must be less than age max")
-  }
-
-  # Validate units
-  validate_unit(age_unit, "Age in years")
-
-  # Create settings object
-  settings <- list(
-    NumberOfIndividuals = number_of_individuals,
-    ProportionOfFemales = proportion_of_females,
-    Age = list(
-      Min = age_min,
-      Max = age_max,
-      Unit = age_unit
-    )
-  )
-
-  # Add weight if provided
-  if (!is.null(weight_min) && !is.null(weight_max)) {
-    if (
-      !is.numeric(weight_min) ||
-        !is.numeric(weight_max) ||
-        weight_min >= weight_max
-    ) {
-      cli::cli_abort("Weight min must be less than weight max")
-    }
-    validate_unit(weight_unit, "Mass")
-    settings$Weight <- list(
-      Min = weight_min,
-      Max = weight_max,
-      Unit = weight_unit
-    )
-  }
-
-  # Add height if provided
-  if (!is.null(height_min) && !is.null(height_max)) {
-    if (
-      !is.numeric(height_min) ||
-        !is.numeric(height_max) ||
-        height_min >= height_max
-    ) {
-      cli::cli_abort("Height min must be less than height max")
-    }
-    validate_unit(height_unit, "Length")
-    settings$Height <- list(
-      Min = height_min,
-      Max = height_max,
-      Unit = height_unit
-    )
-  }
-
-  # Create population data
-  population_data <- list(
-    Name = name,
-    Seed = seed,
-    Settings = settings,
-    AdvancedParameters = list()
-  )
-
-  # Create and return population object
-  Population$new(population_data)
-}
 
 #' Load populations from snapshot data
 #'
