@@ -27,7 +27,11 @@ Compound <- R6::R6Class(
 
       # First, display simple properties (non-list fields)
       # Get all fields that are not lists or are empty lists
-      non_list_fields <- names(self$data)[vapply(self$data, function(x) !is.list(x) || length(x) == 0, logical(1))]
+      non_list_fields <- names(self$data)[vapply(
+        self$data,
+        function(x) !is.list(x) || length(x) == 0,
+        logical(1)
+      )]
 
       # Display all non-list fields except Name
       for (field in non_list_fields) {
@@ -42,14 +46,20 @@ Compound <- R6::R6Class(
 
       # Add special handling for molecular weight which is nested in Parameters
       if (!is.na(self$molecular_weight)) {
-        cli::cli_li("Molecular Weight: {self$molecular_weight} {self$molecular_weight_unit}")
+        cli::cli_li(
+          "Molecular Weight: {self$molecular_weight} {self$molecular_weight_unit}"
+        )
       }
 
       # Then, display list fields as categories with counts
       cli::cat_line() # Add a blank line
 
       # Get all fields that are lists and not empty
-      list_fields <- names(self$data)[vapply(self$data, function(x) is.list(x) && length(x) > 0, logical(1))]
+      list_fields <- names(self$data)[vapply(
+        self$data,
+        function(x) is.list(x) && length(x) > 0,
+        logical(1)
+      )]
 
       for (field in list_fields) {
         # Get count of items in the list

@@ -34,12 +34,12 @@
     Output
       $basic
       # A tibble: 0 x 4
-      # i 4 variables: formulation_id <chr>, name <chr>, formulation_type <chr>,
-      #   formulation_type_human <chr>
+      # i 4 variables: formulation_id <chr>, name <chr>, type <chr>,
+      #   application_type <chr>
       
       $parameters
       # A tibble: 0 x 4
-      # i 4 variables: formulation_id <chr>, name <chr>, value <dbl>, unit <chr>
+      # i 4 variables: formulation_id <chr>, parameter <chr>, value <dbl>, unit <chr>
       
 
 # to_df returns specific tables when requested
