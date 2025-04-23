@@ -69,6 +69,19 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Initialize populations list during snapshot initialization
+      if (is.null(private$.original_data$Populations)) {
+        private$.populations <- list()
+      } else {
+        # Create population objects and store in an unnamed list
+        private$.populations <- lapply(
+          private$.original_data$Populations,
+          function(population_data) {
+            Population$new(population_data)
+          }
+        )
+      }
+
       cli::cli_alert_success("Snapshot loaded successfully")
     },
     #' @description
@@ -269,6 +282,83 @@ Snapshot <- R6::R6Class(
         "Removed {length(formulation_name)} formulation(s)"
       )
       invisible(self)
+    },
+
+    #' @description
+    #' Add a Population object to the snapshot
+    #' @param population A Population object created with create_population()
+    #' @return Invisibly returns the object
+    #' @examples
+    #' \dontrun{
+    #' # Create a new population
+    #' pop <- create_population(name = "Test Population", number_of_individuals = 100)
+    #'
+    #' # Add the population to a snapshot
+    #' snapshot$add_population(pop)
+    #' }
+    add_population = function(population) {
+      # Validate that the input is a Population object
+      if (!inherits(population, "Population")) {
+        cli::cli_abort(
+          "Expected a Population object, but got {.cls {class(population)[1]}}"
+        )
+      }
+
+      # Add the population to the list
+      private$.populations <- c(private$.populations, list(population))
+
+      # Reset the named list to include the new population
+      private$.populations_named <- NULL
+      private$.build_populations_named_list()
+
+      cli::cli_alert_success(
+        "Added population '{population$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    #' @description
+    #' Remove a population from the snapshot by name
+    #' @param population_name Character vector of population name(s) to remove
+    #' @return Invisibly returns the object
+    #' @examples
+    #' \dontrun{
+    #' # Remove a population from the snapshot
+    #' snapshot$remove_population("pop_1")
+    #' }
+    remove_population = function(population_name) {
+      if (length(private$.populations) == 0) {
+        cli::cli_warn("No populations to remove")
+        return(invisible(self))
+      }
+
+      # Get current population names
+      current_names <- sapply(private$.populations, function(p) p$name)
+
+      # Check if requested populations exist
+      for (name in population_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Population '{name}' not found in snapshot")
+        }
+      }
+
+      # Remove the requested populations
+      keep_indices <- which(!(current_names %in% population_name))
+
+      if (length(keep_indices) == 0) {
+        private$.populations <- list()
+      } else {
+        private$.populations <- private$.populations[keep_indices]
+      }
+
+      # Reset the named list
+      private$.populations_named <- NULL
+      private$.build_populations_named_list()
+
+      cli::cli_alert_success(
+        "Removed {length(population_name)} population(s)"
+      )
+      invisible(self)
     }
   ),
   active = list(
@@ -299,6 +389,16 @@ Snapshot <- R6::R6Class(
           function(form) form$data
         )
         result$Formulations <- formulation_data
+      }
+
+      # Update with current population data
+      if (length(private$.populations) > 0) {
+        # Extract raw data from each population object
+        population_data <- lapply(
+          private$.populations,
+          function(pop) pop$data
+        )
+        result$Populations <- population_data
       }
 
       # Additional components could be added here in the future
@@ -356,6 +456,20 @@ Snapshot <- R6::R6Class(
         private$.formulations <- value
         private$.build_formulations_named_list()
         return(private$.formulations_named)
+      }
+    },
+
+    #' @field populations List of Population objects in the snapshot
+    populations = function(value = NULL) {
+      # Build the named list
+      private$.build_populations_named_list()
+
+      if (is.null(value)) {
+        return(private$.populations_named)
+      } else {
+        private$.populations <- value
+        private$.build_populations_named_list()
+        return(private$.populations_named)
       }
     }
   ),
@@ -507,6 +621,49 @@ Snapshot <- R6::R6Class(
       private$.formulations_named <- formulations_named
     },
 
+    # Build the named list of populations with disambiguated names
+    .build_populations_named_list = function() {
+      # Create a named list with population names, handling duplicates
+      populations_named <- list()
+
+      # Handle empty populations list
+      if (length(private$.populations) == 0) {
+        class(populations_named) <- c("population_collection", "list")
+        private$.populations_named <- populations_named
+        return()
+      }
+
+      population_names <- sapply(private$.populations, function(x) x$name)
+
+      # Track name occurrences to handle duplicates
+      name_counts <- table(population_names)
+      name_indices <- list()
+
+      for (i in seq_along(private$.populations)) {
+        name <- population_names[i]
+
+        # Initialize counter for this name if not already done
+        if (is.null(name_indices[[name]])) {
+          name_indices[[name]] <- 0
+        }
+
+        # Increment counter
+        name_indices[[name]] <- name_indices[[name]] + 1
+
+        # Construct the final name (with suffix if needed)
+        if (name_counts[name] > 1) {
+          final_name <- glue::glue("{name}_{name_indices[[name]]}")
+        } else {
+          final_name <- name
+        }
+
+        populations_named[[final_name]] <- private$.populations[[i]]
+      }
+
+      class(populations_named) <- c("population_collection", "list")
+      private$.populations_named <- populations_named
+    },
+
     # Store compound objects in an unnamed list
     .compounds = NULL,
 
@@ -523,7 +680,13 @@ Snapshot <- R6::R6Class(
     .formulations = NULL,
 
     # Cache for the named formulations list with disambiguated names
-    .formulations_named = NULL
+    .formulations_named = NULL,
+
+    # Store population objects in an unnamed list
+    .populations = NULL,
+
+    # Cache for the named populations list with disambiguated names
+    .populations_named = NULL
   )
 )
 
@@ -741,6 +904,80 @@ remove_formulation <- function(snapshot, formulation_name) {
 
   # Call the remove_formulation method of the Snapshot class
   snapshot$remove_formulation(formulation_name)
+
+  # Return the updated snapshot
+  invisible(snapshot)
+}
+
+#' Add a population to a snapshot
+#'
+#' @description
+#' Add a Population object to a Snapshot. This is a convenience function
+#' that calls the add_population method of the Snapshot class.
+#'
+#' @param snapshot A Snapshot object
+#' @param population A Population object created with create_population()
+#' @return The updated Snapshot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' # Create a new population
+#' pop <- create_population(
+#'   name = "Test Population",
+#'   number_of_individuals = 100,
+#'   proportion_of_females = 50,
+#'   age_min = 20,
+#'   age_max = 60
+#' )
+#'
+#' # Add the population to the snapshot
+#' snapshot <- add_population(snapshot, pop)
+#' }
+add_population <- function(snapshot, population) {
+  # Validate that the snapshot is a Snapshot object
+  validate_snapshot(snapshot)
+
+  # Call the add_population method of the Snapshot class
+  snapshot$add_population(population)
+
+  # Return the updated snapshot
+  invisible(snapshot)
+}
+
+#' Remove populations from a snapshot
+#'
+#' @description
+#' Remove one or more populations from a Snapshot by name.
+#'
+#' @param snapshot A Snapshot object
+#' @param population_name Character vector of population names to remove
+#' @return The updated Snapshot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' # Remove a single population
+#' snapshot <- remove_population(snapshot, "pop_1")
+#'
+#' # Remove multiple populations
+#' snapshot <- remove_population(
+#'   snapshot,
+#'   c("pop_1", "pop_2")
+#' )
+#' }
+remove_population <- function(snapshot, population_name) {
+  # Validate that the snapshot is a Snapshot object
+  validate_snapshot(snapshot)
+
+  # Call the remove_population method of the Snapshot class
+  snapshot$remove_population(population_name)
 
   # Return the updated snapshot
   invisible(snapshot)

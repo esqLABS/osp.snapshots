@@ -38,6 +38,29 @@ print.individual_collection <- function(x, ...) {
   invisible(x)
 }
 
+#' S3 print method for population collections
+#'
+#' @param x A population collection object
+#' @param ... Additional arguments passed to print methods
+#' @return Invisibly returns the population collection
+#' @export
+print.population_collection <- function(x, ...) {
+  cli::cli_h1("Populations ({length(x)})")
+
+  if (length(x) > 0) {
+    # Create a simple bullet point list with name and number of individuals
+    for (name in names(x)) {
+      n_individuals <- x[[name]]$number_of_individuals
+      source_text <- if (!is.null(x[[name]]$source_population))
+        glue::glue(" [Source: {x[[name]]$source_population}]") else ""
+      cli::cli_li("{name}{source_text} ({n_individuals} individuals)")
+    }
+  } else {
+    cli::cli_alert_info("No populations found")
+  }
+  invisible(x)
+}
+
 #' S3 print method for formulation collections
 #'
 #' @param x A formulation collection object
