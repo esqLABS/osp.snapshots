@@ -120,9 +120,6 @@ test_that("Removing formulations from snapshots works", {
 })
 
 test_that("Formulations are preserved when exporting and importing snapshots", {
-  # Skip test if file operations not allowed
-  skip_on_ci()
-
   # Create a snapshot with formulations using our local_snapshot helper
   snapshot <- local_snapshot(list(Version = 80))
 
