@@ -33,8 +33,6 @@ and display a summary of its information.
 
 \item{\code{disease_state_parameters}}{Disease state parameters for the population (if available)}
 
-\item{\code{template_individual}}{The template individual used for the population}
-
 \item{\code{advanced_parameters}}{Advanced parameters for the population}
 }
 \if{html}{\out{</div>}}

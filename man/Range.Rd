@@ -19,6 +19,7 @@ A Range object
 \description{
 Create a new Range object with the specified min, max, and unit values.
 Either min or max can be NULL to represent ranges with only an upper or lower bound.
+Min and max can also be equal to represent a single value.
 }
 \examples{
 \dontrun{
@@ -30,6 +31,9 @@ weight_min_range <- range(60, NULL, "kg")
 
 # Create a weight range with only an upper bound
 weight_max_range <- range(NULL, 90, "kg")
+
+# Create a weight range with equal min and max (representing a single value)
+weight_fixed_range <- range(70, 70, "kg")
 
 # Assign to a population
 population$weight_range <- weight_range
