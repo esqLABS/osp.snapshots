@@ -51,13 +51,6 @@ Population <- R6::R6Class(
         )
       }
 
-      # If the population has an individual template, initialize it
-      if (!is.null(data$Settings$Individual)) {
-        private$.template_individual <- Individual$new(
-          data$Settings$Individual
-        )
-      }
-
       # Initialize advanced parameters if present
       if (!is.null(data$AdvancedParameters)) {
         private$.advanced_parameters <- lapply(
@@ -448,11 +441,6 @@ Population <- R6::R6Class(
       private$.data$Settings$DiseaseStateParameters <- value
     },
 
-    #' @field template_individual The template individual used for the population
-    template_individual = function() {
-      private$.template_individual
-    },
-
     #' @field advanced_parameters Advanced parameters for the population
     advanced_parameters = function() {
       private$.advanced_parameters
@@ -461,7 +449,6 @@ Population <- R6::R6Class(
 
   private = list(
     .data = NULL,
-    .template_individual = NULL,
     .advanced_parameters = list(),
     .age_range = NULL,
     .weight_range = NULL,
@@ -488,23 +475,31 @@ Range <- R6::R6Class(
     #' @param unit Character. Unit for the range
     #' @return A new Range object
     initialize = function(min, max, unit) {
+      # Convert min and max to numeric if they are not NULL
+      if (!is.null(min)) {
+        min_numeric <- suppressWarnings(as.numeric(min))
+        if (length(min_numeric) == 0 || is.na(min_numeric)) {
+          cli::cli_abort("Min must be a numeric value")
+        }
+        min <- min_numeric
+      }
+      if (!is.null(max)) {
+        max_numeric <- suppressWarnings(as.numeric(max))
+        if (length(max_numeric) == 0 || is.na(max_numeric)) {
+          cli::cli_abort("Max must be a numeric value")
+        }
+        max <- max_numeric
+      }
+
       # Validate that at least one of min or max is not NULL
       if (is.null(min) && is.null(max)) {
         cli::cli_abort("At least one of min or max must be specified")
       }
 
-      # When both are present, validate that min < max
+      # When both are present, validate that min <= max
       if (!is.null(min) && !is.null(max)) {
-        if (!is.numeric(min) || !is.numeric(max) || min >= max) {
-          cli::cli_abort("Min must be less than max")
-        }
-      } else {
-        # When only one is present, validate that it's numeric
-        if (!is.null(min) && !is.numeric(min)) {
-          cli::cli_abort("Min must be a numeric value")
-        }
-        if (!is.null(max) && !is.numeric(max)) {
-          cli::cli_abort("Max must be a numeric value")
+        if (min > max) {
+          cli::cli_abort("Min must be less than or equal to max")
         }
       }
 
@@ -545,14 +540,20 @@ Range <- R6::R6Class(
         return(invisible(NULL))
       }
 
+      # Try numeric conversion
+      numeric_value <- suppressWarnings(as.numeric(value))
+
       # Validate numeric
-      if (!is.numeric(value)) {
+      if (length(numeric_value) == 0 || is.na(numeric_value)) {
         cli::cli_abort("Min must be a numeric value")
       }
 
-      # Validate min < max if max is not NULL
-      if (!is.null(private$.max) && value >= private$.max) {
-        cli::cli_abort("Min must be less than max")
+      # Use the converted numeric value
+      value <- numeric_value
+
+      # Validate min <= max if max is not NULL
+      if (!is.null(private$.max) && value > private$.max) {
+        cli::cli_abort("Min must be less than or equal to max")
       }
 
       private$.min <- value
@@ -574,14 +575,20 @@ Range <- R6::R6Class(
         return(invisible(NULL))
       }
 
+      # Try numeric conversion
+      numeric_value <- suppressWarnings(as.numeric(value))
+
       # Validate numeric
-      if (!is.numeric(value)) {
+      if (length(numeric_value) == 0 || is.na(numeric_value)) {
         cli::cli_abort("Max must be a numeric value")
       }
 
-      # Validate min < max if min is not NULL
-      if (!is.null(private$.min) && value <= private$.min) {
-        cli::cli_abort("Max must be greater than min")
+      # Use the converted numeric value
+      value <- numeric_value
+
+      # Validate min <= max if min is not NULL
+      if (!is.null(private$.min) && value < private$.min) {
+        cli::cli_abort("Max must be greater than or equal to min")
       }
 
       private$.max <- value
@@ -608,6 +615,7 @@ Range <- R6::R6Class(
 #' @description
 #' Create a new Range object with the specified min, max, and unit values.
 #' Either min or max can be NULL to represent ranges with only an upper or lower bound.
+#' Min and max can also be equal to represent a single value.
 #'
 #' @param min Numeric or NULL. Minimum value, can be NULL for ranges with only an upper bound
 #' @param max Numeric or NULL. Maximum value, can be NULL for ranges with only a lower bound
@@ -626,6 +634,9 @@ Range <- R6::R6Class(
 #'
 #' # Create a weight range with only an upper bound
 #' weight_max_range <- range(NULL, 90, "kg")
+#'
+#' # Create a weight range with equal min and max (representing a single value)
+#' weight_fixed_range <- range(70, 70, "kg")
 #'
 #' # Assign to a population
 #' population$weight_range <- weight_range

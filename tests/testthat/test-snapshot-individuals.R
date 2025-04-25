@@ -2,11 +2,6 @@ test_that("Snapshot individuals are initialized correctly", {
   # Create a snapshot object
   snapshot <- Snapshot$new(test_snapshot_path)
 
-  # Skip if there are no individuals in the test snapshot
-  if (is.null(snapshot$data$Individuals)) {
-    skip("Test snapshot does not contain individuals")
-  }
-
   # Test individuals are initialized
   expect_s3_class(snapshot$individuals, "individual_collection")
   expect_s3_class(snapshot$individuals, "list")
@@ -38,10 +33,6 @@ test_that("Individual collection print method works", {
   # Create a snapshot object
   snapshot <- Snapshot$new(test_snapshot_path)
 
-  # Skip if there are no individuals in the test snapshot
-  if (is.null(snapshot$data$Individuals)) {
-    skip("Test snapshot does not contain individuals")
-  }
 
   # Create a test with some individuals for a more predictable test
   test_individuals <- list(
