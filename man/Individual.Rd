@@ -112,7 +112,7 @@ Convert individual data to tibbles
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{type}}{Character. Type of data to convert: "all" (default), "origin", "parameters", or "expressions"}
+\item{\code{type}}{Character. Type of data to convert: "all" (default), "characteristics", "parameters", or "expressions"}
 }
 \if{html}{\out{</div>}}
 }

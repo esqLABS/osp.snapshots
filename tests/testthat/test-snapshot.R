@@ -115,11 +115,6 @@ test_that("Snapshot compounds are initialized correctly", {
   # Create a snapshot object
   snapshot <- Snapshot$new(test_snapshot_path)
 
-  # Skip if there are no compounds in the test snapshot
-  if (is.null(snapshot$data$Compounds)) {
-    skip("Test snapshot does not contain compounds")
-  }
-
   # Test compounds are initialized
   expect_s3_class(snapshot$compounds, "compound_collection")
   expect_s3_class(snapshot$compounds, "list")

@@ -50,6 +50,15 @@ snapshot$add_formulation(form)
 # Remove a formulation from the snapshot
 snapshot$remove_formulation("Tablet")
 }
+
+## ------------------------------------------------
+## Method `Snapshot$remove_population`
+## ------------------------------------------------
+
+\dontrun{
+# Remove a population from the snapshot
+snapshot$remove_population("pop_1")
+}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -70,6 +79,8 @@ snapshot$remove_formulation("Tablet")
 \item{\code{individuals}}{List of Individual objects in the snapshot}
 
 \item{\code{formulations}}{List of Formulation objects in the snapshot}
+
+\item{\code{populations}}{List of Population objects in the snapshot}
 }
 \if{html}{\out{</div>}}
 }
@@ -83,6 +94,7 @@ snapshot$remove_formulation("Tablet")
 \item \href{#method-Snapshot-remove_individual}{\code{Snapshot$remove_individual()}}
 \item \href{#method-Snapshot-add_formulation}{\code{Snapshot$add_formulation()}}
 \item \href{#method-Snapshot-remove_formulation}{\code{Snapshot$remove_formulation()}}
+\item \href{#method-Snapshot-remove_population}{\code{Snapshot$remove_population()}}
 \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
 }
 }
@@ -269,6 +281,37 @@ Invisibly returns the object
 \preformatted{\dontrun{
 # Remove a formulation from the snapshot
 snapshot$remove_formulation("Tablet")
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_population"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_population}{}}}
+\subsection{Method \code{remove_population()}}{
+Remove a population from the snapshot by name
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_population(population_name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{population_name}}{Character vector of population name(s) to remove}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns the object
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+# Remove a population from the snapshot
+snapshot$remove_population("pop_1")
 }
 }
 \if{html}{\out{</div>}}

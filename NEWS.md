@@ -1,5 +1,6 @@
 # osp.snapshots (development version)
 
+* Add snapshot interface for Populations.
 * Add snapshot interface for Formulations.
 
 # osp.snapshots (0.1.0)

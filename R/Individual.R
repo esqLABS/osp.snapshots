@@ -34,9 +34,9 @@ Individual <- R6::R6Class(
           cli::cli_h1("Individual: {self$name} | Seed: {self$seed}")
         }
 
-        # Display origin data if available
+        # Display characteristics if available
         if (!is.null(self$data$OriginData)) {
-          cli::cli_h2("Origin Data")
+          cli::cli_h2("Characteristics")
 
           # Display species and population if available
           if (!is.null(self$species)) {
@@ -141,11 +141,11 @@ Individual <- R6::R6Class(
 
     #' @description
     #' Convert individual data to tibbles
-    #' @param type Character. Type of data to convert: "all" (default), "origin", "parameters", or "expressions"
+    #' @param type Character. Type of data to convert: "all" (default), "characteristics", "parameters", or "expressions"
     #' @return A list of tibbles containing the requested data
     to_df = function(type = "all") {
       # Validate type argument
-      valid_types <- c("all", "origin", "parameters", "expressions")
+      valid_types <- c("all", "characteristics", "parameters", "expressions")
       if (!type %in% valid_types) {
         cli::cli_abort(
           "type must be one of: {valid_types}"
@@ -158,8 +158,8 @@ Individual <- R6::R6Class(
       # Initialize result list
       result <- list()
 
-      # Add origin data if requested
-      if (type %in% c("all", "origin")) {
+      # Add characteristics data if requested
+      if (type %in% c("all", "characteristics")) {
         # Create a list to store the data
         data_list <- list(
           individual_id = individual_id,
@@ -210,7 +210,7 @@ Individual <- R6::R6Class(
           data_list$disease_state_parameters <- NA_character_
         }
 
-        result$origin <- tibble::as_tibble(data_list)
+        result$characteristics <- tibble::as_tibble(data_list)
       }
 
       # Add parameters data if requested
@@ -586,26 +586,26 @@ create_individual <- function(
   if (!is.null(gestational_age_unit))
     validate_unit(gestational_age_unit, "Time")
 
-  # Create origin data structure
-  origin_data <- list()
+  # Create characteristics data structure
+  characteristics_data <- list()
 
   # Add basic demographic information
-  if (!is.null(species)) origin_data$Species <- species
-  if (!is.null(population)) origin_data$Population <- population
-  if (!is.null(gender)) origin_data$Gender <- gender
+  if (!is.null(species)) characteristics_data$Species <- species
+  if (!is.null(population)) characteristics_data$Population <- population
+  if (!is.null(gender)) characteristics_data$Gender <- gender
 
   # Add measurements with units
   if (!is.null(age)) {
-    origin_data$Age <- list(Value = age, Unit = age_unit)
+    characteristics_data$Age <- list(Value = age, Unit = age_unit)
   }
   if (!is.null(weight)) {
-    origin_data$Weight <- list(Value = weight, Unit = weight_unit)
+    characteristics_data$Weight <- list(Value = weight, Unit = weight_unit)
   }
   if (!is.null(height)) {
-    origin_data$Height <- list(Value = height, Unit = height_unit)
+    characteristics_data$Height <- list(Value = height, Unit = height_unit)
   }
   if (!is.null(gestational_age)) {
-    origin_data$GestationalAge <- list(
+    characteristics_data$GestationalAge <- list(
       Value = gestational_age,
       Unit = gestational_age_unit
     )
@@ -613,21 +613,21 @@ create_individual <- function(
 
   # Add calculation methods if provided
   if (!is.null(calculation_methods)) {
-    origin_data$CalculationMethods <- calculation_methods
+    characteristics_data$CalculationMethods <- calculation_methods
   }
 
   # Add disease state information if provided
   if (!is.null(disease_state)) {
-    origin_data$DiseaseState <- disease_state
+    characteristics_data$DiseaseState <- disease_state
     if (!is.null(disease_state_parameters)) {
-      origin_data$DiseaseStateParameters <- disease_state_parameters
+      characteristics_data$DiseaseStateParameters <- disease_state_parameters
     }
   }
 
   # Create the data structure
   data <- list(
     Name = name,
-    OriginData = origin_data
+    OriginData = characteristics_data
   )
 
   # Add seed if provided

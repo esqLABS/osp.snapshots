@@ -6,7 +6,7 @@
       
       -- Individual: Test Individual | Seed: 12345 -----------------------------------
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Species: Human
       * Population: European_ICRP_2002
@@ -41,7 +41,7 @@
       
       -- Individual: Test Individual | Seed: 12345 -----------------------------------
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Species: Human
       * Population: European_ICRP_2002
@@ -70,7 +70,7 @@
       
       -- Individual: Modified Name | Seed: 54321 -------------------------------------
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Species: Beagle
       * Population: Asian_Tanaka_1996
@@ -98,7 +98,7 @@
       
       -- Individual: Test Individual | Seed: 12345 -----------------------------------
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Species: Human
       * Population: European_ICRP_2002
@@ -126,7 +126,7 @@
       
       -- Individual: Test Individual | Seed: 12345 -----------------------------------
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Species: Human
       * Population: European_ICRP_2002
@@ -155,7 +155,7 @@
       
       -- Individual: Test Individual with Methods ------------------------------------
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Species: Human
       * Calculation Methods:
@@ -171,7 +171,7 @@
       
       -- Individual: Method Test Individual ------------------------------------------
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Calculation Methods:
         * Test Method 1
@@ -185,7 +185,7 @@
       
       -- Individual: Preterm Baby ----------------------------------------------------
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Species: Human
       * Population: Preterm
@@ -203,7 +203,7 @@
       
       -- Individual: Preterm Baby | Seed: 54321 --------------------------------------
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Species: Human
       * Population: Preterm
