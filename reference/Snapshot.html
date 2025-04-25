@@ -9,7 +9,7 @@ methods to access different components of the snapshot and visualize its structu
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,6 +70,10 @@ methods to access different components of the snapshot and visualize its structu
 <dd><p>List of Formulation objects in the snapshot</p></dd>
 
 
+<dt><code>populations</code></dt>
+<dd><p>List of Population objects in the snapshot</p></dd>
+
+
 </dl><p></p></div>
     </div>
     <div class="section level2">
@@ -85,6 +89,7 @@ methods to access different components of the snapshot and visualize its structu
 <li><p><a href="#method-Snapshot-remove_individual"><code>Snapshot$remove_individual()</code></a></p></li>
 <li><p><a href="#method-Snapshot-add_formulation"><code>Snapshot$add_formulation()</code></a></p></li>
 <li><p><a href="#method-Snapshot-remove_formulation"><code>Snapshot$remove_formulation()</code></a></p></li>
+<li><p><a href="#method-Snapshot-remove_population"><code>Snapshot$remove_population()</code></a></p></li>
 <li><p><a href="#method-Snapshot-clone"><code>Snapshot$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-Snapshot-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -268,15 +273,44 @@ snapshot$remove_formulation("Tablet")
 </div>
 
 
-</div><p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-Snapshot-remove_population"></a><div class="section">
+<h3 id="method-remove-population-">Method <code><a href="remove_population.html">remove_population()</a></code><a class="anchor" aria-label="anchor" href="#method-remove-population-"></a></h3>
+<p>Remove a population from the snapshot by name</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_population</span><span class="op">(</span><span class="va">population_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>population_name</code></dt>
+<dd><p>Character vector of population name(s) to remove</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
+<p>Invisibly returns the object</p>
+</div>
+<div class="section">
+<h4 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
+# Remove a population from the snapshot
+snapshot$remove_population("pop_1")
+}
+</code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -331,6 +365,15 @@ snapshot$remove_formulation("Tablet")
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Remove a formulation from the snapshot</span></span></span>
 <span class="r-in"><span><span class="va">snapshot</span><span class="op">$</span><span class="fu">remove_formulation</span><span class="op">(</span><span class="st">"Tablet"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Snapshot$remove_population`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Remove a population from the snapshot</span></span></span>
+<span class="r-in"><span><span class="va">snapshot</span><span class="op">$</span><span class="fu">remove_population</span><span class="op">(</span><span class="st">"pop_1"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
