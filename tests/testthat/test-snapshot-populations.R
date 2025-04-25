@@ -155,18 +155,33 @@ test_that("Range class works correctly", {
   # Test validation
   expect_error(
     weight_range$min <- 100,
-    "Min must be less than max"
+    "Min must be less than or equal to max"
   )
 
   expect_error(
     weight_range$max <- 50,
-    "Max must be greater than min"
+    "Max must be greater than or equal to min"
   )
 
   expect_error(
     weight_range$min <- "invalid",
     "Min must be a numeric value"
   )
+
+  # Test with equal min and max
+  equal_range <- Range$new(50, 50, "kg")
+  expect_equal(equal_range$min, 50)
+  expect_equal(equal_range$max, 50)
+
+  # Test setting min equal to max
+  weight_range$min <- 95
+  expect_equal(weight_range$min, 95)
+
+  # Test setting max equal to min
+  weight_range$min <- 60
+  weight_range$max <- 60
+  expect_equal(weight_range$min, 60)
+  expect_equal(weight_range$max, 60)
 
   # Test print method returns invisibly
   expect_identical(weight_range, suppressMessages(weight_range$print()))
@@ -183,11 +198,11 @@ test_that("Range class works correctly", {
   # Test setting bounds to NULL
   weight_range$min <- NULL
   expect_null(weight_range$min)
-  expect_equal(weight_range$max, 95)
+  expect_equal(weight_range$max, 60)
 
-  weight_range$min <- 60 # Reset min
+  weight_range$min <- 50 # Reset min
   weight_range$max <- NULL
-  expect_equal(weight_range$min, 60)
+  expect_equal(weight_range$min, 50)
   expect_null(weight_range$max)
 
   # Test validation with NULL bounds
@@ -212,10 +227,15 @@ test_that("range() function creates valid Range objects", {
   expect_equal(height_range$max, 180)
   expect_equal(height_range$unit, "cm")
 
+  # Test with equal min and max
+  equal_range <- range(70, 70, "cm")
+  expect_equal(equal_range$min, 70)
+  expect_equal(equal_range$max, 70)
+
   # Error for invalid range
   expect_error(
     range(180, 160, "cm"),
-    "Min must be less than max"
+    "Min must be less than or equal to max"
   )
 
   # Test with NULL values

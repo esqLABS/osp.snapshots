@@ -52,7 +52,7 @@ test_that("to_df returns all tables by default", {
 
   # Check structure
   expect_type(dfs, "list")
-  expect_named(dfs, c("origin", "parameters", "expressions"))
+  expect_named(dfs, c("characteristics", "parameters", "expressions"))
 
   # Use expect_snapshot to verify dataframe structure and content
   expect_snapshot(dfs)
@@ -82,10 +82,10 @@ test_that("to_df returns specific tables when requested", {
   )
   ind <- Individual$new(data)
 
-  # Test origin data
-  origin_df <- ind$to_df("origin")
-  expect_s3_class(origin_df, "tbl_df")
-  expect_snapshot(origin_df)
+  # Test characteristics data
+  characteristics_df <- ind$to_df("characteristics")
+  expect_s3_class(characteristics_df, "tbl_df")
+  expect_snapshot(characteristics_df)
 
   # Test parameters data
   params_df <- ind$to_df("parameters")
@@ -107,7 +107,7 @@ test_that("to_df handles missing values", {
 
   # Check structure
   expect_type(dfs, "list")
-  expect_named(dfs, c("origin", "parameters", "expressions"))
+  expect_named(dfs, c("characteristics", "parameters", "expressions"))
 
   # Snapshot all tables
   expect_snapshot(dfs)
@@ -130,15 +130,15 @@ test_that("to_df includes gestational age", {
     height_unit = "cm"
   )
 
-  # Get origin data
-  origin_df <- ind$to_df("origin")
+  # Get characteristics data
+  characteristics_df <- ind$to_df("characteristics")
 
   # Check that gestational age is included
-  expect_true("gestational_age" %in% names(origin_df))
-  expect_true("gestational_age_unit" %in% names(origin_df))
+  expect_true("gestational_age" %in% names(characteristics_df))
+  expect_true("gestational_age_unit" %in% names(characteristics_df))
 
   # Use expect_snapshot to verify dataframe content
-  expect_snapshot(origin_df)
+  expect_snapshot(characteristics_df)
 })
 
 test_that("to_df validates type argument", {
@@ -225,7 +225,7 @@ test_that("get_individuals_dfs returns combined data frames from all individuals
 
   # Verify structure
   expect_type(dfs, "list")
-  expect_named(dfs, c("origin", "parameters", "expressions"))
+  expect_named(dfs, c("characteristics", "parameters", "expressions"))
 
   # Use expect_snapshot to verify dataframe content
   expect_snapshot(dfs)
@@ -241,7 +241,7 @@ test_that("get_individuals_dfs handles empty snapshot", {
 
   # Verify structure
   expect_type(dfs, "list")
-  expect_named(dfs, c("origin", "parameters", "expressions"))
+  expect_named(dfs, c("characteristics", "parameters", "expressions"))
 
   # Use expect_snapshot to verify empty dataframes
   expect_snapshot(dfs)

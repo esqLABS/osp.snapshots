@@ -8,7 +8,7 @@
 #'
 #' @return A list containing three data frames:
 #' \itemize{
-#'   \item origin: Basic information about each individual
+#'   \item characteristics: Basic information about each individual
 #'   \item parameters: All parameters for all individuals
 #'   \item expressions: Expression profiles for all individuals
 #' }
@@ -24,7 +24,7 @@
 #' dfs <- get_individuals_dfs(snapshot)
 #'
 #' # Access specific data frames
-#' origin_df <- dfs$origin
+#' characteristics_df <- dfs$characteristics
 #' parameters_df <- dfs$parameters
 #' expressions_df <- dfs$expressions
 #' }
@@ -37,7 +37,7 @@ get_individuals_dfs <- function(snapshot) {
 
   # Initialize empty result list with tibbles for each data type
   result <- list(
-    origin = tibble::tibble(
+    characteristics = tibble::tibble(
       individual_id = character(0),
       name = character(0),
       seed = integer(0),
@@ -75,10 +75,10 @@ get_individuals_dfs <- function(snapshot) {
     individual$to_df()
   })
 
-  # Combine all origin data frames
+  # Combine all characteristics data frames
   if (length(ind_dfs) > 0) {
-    origin_dfs <- lapply(ind_dfs, function(df) df$origin)
-    result$origin <- dplyr::bind_rows(origin_dfs)
+    characteristics_dfs <- lapply(ind_dfs, function(df) df$characteristics)
+    result$characteristics <- dplyr::bind_rows(characteristics_dfs)
 
     # Combine all parameter data frames
     param_dfs <- lapply(ind_dfs, function(df) df$parameters)

@@ -112,7 +112,7 @@
       
       -- Individual: European (P-gp modified, CYP3A4 36 h)_modified | Seed: 17189110 -
       
-      -- Origin Data --
+      -- Characteristics --
       
       * Species: Beagle
       * Population: Asian_Tanaka_1996

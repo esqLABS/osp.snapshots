@@ -3,7 +3,7 @@
     Code
       dfs
     Output
-      $origin
+      $characteristics
       # A tibble: 1 x 17
         individual_id name            seed species population    gender   age age_unit
         <chr>         <chr>          <dbl> <chr>   <chr>         <chr>  <dbl> <chr>   
@@ -31,7 +31,7 @@
 # to_df returns specific tables when requested
 
     Code
-      origin_df
+      characteristics_df
     Output
       # A tibble: 1 x 17
         individual_id name          seed species population      gender   age age_unit
@@ -67,7 +67,7 @@
     Code
       dfs
     Output
-      $origin
+      $characteristics
       # A tibble: 1 x 17
         individual_id name     seed species population gender   age age_unit
         <chr>         <chr>   <int> <chr>   <chr>      <chr>  <dbl> <chr>   
@@ -90,7 +90,7 @@
 # to_df includes gestational age
 
     Code
-      origin_df
+      characteristics_df
     Output
       # A tibble: 1 x 17
         individual_id name          seed species population gender   age age_unit
@@ -106,7 +106,7 @@
     Code
       dfs
     Output
-      $origin
+      $characteristics
       # A tibble: 2 x 17
         individual_id name            seed species population    gender   age age_unit
         <chr>         <chr>          <dbl> <chr>   <chr>         <chr>  <dbl> <chr>   
@@ -139,7 +139,7 @@
     Code
       dfs
     Output
-      $origin
+      $characteristics
       # A tibble: 0 x 14
       # i 14 variables: individual_id <chr>, name <chr>, seed <int>, species <chr>,
       #   population <chr>, gender <chr>, age <dbl>, age_unit <chr>, weight <dbl>,
