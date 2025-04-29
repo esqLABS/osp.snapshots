@@ -178,7 +178,7 @@ get_formulations_dfs <- function(snapshot) {
 #' @return A list containing two data frames:
 #' \itemize{
 #'   \item characteristics: Basic information about each population including ranges
-#'   \item advanced_parameters: Advanced parameters information
+#'   \item parameters: All parameters for all populations
 #' }
 #'
 #' @export
@@ -193,7 +193,7 @@ get_formulations_dfs <- function(snapshot) {
 #'
 #' # Access specific data frames
 #' characteristics_df <- dfs$characteristics
-#' advanced_parameters_df <- dfs$advanced_parameters
+#' parameters_df <- dfs$parameters
 #' }
 get_populations_dfs <- function(snapshot) {
   # Check if input is a snapshot
@@ -211,6 +211,7 @@ get_populations_dfs <- function(snapshot) {
       number_of_individuals = integer(0),
       proportion_of_females = numeric(0),
       source_population = character(0),
+      individual_name = character(0),
       age_min = numeric(0),
       age_max = numeric(0),
       age_unit = character(0),
@@ -222,9 +223,12 @@ get_populations_dfs <- function(snapshot) {
       height_unit = character(0),
       bmi_min = numeric(0),
       bmi_max = numeric(0),
-      bmi_unit = character(0)
+      bmi_unit = character(0),
+      egfr_min = numeric(0),
+      egfr_max = numeric(0),
+      egfr_unit = character(0)
     ),
-    advanced_parameters = tibble::tibble(
+    parameters = tibble::tibble(
       population_id = character(0),
       parameter = character(0),
       seed = integer(0),
@@ -244,135 +248,22 @@ get_populations_dfs <- function(snapshot) {
 
   # Process each population
   characteristics_list <- list()
-  advanced_params_list <- list()
+  params_list <- list()
 
   for (pop in populations) {
     # Create characteristics data frame with all columns
-    characteristics_df <- tibble::tibble(
-      population_id = pop$name,
-      name = pop$name,
-      seed = pop$seed,
-      number_of_individuals = pop$number_of_individuals,
-      proportion_of_females = pop$proportion_of_females,
-      source_population = NA_character_,
-      age_min = NA_real_,
-      age_max = NA_real_,
-      age_unit = NA_character_,
-      weight_min = NA_real_,
-      weight_max = NA_real_,
-      weight_unit = NA_character_,
-      height_min = NA_real_,
-      height_max = NA_real_,
-      height_unit = NA_character_,
-      bmi_min = NA_real_,
-      bmi_max = NA_real_,
-      bmi_unit = NA_character_
+
+    pop_dfs <- pop$to_df()
+
+    result$characteristics <- dplyr::bind_rows(
+      result$characteristics,
+      pop_dfs$characteristics
     )
 
-    # Add source population if available
-    if (!is.null(pop$source_population)) {
-      characteristics_df$source_population <- pop$source_population
-    }
-
-    # Add age range
-    if (!is.null(pop$age_range)) {
-      characteristics_df$age_min <- pop$age_range$min
-      characteristics_df$age_max <- pop$age_range$max
-      characteristics_df$age_unit <- pop$age_range$unit
-    }
-
-    # Add weight range if available
-    if (!is.null(pop$weight_range)) {
-      characteristics_df$weight_min <- pop$weight_range$min
-      characteristics_df$weight_max <- pop$weight_range$max
-      characteristics_df$weight_unit <- pop$weight_range$unit
-    }
-
-    # Add height range if available
-    if (!is.null(pop$height_range)) {
-      characteristics_df$height_min <- pop$height_range$min
-      characteristics_df$height_max <- pop$height_range$max
-      characteristics_df$height_unit <- pop$height_range$unit
-    }
-
-    # Add BMI range if available
-    if (!is.null(pop$bmi_range)) {
-      characteristics_df$bmi_min <- pop$bmi_range$min
-      characteristics_df$bmi_max <- pop$bmi_range$max
-      characteristics_df$bmi_unit <- pop$bmi_range$unit
-    }
-
-    characteristics_list[[
-      length(characteristics_list) + 1
-    ]] <- characteristics_df
-
-    # Process advanced parameters
-    if (length(pop$advanced_parameters) > 0) {
-      adv_params_df <- tibble::tibble()
-
-      for (param in pop$advanced_parameters) {
-        if (length(param$parameters) > 0) {
-          for (stat in param$parameters) {
-            # Get source and description if available
-            source <- NA_character_
-            description <- NA_character_
-
-            if (!is.null(stat$ValueOrigin)) {
-              source <- stat$ValueOrigin$Source
-              if (!is.null(stat$ValueOrigin$Description)) {
-                description <- stat$ValueOrigin$Description
-              }
-            }
-
-            adv_params_df <- dplyr::bind_rows(
-              adv_params_df,
-              tibble::tibble(
-                population_id = pop$name,
-                parameter = param$name,
-                seed = param$seed,
-                distribution_type = param$distribution_type,
-                statistic = stat$Name,
-                value = stat$Value,
-                unit = ifelse(is.null(stat$Unit), NA_character_, stat$Unit),
-                source = source,
-                description = description
-              )
-            )
-          }
-        } else {
-          # If no parameters, add just the basic info
-          adv_params_df <- dplyr::bind_rows(
-            adv_params_df,
-            tibble::tibble(
-              population_id = pop$name,
-              parameter = param$name,
-              seed = param$seed,
-              distribution_type = param$distribution_type,
-              statistic = NA_character_,
-              value = NA_real_,
-              unit = NA_character_,
-              source = NA_character_,
-              description = NA_character_
-            )
-          )
-        }
-      }
-
-      if (nrow(adv_params_df) > 0) {
-        advanced_params_list[[
-          length(advanced_params_list) + 1
-        ]] <- adv_params_df
-      }
-    }
-  }
-
-  # Combine all data frames
-  if (length(characteristics_list) > 0) {
-    result$characteristics <- dplyr::bind_rows(characteristics_list)
-  }
-
-  if (length(advanced_params_list) > 0) {
-    result$advanced_parameters <- dplyr::bind_rows(advanced_params_list)
+    result$parameters <- dplyr::bind_rows(
+      result$parameters,
+      pop_dfs$parameters
+    )
   }
 
   return(result)

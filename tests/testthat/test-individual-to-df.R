@@ -55,7 +55,7 @@ test_that("to_df returns all tables by default", {
   expect_named(dfs, c("characteristics", "parameters", "expressions"))
 
   # Use expect_snapshot to verify dataframe structure and content
-  expect_snapshot(dfs)
+  expect_snapshot(knitr::kable(dfs))
 })
 
 test_that("to_df returns specific tables when requested", {
@@ -85,17 +85,17 @@ test_that("to_df returns specific tables when requested", {
   # Test characteristics data
   characteristics_df <- ind$to_df("characteristics")
   expect_s3_class(characteristics_df, "tbl_df")
-  expect_snapshot(characteristics_df)
+  expect_snapshot(knitr::kable(characteristics_df))
 
   # Test parameters data
   params_df <- ind$to_df("parameters")
   expect_s3_class(params_df, "tbl_df")
-  expect_snapshot(params_df)
+  expect_snapshot(knitr::kable(params_df))
 
   # Test expression profiles data
   expr_df <- ind$to_df("expressions")
   expect_s3_class(expr_df, "tbl_df")
-  expect_snapshot(expr_df)
+  expect_snapshot(knitr::kable(expr_df))
 })
 
 test_that("to_df handles missing values", {
@@ -110,7 +110,7 @@ test_that("to_df handles missing values", {
   expect_named(dfs, c("characteristics", "parameters", "expressions"))
 
   # Snapshot all tables
-  expect_snapshot(dfs)
+  expect_snapshot(knitr::kable(dfs))
 })
 
 test_that("to_df includes gestational age", {
@@ -138,7 +138,7 @@ test_that("to_df includes gestational age", {
   expect_true("gestational_age_unit" %in% names(characteristics_df))
 
   # Use expect_snapshot to verify dataframe content
-  expect_snapshot(characteristics_df)
+  expect_snapshot(knitr::kable(characteristics_df))
 })
 
 test_that("to_df validates type argument", {
@@ -228,7 +228,7 @@ test_that("get_individuals_dfs returns combined data frames from all individuals
   expect_named(dfs, c("characteristics", "parameters", "expressions"))
 
   # Use expect_snapshot to verify dataframe content
-  expect_snapshot(dfs)
+  expect_snapshot(knitr::kable(dfs))
 })
 
 test_that("get_individuals_dfs handles empty snapshot", {
@@ -244,5 +244,5 @@ test_that("get_individuals_dfs handles empty snapshot", {
   expect_named(dfs, c("characteristics", "parameters", "expressions"))
 
   # Use expect_snapshot to verify empty dataframes
-  expect_snapshot(dfs)
+  expect_snapshot(knitr::kable(dfs))
 })

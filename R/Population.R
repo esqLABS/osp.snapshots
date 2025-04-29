@@ -60,6 +60,20 @@ Population <- R6::R6Class(
           }
         )
       }
+
+      # Initialize disease state parameter ranges (eGFR for now)
+      private$.egfr_range <- NULL
+      if (!is.null(data$Settings$DiseaseStateParameters)) {
+        for (param in data$Settings$DiseaseStateParameters) {
+          if (!is.null(param$Name) && tolower(param$Name) == "egfr") {
+            private$.egfr_range <- Range$new(
+              param$Min,
+              param$Max,
+              param$Unit
+            )
+          }
+        }
+      }
     },
 
     #' @description
@@ -73,6 +87,11 @@ Population <- R6::R6Class(
       seed_text <- if (!is.null(self$seed))
         glue::glue(" (Seed: {self$seed})") else ""
       cli::cli_h2("Population: {self$name}{seed_text}")
+
+      # Individual name (if available)
+      if (!is.null(self$individual_name)) {
+        cli::cli_text("Individual name: {self$individual_name}")
+      }
 
       # Source population (if available)
       if (!is.null(self$source_population)) {
@@ -115,6 +134,13 @@ Population <- R6::R6Class(
         )
       }
 
+      # Disease state parameter ranges (eGFR for now)
+      if (!is.null(self$egfr_range)) {
+        cli::cli_text(
+          "eGFR range: {self$egfr_range$min} - {self$egfr_range$max} {self$egfr_range$unit}"
+        )
+      }
+
       # Advanced parameters
       if (length(private$.advanced_parameters) > 0) {
         cli::cli_h3("Advanced Parameters")
@@ -132,7 +158,7 @@ Population <- R6::R6Class(
     #' @return A list containing data frames with population information:
     #' \itemize{
     #'   \item characteristics: Population characteristics including basic information and physiological parameters
-    #'   \item advanced_parameters: Advanced parameters information
+    #'   \item parameters: Advanced parameters information
     #' }
     to_df = function() {
       # Create characteristics data frame with all columns
@@ -142,56 +168,27 @@ Population <- R6::R6Class(
         seed = self$seed,
         number_of_individuals = self$number_of_individuals,
         proportion_of_females = self$proportion_of_females,
-        source_population = NA_character_,
-        age_min = NA_real_,
-        age_max = NA_real_,
-        age_unit = NA_character_,
-        weight_min = NA_real_,
-        weight_max = NA_real_,
-        weight_unit = NA_character_,
-        height_min = NA_real_,
-        height_max = NA_real_,
-        height_unit = NA_character_,
-        bmi_min = NA_real_,
-        bmi_max = NA_real_,
-        bmi_unit = NA_character_
+        source_population = self$source_population %||% NA_character_,
+        individual_name = self$individual_name %||% NA_character_,
+        age_min = self$age_range$min %||% NA_real_,
+        age_max = self$age_range$max %||% NA_real_,
+        age_unit = self$age_range$unit %||% NA_character_,
+        weight_min = self$weight_range$min %||% NA_real_,
+        weight_max = self$weight_range$max %||% NA_real_,
+        weight_unit = self$weight_range$unit %||% NA_character_,
+        height_min = self$height_range$min %||% NA_real_,
+        height_max = self$height_range$max %||% NA_real_,
+        height_unit = self$height_range$unit %||% NA_character_,
+        bmi_min = self$bmi_range$min %||% NA_real_,
+        bmi_max = self$bmi_range$max %||% NA_real_,
+        bmi_unit = self$bmi_range$unit %||% NA_character_,
+        egfr_min = self$egfr_range$min %||% NA_real_,
+        egfr_max = self$egfr_range$max %||% NA_real_,
+        egfr_unit = self$egfr_range$unit %||% NA_character_
       )
 
-      # Add source population if available
-      if (!is.null(self$source_population)) {
-        characteristics_df$source_population <- self$source_population
-      }
-
-      # Add age range
-      if (!is.null(self$age_range)) {
-        characteristics_df$age_min <- self$age_range$min
-        characteristics_df$age_max <- self$age_range$max
-        characteristics_df$age_unit <- self$age_range$unit
-      }
-
-      # Add weight range if available
-      if (!is.null(self$weight_range)) {
-        characteristics_df$weight_min <- self$weight_range$min
-        characteristics_df$weight_max <- self$weight_range$max
-        characteristics_df$weight_unit <- self$weight_range$unit
-      }
-
-      # Add height range if available
-      if (!is.null(self$height_range)) {
-        characteristics_df$height_min <- self$height_range$min
-        characteristics_df$height_max <- self$height_range$max
-        characteristics_df$height_unit <- self$height_range$unit
-      }
-
-      # Add BMI range if available
-      if (!is.null(self$bmi_range)) {
-        characteristics_df$bmi_min <- self$bmi_range$min
-        characteristics_df$bmi_max <- self$bmi_range$max
-        characteristics_df$bmi_unit <- self$bmi_range$unit
-      }
-
-      # Create advanced parameters data frame
-      adv_params_df <- tibble::tibble(
+      # Create parameters data frame
+      params_df <- tibble::tibble(
         population_id = character(0),
         parameter = character(0),
         seed = integer(0),
@@ -218,8 +215,8 @@ Population <- R6::R6Class(
                 }
               }
 
-              adv_params_df <- dplyr::bind_rows(
-                adv_params_df,
+              params_df <- dplyr::bind_rows(
+                params_df,
                 tibble::tibble(
                   population_id = self$name,
                   parameter = param$name,
@@ -235,8 +232,8 @@ Population <- R6::R6Class(
             }
           } else {
             # If no parameters, add just the basic info
-            adv_params_df <- dplyr::bind_rows(
-              adv_params_df,
+            params_df <- dplyr::bind_rows(
+              params_df,
               tibble::tibble(
                 population_id = self$name,
                 parameter = param$name,
@@ -252,11 +249,10 @@ Population <- R6::R6Class(
           }
         }
       }
-
       # Return all data frames as a list
       return(list(
         characteristics = characteristics_df,
-        advanced_parameters = adv_params_df
+        parameters = params_df
       ))
     }
   ),
@@ -276,8 +272,21 @@ Population <- R6::R6Class(
     },
 
     #' @field source_population The source population name (read-only)
-    source_population = function() {
+    source_population = function(value) {
+      # not editable
+      if (!missing(value)) {
+        cli::cli_abort("source_population is read-only")
+      }
       return(private$.data$Settings$Individual$OriginData$Population)
+    },
+
+    #' @field individual_name The individual name (read-only)
+    individual_name = function(value) {
+      # not editable
+      if (!missing(value)) {
+        cli::cli_abort("individual_name is read-only")
+      }
+      return(private$.data$Settings$Individual$Name)
     },
 
     #' @field seed The seed used for population generation
@@ -433,12 +442,26 @@ Population <- R6::R6Class(
       )
     },
 
-    #' @field disease_state_parameters Disease state parameters for the population (if available)
-    disease_state_parameters = function(value) {
+    #' @field egfr_range The eGFR range for the population (if available)
+    egfr_range = function(value) {
       if (missing(value)) {
-        return(private$.data$Settings$DiseaseStateParameters)
+        return(private$.egfr_range)
       }
-      private$.data$Settings$DiseaseStateParameters <- value
+      if (is.null(value)) {
+        private$.egfr_range <- NULL
+        return(invisible(NULL))
+      }
+      if (!inherits(value, "Range")) {
+        if (is.null(private$.egfr_range)) {
+          cli::cli_abort(c(
+            "egfr_range is empty and individual elements cannot be set",
+            "i" = "Use `...$egfr_range <- range(...)` to initialize a new range first."
+          ))
+        } else {
+          cli::cli_abort("egfr_range must be a Range object")
+        }
+      }
+      private$.egfr_range <- value
     },
 
     #' @field advanced_parameters Advanced parameters for the population
@@ -453,7 +476,8 @@ Population <- R6::R6Class(
     .age_range = NULL,
     .weight_range = NULL,
     .height_range = NULL,
-    .bmi_range = NULL
+    .bmi_range = NULL,
+    .egfr_range = NULL
   )
 )
 

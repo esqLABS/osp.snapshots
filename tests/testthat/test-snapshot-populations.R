@@ -100,36 +100,20 @@ test_that("Populations can be converted to data frames", {
 
   # Check that all expected data frames are present
   expect_true(all(
-    c("characteristics", "advanced_parameters") %in%
+    c("characteristics", "parameters") %in%
       names(dfs)
   ))
 
   # Check characteristics dataframe structure
   expect_true(inherits(dfs$characteristics, "tbl"))
-  expect_true(all(
-    c(
-      "population_id",
-      "name",
-      "seed",
-      "number_of_individuals",
-      "proportion_of_females",
-      "age_min",
-      "age_max",
-      "age_unit",
-      "weight_min",
-      "weight_max",
-      "weight_unit"
-    ) %in%
-      names(dfs$characteristics)
-  ))
+
   expect_equal(nrow(dfs$characteristics), length(snapshot$populations))
 
   # Check advanced parameters dataframe structure
-  expect_true(inherits(dfs$advanced_parameters, "tbl"))
-  expect_true(all(
-    c("population_id", "parameter", "distribution_type", "seed") %in%
-      names(dfs$advanced_parameters)
-  ))
+  expect_true(inherits(dfs$parameters, "tbl"))
+
+  # Snapshot the outputs
+  expect_snapshot(knitr::kable(dfs))
 })
 
 test_that("Range class works correctly", {
@@ -252,7 +236,7 @@ test_that("Population ranges can be modified properly", {
   # Use a population from the test snapshot
   snapshot <- test_snapshot$clone()
 
-  population <- snapshot$populations[[1]]
+  population <- snapshot$populations[[6]]
 
   # Capture initial weight values for reference
   initial_age_min <- population$age_range$min
