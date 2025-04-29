@@ -177,8 +177,8 @@ get_formulations_dfs <- function(snapshot) {
 #'
 #' @return A list containing two data frames:
 #' \itemize{
-#'   \item characteristics: Basic information about each population including ranges
-#'   \item advanced_parameters: Advanced parameters information
+#'   \item characteristics: Basic information about each population including ranges and individual names
+#'   \item parameters: All parameters information including advanced parameters and disease state parameters
 #' }
 #'
 #' @export
@@ -193,7 +193,7 @@ get_formulations_dfs <- function(snapshot) {
 #'
 #' # Access specific data frames
 #' characteristics_df <- dfs$characteristics
-#' advanced_parameters_df <- dfs$advanced_parameters
+#' parameters_df <- dfs$parameters
 #' }
 get_populations_dfs <- function(snapshot) {
   # Check if input is a snapshot
@@ -211,6 +211,7 @@ get_populations_dfs <- function(snapshot) {
       number_of_individuals = integer(0),
       proportion_of_females = numeric(0),
       source_population = character(0),
+      individual_name = character(0),
       age_min = numeric(0),
       age_max = numeric(0),
       age_unit = character(0),
@@ -224,8 +225,9 @@ get_populations_dfs <- function(snapshot) {
       bmi_max = numeric(0),
       bmi_unit = character(0)
     ),
-    advanced_parameters = tibble::tibble(
+    parameters = tibble::tibble(
       population_id = character(0),
+      parameter_type = character(0),
       parameter = character(0),
       seed = integer(0),
       distribution_type = character(0),
@@ -244,7 +246,7 @@ get_populations_dfs <- function(snapshot) {
 
   # Process each population
   characteristics_list <- list()
-  advanced_params_list <- list()
+  params_list <- list()
 
   for (pop in populations) {
     # Create characteristics data frame with all columns
@@ -255,6 +257,7 @@ get_populations_dfs <- function(snapshot) {
       number_of_individuals = pop$number_of_individuals,
       proportion_of_females = pop$proportion_of_females,
       source_population = NA_character_,
+      individual_name = NA_character_,
       age_min = NA_real_,
       age_max = NA_real_,
       age_unit = NA_character_,
@@ -272,6 +275,11 @@ get_populations_dfs <- function(snapshot) {
     # Add source population if available
     if (!is.null(pop$source_population)) {
       characteristics_df$source_population <- pop$source_population
+    }
+
+    # Add individual name if available
+    if (!is.null(pop$individual_name)) {
+      characteristics_df$individual_name <- pop$individual_name
     }
 
     # Add age range
@@ -306,10 +314,11 @@ get_populations_dfs <- function(snapshot) {
       length(characteristics_list) + 1
     ]] <- characteristics_df
 
+    # Initialize parameters dataframe
+    params_df <- tibble::tibble()
+
     # Process advanced parameters
     if (length(pop$advanced_parameters) > 0) {
-      adv_params_df <- tibble::tibble()
-
       for (param in pop$advanced_parameters) {
         if (length(param$parameters) > 0) {
           for (stat in param$parameters) {
@@ -324,10 +333,11 @@ get_populations_dfs <- function(snapshot) {
               }
             }
 
-            adv_params_df <- dplyr::bind_rows(
-              adv_params_df,
+            params_df <- dplyr::bind_rows(
+              params_df,
               tibble::tibble(
                 population_id = pop$name,
+                parameter_type = "Advanced",
                 parameter = param$name,
                 seed = param$seed,
                 distribution_type = param$distribution_type,
@@ -341,10 +351,11 @@ get_populations_dfs <- function(snapshot) {
           }
         } else {
           # If no parameters, add just the basic info
-          adv_params_df <- dplyr::bind_rows(
-            adv_params_df,
+          params_df <- dplyr::bind_rows(
+            params_df,
             tibble::tibble(
               population_id = pop$name,
+              parameter_type = "Advanced",
               parameter = param$name,
               seed = param$seed,
               distribution_type = param$distribution_type,
@@ -357,12 +368,33 @@ get_populations_dfs <- function(snapshot) {
           )
         }
       }
+    }
 
-      if (nrow(adv_params_df) > 0) {
-        advanced_params_list[[
-          length(advanced_params_list) + 1
-        ]] <- adv_params_df
+    # Process disease state parameters
+    if (!is.null(pop$disease_state_parameters)) {
+      for (param in pop$disease_state_parameters) {
+        params_df <- dplyr::bind_rows(
+          params_df,
+          tibble::tibble(
+            population_id = pop$name,
+            parameter_type = "DiseaseState",
+            parameter = param$Name,
+            seed = NA_integer_,
+            distribution_type = NA_character_,
+            statistic = NA_character_,
+            value = param$Value,
+            unit = ifelse(is.null(param$Unit), NA_character_, param$Unit),
+            source = NA_character_,
+            description = NA_character_
+          )
+        )
       }
+    }
+
+    if (nrow(params_df) > 0) {
+      params_list[[
+        length(params_list) + 1
+      ]] <- params_df
     }
   }
 
@@ -371,8 +403,8 @@ get_populations_dfs <- function(snapshot) {
     result$characteristics <- dplyr::bind_rows(characteristics_list)
   }
 
-  if (length(advanced_params_list) > 0) {
-    result$advanced_parameters <- dplyr::bind_rows(advanced_params_list)
+  if (length(params_list) > 0) {
+    result$parameters <- dplyr::bind_rows(params_list)
   }
 
   return(result)

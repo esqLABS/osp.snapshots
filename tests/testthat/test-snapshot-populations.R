@@ -21,6 +21,7 @@ test_that("Populations can be accessed from snapshot", {
   expect_true(is.numeric(pop$seed))
   expect_true(is.numeric(pop$number_of_individuals))
   expect_true(is.numeric(pop$proportion_of_females))
+  expect_true(is.character(pop$individual_name))
 
   # Check age range
   expect_true(inherits(pop$age_range, "Range"))
@@ -100,7 +101,7 @@ test_that("Populations can be converted to data frames", {
 
   # Check that all expected data frames are present
   expect_true(all(
-    c("characteristics", "advanced_parameters") %in%
+    c("characteristics", "parameters") %in%
       names(dfs)
   ))
 
@@ -113,6 +114,8 @@ test_that("Populations can be converted to data frames", {
       "seed",
       "number_of_individuals",
       "proportion_of_females",
+      "source_population",
+      "individual_name",
       "age_min",
       "age_max",
       "age_unit",
@@ -124,11 +127,17 @@ test_that("Populations can be converted to data frames", {
   ))
   expect_equal(nrow(dfs$characteristics), length(snapshot$populations))
 
-  # Check advanced parameters dataframe structure
-  expect_true(inherits(dfs$advanced_parameters, "tbl"))
+  # Check parameters dataframe structure
+  expect_true(inherits(dfs$parameters, "tbl"))
   expect_true(all(
-    c("population_id", "parameter", "distribution_type", "seed") %in%
-      names(dfs$advanced_parameters)
+    c(
+      "population_id",
+      "parameter_type",
+      "parameter",
+      "distribution_type",
+      "seed"
+    ) %in%
+      names(dfs$parameters)
   ))
 })
 

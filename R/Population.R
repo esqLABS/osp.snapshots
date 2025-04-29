@@ -74,6 +74,13 @@ Population <- R6::R6Class(
         glue::glue(" (Seed: {self$seed})") else ""
       cli::cli_h2("Population: {self$name}{seed_text}")
 
+      # Individual name (if available)
+      if (!is.null(self$individual_name)) {
+        cli::cli_text(
+          "Individual Template: {self$individual_name}"
+        )
+      }
+
       # Source population (if available)
       if (!is.null(self$source_population)) {
         cli::cli_text(
@@ -115,6 +122,15 @@ Population <- R6::R6Class(
         )
       }
 
+      # Disease state parameters (if available)
+      if (!is.null(self$disease_state_parameters)) {
+        cli::cli_h3("Disease State Parameters")
+        for (param in self$disease_state_parameters) {
+          unit_text <- ifelse(is.null(param$Unit), "", paste0(" ", param$Unit))
+          cli::cli_text("{param$Name}: {param$Value}{unit_text}")
+        }
+      }
+
       # Advanced parameters
       if (length(private$.advanced_parameters) > 0) {
         cli::cli_h3("Advanced Parameters")
@@ -132,7 +148,7 @@ Population <- R6::R6Class(
     #' @return A list containing data frames with population information:
     #' \itemize{
     #'   \item characteristics: Population characteristics including basic information and physiological parameters
-    #'   \item advanced_parameters: Advanced parameters information
+    #'   \item parameters: All parameters information including advanced parameters and disease state parameters
     #' }
     to_df = function() {
       # Create characteristics data frame with all columns
@@ -143,6 +159,7 @@ Population <- R6::R6Class(
         number_of_individuals = self$number_of_individuals,
         proportion_of_females = self$proportion_of_females,
         source_population = NA_character_,
+        individual_name = NA_character_,
         age_min = NA_real_,
         age_max = NA_real_,
         age_unit = NA_character_,
@@ -160,6 +177,11 @@ Population <- R6::R6Class(
       # Add source population if available
       if (!is.null(self$source_population)) {
         characteristics_df$source_population <- self$source_population
+      }
+
+      # Add individual name if available
+      if (!is.null(self$individual_name)) {
+        characteristics_df$individual_name <- self$individual_name
       }
 
       # Add age range
@@ -190,9 +212,10 @@ Population <- R6::R6Class(
         characteristics_df$bmi_unit <- self$bmi_range$unit
       }
 
-      # Create advanced parameters data frame
-      adv_params_df <- tibble::tibble(
+      # Create parameters data frame
+      params_df <- tibble::tibble(
         population_id = character(0),
+        parameter_type = character(0),
         parameter = character(0),
         seed = integer(0),
         distribution_type = character(0),
@@ -203,6 +226,7 @@ Population <- R6::R6Class(
         description = character(0)
       )
 
+      # Add advanced parameters if available
       if (length(private$.advanced_parameters) > 0) {
         for (param in private$.advanced_parameters) {
           if (length(param$parameters) > 0) {
@@ -218,10 +242,11 @@ Population <- R6::R6Class(
                 }
               }
 
-              adv_params_df <- dplyr::bind_rows(
-                adv_params_df,
+              params_df <- dplyr::bind_rows(
+                params_df,
                 tibble::tibble(
                   population_id = self$name,
+                  parameter_type = "Advanced",
                   parameter = param$name,
                   seed = param$seed,
                   distribution_type = param$distribution_type,
@@ -235,10 +260,11 @@ Population <- R6::R6Class(
             }
           } else {
             # If no parameters, add just the basic info
-            adv_params_df <- dplyr::bind_rows(
-              adv_params_df,
+            params_df <- dplyr::bind_rows(
+              params_df,
               tibble::tibble(
                 population_id = self$name,
+                parameter_type = "Advanced",
                 parameter = param$name,
                 seed = param$seed,
                 distribution_type = param$distribution_type,
@@ -253,10 +279,31 @@ Population <- R6::R6Class(
         }
       }
 
+      # Add disease state parameters if available
+      if (!is.null(self$disease_state_parameters)) {
+        for (param in self$disease_state_parameters) {
+          params_df <- dplyr::bind_rows(
+            params_df,
+            tibble::tibble(
+              population_id = self$name,
+              parameter_type = "DiseaseState",
+              parameter = param$Name,
+              seed = NA_integer_,
+              distribution_type = NA_character_,
+              statistic = NA_character_,
+              value = param$Value,
+              unit = ifelse(is.null(param$Unit), NA_character_, param$Unit),
+              source = NA_character_,
+              description = NA_character_
+            )
+          )
+        }
+      }
+
       # Return all data frames as a list
       return(list(
-        characteristics = characteristics_df,
-        advanced_parameters = adv_params_df
+        characteristics = tibble::as_tibble(characteristics_df),
+        parameters = tibble::as_tibble(params_df)
       ))
     }
   ),
@@ -273,6 +320,14 @@ Population <- R6::R6Class(
         return(private$.data$Name)
       }
       private$.data$Name <- value
+    },
+
+    #' @field individual_name The name of the individual template (read-only)
+    individual_name = function() {
+      if (!is.null(private$.data$Settings$Individual$Name)) {
+        return(private$.data$Settings$Individual$Name)
+      }
+      return(NULL)
     },
 
     #' @field source_population The source population name (read-only)
@@ -436,9 +491,14 @@ Population <- R6::R6Class(
     #' @field disease_state_parameters Disease state parameters for the population (if available)
     disease_state_parameters = function(value) {
       if (missing(value)) {
-        return(private$.data$Settings$DiseaseStateParameters)
+        if (
+          !is.null(private$.data$Settings$Individual$DiseaseStateParameters)
+        ) {
+          return(private$.data$Settings$Individual$DiseaseStateParameters)
+        }
+        return(NULL)
       }
-      private$.data$Settings$DiseaseStateParameters <- value
+      private$.data$Settings$Individual$DiseaseStateParameters <- value
     },
 
     #' @field advanced_parameters Advanced parameters for the population
