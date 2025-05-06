@@ -308,9 +308,9 @@ test_that("get_populations_dfs works correctly", {
 
   # Check structure of result
   expect_type(dfs, "list")
-  expect_true(all(c("characteristics", "advanced_parameters") %in% names(dfs)))
+  expect_true(all(c("characteristics", "parameters") %in% names(dfs)))
   expect_s3_class(dfs$characteristics, "tbl_df")
-  expect_s3_class(dfs$advanced_parameters, "tbl_df")
+  expect_s3_class(dfs$parameters, "tbl_df")
 
   # Check content of populations dataframe if any exists in the snapshot
   if (length(snapshot$populations) > 0) {
