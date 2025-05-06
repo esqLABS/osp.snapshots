@@ -81,6 +81,8 @@ snapshot$remove_population("pop_1")
 \item{\code{formulations}}{List of Formulation objects in the snapshot}
 
 \item{\code{populations}}{List of Population objects in the snapshot}
+
+\item{\code{events}}{List of Event objects in the snapshot}
 }
 \if{html}{\out{</div>}}
 }

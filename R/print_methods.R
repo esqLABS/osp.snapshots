@@ -82,6 +82,34 @@ print.formulation_collection <- function(x, ...) {
   invisible(x)
 }
 
+#' S3 print method for event collections
+#'
+#' @param x An event collection object
+#' @param ... Additional arguments passed to print methods
+#' @return Invisibly returns the event collection
+#' @export
+print.event_collection <- function(x, ...) {
+  cli::cli_h1("Events ({length(x)})")
+
+  if (length(x) > 0) {
+    # Create a bullet point list with names, templates, and parameter counts
+    for (name in names(x)) {
+      event <- x[[name]]
+      template <- event$template
+      param_count <- length(event$parameters)
+
+      if (param_count > 0) {
+        cli::cli_li("{name} ({template}) - {param_count} parameter{?s}")
+      } else {
+        cli::cli_li("{name} ({template})")
+      }
+    }
+  } else {
+    cli::cli_alert_info("No events found")
+  }
+  invisible(x)
+}
+
 #' Print method for parameter collections
 #'
 #' @param x A parameter_collection object

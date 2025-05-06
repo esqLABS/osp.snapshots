@@ -5,12 +5,12 @@
     Output
       $basic
       # A tibble: 4 x 4
-        formulation_id       name              formulation_type formulation_type_human
-        <chr>                <chr>             <chr>            <chr>                 
-      1 Test Tablet          Test Tablet       Formulation_Tab~ Weibull               
-      2 Oral Solution        Oral Solution     Formulation_Dis~ Dissolved             
-      3 Custom Release       Custom Release    Formulation_Tab~ Table                 
-      4 Particle Formulation Particle Formula~ Formulation_Par~ Particle              
+        formulation_id       name                 formulation         formulation_type
+        <chr>                <chr>                <chr>               <chr>           
+      1 Test Tablet          Test Tablet          Formulation_Tablet~ Weibull         
+      2 Oral Solution        Oral Solution        Formulation_Dissol~ Dissolved       
+      3 Custom Release       Custom Release       Formulation_Table   Table           
+      4 Particle Formulation Particle Formulation Formulation_Partic~ Particle        
       
       $parameters
       # A tibble: 9 x 4
@@ -34,12 +34,12 @@
     Output
       $basic
       # A tibble: 0 x 4
-      # i 4 variables: formulation_id <chr>, name <chr>, type <chr>,
-      #   application_type <chr>
+      # i 4 variables: formulation_id <chr>, name <chr>, formulation <chr>,
+      #   formulation_type <chr>
       
       $parameters
       # A tibble: 0 x 4
-      # i 4 variables: formulation_id <chr>, parameter <chr>, value <dbl>, unit <chr>
+      # i 4 variables: formulation_id <chr>, name <chr>, value <dbl>, unit <chr>
       
 
 # to_df returns specific tables when requested
@@ -62,9 +62,9 @@
     Output
       $basic
       # A tibble: 1 x 4
-        formulation_id name        formulation_type           formulation_type_human
-        <chr>          <chr>       <chr>                      <chr>                 
-      1 Test Tablet    Test Tablet Formulation_Tablet_Weibull Weibull               
+        formulation_id name        formulation                formulation_type
+        <chr>          <chr>       <chr>                      <chr>           
+      1 Test Tablet    Test Tablet Formulation_Tablet_Weibull Weibull         
       
       $parameters
       # A tibble: 4 x 4
@@ -83,9 +83,9 @@
     Output
       $basic
       # A tibble: 1 x 4
-        formulation_id name          formulation_type      formulation_type_human
-        <chr>          <chr>         <chr>                 <chr>                 
-      1 Oral Solution  Oral Solution Formulation_Dissolved Dissolved             
+        formulation_id name          formulation           formulation_type
+        <chr>          <chr>         <chr>                 <chr>           
+      1 Oral Solution  Oral Solution Formulation_Dissolved Dissolved       
       
       $parameters
       # A tibble: 0 x 4

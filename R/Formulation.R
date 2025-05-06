@@ -131,8 +131,8 @@ Formulation <- R6::R6Class(
         data_list <- list(
           formulation_id = formulation_id,
           name = self$name,
-          formulation_type = self$formulation_type,
-          formulation_type_human = self$get_human_formulation_type()
+          formulation = self$formulation_type,
+          formulation_type = self$get_human_formulation_type()
         )
 
         result$basic <- tibble::as_tibble(data_list)
