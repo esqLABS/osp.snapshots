@@ -298,3 +298,25 @@ test_that("Population ranges can be modified properly", {
   expect_equal(population$height_range$max, 180)
   expect_equal(population$height_range$unit, "cm")
 })
+
+test_that("get_populations_dfs works correctly", {
+  # Create a snapshot object
+  snapshot <- test_snapshot$clone()
+
+  # Get populations dataframes
+  dfs <- get_populations_dfs(snapshot)
+
+  # Check structure of result
+  expect_type(dfs, "list")
+  expect_true(all(c("characteristics", "advanced_parameters") %in% names(dfs)))
+  expect_s3_class(dfs$characteristics, "tbl_df")
+  expect_s3_class(dfs$advanced_parameters, "tbl_df")
+
+  # Check content of populations dataframe if any exists in the snapshot
+  if (length(snapshot$populations) > 0) {
+    expect_equal(nrow(dfs$characteristics), length(snapshot$populations))
+    expect_true(all(
+      c("population_id", "name", "seed") %in% colnames(dfs$characteristics)
+    ))
+  }
+})

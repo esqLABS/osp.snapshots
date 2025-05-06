@@ -133,12 +133,12 @@ get_formulations_dfs <- function(snapshot) {
     basic = tibble::tibble(
       formulation_id = character(0),
       name = character(0),
-      type = character(0),
-      application_type = character(0)
+      formulation = character(0),
+      formulation_type = character(0)
     ),
     parameters = tibble::tibble(
       formulation_id = character(0),
-      parameter = character(0),
+      name = character(0),
       value = numeric(0),
       unit = character(0)
     )
@@ -157,7 +157,10 @@ get_formulations_dfs <- function(snapshot) {
   # Combine all basic data frames
   if (length(form_dfs) > 0) {
     basic_dfs <- lapply(form_dfs, function(df) df$basic)
-    result$basic <- dplyr::bind_rows(basic_dfs)
+    combined_basic <- dplyr::bind_rows(basic_dfs)
+
+    # No need to rename columns, keep the original names
+    result$basic <- combined_basic
 
     # Combine all parameter data frames
     param_dfs <- lapply(form_dfs, function(df) df$parameters)
@@ -264,6 +267,109 @@ get_populations_dfs <- function(snapshot) {
       result$parameters,
       pop_dfs$parameters
     )
+  }
+
+  return(result)
+}
+
+#' Get all events in a snapshot as data frames
+#'
+#' @description
+#' This function extracts all events from a snapshot and converts them to
+#' data frames for easier analysis and visualization.
+#'
+#' @param snapshot A Snapshot object
+#'
+#' @return A list containing two data frames:
+#' \itemize{
+#'   \item basic: Basic information about each event
+#'   \item parameters: All parameters for all events
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#'
+#' # Get all event data as data frames
+#' dfs <- get_events_dfs(snapshot)
+#'
+#' # Access specific data frames
+#' basic_df <- dfs$basic
+#' parameters_df <- dfs$parameters
+#' }
+get_events_dfs <- function(snapshot) {
+  # Check if input is a snapshot
+  validate_snapshot(snapshot)
+
+  # Get all events from the snapshot
+  events <- snapshot$events
+
+  # Initialize empty result list with tibbles for each data type
+  result <- list(
+    basic = tibble::tibble(
+      event_id = character(0),
+      name = character(0),
+      template = character(0)
+    ),
+    parameters = tibble::tibble(
+      event_id = character(0),
+      parameter = character(0),
+      value = numeric(0),
+      unit = character(0)
+    )
+  )
+
+  # If there are no events, return the empty tibbles
+  if (length(events) == 0) {
+    return(result)
+  }
+
+  # Process each event
+  basic_list <- list()
+  params_list <- list()
+
+  for (event_name in names(events)) {
+    event <- events[[event_name]]
+
+    # Use the to_dataframe method to get consistent data structure
+    event_df <- event$to_dataframe()
+
+    # Add event_id to the basic data
+    if (!is.null(event_df$event)) {
+      basic_df <- dplyr::bind_cols(
+        tibble::tibble(event_id = event_name),
+        event_df$event
+      )
+      basic_list[[length(basic_list) + 1]] <- basic_df
+    }
+
+    # Add event_id to the parameters data if available
+    if (!is.null(event_df$parameters) && nrow(event_df$parameters) > 0) {
+      # Add event_id and rename columns to match expected structure
+      param_df <- dplyr::bind_cols(
+        tibble::tibble(event_id = rep(event_name, nrow(event_df$parameters))),
+        event_df$parameters
+      ) %>%
+        dplyr::rename(
+          parameter = param_name,
+          value = param_value,
+          unit = param_unit
+        )
+
+      params_list[[length(params_list) + 1]] <- param_df
+    }
+  }
+
+  # Combine all data frames
+  if (length(basic_list) > 0) {
+    result$basic <- dplyr::bind_rows(basic_list)
+  }
+
+  if (length(params_list) > 0) {
+    result$parameters <- dplyr::bind_rows(params_list)
   }
 
   return(result)

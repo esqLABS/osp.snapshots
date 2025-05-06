@@ -82,6 +82,19 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Initialize events list during snapshot initialization
+      if (is.null(private$.original_data$Events)) {
+        private$.events <- list()
+      } else {
+        # Create event objects and store in an unnamed list
+        private$.events <- lapply(
+          private$.original_data$Events,
+          function(event_data) {
+            Event$new(event_data)
+          }
+        )
+      }
+
       cli::cli_alert_success("Snapshot loaded successfully")
     },
     #' @description
@@ -368,7 +381,15 @@ Snapshot <- R6::R6Class(
         result$Populations <- population_data
       }
 
-      # Additional components could be added here in the future
+      # Update with current event data
+      if (length(private$.events) > 0) {
+        # Extract raw data from each event object
+        event_data <- lapply(
+          private$.events,
+          function(evt) evt$data
+        )
+        result$Events <- event_data
+      }
 
       return(result)
     },
@@ -437,6 +458,22 @@ Snapshot <- R6::R6Class(
         private$.populations <- value
         private$.build_populations_named_list()
         return(private$.populations_named)
+      }
+    },
+
+    #' @field events List of Event objects in the snapshot
+    events = function(value = NULL) {
+      # Build the named list if it doesn't exist yet
+      if (is.null(private$.events_named)) {
+        private$.build_events_named_list()
+      }
+
+      if (is.null(value)) {
+        return(private$.events_named)
+      } else {
+        private$.events <- value
+        private$.build_events_named_list()
+        return(private$.events_named)
       }
     }
   ),
@@ -653,7 +690,56 @@ Snapshot <- R6::R6Class(
     .populations = NULL,
 
     # Cache for the named populations list with disambiguated names
-    .populations_named = NULL
+    .populations_named = NULL,
+
+    # Store event objects in an unnamed list
+    .events = NULL,
+
+    # Cache for the named events list with disambiguated names
+    .events_named = NULL,
+
+    # Build the named list of events with disambiguated names
+    .build_events_named_list = function() {
+      # Create a named list with event names, handling duplicates
+      events_named <- list()
+
+      # Handle empty events list
+      if (length(private$.events) == 0) {
+        class(events_named) <- c("event_collection", "list")
+        private$.events_named <- events_named
+        return()
+      }
+
+      event_names <- sapply(private$.events, function(x) x$name)
+
+      # Track name occurrences to handle duplicates
+      name_counts <- table(event_names)
+      name_indices <- list()
+
+      for (i in seq_along(private$.events)) {
+        name <- event_names[i]
+
+        # Initialize counter for this name if not already done
+        if (is.null(name_indices[[name]])) {
+          name_indices[[name]] <- 0
+        }
+
+        # Increment counter
+        name_indices[[name]] <- name_indices[[name]] + 1
+
+        # Construct the final name (with suffix if needed)
+        if (name_counts[name] > 1) {
+          final_name <- glue::glue("{name}_{name_indices[[name]]}")
+        } else {
+          final_name <- name
+        }
+
+        events_named[[final_name]] <- private$.events[[i]]
+      }
+
+      class(events_named) <- c("event_collection", "list")
+      private$.events_named <- events_named
+    }
   )
 )
 

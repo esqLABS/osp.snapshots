@@ -1,6 +1,6 @@
 test_that("Snapshot individuals are initialized correctly", {
   # Create a snapshot object
-  snapshot <- Snapshot$new(test_snapshot_path)
+  snapshot <- test_snapshot$clone()
 
   # Test individuals are initialized
   expect_s3_class(snapshot$individuals, "individual_collection")
@@ -31,8 +31,7 @@ test_that("Snapshot individuals are initialized correctly", {
 
 test_that("Individual collection print method works", {
   # Create a snapshot object
-  snapshot <- Snapshot$new(test_snapshot_path)
-
+  snapshot <- test_snapshot$clone()
 
   # Create a test with some individuals for a more predictable test
   test_individuals <- list(
