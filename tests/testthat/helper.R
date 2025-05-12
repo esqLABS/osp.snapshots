@@ -321,10 +321,30 @@ preterm_individual_data <- list(
   )
 )
 
+# Create test data for an individual with characteristics and expression profiles but no parameters
+characteristics_expr_individual_data <- list(
+  Name = "CharExpr Individual",
+  OriginData = list(
+    Species = "Human",
+    Population = "European_ICRP_2002",
+    Gender = "FEMALE",
+    Age = list(Value = 28, Unit = "year(s)"),
+    Weight = list(Value = 60, Unit = "kg"),
+    Height = list(Value = 165, Unit = "cm")
+  ),
+  ExpressionProfiles = c(
+    "CYP2D6|Human|Healthy",
+    "OATP1B1|Human|Healthy"
+  )
+)
+
 # Create test individuals that will be used across tests
 complete_individual <- Individual$new(complete_individual_data)
 minimal_individual <- Individual$new(minimal_individual_data)
 preterm_individual <- Individual$new(preterm_individual_data)
+characteristics_expr_individual <- Individual$new(
+  characteristics_expr_individual_data
+)
 
 # Test fixtures: Event --------------------------------------------------------
 

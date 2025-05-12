@@ -735,6 +735,27 @@ test_that("get_individuals_dfs returns correct data frames", {
   expect_s3_class(dfs$individuals, "tbl_df")
   expect_s3_class(dfs$individuals_parameters, "tbl_df")
   expect_s3_class(dfs$individuals_expressions, "tbl_df")
+  # Check columns for individuals
+  expect_named(
+    dfs$individuals,
+    c(
+      "individual_id", "name", "seed", "species", "population", "gender", "age", "age_unit",
+      "gestational_age", "gestational_age_unit", "weight", "weight_unit", "height", "height_unit",
+      "disease_state", "calculation_methods", "disease_state_parameters"
+    )
+  )
+  # Check columns for individuals_parameters
+  expect_named(
+    dfs$individuals_parameters,
+    c(
+      "individual_id", "path", "value", "unit", "source", "description", "source_id"
+    )
+  )
+  # Check columns for individuals_expressions
+  expect_named(
+    dfs$individuals_expressions,
+    c("individual_id", "profile")
+  )
   # Use expect_snapshot to check the dataframes
   expect_snapshot(dfs$individuals)
   expect_snapshot(dfs$individuals_parameters)
@@ -750,9 +771,49 @@ test_that("get_individuals_dfs returns correct data frames", {
   expect_s3_class(dfs_empty$individuals, "tbl_df")
   expect_s3_class(dfs_empty$individuals_parameters, "tbl_df")
   expect_s3_class(dfs_empty$individuals_expressions, "tbl_df")
+  expect_named(
+    dfs_empty$individuals,
+    c(
+      "individual_id", "name", "seed", "species", "population", "gender", "age", "age_unit",
+      "gestational_age", "gestational_age_unit", "weight", "weight_unit", "height", "height_unit",
+      "disease_state", "calculation_methods", "disease_state_parameters"
+    )
+  )
+  expect_named(
+    dfs_empty$individuals_parameters,
+    c(
+      "individual_id", "path", "value", "unit", "source", "description", "source_id"
+    )
+  )
+  expect_named(
+    dfs_empty$individuals_expressions,
+    c("individual_id", "profile")
+  )
   expect_snapshot(dfs_empty$individuals)
   expect_snapshot(dfs_empty$individuals_parameters)
   expect_snapshot(dfs_empty$individuals_expressions)
+})
+
+test_that("get_individuals_dfs handles individual with characteristics and expression profiles but no parameters", {
+  # Create a snapshot with a single such individual
+  snapshot <- local_snapshot(list(
+    Version = 80,
+    Individuals = list(characteristics_expr_individual_data)
+  ))
+
+  dfs <- get_individuals_dfs(snapshot)
+  expect_type(dfs, "list")
+  expect_named(
+    dfs,
+    c("individuals", "individuals_parameters", "individuals_expressions")
+  )
+  expect_s3_class(dfs$individuals, "tbl_df")
+  expect_s3_class(dfs$individuals_parameters, "tbl_df")
+  expect_s3_class(dfs$individuals_expressions, "tbl_df")
+  # Use expect_snapshot to check the dataframes
+  expect_snapshot(dfs$individuals)
+  expect_snapshot(dfs$individuals_parameters)
+  expect_snapshot(dfs$individuals_expressions)
 })
 
 # ---- Individual snapshot interaction tests ----

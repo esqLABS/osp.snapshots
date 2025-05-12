@@ -46,18 +46,24 @@ get_individuals_dfs <- function(snapshot) {
       gender = character(0),
       age = numeric(0),
       age_unit = character(0),
+      gestational_age = numeric(0),
+      gestational_age_unit = character(0),
       weight = numeric(0),
       weight_unit = character(0),
       height = numeric(0),
       height_unit = character(0),
       disease_state = character(0),
-      calculation_methods = character(0)
+      calculation_methods = character(0),
+      disease_state_parameters = character(0)
     ),
     individuals_parameters = tibble::tibble(
       individual_id = character(0),
-      name = character(0),
+      path = character(0),
       value = numeric(0),
-      unit = character(0)
+      unit = character(0),
+      source = character(0),
+      description = character(0),
+      source_id = integer(0)
     ),
     individuals_expressions = tibble::tibble(
       individual_id = character(0),

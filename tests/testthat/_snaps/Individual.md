@@ -284,19 +284,21 @@
     Code
       dfs_empty$individuals
     Output
-      # A tibble: 0 x 14
-      # i 14 variables: individual_id <chr>, name <chr>, seed <int>, species <chr>,
-      #   population <chr>, gender <chr>, age <dbl>, age_unit <chr>, weight <dbl>,
+      # A tibble: 0 x 17
+      # i 17 variables: individual_id <chr>, name <chr>, seed <int>, species <chr>,
+      #   population <chr>, gender <chr>, age <dbl>, age_unit <chr>,
+      #   gestational_age <dbl>, gestational_age_unit <chr>, weight <dbl>,
       #   weight_unit <chr>, height <dbl>, height_unit <chr>, disease_state <chr>,
-      #   calculation_methods <chr>
+      #   calculation_methods <chr>, disease_state_parameters <chr>
 
 ---
 
     Code
       dfs_empty$individuals_parameters
     Output
-      # A tibble: 0 x 4
-      # i 4 variables: individual_id <chr>, name <chr>, value <dbl>, unit <chr>
+      # A tibble: 0 x 7
+      # i 7 variables: individual_id <chr>, path <chr>, value <dbl>, unit <chr>,
+      #   source <chr>, description <chr>, source_id <int>
 
 ---
 
@@ -305,4 +307,38 @@
     Output
       # A tibble: 0 x 2
       # i 2 variables: individual_id <chr>, profile <chr>
+
+# get_individuals_dfs handles individual with characteristics and expression profiles but no parameters
+
+    Code
+      dfs$individuals
+    Output
+      # A tibble: 1 x 17
+        individual_id       name         seed species population gender   age age_unit
+        <chr>               <chr>       <int> <chr>   <chr>      <chr>  <dbl> <chr>   
+      1 CharExpr Individual CharExpr I~    NA Human   European_~ FEMALE    28 year(s) 
+      # i 9 more variables: gestational_age <dbl>, gestational_age_unit <chr>,
+      #   weight <dbl>, weight_unit <chr>, height <dbl>, height_unit <chr>,
+      #   disease_state <chr>, calculation_methods <chr>,
+      #   disease_state_parameters <chr>
+
+---
+
+    Code
+      dfs$individuals_parameters
+    Output
+      # A tibble: 0 x 7
+      # i 7 variables: individual_id <chr>, name <chr>, value <dbl>, unit <chr>,
+      #   source <chr>, description <chr>, source_id <int>
+
+---
+
+    Code
+      dfs$individuals_expressions
+    Output
+      # A tibble: 2 x 2
+        individual_id       profile              
+        <chr>               <chr>                
+      1 CharExpr Individual CYP2D6|Human|Healthy 
+      2 CharExpr Individual OATP1B1|Human|Healthy
 
