@@ -43,6 +43,19 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Initialize expression profiles list during snapshot initialization
+      if (is.null(private$.original_data$ExpressionProfiles)) {
+        private$.expression_profiles <- list()
+      } else {
+        # Create expression profile objects and store in an unnamed list
+        private$.expression_profiles <- lapply(
+          private$.original_data$ExpressionProfiles,
+          function(expression_profile_data) {
+            ExpressionProfile$new(expression_profile_data)
+          }
+        )
+      }
+
       # Initialize individuals list during snapshot initialization
       if (is.null(private$.original_data$Individuals)) {
         private$.individuals <- list()
@@ -339,6 +352,98 @@ Snapshot <- R6::R6Class(
         "Removed {length(population_name)} population(s)"
       )
       invisible(self)
+    },
+
+    #' @description
+    #' Add an ExpressionProfile object to the snapshot
+    #' @param expression_profile An ExpressionProfile object
+    #' @return Invisibly returns the object
+    #' @examples
+    #' \dontrun{
+    #' # Create a new expression profile
+    #' profile_data <- list(
+    #'   Type = "Enzyme",
+    #'   Species = "Human",
+    #'   Molecule = "CYP3A4",
+    #'   Category = "Healthy",
+    #'   Parameters = list()
+    #' )
+    #' profile <- ExpressionProfile$new(profile_data)
+    #'
+    #' # Add the expression profile to a snapshot
+    #' snapshot$add_expression_profile(profile)
+    #' }
+    add_expression_profile = function(expression_profile) {
+      # Validate that the input is an ExpressionProfile object
+      if (!inherits(expression_profile, "ExpressionProfile")) {
+        cli::cli_abort(
+          "Expected an ExpressionProfile object, but got {.cls {class(expression_profile)[1]}}"
+        )
+      }
+
+      # Add the expression profile to the list
+      private$.expression_profiles <- c(
+        private$.expression_profiles,
+        list(expression_profile)
+      )
+
+      # Reset the named list to include the new expression profile
+      private$.expression_profiles_named <- NULL
+      private$.build_expression_profiles_named_list()
+
+      cli::cli_alert_success(
+        "Added expression profile '{expression_profile$molecule}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    #' @description
+    #' Remove expression profiles from the snapshot by ID
+    #' @param profile_id Character vector of expression profile IDs to remove
+    #' @return Invisibly returns the object
+    #' @examples
+    #' \dontrun{
+    #' # Remove an expression profile from the snapshot
+    #' snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
+    #' }
+    remove_expression_profile = function(profile_id) {
+      if (length(private$.expression_profiles) == 0) {
+        cli::cli_warn("No expression profiles to remove")
+        return(invisible(self))
+      }
+
+      # Get current expression profile IDs
+      current_ids <- sapply(
+        private$.expression_profiles,
+        function(prof) prof$id
+      )
+
+      # Check if requested expression profiles exist
+      for (id in profile_id) {
+        if (!(id %in% current_ids)) {
+          cli::cli_warn("Expression profile '{id}' not found in snapshot")
+        }
+      }
+
+      # Remove the requested expression profiles
+      keep_indices <- which(!(current_ids %in% profile_id))
+
+      if (length(keep_indices) == 0) {
+        private$.expression_profiles <- list()
+      } else {
+        private$.expression_profiles <- private$.expression_profiles[
+          keep_indices
+        ]
+      }
+
+      # Reset the named list
+      private$.expression_profiles_named <- NULL
+      private$.build_expression_profiles_named_list()
+
+      cli::cli_alert_success(
+        "Removed {length(profile_id)} expression profile(s)"
+      )
+      invisible(self)
     }
   ),
   active = list(
@@ -352,6 +457,16 @@ Snapshot <- R6::R6Class(
         # Extract raw data from each compound object
         compound_data <- lapply(private$.compounds, function(comp) comp$data)
         result$Compounds <- compound_data
+      }
+
+      # Update with current expression profile data
+      if (length(private$.expression_profiles) > 0) {
+        # Extract raw data from each expression profile object
+        expression_profile_data <- lapply(
+          private$.expression_profiles,
+          function(profile) profile$data
+        )
+        result$ExpressionProfiles <- expression_profile_data
       }
 
       # Update with current individual data
@@ -419,6 +534,22 @@ Snapshot <- R6::R6Class(
       }
     },
 
+    #' @field expression_profiles List of ExpressionProfile objects in the snapshot
+    expression_profiles = function(value = NULL) {
+      # Build the named list if it doesn't exist yet
+      if (is.null(private$.expression_profiles_named)) {
+        private$.build_expression_profiles_named_list()
+      }
+
+      if (is.null(value)) {
+        return(private$.expression_profiles_named)
+      } else {
+        private$.expression_profiles <- value
+        private$.build_expression_profiles_named_list()
+        return(private$.expression_profiles_named)
+      }
+    },
+
     #' @field individuals List of Individual objects in the snapshot
     individuals = function(value = NULL) {
       # Build the named list
@@ -464,9 +595,7 @@ Snapshot <- R6::R6Class(
     #' @field events List of Event objects in the snapshot
     events = function(value = NULL) {
       # Build the named list if it doesn't exist yet
-      if (is.null(private$.events_named)) {
-        private$.build_events_named_list()
-      }
+      private$.build_events_named_list()
 
       if (is.null(value)) {
         return(private$.events_named)
@@ -674,6 +803,12 @@ Snapshot <- R6::R6Class(
     # Cache for the named compounds list with disambiguated names
     .compounds_named = NULL,
 
+    # Store expression profile objects in an unnamed list
+    .expression_profiles = NULL,
+
+    # Cache for the named expression profiles list with disambiguated names
+    .expression_profiles_named = NULL,
+
     # Store individual objects in an unnamed list
     .individuals = NULL,
 
@@ -739,6 +874,58 @@ Snapshot <- R6::R6Class(
 
       class(events_named) <- c("event_collection", "list")
       private$.events_named <- events_named
+    },
+
+    # Build the named list of expression profiles with disambiguated names
+    .build_expression_profiles_named_list = function() {
+      # Create a named list with expression profile names, handling duplicates
+      expression_profiles_named <- list()
+
+      # Handle empty expression profiles list
+      if (length(private$.expression_profiles) == 0) {
+        class(expression_profiles_named) <- c(
+          "expression_profile_collection",
+          "list"
+        )
+        private$.expression_profiles_named <- expression_profiles_named
+        return()
+      }
+
+      # Create profile IDs in the format "Molecule|Species|Category"
+      profile_ids <- sapply(private$.expression_profiles, function(x) x$id)
+
+      # Track name occurrences to handle duplicates
+      name_counts <- table(profile_ids)
+      name_indices <- list()
+
+      for (i in seq_along(private$.expression_profiles)) {
+        profile_id <- profile_ids[i]
+
+        # Initialize counter for this name if not already done
+        if (is.null(name_indices[[profile_id]])) {
+          name_indices[[profile_id]] <- 0
+        }
+
+        # Increment counter
+        name_indices[[profile_id]] <- name_indices[[profile_id]] + 1
+
+        # Construct the final name (with suffix if needed)
+        if (name_counts[profile_id] > 1) {
+          final_name <- glue::glue("{profile_id}_{name_indices[[profile_id]]}")
+        } else {
+          final_name <- profile_id
+        }
+
+        expression_profiles_named[[
+          final_name
+        ]] <- private$.expression_profiles[[i]]
+      }
+
+      class(expression_profiles_named) <- c(
+        "expression_profile_collection",
+        "list"
+      )
+      private$.expression_profiles_named <- expression_profiles_named
     }
   )
 )
@@ -992,6 +1179,82 @@ remove_population <- function(snapshot, population_name) {
 
   # Call the remove_population method of the Snapshot class
   snapshot$remove_population(population_name)
+
+  # Return the updated snapshot
+  invisible(snapshot)
+}
+
+#' Add an expression profile to a snapshot
+#'
+#' @description
+#' Add an ExpressionProfile object to a Snapshot. This is a convenience function
+#' that calls the add_expression_profile method of the Snapshot class.
+#'
+#' @param snapshot A Snapshot object
+#' @param expression_profile An ExpressionProfile object
+#' @return The updated Snapshot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' # Create a new expression profile
+#' profile_data <- list(
+#'   Type = "Enzyme",
+#'   Species = "Human",
+#'   Molecule = "CYP3A4",
+#'   Category = "Healthy",
+#'   Parameters = list()
+#' )
+#' profile <- ExpressionProfile$new(profile_data)
+#'
+#' # Add the expression profile to the snapshot
+#' snapshot <- add_expression_profile(snapshot, profile)
+#' }
+add_expression_profile <- function(snapshot, expression_profile) {
+  # Validate that the snapshot is a Snapshot object
+  validate_snapshot(snapshot)
+
+  # Call the add_expression_profile method of the Snapshot class
+  snapshot$add_expression_profile(expression_profile)
+
+  # Return the updated snapshot
+  invisible(snapshot)
+}
+
+#' Remove expression profiles from a snapshot
+#'
+#' @description
+#' Remove one or more expression profiles from a Snapshot by ID
+#' (molecule|species|category).
+#'
+#' @param snapshot A Snapshot object
+#' @param profile_id Character vector of expression profile IDs to remove
+#' @return The updated Snapshot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' # Remove a single expression profile by ID
+#' snapshot <- remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
+#'
+#' # Remove multiple expression profiles
+#' snapshot <- remove_expression_profile(
+#'   snapshot,
+#'   c("CYP3A4|Human|Healthy", "P-gp|Human|Healthy")
+#' )
+#' }
+remove_expression_profile <- function(snapshot, profile_id) {
+  # Validate that the snapshot is a Snapshot object
+  validate_snapshot(snapshot)
+
+  # Call the remove_expression_profile method of the Snapshot class
+  snapshot$remove_expression_profile(profile_id)
 
   # Return the updated snapshot
   invisible(snapshot)

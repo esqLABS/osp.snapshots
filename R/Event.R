@@ -65,8 +65,8 @@ Event <- R6::R6Class(
     #' Convert the event to a data frame for easier manipulation
     #' @return A tibble with event information
     to_dataframe = function() {
-      # Create a basic dataframe with event properties
-      event_df <- tibble::tibble(
+      # Create a main dataframe with event properties
+      events_df <- tibble::tibble(
         name = self$name,
         template = self$template
       )
@@ -83,15 +83,15 @@ Event <- R6::R6Class(
         })
         param_df <- do.call(rbind, param_df)
 
-        # Return both event info and parameters
+        # Return both info and parameters with new keys
         return(list(
-          event = event_df,
-          parameters = param_df
+          events = events_df,
+          events_parameters = param_df
         ))
       }
 
-      # If no parameters, just return the event info
-      return(list(event = event_df, parameters = NULL))
+      # If no parameters, just return the info
+      return(list(events = events_df, events_parameters = NULL))
     }
   ),
 

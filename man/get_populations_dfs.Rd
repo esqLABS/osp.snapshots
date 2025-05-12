@@ -12,8 +12,8 @@ get_populations_dfs(snapshot)
 \value{
 A list containing two data frames:
 \itemize{
-  \item characteristics: Basic information about each population including ranges
-  \item advanced_parameters: Advanced parameters information
+  \item populations: Basic information about each population including ranges
+  \item populations_parameters: All parameters for all populations
 }
 }
 \description{
@@ -29,7 +29,7 @@ snapshot <- load_snapshot("path/to/snapshot.json")
 dfs <- get_populations_dfs(snapshot)
 
 # Access specific data frames
-characteristics_df <- dfs$characteristics
-advanced_parameters_df <- dfs$advanced_parameters
+populations_df <- dfs$populations
+populations_parameters_df <- dfs$populations_parameters
 }
 }

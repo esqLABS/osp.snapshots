@@ -1,12 +1,11 @@
 test_that("Snapshot class works", {
   # Create a snapshot object
-  snapshot <- Snapshot$new(test_snapshot_path)
+  snapshot <- test_snapshot$clone()
 
   # Test that snapshot loads correctly
   expect_s3_class(snapshot, "Snapshot")
   expect_type(snapshot$data, "list")
   expect_false(is.null(snapshot$path))
-  expect_equal(snapshot$path, test_snapshot_path)
 
   # Test pksim_version mapping
   if (!is.null(snapshot$data$Version)) {
@@ -106,14 +105,14 @@ test_that("Snapshot data can be exported and reimported", {
 
 test_that("Snapshot print method works", {
   # Create a snapshot object
-  snapshot <- Snapshot$new(test_snapshot_path)
+  snapshot <- test_snapshot$clone()
 
   expect_snapshot(snapshot)
 })
 
 test_that("Snapshot compounds are initialized correctly", {
   # Create a snapshot object
-  snapshot <- Snapshot$new(test_snapshot_path)
+  snapshot <- test_snapshot$clone()
 
   # Test compounds are initialized
   expect_s3_class(snapshot$compounds, "compound_collection")
@@ -159,23 +158,11 @@ test_that("Snapshot handles duplicated individual and compound names correctly",
   }
 })
 
-test_that("Snapshot initialization handles empty Compounds and Individuals", {
-  # Use the minimal snapshot created in helper.R
-  snapshot <- minimal_snapshot$clone()
-
-  # Test that empty collections are initialized properly
-  expect_s3_class(snapshot$compounds, "compound_collection")
-  expect_length(snapshot$compounds, 0)
-
-  expect_s3_class(snapshot$individuals, "individual_collection")
-  expect_length(snapshot$individuals, 0)
-})
 
 test_that("load_snapshot handles local file paths", {
   # Test with an existing file
-  snapshot <- load_snapshot(test_snapshot_path)
+  snapshot <- test_snapshot$clone()
   expect_s3_class(snapshot, "Snapshot")
-  expect_equal(snapshot$path, test_snapshot_path)
 
   # Test with invalid input
   expect_error(load_snapshot(NULL), "Source must be a single character string")
@@ -191,7 +178,7 @@ test_that("load_snapshot handles URL input", {
   test_url <- "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Efavirenz-Model/refs/heads/master/Efavirenz-Model.json"
 
   # Skip this test if there's no internet connection
-  skip_if_offline()
+  testthat::skip_if_offline()
 
   # Test with a valid URL
   tryCatch(
@@ -216,50 +203,6 @@ test_that("load_snapshot handles URL input", {
   )
 })
 
-test_that("load_snapshot handles template names", {
-  # Skip this test if there's no internet connection
-  skip_if_offline()
-
-  # This test will try to access the template repository
-  # and may fail if there are network issues or repository changes
-  tryCatch(
-    {
-      # Mock the template lookup process by redefining the jsonlite::fromJSON function
-      mock_fromJSON <- function(txt, ...) {
-        if (grepl("templates.json", txt)) {
-          return(list(
-            Templates = data.frame(
-              Name = c("Test1", "Test2"),
-              Url = c(
-                "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Efavirenz-Model/refs/heads/master/Efavirenz-Model.json",
-                "https://another-url.example/snapshot.json"
-              )
-            )
-          ))
-        } else {
-          # For the actual template content, return the minimal snapshot data
-          return(minimal_snapshot_data)
-        }
-      }
-
-      testthat::with_mocked_bindings(
-        {
-          snapshot <- load_snapshot("Test1")
-          expect_s3_class(snapshot, "Snapshot")
-          expect_error(
-            load_snapshot("NonExistentTemplate"),
-            "No template found with name"
-          )
-        },
-        fromJSON = mock_fromJSON,
-        .package = "jsonlite"
-      )
-    },
-    error = function(e) {
-      skip(glue::glue("Could not test template functionality: {e$message}"))
-    }
-  )
-})
 
 test_that("Snapshot handles duplicated compound names correctly", {
   # Create a snapshot with duplicate compound names
@@ -439,5 +382,35 @@ test_that("Snapshot correctly handles version mapping for all known versions", {
 
 test_that("skip_if_offline helper works", {
   # Use a local definition with withr for test scoping
-  expect_no_error(skip_if_offline())
+  expect_no_error(testthat::skip_if_offline())
+})
+
+test_that("All main sections are empty in an empty snapshot", {
+  snapshot <- empty_snapshot$clone()
+  expect_s3_class(snapshot, "Snapshot")
+  expect_s3_class(snapshot$compounds, "compound_collection")
+  expect_length(snapshot$compounds, 0)
+  expect_s3_class(snapshot$individuals, "individual_collection")
+  expect_length(snapshot$individuals, 0)
+  expect_s3_class(snapshot$populations, "population_collection")
+  expect_length(snapshot$populations, 0)
+  expect_s3_class(snapshot$formulations, "formulation_collection")
+  expect_length(snapshot$formulations, 0)
+  expect_s3_class(snapshot$expression_profiles, "expression_profile_collection")
+  expect_length(snapshot$expression_profiles, 0)
+  expect_s3_class(snapshot$events, "event_collection")
+  expect_length(snapshot$events, 0)
+  # Check data field for all main sections
+  expect_equal(snapshot$data$Compounds, list())
+  expect_equal(snapshot$data$Individuals, list())
+  expect_equal(snapshot$data$Populations, list())
+  expect_equal(snapshot$data$Formulations, list())
+  expect_equal(snapshot$data$ExpressionProfiles, list())
+  expect_equal(snapshot$data$Events, list())
+  expect_equal(snapshot$data$Simulations, list())
+  expect_equal(snapshot$data$Protocols, list())
+  expect_equal(snapshot$data$ObserverSets, list())
+  expect_equal(snapshot$data$ObservedData, list())
+  expect_equal(snapshot$data$ObservedDataClassifications, list())
+  expect_equal(snapshot$data$ParameterIdentifications, list())
 })

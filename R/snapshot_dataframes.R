@@ -8,9 +8,9 @@
 #'
 #' @return A list containing three data frames:
 #' \itemize{
-#'   \item characteristics: Basic information about each individual
-#'   \item parameters: All parameters for all individuals
-#'   \item expressions: Expression profiles for all individuals
+#'   \item individuals: Basic information about each individual
+#'   \item individuals_parameters: All parameters for all individuals
+#'   \item individuals_expressions: Expression profiles for all individuals
 #' }
 #'
 #' @export
@@ -24,9 +24,9 @@
 #' dfs <- get_individuals_dfs(snapshot)
 #'
 #' # Access specific data frames
-#' characteristics_df <- dfs$characteristics
-#' parameters_df <- dfs$parameters
-#' expressions_df <- dfs$expressions
+#' individuals_df <- dfs$individuals
+#' individuals_parameters_df <- dfs$individuals_parameters
+#' individuals_expressions_df <- dfs$individuals_expressions
 #' }
 get_individuals_dfs <- function(snapshot) {
   # Check if input is a snapshot
@@ -37,7 +37,7 @@ get_individuals_dfs <- function(snapshot) {
 
   # Initialize empty result list with tibbles for each data type
   result <- list(
-    characteristics = tibble::tibble(
+    individuals = tibble::tibble(
       individual_id = character(0),
       name = character(0),
       seed = integer(0),
@@ -53,13 +53,13 @@ get_individuals_dfs <- function(snapshot) {
       disease_state = character(0),
       calculation_methods = character(0)
     ),
-    parameters = tibble::tibble(
+    individuals_parameters = tibble::tibble(
       individual_id = character(0),
       name = character(0),
       value = numeric(0),
       unit = character(0)
     ),
-    expressions = tibble::tibble(
+    individuals_expressions = tibble::tibble(
       individual_id = character(0),
       profile = character(0)
     )
@@ -75,18 +75,14 @@ get_individuals_dfs <- function(snapshot) {
     individual$to_df()
   })
 
-  # Combine all characteristics data frames
+  # Combine all individuals data frames
   if (length(ind_dfs) > 0) {
-    characteristics_dfs <- lapply(ind_dfs, function(df) df$characteristics)
-    result$characteristics <- dplyr::bind_rows(characteristics_dfs)
-
-    # Combine all parameter data frames
-    param_dfs <- lapply(ind_dfs, function(df) df$parameters)
-    result$parameters <- dplyr::bind_rows(param_dfs)
-
-    # Combine all expression profile data frames
-    expr_dfs <- lapply(ind_dfs, function(df) df$expressions)
-    result$expressions <- dplyr::bind_rows(expr_dfs)
+    individuals_dfs <- lapply(ind_dfs, function(df) df$individuals)
+    result$individuals <- dplyr::bind_rows(individuals_dfs)
+    param_dfs <- lapply(ind_dfs, function(df) df$individuals_parameters)
+    result$individuals_parameters <- dplyr::bind_rows(param_dfs)
+    expr_dfs <- lapply(ind_dfs, function(df) df$individuals_expressions)
+    result$individuals_expressions <- dplyr::bind_rows(expr_dfs)
   }
 
   return(result)
@@ -103,8 +99,8 @@ get_individuals_dfs <- function(snapshot) {
 #'
 #' @return A list containing two data frames:
 #' \itemize{
-#'   \item basic: Basic information about each formulation
-#'   \item parameters: All parameters for all formulations
+#'   \item formulations: Basic information about each formulation
+#'   \item formulations_parameters: All parameters for all formulations
 #' }
 #'
 #' @export
@@ -118,8 +114,8 @@ get_individuals_dfs <- function(snapshot) {
 #' dfs <- get_formulations_dfs(snapshot)
 #'
 #' # Access specific data frames
-#' basic_df <- dfs$basic
-#' parameters_df <- dfs$parameters
+#' formulations_df <- dfs$formulations
+#' formulations_parameters_df <- dfs$formulations_parameters
 #' }
 get_formulations_dfs <- function(snapshot) {
   # Check if input is a snapshot
@@ -130,13 +126,13 @@ get_formulations_dfs <- function(snapshot) {
 
   # Initialize empty result list with tibbles for each data type
   result <- list(
-    basic = tibble::tibble(
+    formulations = tibble::tibble(
       formulation_id = character(0),
       name = character(0),
       formulation = character(0),
       formulation_type = character(0)
     ),
-    parameters = tibble::tibble(
+    formulations_parameters = tibble::tibble(
       formulation_id = character(0),
       name = character(0),
       value = numeric(0),
@@ -154,17 +150,12 @@ get_formulations_dfs <- function(snapshot) {
     formulation$to_df()
   })
 
-  # Combine all basic data frames
+  # Combine all main data frames
   if (length(form_dfs) > 0) {
-    basic_dfs <- lapply(form_dfs, function(df) df$basic)
-    combined_basic <- dplyr::bind_rows(basic_dfs)
-
-    # No need to rename columns, keep the original names
-    result$basic <- combined_basic
-
-    # Combine all parameter data frames
-    param_dfs <- lapply(form_dfs, function(df) df$parameters)
-    result$parameters <- dplyr::bind_rows(param_dfs)
+    formulations_dfs <- lapply(form_dfs, function(df) df$formulations)
+    result$formulations <- dplyr::bind_rows(formulations_dfs)
+    param_dfs <- lapply(form_dfs, function(df) df$formulations_parameters)
+    result$formulations_parameters <- dplyr::bind_rows(param_dfs)
   }
 
   return(result)
@@ -180,8 +171,8 @@ get_formulations_dfs <- function(snapshot) {
 #'
 #' @return A list containing two data frames:
 #' \itemize{
-#'   \item characteristics: Basic information about each population including ranges
-#'   \item parameters: All parameters for all populations
+#'   \item populations: Basic information about each population including ranges
+#'   \item populations_parameters: All parameters for all populations
 #' }
 #'
 #' @export
@@ -195,8 +186,8 @@ get_formulations_dfs <- function(snapshot) {
 #' dfs <- get_populations_dfs(snapshot)
 #'
 #' # Access specific data frames
-#' characteristics_df <- dfs$characteristics
-#' parameters_df <- dfs$parameters
+#' populations_df <- dfs$populations
+#' populations_parameters_df <- dfs$populations_parameters
 #' }
 get_populations_dfs <- function(snapshot) {
   # Check if input is a snapshot
@@ -207,7 +198,7 @@ get_populations_dfs <- function(snapshot) {
 
   # Initialize empty result list with tibbles for each data type
   result <- list(
-    characteristics = tibble::tibble(
+    populations = tibble::tibble(
       population_id = character(0),
       name = character(0),
       seed = integer(0),
@@ -231,7 +222,7 @@ get_populations_dfs <- function(snapshot) {
       egfr_max = numeric(0),
       egfr_unit = character(0)
     ),
-    parameters = tibble::tibble(
+    populations_parameters = tibble::tibble(
       population_id = character(0),
       parameter = character(0),
       seed = integer(0),
@@ -250,21 +241,14 @@ get_populations_dfs <- function(snapshot) {
   }
 
   # Process each population
-  characteristics_list <- list()
-  params_list <- list()
-
   for (pop in populations) {
-    # Create characteristics data frame with all columns
-
     pop_dfs <- pop$to_df()
-
-    result$characteristics <- dplyr::bind_rows(
-      result$characteristics,
+    result$populations <- dplyr::bind_rows(
+      result$populations,
       pop_dfs$characteristics
     )
-
-    result$parameters <- dplyr::bind_rows(
-      result$parameters,
+    result$populations_parameters <- dplyr::bind_rows(
+      result$populations_parameters,
       pop_dfs$parameters
     )
   }
@@ -282,8 +266,8 @@ get_populations_dfs <- function(snapshot) {
 #'
 #' @return A list containing two data frames:
 #' \itemize{
-#'   \item basic: Basic information about each event
-#'   \item parameters: All parameters for all events
+#'   \item events: Basic information about each event
+#'   \item events_parameters: All parameters for all events
 #' }
 #'
 #' @export
@@ -297,8 +281,8 @@ get_populations_dfs <- function(snapshot) {
 #' dfs <- get_events_dfs(snapshot)
 #'
 #' # Access specific data frames
-#' basic_df <- dfs$basic
-#' parameters_df <- dfs$parameters
+#' events_df <- dfs$events
+#' events_parameters_df <- dfs$events_parameters
 #' }
 get_events_dfs <- function(snapshot) {
   # Check if input is a snapshot
@@ -309,12 +293,12 @@ get_events_dfs <- function(snapshot) {
 
   # Initialize empty result list with tibbles for each data type
   result <- list(
-    basic = tibble::tibble(
+    events = tibble::tibble(
       event_id = character(0),
       name = character(0),
       template = character(0)
     ),
-    parameters = tibble::tibble(
+    events_parameters = tibble::tibble(
       event_id = character(0),
       parameter = character(0),
       value = numeric(0),
@@ -337,21 +321,26 @@ get_events_dfs <- function(snapshot) {
     # Use the to_dataframe method to get consistent data structure
     event_df <- event$to_dataframe()
 
-    # Add event_id to the basic data
-    if (!is.null(event_df$event)) {
-      basic_df <- dplyr::bind_cols(
+    # Add event_id to the main data
+    if (!is.null(event_df$events)) {
+      events_df <- dplyr::bind_cols(
         tibble::tibble(event_id = event_name),
-        event_df$event
+        event_df$events
       )
-      basic_list[[length(basic_list) + 1]] <- basic_df
+      basic_list[[length(basic_list) + 1]] <- events_df
     }
 
     # Add event_id to the parameters data if available
-    if (!is.null(event_df$parameters) && nrow(event_df$parameters) > 0) {
+    if (
+      !is.null(event_df$events_parameters) &&
+        nrow(event_df$events_parameters) > 0
+    ) {
       # Add event_id and rename columns to match expected structure
       param_df <- dplyr::bind_cols(
-        tibble::tibble(event_id = rep(event_name, nrow(event_df$parameters))),
-        event_df$parameters
+        tibble::tibble(
+          event_id = rep(event_name, nrow(event_df$events_parameters))
+        ),
+        event_df$events_parameters
       ) %>%
         dplyr::rename(
           parameter = param_name,
@@ -365,11 +354,97 @@ get_events_dfs <- function(snapshot) {
 
   # Combine all data frames
   if (length(basic_list) > 0) {
-    result$basic <- dplyr::bind_rows(basic_list)
+    result$events <- dplyr::bind_rows(basic_list)
   }
 
   if (length(params_list) > 0) {
-    result$parameters <- dplyr::bind_rows(params_list)
+    result$events_parameters <- dplyr::bind_rows(params_list)
+  }
+
+  return(result)
+}
+
+#' Get all expression profiles in a snapshot as data frames
+#'
+#' @description
+#' This function extracts all expression profiles from a snapshot and converts them to
+#' data frames for easier analysis and visualization.
+#'
+#' @param snapshot A Snapshot object
+#'
+#' @return A list containing two data frames:
+#' \itemize{
+#'   \item expression_profiles: Basic information about each expression profile
+#'   \item expression_profiles_parameters: All parameters for all expression profiles
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#'
+#' # Get all expression profile data as data frames
+#' dfs <- get_expression_profiles_dfs(snapshot)
+#'
+#' # Access specific data frames
+#' expression_profiles_df <- dfs$expression_profiles
+#' expression_profiles_parameters_df <- dfs$expression_profiles_parameters
+#' }
+get_expression_profiles_dfs <- function(snapshot) {
+  # Check if input is a snapshot
+  validate_snapshot(snapshot)
+
+  # Get all expression profiles from the snapshot
+  expression_profiles <- snapshot$expression_profiles
+
+  # Initialize empty result list with tibbles for each data type
+  result <- list(
+    expression_profiles = tibble::tibble(
+      expression_id = character(0),
+      molecule = character(0),
+      type = character(0),
+      species = character(0),
+      category = character(0),
+      localization = character(0),
+      ontogeny = character(0)
+    ),
+    expression_profiles_parameters = tibble::tibble(
+      expression_id = character(0),
+      parameter = character(0),
+      value = numeric(0),
+      unit = character(0),
+      source = character(0),
+      description = character(0)
+    )
+  )
+
+  # If there are no expression profiles, return the empty tibbles
+  if (length(expression_profiles) == 0) {
+    return(result)
+  }
+
+  # Get data frames for each expression profile and combine them
+  profile_dfs <- lapply(expression_profiles, function(profile) {
+    profile$to_df()
+  })
+
+  # Combine all main data frames
+  if (length(profile_dfs) > 0) {
+    expression_profiles_dfs <- lapply(
+      profile_dfs,
+      function(df) df$expression_profiles
+    )
+    result$expression_profiles <- dplyr::bind_rows(expression_profiles_dfs)
+    param_dfs <- lapply(
+      profile_dfs,
+      function(df) df$expression_profiles_parameters
+    )
+    param_dfs <- param_dfs[!sapply(param_dfs, is.null)]
+    if (length(param_dfs) > 0) {
+      result$expression_profiles_parameters <- dplyr::bind_rows(param_dfs)
+    }
   }
 
   return(result)

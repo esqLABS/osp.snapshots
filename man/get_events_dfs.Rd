@@ -12,8 +12,8 @@ get_events_dfs(snapshot)
 \value{
 A list containing two data frames:
 \itemize{
-  \item basic: Basic information about each event
-  \item parameters: All parameters for all events
+  \item events: Basic information about each event
+  \item events_parameters: All parameters for all events
 }
 }
 \description{
@@ -29,7 +29,7 @@ snapshot <- load_snapshot("path/to/snapshot.json")
 dfs <- get_events_dfs(snapshot)
 
 # Access specific data frames
-basic_df <- dfs$basic
-parameters_df <- dfs$parameters
+events_df <- dfs$events
+events_parameters_df <- dfs$events_parameters
 }
 }

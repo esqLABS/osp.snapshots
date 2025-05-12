@@ -12,9 +12,9 @@ get_individuals_dfs(snapshot)
 \value{
 A list containing three data frames:
 \itemize{
-  \item characteristics: Basic information about each individual
-  \item parameters: All parameters for all individuals
-  \item expressions: Expression profiles for all individuals
+  \item individuals: Basic information about each individual
+  \item individuals_parameters: All parameters for all individuals
+  \item individuals_expressions: Expression profiles for all individuals
 }
 }
 \description{
@@ -30,8 +30,8 @@ snapshot <- load_snapshot("path/to/snapshot.json")
 dfs <- get_individuals_dfs(snapshot)
 
 # Access specific data frames
-characteristics_df <- dfs$characteristics
-parameters_df <- dfs$parameters
-expressions_df <- dfs$expressions
+individuals_df <- dfs$individuals
+individuals_parameters_df <- dfs$individuals_parameters
+individuals_expressions_df <- dfs$individuals_expressions
 }
 }

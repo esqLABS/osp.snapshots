@@ -162,3 +162,29 @@ print.parameter_collection <- function(x, ...) {
 
   invisible(x)
 }
+
+#' S3 print method for expression profile collections
+#'
+#' @param x An expression profile collection object
+#' @param ... Additional arguments passed to print methods
+#' @return Invisibly returns the expression profile collection
+#' @export
+print.expression_profile_collection <- function(x, ...) {
+  cli::cli_h1("Expression Profiles ({length(x)})")
+
+  if (length(x) > 0) {
+    # Create a bullet point list with molecule, type and species
+    for (name in names(x)) {
+      profile <- x[[name]]
+      type <- profile$type
+      species <- profile$species
+      molecule <- profile$molecule
+      category <- if (!is.null(profile$category)) profile$category else "N/A"
+
+      cli::cli_li("{molecule} ({type}, {species}, {category})")
+    }
+  } else {
+    cli::cli_alert_info("No expression profiles found")
+  }
+  invisible(x)
+}

@@ -1,35 +1,4 @@
-# Test fixture for Event class
-test_event_data <- list(
-  Name = "Test Meal",
-  Template = "Meal: Standard (Human)",
-  Parameters = list(
-    list(
-      Name = "Meal energy content",
-      Value = 500,
-      Unit = "kcal",
-      ValueOrigin = list(
-        Source = "Publication",
-        Description = "Test reference"
-      )
-    ),
-    list(
-      Name = "Meal volume",
-      Value = 0.3,
-      Unit = "l"
-    ),
-    list(
-      Name = "Meal fraction solid",
-      Value = 0.7
-    )
-  )
-)
-
-# Simple event without parameters
-simple_event_data <- list(
-  Name = "GB emptying",
-  Template = "Gallbladder emptying"
-)
-
+# ---- Event logic tests ----
 test_that("Event class initialization works", {
   # Test with parameters
   event <- Event$new(test_event_data)
@@ -94,23 +63,23 @@ test_that("to_dataframe converts event to tibble correctly", {
   result <- event$to_dataframe()
 
   # Check event dataframe
-  expect_s3_class(result$event, "tbl_df")
-  expect_equal(result$event$name, "Test Meal")
-  expect_equal(result$event$template, "Meal: Standard (Human)")
+  expect_s3_class(result$events, "tbl_df")
+  expect_equal(result$events$name, "Test Meal")
+  expect_equal(result$events$template, "Meal: Standard (Human)")
 
   # Check parameters dataframe
-  expect_s3_class(result$parameters, "tbl_df")
-  expect_equal(nrow(result$parameters), 3)
-  expect_true("param_name" %in% colnames(result$parameters))
-  expect_true("param_value" %in% colnames(result$parameters))
-  expect_true("param_unit" %in% colnames(result$parameters))
+  expect_s3_class(result$events_parameters, "tbl_df")
+  expect_equal(nrow(result$events_parameters), 3)
+  expect_true("param_name" %in% colnames(result$events_parameters))
+  expect_true("param_value" %in% colnames(result$events_parameters))
+  expect_true("param_unit" %in% colnames(result$events_parameters))
 
   # Check simple event without parameters
   simple_event <- Event$new(simple_event_data)
   simple_result <- simple_event$to_dataframe()
-  expect_s3_class(simple_result$event, "tbl_df")
-  expect_equal(simple_result$event$name, "GB emptying")
-  expect_null(simple_result$parameters)
+  expect_s3_class(simple_result$events, "tbl_df")
+  expect_equal(simple_result$events$name, "GB emptying")
+  expect_null(simple_result$events_parameters)
 })
 
 test_that("print.event_collection works", {
@@ -128,4 +97,14 @@ test_that("print.event_collection works", {
   empty_events <- list()
   class(empty_events) <- c("event_collection", "list")
   expect_snapshot(print(empty_events))
+})
+
+
+test_that("Test get_events_dfs", {
+  snapshot <- test_snapshot$clone()
+
+  expect_snapshot(snapshot$events)
+
+  dfs <- get_events_dfs(snapshot)
+  expect_snapshot(dfs)
 })
