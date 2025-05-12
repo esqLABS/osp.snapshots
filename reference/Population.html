@@ -11,7 +11,7 @@ and display a summary of its information."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,10 @@ and display a summary of its information.</p>
 <dd><p>The source population name (read-only)</p></dd>
 
 
+<dt><code>individual_name</code></dt>
+<dd><p>The individual name (read-only)</p></dd>
+
+
 <dt><code>seed</code></dt>
 <dd><p>The seed used for population generation</p></dd>
 
@@ -85,8 +89,8 @@ and display a summary of its information.</p>
 <dd><p>The BMI range for the population</p></dd>
 
 
-<dt><code>disease_state_parameters</code></dt>
-<dd><p>Disease state parameters for the population (if available)</p></dd>
+<dt><code>egfr_range</code></dt>
+<dd><p>The eGFR range for the population (if available)</p></dd>
 
 
 <dt><code>advanced_parameters</code></dt>
@@ -155,7 +159,7 @@ and display a summary of its information.</p>
 <div class="section">
 <h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
 <p>A list containing data frames with population information:</p><ul><li><p>characteristics: Population characteristics including basic information and physiological parameters</p></li>
-<li><p>advanced_parameters: Advanced parameters information</p></li>
+<li><p>parameters: Advanced parameters information</p></li>
 </ul></div>
 
 </div><p></p><hr><a id="method-Population-clone"></a><div class="section">

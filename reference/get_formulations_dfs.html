@@ -9,7 +9,7 @@ data frames for easier analysis and visualization."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ data frames for easier analysis and visualization.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list containing two data frames:</p><ul><li><p>basic: Basic information about each formulation</p></li>
-<li><p>parameters: All parameters for all formulations</p></li>
+    <p>A list containing two data frames:</p><ul><li><p>formulations: Basic information about each formulation</p></li>
+<li><p>formulations_parameters: All parameters for all formulations</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -68,8 +68,8 @@ data frames for easier analysis and visualization.</p>
 <span class="r-in"><span><span class="va">dfs</span> <span class="op">&lt;-</span> <span class="fu">get_formulations_dfs</span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Access specific data frames</span></span></span>
-<span class="r-in"><span><span class="va">basic_df</span> <span class="op">&lt;-</span> <span class="va">dfs</span><span class="op">$</span><span class="va">basic</span></span></span>
-<span class="r-in"><span><span class="va">parameters_df</span> <span class="op">&lt;-</span> <span class="va">dfs</span><span class="op">$</span><span class="va">parameters</span></span></span>
+<span class="r-in"><span><span class="va">formulations_df</span> <span class="op">&lt;-</span> <span class="va">dfs</span><span class="op">$</span><span class="va">formulations</span></span></span>
+<span class="r-in"><span><span class="va">formulations_parameters_df</span> <span class="op">&lt;-</span> <span class="va">dfs</span><span class="op">$</span><span class="va">formulations_parameters</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

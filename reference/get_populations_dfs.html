@@ -9,7 +9,7 @@ data frames for easier analysis and visualization."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ data frames for easier analysis and visualization.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list containing two data frames:</p><ul><li><p>characteristics: Basic information about each population including ranges</p></li>
-<li><p>advanced_parameters: Advanced parameters information</p></li>
+    <p>A list containing two data frames:</p><ul><li><p>populations: Basic information about each population including ranges</p></li>
+<li><p>populations_parameters: All parameters for all populations</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -68,8 +68,8 @@ data frames for easier analysis and visualization.</p>
 <span class="r-in"><span><span class="va">dfs</span> <span class="op">&lt;-</span> <span class="fu">get_populations_dfs</span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Access specific data frames</span></span></span>
-<span class="r-in"><span><span class="va">characteristics_df</span> <span class="op">&lt;-</span> <span class="va">dfs</span><span class="op">$</span><span class="va">characteristics</span></span></span>
-<span class="r-in"><span><span class="va">advanced_parameters_df</span> <span class="op">&lt;-</span> <span class="va">dfs</span><span class="op">$</span><span class="va">advanced_parameters</span></span></span>
+<span class="r-in"><span><span class="va">populations_df</span> <span class="op">&lt;-</span> <span class="va">dfs</span><span class="op">$</span><span class="va">populations</span></span></span>
+<span class="r-in"><span><span class="va">populations_parameters_df</span> <span class="op">&lt;-</span> <span class="va">dfs</span><span class="op">$</span><span class="va">populations_parameters</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
