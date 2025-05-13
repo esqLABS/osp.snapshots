@@ -739,16 +739,37 @@ test_that("get_individuals_dfs returns correct data frames", {
   expect_named(
     dfs$individuals,
     c(
-      "individual_id", "name", "seed", "species", "population", "gender", "age", "age_unit",
-      "gestational_age", "gestational_age_unit", "weight", "weight_unit", "height", "height_unit",
-      "disease_state", "calculation_methods", "disease_state_parameters"
+      "individual_id",
+      "name",
+      "seed",
+      "species",
+      "population",
+      "gender",
+      "age",
+      "age_unit",
+      "gestational_age",
+      "gestational_age_unit",
+      "weight",
+      "weight_unit",
+      "height",
+      "height_unit",
+      "disease_state",
+      "calculation_methods",
+      "disease_state_parameters"
     )
   )
   # Check columns for individuals_parameters
   expect_named(
     dfs$individuals_parameters,
     c(
-      "individual_id", "path", "value", "unit", "source", "description", "source_id"
+      "individual_id",
+      "path",
+      "value",
+      "unit",
+      "source",
+      "description",
+      "source_id",
+      "name"
     )
   )
   # Check columns for individuals_expressions
@@ -774,15 +795,35 @@ test_that("get_individuals_dfs returns correct data frames", {
   expect_named(
     dfs_empty$individuals,
     c(
-      "individual_id", "name", "seed", "species", "population", "gender", "age", "age_unit",
-      "gestational_age", "gestational_age_unit", "weight", "weight_unit", "height", "height_unit",
-      "disease_state", "calculation_methods", "disease_state_parameters"
+      "individual_id",
+      "name",
+      "seed",
+      "species",
+      "population",
+      "gender",
+      "age",
+      "age_unit",
+      "gestational_age",
+      "gestational_age_unit",
+      "weight",
+      "weight_unit",
+      "height",
+      "height_unit",
+      "disease_state",
+      "calculation_methods",
+      "disease_state_parameters"
     )
   )
   expect_named(
     dfs_empty$individuals_parameters,
     c(
-      "individual_id", "path", "value", "unit", "source", "description", "source_id"
+      "individual_id",
+      "path",
+      "value",
+      "unit",
+      "source",
+      "description",
+      "source_id"
     )
   )
   expect_named(

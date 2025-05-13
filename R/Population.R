@@ -567,34 +567,3 @@ AdvancedParameter <- R6::R6Class(
     .data = NULL
   )
 )
-
-#' Load populations from snapshot data
-#'
-#' @description
-#' Load populations from a list of population data from a snapshot
-#'
-#' @param population_list List of population data from a snapshot
-#' @return A named list of Population objects
-#' @export
-load_populations <- function(population_list) {
-  # Check if input is NULL or empty
-  if (is.null(population_list) || length(population_list) == 0) {
-    empty_result <- list()
-    # Add class for consistent behavior
-    class(empty_result) <- "population_collection"
-    return(empty_result)
-  }
-
-  # Create population objects
-  populations <- lapply(population_list, function(data) {
-    Population$new(data)
-  })
-
-  # Name the list elements by population name
-  names(populations) <- sapply(populations, function(p) p$name)
-
-  # Add class for custom printing
-  class(populations) <- "population_collection"
-
-  return(populations)
-}

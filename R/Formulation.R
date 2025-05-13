@@ -969,45 +969,6 @@ create_formulation <- function(name, type, parameters = NULL) {
   Formulation$new(data)
 }
 
-#' Load formulations from a list
-#'
-#' @description
-#' Converts a list of formulation data to Formulation objects
-#'
-#' @param formulation_list List. List of formulation data from a snapshot
-#'
-#' @return List of Formulation objects
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load snapshot and get formulations
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' formulations <- load_formulations(snapshot$data$Formulations)
-#' }
-load_formulations <- function(formulation_list) {
-  # Check if input is NULL or empty
-  if (is.null(formulation_list) || length(formulation_list) == 0) {
-    empty_result <- list()
-    # Add class for consistent behavior
-    class(empty_result) <- c("formulation_collection", "list")
-    return(empty_result)
-  }
-
-  # Create formulation objects
-  formulations <- lapply(formulation_list, function(data) {
-    Formulation$new(data)
-  })
-
-  # Name the list elements by formulation name
-  names(formulations) <- sapply(formulations, function(f) f$name)
-
-  # Add class for potential custom printing
-  class(formulations) <- c("formulation_collection", "list")
-
-  return(formulations)
-}
-
 #' Add a formulation to a snapshot
 #'
 #' @description

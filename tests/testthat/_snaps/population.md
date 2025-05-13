@@ -1,3 +1,47 @@
+# Population print method returns formatted output
+
+    Code
+      print(complete_population)
+    Message
+      
+      -- Population: Test Population (Seed: 12345) --
+      
+      Individual name: European Reference
+      Source Population: European_ICRP_2002
+      Number of individuals: 100
+      Proportion of females: 50%
+      Age range: 20 - 60 year(s)
+      Weight range: 50 - 90 kg
+      Height range: 150 - 190 cm
+      BMI range: 18.5 - 30 kg/m²
+      eGFR range: 60 - 120 ml/min/1.73m²
+      
+      -- Advanced Parameters 
+      1 advanced parameters defined
+
+---
+
+    Code
+      print(minimal_population)
+    Message
+      
+      -- Population: Minimal Population --
+      
+      Number of individuals: 10
+      Proportion of females: 0%
+      Age range: 30 - 40 year(s)
+
+# AdvancedParameter class works correctly
+
+    Code
+      print(advanced_param)
+    Message
+      Parameter: Modified Parameter
+      Distribution type: LogNormal
+      Seed: 98765
+      Mean: 1.5 l
+      Geometric SD: 1.2
+
 # get_populations_dfs returns correct data frames
 
     Code

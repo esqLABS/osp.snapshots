@@ -244,34 +244,6 @@ test_that("create_formulation function works correctly", {
   )
 })
 
-test_that("load_formulations function works correctly", {
-  # Create a list of formulation data using a subset of existing fixture data
-  formulation_list <- list(
-    complete_formulation_data,
-    minimal_formulation_data
-  )
-
-  # Load formulations
-  formulations <- load_formulations(formulation_list)
-
-  # Test that formulations were loaded correctly
-  expect_s3_class(formulations, "formulation_collection")
-  expect_length(formulations, 2)
-  expect_true(all(sapply(
-    formulations,
-    function(f) inherits(f, "Formulation")
-  )))
-
-  # Test with empty or NULL input
-  empty_formulations <- load_formulations(list())
-  expect_s3_class(empty_formulations, "formulation_collection")
-  expect_length(empty_formulations, 0)
-
-  null_formulations <- load_formulations(NULL)
-  expect_s3_class(null_formulations, "formulation_collection")
-  expect_length(null_formulations, 0)
-})
-
 test_that("formulation to_df method works correctly", {
   # Use fixture data
   test_formulation <- Formulation$new(complete_formulation_data)
