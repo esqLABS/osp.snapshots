@@ -17,6 +17,8 @@ and display a summary of its information.
 
 \item{\code{source_population}}{The source population name (read-only)}
 
+\item{\code{individual_name}}{The individual name (read-only)}
+
 \item{\code{seed}}{The seed used for population generation}
 
 \item{\code{number_of_individuals}}{The number of individuals in the population}
@@ -31,7 +33,7 @@ and display a summary of its information.
 
 \item{\code{bmi_range}}{The BMI range for the population}
 
-\item{\code{disease_state_parameters}}{Disease state parameters for the population (if available)}
+\item{\code{egfr_range}}{The eGFR range for the population (if available)}
 
 \item{\code{advanced_parameters}}{Advanced parameters for the population}
 }
@@ -99,7 +101,7 @@ Convert the population to a list of data frames for easier analysis
 A list containing data frames with population information:
 \itemize{
   \item characteristics: Population characteristics including basic information and physiological parameters
-  \item advanced_parameters: Advanced parameters information
+  \item parameters: Advanced parameters information
 }
 }
 }
