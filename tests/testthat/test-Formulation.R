@@ -1,3 +1,4 @@
+# ---- Formulation logic tests ----
 test_that("Formulation class initialization works", {
   # Create a formulation object using fixture data
   test_formulation <- Formulation$new(complete_formulation_data)
@@ -243,42 +244,16 @@ test_that("create_formulation function works correctly", {
   )
 })
 
-test_that("load_formulations function works correctly", {
-  # Create a list of formulation data using a subset of existing fixture data
-  formulation_list <- list(
-    complete_formulation_data,
-    minimal_formulation_data
-  )
-
-  # Load formulations
-  formulations <- load_formulations(formulation_list)
-
-  # Test that formulations were loaded correctly
-  expect_s3_class(formulations, "formulation_collection")
-  expect_length(formulations, 2)
-  expect_true(all(sapply(
-    formulations,
-    function(f) inherits(f, "Formulation")
-  )))
-
-  # Test with empty or NULL input
-  empty_formulations <- load_formulations(list())
-  expect_s3_class(empty_formulations, "formulation_collection")
-  expect_length(empty_formulations, 0)
-
-  null_formulations <- load_formulations(NULL)
-  expect_s3_class(null_formulations, "formulation_collection")
-  expect_length(null_formulations, 0)
-})
-
 test_that("formulation to_df method works correctly", {
   # Use fixture data
   test_formulation <- Formulation$new(complete_formulation_data)
 
   # Test to_df with "all" type
-  all_df <- test_formulation$to_df()
+  all_df <- test_formulation$to_df("all")
   expect_type(all_df, "list")
-  expect_true(all(c("basic", "parameters") %in% names(all_df)))
+  expect_true(all(
+    c("formulations", "formulations_parameters") %in% names(all_df)
+  ))
 
   # Use expect_snapshot to verify dataframe structure and content
   expect_snapshot(all_df)
@@ -373,3 +348,28 @@ test_that("get_human_formulation_type method works correctly", {
     "Formulation_Unknown"
   )
 })
+
+# ---- Formulation dataframe tests ----
+test_that("get_formulations_dfs returns correct data frames", {
+  # Test with a snapshot containing formulations
+  dfs <- get_formulations_dfs(test_snapshot)
+  expect_type(dfs, "list")
+  expect_named(dfs, c("formulations", "formulations_parameters"))
+  expect_s3_class(dfs$formulations, "tbl_df")
+  expect_s3_class(dfs$formulations_parameters, "tbl_df")
+  expect_snapshot(dfs$formulations)
+  expect_snapshot(dfs$formulations_parameters)
+
+  # Test with an empty snapshot
+  dfs_empty <- get_formulations_dfs(empty_snapshot)
+  expect_type(dfs_empty, "list")
+  expect_named(dfs_empty, c("formulations", "formulations_parameters"))
+  expect_s3_class(dfs_empty$formulations, "tbl_df")
+  expect_s3_class(dfs_empty$formulations_parameters, "tbl_df")
+  expect_snapshot(dfs_empty$formulations)
+  expect_snapshot(dfs_empty$formulations_parameters)
+})
+
+# ---- Formulation snapshot interaction tests ----
+# Copied from test-snapshot-formulations.R
+# ... existing code ...

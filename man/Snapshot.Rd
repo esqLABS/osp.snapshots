@@ -59,6 +59,34 @@ snapshot$remove_formulation("Tablet")
 # Remove a population from the snapshot
 snapshot$remove_population("pop_1")
 }
+
+## ------------------------------------------------
+## Method `Snapshot$add_expression_profile`
+## ------------------------------------------------
+
+\dontrun{
+# Create a new expression profile
+profile_data <- list(
+  Type = "Enzyme",
+  Species = "Human",
+  Molecule = "CYP3A4",
+  Category = "Healthy",
+  Parameters = list()
+)
+profile <- ExpressionProfile$new(profile_data)
+
+# Add the expression profile to a snapshot
+snapshot$add_expression_profile(profile)
+}
+
+## ------------------------------------------------
+## Method `Snapshot$remove_expression_profile`
+## ------------------------------------------------
+
+\dontrun{
+# Remove an expression profile from the snapshot
+snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
+}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -76,11 +104,15 @@ snapshot$remove_population("pop_1")
 
 \item{\code{compounds}}{List of Compound objects in the snapshot}
 
+\item{\code{expression_profiles}}{List of ExpressionProfile objects in the snapshot}
+
 \item{\code{individuals}}{List of Individual objects in the snapshot}
 
 \item{\code{formulations}}{List of Formulation objects in the snapshot}
 
 \item{\code{populations}}{List of Population objects in the snapshot}
+
+\item{\code{events}}{List of Event objects in the snapshot}
 }
 \if{html}{\out{</div>}}
 }
@@ -95,6 +127,8 @@ snapshot$remove_population("pop_1")
 \item \href{#method-Snapshot-add_formulation}{\code{Snapshot$add_formulation()}}
 \item \href{#method-Snapshot-remove_formulation}{\code{Snapshot$remove_formulation()}}
 \item \href{#method-Snapshot-remove_population}{\code{Snapshot$remove_population()}}
+\item \href{#method-Snapshot-add_expression_profile}{\code{Snapshot$add_expression_profile()}}
+\item \href{#method-Snapshot-remove_expression_profile}{\code{Snapshot$remove_expression_profile()}}
 \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
 }
 }
@@ -312,6 +346,78 @@ Invisibly returns the object
 \preformatted{\dontrun{
 # Remove a population from the snapshot
 snapshot$remove_population("pop_1")
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_expression_profile"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_expression_profile}{}}}
+\subsection{Method \code{add_expression_profile()}}{
+Add an ExpressionProfile object to the snapshot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$add_expression_profile(expression_profile)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{expression_profile}}{An ExpressionProfile object}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns the object
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+# Create a new expression profile
+profile_data <- list(
+  Type = "Enzyme",
+  Species = "Human",
+  Molecule = "CYP3A4",
+  Category = "Healthy",
+  Parameters = list()
+)
+profile <- ExpressionProfile$new(profile_data)
+
+# Add the expression profile to a snapshot
+snapshot$add_expression_profile(profile)
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_expression_profile"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_expression_profile}{}}}
+\subsection{Method \code{remove_expression_profile()}}{
+Remove expression profiles from the snapshot by ID
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_expression_profile(profile_id)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{profile_id}}{Character vector of expression profile IDs to remove}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns the object
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+# Remove an expression profile from the snapshot
+snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 }
 }
 \if{html}{\out{</div>}}

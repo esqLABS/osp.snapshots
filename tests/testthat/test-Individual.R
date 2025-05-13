@@ -1,3 +1,4 @@
+# ---- Individual class logic tests ----
 test_that("Individual class initialization works", {
   # Test that object is created and is of correct class
   expect_s3_class(complete_individual, "R6")
@@ -618,3 +619,244 @@ test_that("Individual handles gestational age correctly", {
   # Test print output shows gestational age
   expect_snapshot(print(preterm_individual))
 })
+
+test_that("Snapshot with empty individuals is handled correctly", {
+  snapshot <- empty_snapshot$clone()
+
+  # Check that individuals is an empty individual_collection
+  expect_s3_class(snapshot$individuals, "individual_collection")
+  expect_length(snapshot$individuals, 0)
+
+  # Print should not error and should show minimal info
+  expect_snapshot(print(snapshot$individuals))
+})
+
+
+test_that("Individual read-only fields error on set", {
+  ind <- Individual$new(complete_individual_data)
+  expect_error(ind$data <- list(), "data is read-only")
+  expect_error(ind$expression_profiles <- c("A"), "unused argument")
+})
+
+test_that("Parameter collection class is always parameter_collection", {
+  ind <- Individual$new(complete_individual_data)
+  expect_s3_class(ind$parameters, "parameter_collection")
+  # Replace with new list
+  new_param <- Parameter$new(list(Path = "X", Value = 1))
+  ind$parameters <- list(new_param)
+  expect_s3_class(ind$parameters, "parameter_collection")
+})
+
+test_that("Parameter removal and re-adding works", {
+  ind <- Individual$new(complete_individual_data)
+  ind$parameters <- NULL
+  expect_length(ind$parameters, 0)
+  new_param <- Parameter$new(list(Path = "Y", Value = 2))
+  ind$parameters <- list(new_param)
+  expect_equal(ind$parameters[[1]]$name, "Y")
+})
+
+test_that("to_df returns all types and errors on invalid type", {
+  ind <- Individual$new(complete_individual_data)
+  expect_s3_class(ind$to_df("individuals"), "tbl_df")
+  expect_s3_class(ind$to_df("individuals_parameters"), "tbl_df")
+  expect_s3_class(ind$to_df("individuals_expressions"), "tbl_df")
+  expect_type(ind$to_df(), "list")
+  expect_error(ind$to_df("not_a_type"), "type must be one of")
+})
+
+test_that("Disease state parameters handle missing fields", {
+  ind <- Individual$new(complete_individual_data)
+  # Set disease state parameters with missing Unit
+  ind$disease_state_parameters <- list(list(Name = "eGFR", Value = 45.0))
+  expect_equal(ind$disease_state_parameters[[1]]$Name, "eGFR")
+  expect_equal(ind$disease_state_parameters[[1]]$Value, 45.0)
+  expect_null(ind$disease_state_parameters[[1]]$Unit)
+})
+
+test_that("Calculation methods edge cases", {
+  ind <- Individual$new(complete_individual_data)
+  ind$calculation_methods <- NULL
+  expect_null(ind$calculation_methods)
+  ind$calculation_methods <- character(0)
+  expect_length(ind$calculation_methods, 0)
+  ind$calculation_methods <- c("A", "B")
+  expect_equal(ind$calculation_methods, c("A", "B"))
+})
+
+test_that("Gestational age can be set to NULL after being set", {
+  ind <- Individual$new(complete_individual_data)
+  ind$gestational_age <- 30
+  expect_equal(ind$gestational_age, 30)
+  ind$gestational_age <- NULL
+  expect_null(ind$gestational_age)
+})
+
+test_that("Units can be set to NULL after being set", {
+  ind <- Individual$new(complete_individual_data)
+  ind$age_unit <- "year(s)"
+  expect_equal(ind$age_unit, "year(s)")
+  ind$weight_unit <- "kg"
+  expect_equal(ind$weight_unit, "kg")
+  ind$height_unit <- "cm"
+  expect_equal(ind$height_unit, "cm")
+  # Now set to NULL
+  ind$age_unit <- NULL
+  expect_null(ind$age_unit)
+  ind$weight_unit <- NULL
+  expect_null(ind$weight_unit)
+  ind$height_unit <- NULL
+  expect_null(ind$height_unit)
+})
+
+test_that("Replacing entire parameters list works", {
+  ind <- Individual$new(complete_individual_data)
+  new_params <- list(
+    Parameter$new(list(Path = "A", Value = 1)),
+    Parameter$new(list(Path = "B", Value = 2))
+  )
+  names(new_params) <- c("A", "B")
+  class(new_params) <- c("parameter_collection", "list")
+  ind$parameters <- new_params
+  expect_equal(names(ind$parameters), c("A", "B"))
+  expect_equal(ind$parameters[["A"]]$value, 1)
+  expect_equal(ind$parameters[["B"]]$value, 2)
+})
+
+# ---- Individual dataframe tests ----
+test_that("get_individuals_dfs returns correct data frames", {
+  # Test with a snapshot containing individuals
+  dfs <- get_individuals_dfs(test_snapshot)
+  expect_type(dfs, "list")
+  expect_named(
+    dfs,
+    c("individuals", "individuals_parameters", "individuals_expressions")
+  )
+  expect_s3_class(dfs$individuals, "tbl_df")
+  expect_s3_class(dfs$individuals_parameters, "tbl_df")
+  expect_s3_class(dfs$individuals_expressions, "tbl_df")
+  # Check columns for individuals
+  expect_named(
+    dfs$individuals,
+    c(
+      "individual_id",
+      "name",
+      "seed",
+      "species",
+      "population",
+      "gender",
+      "age",
+      "age_unit",
+      "gestational_age",
+      "gestational_age_unit",
+      "weight",
+      "weight_unit",
+      "height",
+      "height_unit",
+      "disease_state",
+      "calculation_methods",
+      "disease_state_parameters"
+    )
+  )
+  # Check columns for individuals_parameters
+  expect_named(
+    dfs$individuals_parameters,
+    c(
+      "individual_id",
+      "path",
+      "value",
+      "unit",
+      "source",
+      "description",
+      "source_id",
+      "name"
+    )
+  )
+  # Check columns for individuals_expressions
+  expect_named(
+    dfs$individuals_expressions,
+    c("individual_id", "profile")
+  )
+  # Use expect_snapshot to check the dataframes
+  expect_snapshot(dfs$individuals)
+  expect_snapshot(dfs$individuals_parameters)
+  expect_snapshot(dfs$individuals_expressions)
+
+  # Test with an empty snapshot
+  dfs_empty <- get_individuals_dfs(empty_snapshot)
+  expect_type(dfs_empty, "list")
+  expect_named(
+    dfs_empty,
+    c("individuals", "individuals_parameters", "individuals_expressions")
+  )
+  expect_s3_class(dfs_empty$individuals, "tbl_df")
+  expect_s3_class(dfs_empty$individuals_parameters, "tbl_df")
+  expect_s3_class(dfs_empty$individuals_expressions, "tbl_df")
+  expect_named(
+    dfs_empty$individuals,
+    c(
+      "individual_id",
+      "name",
+      "seed",
+      "species",
+      "population",
+      "gender",
+      "age",
+      "age_unit",
+      "gestational_age",
+      "gestational_age_unit",
+      "weight",
+      "weight_unit",
+      "height",
+      "height_unit",
+      "disease_state",
+      "calculation_methods",
+      "disease_state_parameters"
+    )
+  )
+  expect_named(
+    dfs_empty$individuals_parameters,
+    c(
+      "individual_id",
+      "path",
+      "value",
+      "unit",
+      "source",
+      "description",
+      "source_id"
+    )
+  )
+  expect_named(
+    dfs_empty$individuals_expressions,
+    c("individual_id", "profile")
+  )
+  expect_snapshot(dfs_empty$individuals)
+  expect_snapshot(dfs_empty$individuals_parameters)
+  expect_snapshot(dfs_empty$individuals_expressions)
+})
+
+test_that("get_individuals_dfs handles individual with characteristics and expression profiles but no parameters", {
+  # Create a snapshot with a single such individual
+  snapshot <- local_snapshot(list(
+    Version = 80,
+    Individuals = list(characteristics_expr_individual_data)
+  ))
+
+  dfs <- get_individuals_dfs(snapshot)
+  expect_type(dfs, "list")
+  expect_named(
+    dfs,
+    c("individuals", "individuals_parameters", "individuals_expressions")
+  )
+  expect_s3_class(dfs$individuals, "tbl_df")
+  expect_s3_class(dfs$individuals_parameters, "tbl_df")
+  expect_s3_class(dfs$individuals_expressions, "tbl_df")
+  # Use expect_snapshot to check the dataframes
+  expect_snapshot(dfs$individuals)
+  expect_snapshot(dfs$individuals_parameters)
+  expect_snapshot(dfs$individuals_expressions)
+})
+
+# ---- Individual snapshot interaction tests ----
+# Copied from test-snapshot-individuals.R
+# ... existing code ...

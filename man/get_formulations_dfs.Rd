@@ -12,8 +12,8 @@ get_formulations_dfs(snapshot)
 \value{
 A list containing two data frames:
 \itemize{
-  \item basic: Basic information about each formulation
-  \item parameters: All parameters for all formulations
+  \item formulations: Basic information about each formulation
+  \item formulations_parameters: All parameters for all formulations
 }
 }
 \description{
@@ -29,7 +29,7 @@ snapshot <- load_snapshot("path/to/snapshot.json")
 dfs <- get_formulations_dfs(snapshot)
 
 # Access specific data frames
-basic_df <- dfs$basic
-parameters_df <- dfs$parameters
+formulations_df <- dfs$formulations
+formulations_parameters_df <- dfs$formulations_parameters
 }
 }

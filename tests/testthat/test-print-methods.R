@@ -134,3 +134,31 @@ test_that("print.parameter_collection formats values correctly", {
     ))
   }
 })
+
+# Test for expression_profile_collection print method
+test_that("print.expression_profile_collection works with profiles", {
+  # Create a collection of expression profiles
+  profiles <- list(
+    complete_expression_profile,
+    minimal_expression_profile,
+    without_category_expression_profile
+  )
+  names(profiles) <- c(
+    "CYP3A4|Human|Healthy",
+    "P-gp|Human|Healthy",
+    "OATP1B1|Rat|NA"
+  )
+  class(profiles) <- c("expression_profile_collection", "list")
+
+  # Test the print method
+  expect_snapshot(print(profiles))
+})
+
+test_that("print.expression_profile_collection works with empty collection", {
+  # Create an empty expression profile collection
+  profiles_named <- list()
+  class(profiles_named) <- c("expression_profile_collection", "list")
+
+  # Test the print method with empty collection
+  expect_snapshot(print(profiles_named))
+})

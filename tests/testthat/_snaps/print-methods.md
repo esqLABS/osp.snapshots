@@ -101,3 +101,23 @@
       Test|Scientific                          | 1.23e-05        | mol
       Test|Large                               | 12345678        | cells
 
+# print.expression_profile_collection works with profiles
+
+    Code
+      print(profiles)
+    Message
+      
+      -- Expression Profiles (3) -----------------------------------------------------
+      * CYP3A4 (Enzyme, Human, Healthy)
+      * P-gp (Transporter, Human, Healthy)
+      * OATP1B1 (Transporter, Rat, N/A)
+
+# print.expression_profile_collection works with empty collection
+
+    Code
+      print(profiles_named)
+    Message
+      
+      -- Expression Profiles (0) -----------------------------------------------------
+      i No expression profiles found
+

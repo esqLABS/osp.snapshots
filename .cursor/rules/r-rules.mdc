@@ -7,7 +7,7 @@ This is an R project.
 
 # Coding rules
   - Add comments when the code is not self explanatory
-  - Write user feedback info and warning messages when appropriate
+  - Write user feedback info and warning messages when appropriate (using the cli package)
   - In functions, check arguments provided by users
   - Anticipate and handle errors
 
@@ -16,6 +16,7 @@ This is an R project.
   - NAMESPACE or files inside man/ folder
   - docs/ folder
 
-# Commit message
-  - when NAMESPACE or .Rd files, just say devtools::document() was run
-  - Explicitely mention when a package was added as dependency (in DESCRIPTION file)
+# Tests
+  - Always implement or update tests when adding new functions or modify logic in existing function.
+  - Always run "devtools::load_all()" before running tests (in the same call).
+  - Use as much testthat::expect_equal() as possible to check test outputs.

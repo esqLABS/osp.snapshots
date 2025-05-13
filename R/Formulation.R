@@ -125,23 +125,23 @@ Formulation <- R6::R6Class(
       # Initialize result list
       result <- list()
 
-      # Add basic formulation data if requested
+      # Add main formulation data if requested
       if (type %in% c("all", "basic")) {
         # Create a list to store the data
         data_list <- list(
           formulation_id = formulation_id,
           name = self$name,
-          formulation_type = self$formulation_type,
-          formulation_type_human = self$get_human_formulation_type()
+          formulation = self$formulation_type,
+          formulation_type = self$get_human_formulation_type()
         )
 
-        result$basic <- tibble::as_tibble(data_list)
+        result$formulations <- tibble::as_tibble(data_list)
       }
 
       # Add parameters data if requested
       if (type %in% c("all", "parameters")) {
         if (length(self$parameters) == 0) {
-          result$parameters <- tibble::tibble(
+          result$formulations_parameters <- tibble::tibble(
             formulation_id = character(0),
             name = character(0),
             value = numeric(0),
@@ -157,7 +157,7 @@ Formulation <- R6::R6Class(
               unit = param$unit %||% NA_character_
             )
           })
-          result$parameters <- tibble::as_tibble(dplyr::bind_rows(
+          result$formulations_parameters <- tibble::as_tibble(dplyr::bind_rows(
             param_rows
           ))
         }
@@ -165,7 +165,9 @@ Formulation <- R6::R6Class(
 
       # If only one type requested, return just that tibble
       if (type != "all") {
-        return(result[[type]])
+        # Return the new key if present
+        if (type == "parameters") return(result$formulations_parameters)
+        if (type == "basic") return(result$formulations)
       }
 
       result
@@ -965,45 +967,6 @@ create_formulation <- function(name, type, parameters = NULL) {
 
   # Create and return the Formulation object
   Formulation$new(data)
-}
-
-#' Load formulations from a list
-#'
-#' @description
-#' Converts a list of formulation data to Formulation objects
-#'
-#' @param formulation_list List. List of formulation data from a snapshot
-#'
-#' @return List of Formulation objects
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load snapshot and get formulations
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' formulations <- load_formulations(snapshot$data$Formulations)
-#' }
-load_formulations <- function(formulation_list) {
-  # Check if input is NULL or empty
-  if (is.null(formulation_list) || length(formulation_list) == 0) {
-    empty_result <- list()
-    # Add class for consistent behavior
-    class(empty_result) <- c("formulation_collection", "list")
-    return(empty_result)
-  }
-
-  # Create formulation objects
-  formulations <- lapply(formulation_list, function(data) {
-    Formulation$new(data)
-  })
-
-  # Name the list elements by formulation name
-  names(formulations) <- sapply(formulations, function(f) f$name)
-
-  # Add class for potential custom printing
-  class(formulations) <- c("formulation_collection", "list")
-
-  return(formulations)
 }
 
 #' Add a formulation to a snapshot

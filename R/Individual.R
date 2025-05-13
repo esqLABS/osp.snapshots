@@ -141,11 +141,16 @@ Individual <- R6::R6Class(
 
     #' @description
     #' Convert individual data to tibbles
-    #' @param type Character. Type of data to convert: "all" (default), "characteristics", "parameters", or "expressions"
+    #' @param type Character. Type of data to convert: "all" (default), "individuals", "individuals_parameters", or "individuals_expressions"
     #' @return A list of tibbles containing the requested data
     to_df = function(type = "all") {
       # Validate type argument
-      valid_types <- c("all", "characteristics", "parameters", "expressions")
+      valid_types <- c(
+        "all",
+        "individuals",
+        "individuals_parameters",
+        "individuals_expressions"
+      )
       if (!type %in% valid_types) {
         cli::cli_abort(
           "type must be one of: {valid_types}"
@@ -158,8 +163,8 @@ Individual <- R6::R6Class(
       # Initialize result list
       result <- list()
 
-      # Add characteristics data if requested
-      if (type %in% c("all", "characteristics")) {
+      # Add individuals data if requested
+      if (type %in% c("all", "individuals")) {
         # Create a list to store the data
         data_list <- list(
           individual_id = individual_id,
@@ -210,13 +215,13 @@ Individual <- R6::R6Class(
           data_list$disease_state_parameters <- NA_character_
         }
 
-        result$characteristics <- tibble::as_tibble(data_list)
+        result$individuals <- tibble::as_tibble(data_list)
       }
 
-      # Add parameters data if requested
-      if (type %in% c("all", "parameters")) {
+      # Add individuals_parameters data if requested
+      if (type %in% c("all", "individuals_parameters")) {
         if (length(self$parameters) == 0) {
-          result$parameters <- tibble::tibble(
+          result$individuals_parameters <- tibble::tibble(
             individual_id = character(0),
             name = character(0),
             value = numeric(0),
@@ -232,22 +237,22 @@ Individual <- R6::R6Class(
               dplyr::mutate(individual_id = individual_id) %>%
               dplyr::relocate(individual_id)
           })
-          result$parameters <- dplyr::bind_rows(param_data)
+          result$individuals_parameters <- dplyr::bind_rows(param_data)
         }
       }
 
-      # Add expression profiles data if requested
-      if (type %in% c("all", "expressions")) {
+      # Add individuals_expressions data if requested
+      if (type %in% c("all", "individuals_expressions")) {
         if (
           is.null(self$expression_profiles) ||
             length(self$expression_profiles) == 0
         ) {
-          result$expressions <- tibble::tibble(
+          result$individuals_expressions <- tibble::tibble(
             individual_id = character(0),
             profile = character(0)
           )
         } else {
-          result$expressions <- tibble::tibble(
+          result$individuals_expressions <- tibble::tibble(
             individual_id = individual_id,
             profile = self$expression_profiles
           )
@@ -357,7 +362,11 @@ Individual <- R6::R6Class(
         }
         return(private$.data$OriginData$Age$Unit)
       }
-      # Validate unit
+      # Allow clearing unit
+      if (is.null(value) || (is.atomic(value) && is.na(value))) {
+        private$.data$OriginData$Age$Unit <- NULL
+        return(invisible(NULL))
+      }
       validate_unit(value, "Age in years")
       private$.data$OriginData$Age$Unit <- value
     },
@@ -384,7 +393,11 @@ Individual <- R6::R6Class(
         }
         return(private$.data$OriginData$Weight$Unit)
       }
-      # Validate unit
+      # Allow clearing unit
+      if (is.null(value) || (is.atomic(value) && is.na(value))) {
+        private$.data$OriginData$Weight$Unit <- NULL
+        return(invisible(NULL))
+      }
       validate_unit(value, "Mass")
       private$.data$OriginData$Weight$Unit <- value
     },
@@ -411,7 +424,11 @@ Individual <- R6::R6Class(
         }
         return(private$.data$OriginData$Height$Unit)
       }
-      # Validate unit
+      # Allow clearing unit
+      if (is.null(value) || (is.atomic(value) && is.na(value))) {
+        private$.data$OriginData$Height$Unit <- NULL
+        return(invisible(NULL))
+      }
       validate_unit(value, "Length")
       private$.data$OriginData$Height$Unit <- value
     },
@@ -438,7 +455,11 @@ Individual <- R6::R6Class(
         }
         return(private$.data$OriginData$GestationalAge$Unit)
       }
-      # Validate unit
+      # Allow clearing unit
+      if (is.null(value) || (is.atomic(value) && is.na(value))) {
+        private$.data$OriginData$GestationalAge$Unit <- NULL
+        return(invisible(NULL))
+      }
       validate_unit(value, "Time")
       private$.data$OriginData$GestationalAge$Unit <- value
     },
