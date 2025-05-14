@@ -245,15 +245,15 @@
     Code
       dfs$individuals_parameters
     Output
-      # A tibble: 6 x 8
-        individual_id             path  value unit  source description source_id name 
-        <chr>                     <chr> <dbl> <chr> <chr>  <chr>           <int> <chr>
-      1 European (P-gp modified,~ Orga~  0.8  <NA>  Publi~ R24-4081           NA <NA> 
-      2 European (P-gp modified,~ Orga~  1    <NA>  Publi~ R24-4081           NA <NA> 
-      3 Korean (Yu 2004 study)    Orga~  1    <NA>  Unkno~ <NA>               NA <NA> 
-      4 Korean (Yu 2004 study)    Orga~  0.89 <NA>  Publi~ R24-4081           NA <NA> 
-      5 CKD                       Orga~  7.25 <NA>  Datab~ Assumed            NA <NA> 
-      6 ind_modified              Orga~ 33    ml/m~ Other  Assumed            15 <NA> 
+      # A tibble: 6 x 7
+        individual_id                   path  value unit  source description source_id
+        <chr>                           <chr> <dbl> <chr> <chr>  <chr>           <int>
+      1 European (P-gp modified, CYP3A~ Orga~  0.8  <NA>  Publi~ R24-4081           NA
+      2 European (P-gp modified, CYP3A~ Orga~  1    <NA>  Publi~ R24-4081           NA
+      3 Korean (Yu 2004 study)          Orga~  1    <NA>  Unkno~ <NA>               NA
+      4 Korean (Yu 2004 study)          Orga~  0.89 <NA>  Publi~ R24-4081           NA
+      5 CKD                             Orga~  7.25 <NA>  Datab~ Assumed            NA
+      6 ind_modified                    Orga~ 33    ml/m~ Other  Assumed            15
 
 ---
 
@@ -328,7 +328,7 @@
       dfs$individuals_parameters
     Output
       # A tibble: 0 x 7
-      # i 7 variables: individual_id <chr>, name <chr>, value <dbl>, unit <chr>,
+      # i 7 variables: individual_id <chr>, path <chr>, value <dbl>, unit <chr>,
       #   source <chr>, description <chr>, source_id <int>
 
 ---

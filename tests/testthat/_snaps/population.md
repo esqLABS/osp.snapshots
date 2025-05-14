@@ -107,3 +107,12 @@
       #   distribution_type <chr>, statistic <chr>, value <dbl>, unit <chr>,
       #   source <chr>, description <chr>
 
+# Snapshot with empty populations is handled correctly
+
+    Code
+      print(snapshot$populations)
+    Message
+      
+      -- Populations (0) -------------------------------------------------------------
+      i No populations found
+

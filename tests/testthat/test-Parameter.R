@@ -341,3 +341,29 @@ test_that("Regular parameters handle to_df correctly after table support added",
     print(df_result)
   })
 })
+
+test_that("Parameter to_df handles missing ValueOrigin fields correctly", {
+  # Create parameter with ValueOrigin that has only Source
+  param_data <- list(
+    Path = "Test|Path",
+    Value = 1.0,
+    ValueOrigin = list(
+      Source = "TestSource"
+      # No Description or Id fields
+    )
+  )
+  
+  param <- Parameter$new(param_data)
+  df <- param$to_df()
+  
+  # Check all columns exist
+  expect_named(
+    df,
+    c("path", "value", "unit", "source", "description", "source_id")
+  )
+  
+  # Check values
+  expect_equal(df$source, "TestSource")
+  expect_equal(df$description, NA_character_)
+  expect_equal(df$source_id, NA_integer_)
+})

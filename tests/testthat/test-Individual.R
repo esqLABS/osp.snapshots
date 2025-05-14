@@ -768,8 +768,7 @@ test_that("get_individuals_dfs returns correct data frames", {
       "unit",
       "source",
       "description",
-      "source_id",
-      "name"
+      "source_id"
     )
   )
   # Check columns for individuals_expressions

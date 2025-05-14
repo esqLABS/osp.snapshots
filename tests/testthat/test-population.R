@@ -411,5 +411,13 @@ test_that("get_populations_dfs returns correct data frames", {
   expect_snapshot(dfs_empty$populations_parameters)
 })
 
-# ---- Population snapshot interaction tests ----
-# (Merged from test-snapshot-populations.R)
+test_that("Snapshot with empty populations is handled correctly", {
+  snapshot <- empty_snapshot$clone()
+
+  # Check that populations is an empty list
+  expect_type(snapshot$populations, "list")
+  expect_length(snapshot$populations, 0)
+
+  # Print should not error
+  expect_snapshot(print(snapshot$populations))
+})

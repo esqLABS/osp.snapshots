@@ -104,10 +104,14 @@ Parameter <- R6::R6Class(
         unit = self$unit %||% NA_character_,
         source = if (!is.null(self$value_origin)) self$value_origin$Source else
           NA_character_,
-        description = if (!is.null(self$value_origin))
+        description = if (
+          !is.null(self$value_origin) && !is.null(self$value_origin$Description)
+        )
           self$value_origin$Description else NA_character_,
-        source_id = if (!is.null(self$value_origin)) self$value_origin$Id else
-          NA_integer_
+        source_id = if (
+          !is.null(self$value_origin) && !is.null(self$value_origin$Id)
+        )
+          self$value_origin$Id else NA_integer_
       )
 
       # For table parameters, also create separate dataframe of points

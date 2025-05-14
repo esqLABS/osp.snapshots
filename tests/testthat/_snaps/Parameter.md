@@ -228,8 +228,8 @@
     Code
       print(df_result)
     Output
-      # A tibble: 1 x 4
-        path          value unit  source
-        <chr>         <dbl> <chr> <chr> 
-      1 Regular Param    42 mg    Test  
+      # A tibble: 1 x 6
+        path          value unit  source description source_id
+        <chr>         <dbl> <chr> <chr>  <chr>           <int>
+      1 Regular Param    42 mg    Test   <NA>               NA
 
