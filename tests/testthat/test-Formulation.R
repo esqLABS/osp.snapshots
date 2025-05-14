@@ -312,7 +312,8 @@ test_that("Table formulation correctly extracts parameter table points from test
   dfs <- get_formulations_dfs(test_snapshot)
 
   # Use expect_snapshot for comprehensive validation
-  expect_snapshot(dfs)
+  expect_snapshot(print(dfs$formulations, n = Inf))
+  expect_snapshot(print(dfs$formulations_parameters, n = Inf))
 })
 
 test_that("get_human_formulation_type method works correctly", {

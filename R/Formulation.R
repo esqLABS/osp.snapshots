@@ -124,6 +124,9 @@ Formulation <- R6::R6Class(
     #'   * x_value: X-axis value for table points (NA for regular parameters)
     #'   * y_value: Y-axis value for table points (NA for regular parameters)
     #'   * table_name: Name of the table (usually "Time" for release profiles)
+    #'   * source: Source of the parameter (NA if not available)
+    #'   * description: Description of the parameter (NA if not available)
+    #'   * source_id: ID of the source (NA if not available)
     to_df = function(type = "all") {
       # Validate type argument
       valid_types <- c("all", "parameters")
@@ -161,7 +164,10 @@ Formulation <- R6::R6Class(
             is_table_point = logical(0),
             x_value = numeric(0),
             y_value = numeric(0),
-            table_name = character(0)
+            table_name = character(0),
+            source = character(0),
+            description = character(0),
+            source_id = integer(0)
           )
         } else {
           # Collect parameter data (including table points)
@@ -185,7 +191,19 @@ Formulation <- R6::R6Class(
                   is_table_point = FALSE,
                   x_value = NA_real_,
                   y_value = NA_real_,
-                  table_name = NA_character_
+                  table_name = NA_character_,
+                  source = if (!is.null(param$value_origin))
+                    param$value_origin$Source else NA_character_,
+                  description = if (
+                    !is.null(param$value_origin) &&
+                      !is.null(param$value_origin$Description)
+                  )
+                    param$value_origin$Description else NA_character_,
+                  source_id = if (
+                    !is.null(param$value_origin) &&
+                      !is.null(param$value_origin$Id)
+                  )
+                    param$value_origin$Id else NA_integer_
                 ))
               )
 
@@ -203,7 +221,10 @@ Formulation <- R6::R6Class(
                       is_table_point = TRUE,
                       x_value = param_df$points$x[i],
                       y_value = param_df$points$y[i],
-                      table_name = table_name
+                      table_name = table_name,
+                      source = NA_character_,
+                      description = NA_character_,
+                      source_id = NA_integer_
                     ))
                   )
                 }
@@ -220,7 +241,19 @@ Formulation <- R6::R6Class(
                   is_table_point = FALSE,
                   x_value = NA_real_,
                   y_value = NA_real_,
-                  table_name = NA_character_
+                  table_name = NA_character_,
+                  source = if (!is.null(param$value_origin))
+                    param$value_origin$Source else NA_character_,
+                  description = if (
+                    !is.null(param$value_origin) &&
+                      !is.null(param$value_origin$Description)
+                  )
+                    param$value_origin$Description else NA_character_,
+                  source_id = if (
+                    !is.null(param$value_origin) &&
+                      !is.null(param$value_origin$Id)
+                  )
+                    param$value_origin$Id else NA_integer_
                 ))
               )
             }
