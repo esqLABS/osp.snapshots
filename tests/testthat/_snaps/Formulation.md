@@ -1,26 +1,26 @@
 # Formulation print method returns formatted output
 
     Code
-      print(test_formulation)
+      print(formulation1)
     Output
       
-      -- Formulation: Test Tablet ----------------------------------------------------
+      -- Formulation: Tablet (Dormicum) ----------------------------------------------
       * Type: Weibull
       
       -- Parameters --
       
-      * Dissolution time (50% dissolved): 60 min
-      * Lag time: 10 min
-      * Dissolution shape: 0.92
+      * Dissolution time (50% dissolved): 0.0107481462 min
+      * Lag time: 12 min
+      * Dissolution shape: 4.3802943225
       * Use as suspension: 1
 
 ---
 
     Code
-      print(dissolved_formulation)
+      print(formulation2)
     Output
       
-      -- Formulation: Oral Solution --------------------------------------------------
+      -- Formulation: Oral solution --------------------------------------------------
       * Type: Dissolved
 
 # Formulation handles table-based formulations correctly
@@ -29,23 +29,48 @@
       print(table_formulation)
     Output
       
-      -- Formulation: Custom Release -------------------------------------------------
+      -- Formulation: form-table -----------------------------------------------------
       * Type: Table
       
       -- Parameters --
       
-      * Use as suspension: 1
       * Fraction (dose): 0
       * Release profile:
       
           Time [h]     | Fraction (dose)
           -------------|----------------
           0.00         | 0.00
-          0.50         | 0.20
-          1.00         | 0.40
-          2.00         | 0.60
-          4.00         | 0.80
-          8.00         | 1.00
+          0.10         | 0.10
+          0.50         | 0.60
+          1.00         | 0.70
+          3.00         | 0.80
+          7.00         | 0.90
+      
+      * Use as suspension: 1
+
+---
+
+    Code
+      table_formulation$to_df()
+    Output
+      $formulations
+      # A tibble: 1 x 4
+        formulation_id name       formulation       formulation_type
+        <chr>          <chr>      <chr>             <chr>           
+      1 form-table     form-table Formulation_Table Table           
+      
+      $formulations_parameters
+      # A tibble: 8 x 8
+        formulation_id name      value unit  is_table_point x_value y_value table_name
+        <chr>          <chr>     <dbl> <chr> <lgl>            <dbl>   <dbl> <chr>     
+      1 form-table     Fraction~     0 <NA>  FALSE             NA      NA   <NA>      
+      2 form-table     Fraction~    NA <NA>  TRUE               0       0   Time      
+      3 form-table     Fraction~    NA <NA>  TRUE               0.1     0.1 Time      
+      4 form-table     Fraction~    NA <NA>  TRUE               0.5     0.6 Time      
+      5 form-table     Fraction~    NA <NA>  TRUE               1       0.7 Time      
+      6 form-table     Fraction~    NA <NA>  TRUE               3       0.8 Time      
+      7 form-table     Fraction~    NA <NA>  TRUE               7       0.9 Time      
+      8 form-table     Use as s~     1 <NA>  FALSE             NA      NA   <NA>      
       
 
 # Formulation fields can be modified through active bindings
@@ -54,37 +79,12 @@
       print(test_formulation)
     Output
       
-      -- Formulation: Modified Tablet ------------------------------------------------
+      -- Formulation: Modified Formulation -------------------------------------------
       * Type: Dissolved
       
       -- Parameters --
       
       * New Parameter: 100 mg
-
-# create_formulation function works correctly
-
-    Code
-      print(dissolved)
-    Output
-      
-      -- Formulation: Oral Solution --------------------------------------------------
-      * Type: Dissolved
-
----
-
-    Code
-      print(tablet)
-    Output
-      
-      -- Formulation: Tablet ---------------------------------------------------------
-      * Type: Weibull
-      
-      -- Parameters --
-      
-      * Dissolution time (50% dissolved): 60 min
-      * Lag time: 10 min
-      * Dissolution shape: 0.92
-      * Use as suspension: 1
 
 # formulation to_df method works correctly
 
@@ -93,18 +93,18 @@
     Output
       $formulations
       # A tibble: 1 x 4
-        formulation_id name        formulation                formulation_type
-        <chr>          <chr>       <chr>                      <chr>           
-      1 Test Tablet    Test Tablet Formulation_Tablet_Weibull Weibull         
+        formulation_id    name              formulation               formulation_type
+        <chr>             <chr>             <chr>                     <chr>           
+      1 Tablet (Dormicum) Tablet (Dormicum) Formulation_Tablet_Weibu~ Weibull         
       
       $formulations_parameters
-      # A tibble: 4 x 4
-        formulation_id name                             value unit 
-        <chr>          <chr>                            <dbl> <chr>
-      1 Test Tablet    Dissolution time (50% dissolved) 60    min  
-      2 Test Tablet    Lag time                         10    min  
-      3 Test Tablet    Dissolution shape                 0.92 <NA> 
-      4 Test Tablet    Use as suspension                 1    <NA> 
+      # A tibble: 4 x 8
+        formulation_id   name    value unit  is_table_point x_value y_value table_name
+        <chr>            <chr>   <dbl> <chr> <lgl>            <dbl>   <dbl> <chr>     
+      1 Tablet (Dormicu~ Diss~  0.0107 min   FALSE               NA      NA <NA>      
+      2 Tablet (Dormicu~ Lag ~ 12      min   FALSE               NA      NA <NA>      
+      3 Tablet (Dormicu~ Diss~  4.38   <NA>  FALSE               NA      NA <NA>      
+      4 Tablet (Dormicu~ Use ~  1      <NA>  FALSE               NA      NA <NA>      
       
 
 ---
@@ -112,35 +112,62 @@
     Code
       params_df
     Output
-      # A tibble: 4 x 4
-        formulation_id name                             value unit 
-        <chr>          <chr>                            <dbl> <chr>
-      1 Test Tablet    Dissolution time (50% dissolved) 60    min  
-      2 Test Tablet    Lag time                         10    min  
-      3 Test Tablet    Dissolution shape                 0.92 <NA> 
-      4 Test Tablet    Use as suspension                 1    <NA> 
+      # A tibble: 4 x 8
+        formulation_id   name    value unit  is_table_point x_value y_value table_name
+        <chr>            <chr>   <dbl> <chr> <lgl>            <dbl>   <dbl> <chr>     
+      1 Tablet (Dormicu~ Diss~  0.0107 min   FALSE               NA      NA <NA>      
+      2 Tablet (Dormicu~ Lag ~ 12      min   FALSE               NA      NA <NA>      
+      3 Tablet (Dormicu~ Diss~  4.38   <NA>  FALSE               NA      NA <NA>      
+      4 Tablet (Dormicu~ Use ~  1      <NA>  FALSE               NA      NA <NA>      
 
 ---
 
     Code
-      dissolved_df
+      second_df
     Output
       $formulations
       # A tibble: 1 x 4
         formulation_id name          formulation           formulation_type
         <chr>          <chr>         <chr>                 <chr>           
-      1 Oral Solution  Oral Solution Formulation_Dissolved Dissolved       
+      1 Oral solution  Oral solution Formulation_Dissolved Dissolved       
       
       $formulations_parameters
-      # A tibble: 0 x 4
-      # i 4 variables: formulation_id <chr>, name <chr>, value <dbl>, unit <chr>
+      # A tibble: 0 x 8
+      # i 8 variables: formulation_id <chr>, name <chr>, value <dbl>, unit <chr>,
+      #   is_table_point <lgl>, x_value <dbl>, y_value <dbl>, table_name <chr>
       
 
-# get_formulations_dfs returns correct data frames
+# to_df correctly extracts table parameter points
 
     Code
-      dfs$formulations
+      dfs
     Output
+      $formulations
+      # A tibble: 1 x 4
+        formulation_id name       formulation       formulation_type
+        <chr>          <chr>      <chr>             <chr>           
+      1 form-table     form-table Formulation_Table Table           
+      
+      $formulations_parameters
+      # A tibble: 8 x 8
+        formulation_id name      value unit  is_table_point x_value y_value table_name
+        <chr>          <chr>     <dbl> <chr> <lgl>            <dbl>   <dbl> <chr>     
+      1 form-table     Fraction~     0 <NA>  FALSE             NA      NA   <NA>      
+      2 form-table     Fraction~    NA <NA>  TRUE               0       0   Time      
+      3 form-table     Fraction~    NA <NA>  TRUE               0.1     0.1 Time      
+      4 form-table     Fraction~    NA <NA>  TRUE               0.5     0.6 Time      
+      5 form-table     Fraction~    NA <NA>  TRUE               1       0.7 Time      
+      6 form-table     Fraction~    NA <NA>  TRUE               3       0.8 Time      
+      7 form-table     Fraction~    NA <NA>  TRUE               7       0.9 Time      
+      8 form-table     Use as s~     1 <NA>  FALSE             NA      NA   <NA>      
+      
+
+# Table formulation correctly extracts parameter table points from test_snapshot
+
+    Code
+      dfs
+    Output
+      $formulations
       # A tibble: 9 x 4
         formulation_id    name              formulation               formulation_type
         <chr>             <chr>             <chr>                     <chr>           
@@ -153,41 +180,73 @@
       7 form-ZO           form-ZO           Formulation_ZeroOrder     Zero Order      
       8 form-FO           form-FO           Formulation_FirstOrder    First Order     
       9 form-partdiss2    form-partdiss2    Formulation_Particles     Particle        
+      
+      $formulations_parameters
+      # A tibble: 28 x 8
+         formulation_id  name    value unit  is_table_point x_value y_value table_name
+         <chr>           <chr>   <dbl> <chr> <lgl>            <dbl>   <dbl> <chr>     
+       1 Tablet (Dormic~ Diss~ 1.07e-2 min   FALSE               NA      NA <NA>      
+       2 Tablet (Dormic~ Lag ~ 1.2 e+1 min   FALSE               NA      NA <NA>      
+       3 Tablet (Dormic~ Diss~ 4.38e+0 <NA>  FALSE               NA      NA <NA>      
+       4 Tablet (Dormic~ Use ~ 1   e+0 <NA>  FALSE               NA      NA <NA>      
+       5 form_Lint80     Diss~ 2.4 e+2 min   FALSE               NA      NA <NA>      
+       6 form_Lint80     Lag ~ 0       min   FALSE               NA      NA <NA>      
+       7 form_Lint80     Use ~ 1   e+0 <NA>  FALSE               NA      NA <NA>      
+       8 form-partdiss   Thic~ 3   e+1 µm    FALSE               NA      NA <NA>      
+       9 form-partdiss   Type~ 0       <NA>  FALSE               NA      NA <NA>      
+      10 form-partdiss   Part~ 1   e+1 µm    FALSE               NA      NA <NA>      
+      # i 18 more rows
+      
+
+# get_formulations_dfs returns correct data frames
+
+    Code
+      dfs
+    Output
+      $formulations
+      # A tibble: 9 x 4
+        formulation_id    name              formulation               formulation_type
+        <chr>             <chr>             <chr>                     <chr>           
+      1 Tablet (Dormicum) Tablet (Dormicum) Formulation_Tablet_Weibu~ Weibull         
+      2 Oral solution     Oral solution     Formulation_Dissolved     Dissolved       
+      3 form_dissolved    form_dissolved    Formulation_Dissolved     Dissolved       
+      4 form_Lint80       form_Lint80       Formulation_Tablet_Lint80 Lint80          
+      5 form-partdiss     form-partdiss     Formulation_Particles     Particle        
+      6 form-table        form-table        Formulation_Table         Table           
+      7 form-ZO           form-ZO           Formulation_ZeroOrder     Zero Order      
+      8 form-FO           form-FO           Formulation_FirstOrder    First Order     
+      9 form-partdiss2    form-partdiss2    Formulation_Particles     Particle        
+      
+      $formulations_parameters
+      # A tibble: 28 x 8
+         formulation_id  name    value unit  is_table_point x_value y_value table_name
+         <chr>           <chr>   <dbl> <chr> <lgl>            <dbl>   <dbl> <chr>     
+       1 Tablet (Dormic~ Diss~ 1.07e-2 min   FALSE               NA      NA <NA>      
+       2 Tablet (Dormic~ Lag ~ 1.2 e+1 min   FALSE               NA      NA <NA>      
+       3 Tablet (Dormic~ Diss~ 4.38e+0 <NA>  FALSE               NA      NA <NA>      
+       4 Tablet (Dormic~ Use ~ 1   e+0 <NA>  FALSE               NA      NA <NA>      
+       5 form_Lint80     Diss~ 2.4 e+2 min   FALSE               NA      NA <NA>      
+       6 form_Lint80     Lag ~ 0       min   FALSE               NA      NA <NA>      
+       7 form_Lint80     Use ~ 1   e+0 <NA>  FALSE               NA      NA <NA>      
+       8 form-partdiss   Thic~ 3   e+1 µm    FALSE               NA      NA <NA>      
+       9 form-partdiss   Type~ 0       <NA>  FALSE               NA      NA <NA>      
+      10 form-partdiss   Part~ 1   e+1 µm    FALSE               NA      NA <NA>      
+      # i 18 more rows
+      
 
 ---
 
     Code
-      dfs$formulations_parameters
+      dfs_empty
     Output
-      # A tibble: 22 x 4
-         formulation_id    name                                  value unit 
-         <chr>             <chr>                                 <dbl> <chr>
-       1 Tablet (Dormicum) Dissolution time (50% dissolved)     0.0107 min  
-       2 Tablet (Dormicum) Lag time                            12      min  
-       3 Tablet (Dormicum) Dissolution shape                    4.38   <NA> 
-       4 Tablet (Dormicum) Use as suspension                    1      <NA> 
-       5 form_Lint80       Dissolution time (80% dissolved)   240      min  
-       6 form_Lint80       Lag time                             0      min  
-       7 form_Lint80       Use as suspension                    1      <NA> 
-       8 form-partdiss     Thickness (unstirred water layer)   30      µm   
-       9 form-partdiss     Type of particle size distribution   0      <NA> 
-      10 form-partdiss     Particle radius (mean)              10      µm   
-      # i 12 more rows
-
----
-
-    Code
-      dfs_empty$formulations
-    Output
+      $formulations
       # A tibble: 0 x 4
       # i 4 variables: formulation_id <chr>, name <chr>, formulation <chr>,
       #   formulation_type <chr>
-
----
-
-    Code
-      dfs_empty$formulations_parameters
-    Output
-      # A tibble: 0 x 4
-      # i 4 variables: formulation_id <chr>, name <chr>, value <dbl>, unit <chr>
+      
+      $formulations_parameters
+      # A tibble: 0 x 8
+      # i 8 variables: formulation_id <chr>, name <chr>, value <dbl>, unit <chr>,
+      #   is_table_point <lgl>, x_value <dbl>, y_value <dbl>, table_name <chr>
+      
 

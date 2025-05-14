@@ -352,16 +352,16 @@ test_that("Parameter to_df handles missing ValueOrigin fields correctly", {
       # No Description or Id fields
     )
   )
-  
+
   param <- Parameter$new(param_data)
   df <- param$to_df()
-  
+
   # Check all columns exist
   expect_named(
     df,
     c("path", "value", "unit", "source", "description", "source_id")
   )
-  
+
   # Check values
   expect_equal(df$source, "TestSource")
   expect_equal(df$description, NA_character_)

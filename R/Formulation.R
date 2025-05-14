@@ -111,7 +111,19 @@ Formulation <- R6::R6Class(
     #' @description
     #' Convert formulation data to tibbles
     #' @param type Character. Type of data to convert: "all" (default) or "parameters"
-    #' @return A list of tibbles containing the requested data
+    #' @return A list of tibbles containing the requested data:
+    #'   * formulations: Basic formulation information (ID, name, type)
+    #'   * formulations_parameters: All parameters including table parameter points
+    #'
+    #' The formulations_parameters tibble includes the following columns:
+    #'   * formulation_id: ID of the formulation
+    #'   * name: Name of the parameter
+    #'   * value: Value of the parameter (NA for table points)
+    #'   * unit: Unit of the parameter (NA for table points)
+    #'   * is_table_point: TRUE for table parameter points, FALSE for regular parameters
+    #'   * x_value: X-axis value for table points (NA for regular parameters)
+    #'   * y_value: Y-axis value for table points (NA for regular parameters)
+    #'   * table_name: Name of the table (usually "Time" for release profiles)
     to_df = function(type = "all") {
       # Validate type argument
       valid_types <- c("all", "parameters")
@@ -145,18 +157,76 @@ Formulation <- R6::R6Class(
             formulation_id = character(0),
             name = character(0),
             value = numeric(0),
-            unit = character(0)
+            unit = character(0),
+            is_table_point = logical(0),
+            x_value = numeric(0),
+            y_value = numeric(0),
+            table_name = character(0)
           )
         } else {
-          # Extract parameter data
-          param_rows <- lapply(self$parameters, function(param) {
-            list(
-              formulation_id = formulation_id,
-              name = param$name,
-              value = param$value,
-              unit = param$unit %||% NA_character_
-            )
-          })
+          # Collect parameter data (including table points)
+          param_rows <- list()
+
+          # Process each parameter
+          for (param in self$parameters) {
+            # Convert parameter to data frame format
+            param_df <- param$to_df()
+
+            # If parameter has table points, it returns a list with parameter and points
+            if (is.list(param_df) && "points" %in% names(param_df)) {
+              # Add parameter main entry
+              param_rows <- c(
+                param_rows,
+                list(list(
+                  formulation_id = formulation_id,
+                  name = param$name,
+                  value = param$value,
+                  unit = param$unit %||% NA_character_,
+                  is_table_point = FALSE,
+                  x_value = NA_real_,
+                  y_value = NA_real_,
+                  table_name = NA_character_
+                ))
+              )
+
+              # Add points data with formulation ID
+              if (nrow(param_df$points) > 0) {
+                table_name <- param_df$points$x_name[1]
+                for (i in 1:nrow(param_df$points)) {
+                  param_rows <- c(
+                    param_rows,
+                    list(list(
+                      formulation_id = formulation_id,
+                      name = param$name,
+                      value = NA_real_, # No single value for table points
+                      unit = NA_character_,
+                      is_table_point = TRUE,
+                      x_value = param_df$points$x[i],
+                      y_value = param_df$points$y[i],
+                      table_name = table_name
+                    ))
+                  )
+                }
+              }
+            } else {
+              # Regular parameter without table
+              param_rows <- c(
+                param_rows,
+                list(list(
+                  formulation_id = formulation_id,
+                  name = param$name,
+                  value = param$value,
+                  unit = param$unit %||% NA_character_,
+                  is_table_point = FALSE,
+                  x_value = NA_real_,
+                  y_value = NA_real_,
+                  table_name = NA_character_
+                ))
+              )
+            }
+          }
+
+          # Create parameters dataframe
           result$formulations_parameters <- tibble::as_tibble(dplyr::bind_rows(
             param_rows
           ))
