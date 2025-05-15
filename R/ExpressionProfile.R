@@ -33,6 +33,12 @@ ExpressionProfile <- R6::R6Class(
         cli::cli_li("Localization: {self$data$Localization}")
       }
 
+      if (
+        !is.null(self$data$TransportType) && !is.na(self$data$TransportType)
+      ) {
+        cli::cli_li("Transport Type: {self$transportType}")
+      }
+
       if (!is.null(self$data$Ontogeny) && length(self$data$Ontogeny) > 0) {
         cli::cli_li("Ontogeny: {self$data$Ontogeny$Name}")
       }
@@ -57,6 +63,7 @@ ExpressionProfile <- R6::R6Class(
         species = self$species,
         category = self$category %||% NA_character_,
         localization = self$localization %||% NA_character_,
+        transport_type = self$transportType %||% NA_character_,
         ontogeny = if (!is.null(self$ontogeny) && !is.null(self$ontogeny$Name))
           self$ontogeny$Name else NA_character_
       )
@@ -133,6 +140,11 @@ ExpressionProfile <- R6::R6Class(
     #' @field localization The localization of the expression profile
     localization = function() {
       self$data$Localization
+    },
+
+    #' @field transportType The transport type of the expression profile
+    transportType = function() {
+      self$data$TransportType
     },
 
     #' @field ontogeny The ontogeny information of the expression profile

@@ -202,6 +202,7 @@ complete_expression_profile_data <- list(
   Molecule = "CYP3A4",
   Category = "Healthy",
   Localization = "Intracellular, BloodCellsIntracellular",
+  TransportType = "Efflux",
   Ontogeny = list(
     Name = "CYP3A4"
   ),

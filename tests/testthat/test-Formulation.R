@@ -288,7 +288,10 @@ test_that("to_df correctly extracts table parameter points", {
       "is_table_point",
       "x_value",
       "y_value",
-      "table_name"
+      "table_name",
+      "source",
+      "description",
+      "source_id"
     )
   )
 

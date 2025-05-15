@@ -9,6 +9,7 @@ test_that("ExpressionProfile class initialization works", {
   expect_equal(profile$species, "Human")
   expect_equal(profile$category, "Healthy")
   expect_equal(profile$localization, "Intracellular, BloodCellsIntracellular")
+  expect_equal(profile$transportType, "Efflux")
   expect_equal(profile$ontogeny$Name, "CYP3A4")
   expect_length(profile$parameters, 3)
 
@@ -20,6 +21,7 @@ test_that("ExpressionProfile class initialization works", {
   expect_equal(simple_profile$species, "Human")
   expect_equal(simple_profile$category, "Healthy")
   expect_null(simple_profile$localization)
+  expect_null(simple_profile$transportType)
   expect_null(simple_profile$ontogeny)
   expect_length(simple_profile$parameters, 0)
 
@@ -44,6 +46,7 @@ test_that("ExpressionProfile getters work", {
   expect_equal(profile$species, "Human")
   expect_equal(profile$category, "Healthy")
   expect_equal(profile$localization, "Intracellular, BloodCellsIntracellular")
+  expect_equal(profile$transportType, "Efflux")
   expect_equal(profile$ontogeny$Name, "CYP3A4")
   expect_equal(profile$data, complete_expression_profile_data)
 
@@ -105,6 +108,7 @@ test_that("to_df converts expression profile to tibble correctly", {
   expect_equal(result$expression_profiles$molecule, "CYP3A4")
   expect_equal(result$expression_profiles$type, "Enzyme")
   expect_equal(result$expression_profiles$species, "Human")
+  expect_equal(result$expression_profiles$transport_type, "Efflux")
   expect_equal(result$expression_profiles$ontogeny, "CYP3A4")
 
   # Check parameters dataframe
@@ -202,10 +206,14 @@ test_that("Snapshot with empty expression profiles is handled correctly", {
   expect_snapshot(knitr::kable(dfs$expression_profiles_parameters))
 })
 
-# ---- ExpressionProfile dataframe tests ----
-# Copied from test-expression-profile-dataframe.R
-# ... existing code ...
+test_that("expression_profile transportType is correctly extracted from snapshot", {
+  # Clone the test snapshot to avoid mutating the shared object
+  snapshot_clone <- test_snapshot$clone()
 
-# ---- ExpressionProfile snapshot interaction tests ----
-# Copied from test-snapshot-expression-profile.R
-# ... existing code ...
+  # Get dataframes from snapshot
+  dfs <- get_expression_profiles_dfs(snapshot_clone)
+
+  # Check that transport_type column exists
+  expect_snapshot(knitr::kable(dfs$expression_profiles))
+  expect_snapshot(knitr::kable(dfs$expression_profiles_parameters))
+})
