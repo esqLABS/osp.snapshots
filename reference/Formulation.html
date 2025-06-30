@@ -11,7 +11,7 @@ and display a summary of its information."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9017</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +131,21 @@ and display a summary of its information.</p>
 </div>
 <div class="section">
 <h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
-<p>A list of tibbles containing the requested data</p>
+<p>A list of tibbles containing the requested data:
+  * formulations: Basic formulation information (ID, name, type)
+  * formulations_parameters: All parameters including table parameter points</p>
+<p>The formulations_parameters tibble includes the following columns:
+  * formulation_id: ID of the formulation
+  * name: Name of the parameter
+  * value: Value of the parameter (NA for table points)
+  * unit: Unit of the parameter (NA for table points)
+  * is_table_point: TRUE for table parameter points, FALSE for regular parameters
+  * x_value: X-axis value for table points (NA for regular parameters)
+  * y_value: Y-axis value for table points (NA for regular parameters)
+  * table_name: Name of the table (usually "Time" for release profiles)
+  * source: Source of the parameter (NA if not available)
+  * description: Description of the parameter (NA if not available)
+  * source_id: ID of the source (NA if not available)</p>
 </div>
 
 </div><p></p><hr><a id="method-Formulation-get_human_formulation_type"></a><div class="section">
@@ -175,7 +189,7 @@ and display a summary of its information.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>
