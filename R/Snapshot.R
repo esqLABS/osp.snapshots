@@ -108,6 +108,19 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Initialize protocols list during snapshot initialization
+      if (is.null(private$.original_data$Protocols)) {
+        private$.protocols <- list()
+      } else {
+        # Create protocol objects and store in an unnamed list
+        private$.protocols <- lapply(
+          private$.original_data$Protocols,
+          function(protocol_data) {
+            Protocol$new(protocol_data)
+          }
+        )
+      }
+
       cli::cli_alert_success("Snapshot loaded successfully")
     },
     #' @description
@@ -506,6 +519,16 @@ Snapshot <- R6::R6Class(
         result$Events <- event_data
       }
 
+      # Update with current protocol data
+      if (length(private$.protocols) > 0) {
+        # Extract raw data from each protocol object
+        protocol_data <- lapply(
+          private$.protocols,
+          function(protocol) protocol$data
+        )
+        result$Protocols <- protocol_data
+      }
+
       return(result)
     },
 
@@ -603,6 +626,20 @@ Snapshot <- R6::R6Class(
         private$.events <- value
         private$.build_events_named_list()
         return(private$.events_named)
+      }
+    },
+
+    #' @field protocols List of Protocol objects in the snapshot
+    protocols = function(value = NULL) {
+      # Build the named list if it doesn't exist yet
+      private$.build_protocols_named_list()
+
+      if (is.null(value)) {
+        return(private$.protocols_named)
+      } else {
+        private$.protocols <- value
+        private$.build_protocols_named_list()
+        return(private$.protocols_named)
       }
     }
   ),
@@ -833,6 +870,12 @@ Snapshot <- R6::R6Class(
     # Cache for the named events list with disambiguated names
     .events_named = NULL,
 
+    # Store protocol objects in an unnamed list
+    .protocols = NULL,
+
+    # Cache for the named protocols list with disambiguated names
+    .protocols_named = NULL,
+
     # Build the named list of events with disambiguated names
     .build_events_named_list = function() {
       # Create a named list with event names, handling duplicates
@@ -926,6 +969,49 @@ Snapshot <- R6::R6Class(
         "list"
       )
       private$.expression_profiles_named <- expression_profiles_named
+    },
+
+    # Build the named list of protocols with disambiguated names
+    .build_protocols_named_list = function() {
+      # Create a named list with protocol names, handling duplicates
+      protocols_named <- list()
+
+      # Handle empty protocol list
+      if (length(private$.protocols) == 0) {
+        class(protocols_named) <- c("protocol_collection", "list")
+        private$.protocols_named <- protocols_named
+        return()
+      }
+
+      protocol_names <- sapply(private$.protocols, function(x) x$name)
+
+      # Track name occurrences to handle duplicates
+      name_counts <- table(protocol_names)
+      name_indices <- list()
+
+      for (i in seq_along(private$.protocols)) {
+        name <- protocol_names[i]
+
+        # Initialize counter for this name if not already done
+        if (is.null(name_indices[[name]])) {
+          name_indices[[name]] <- 0
+        }
+
+        # Increment counter
+        name_indices[[name]] <- name_indices[[name]] + 1
+
+        # Construct the final name (with suffix if needed)
+        if (name_counts[name] > 1) {
+          final_name <- glue::glue("{name}_{name_indices[[name]]}")
+        } else {
+          final_name <- name
+        }
+
+        protocols_named[[final_name]] <- private$.protocols[[i]]
+      }
+
+      class(protocols_named) <- c("protocol_collection", "list")
+      private$.protocols_named <- protocols_named
     }
   )
 )

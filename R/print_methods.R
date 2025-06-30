@@ -51,8 +51,11 @@ print.population_collection <- function(x, ...) {
     # Create a simple bullet point list with name and number of individuals
     for (name in names(x)) {
       n_individuals <- x[[name]]$number_of_individuals
-      source_text <- if (!is.null(x[[name]]$source_population))
-        glue::glue(" [Source: {x[[name]]$source_population}]") else ""
+      source_text <- if (!is.null(x[[name]]$source_population)) {
+        glue::glue(" [Source: {x[[name]]$source_population}]")
+      } else {
+        ""
+      }
       cli::cli_li("{name}{source_text} ({n_individuals} individuals)")
     }
   } else {
@@ -154,8 +157,11 @@ print.parameter_collection <- function(x, ...) {
     cat(sprintf(
       "%-40s | %-15s | %s\n",
       disp_name,
-      if (!is.null(param$table_formula)) "Table" else
-        format(param$value, digits = 4),
+      if (!is.null(param$table_formula)) {
+        "Table"
+      } else {
+        format(param$value, digits = 4)
+      },
       unit_display
     ))
   }
@@ -185,6 +191,42 @@ print.expression_profile_collection <- function(x, ...) {
     }
   } else {
     cli::cli_alert_info("No expression profiles found")
+  }
+  invisible(x)
+}
+
+#' S3 print method for protocol collections
+#'
+#' @param x A protocol collection object
+#' @param ... Additional arguments passed to print methods
+#' @return Invisibly returns the protocol collection
+#' @export
+print.protocol_collection <- function(x, ...) {
+  cli::cli_h1("Protocols ({length(x)})")
+
+  if (length(x) > 0) {
+    # Create a bullet point list with protocol names and types
+    for (name in names(x)) {
+      protocol <- x[[name]]
+      if (protocol$is_advanced) {
+        schema_count <- length(protocol$schemas)
+        cli::cli_li("{name} (Advanced - {schema_count} schema{?s})")
+      } else {
+        type_text <- if (!is.null(protocol$application_type)) {
+          glue::glue(" - {protocol$get_human_application_type()}")
+        } else {
+          ""
+        }
+        interval_text <- if (!is.null(protocol$dosing_interval)) {
+          glue::glue(" - {protocol$get_human_dosing_interval()}")
+        } else {
+          ""
+        }
+        cli::cli_li("{name} (Simple{type_text}{interval_text})")
+      }
+    }
+  } else {
+    cli::cli_alert_info("No protocols found")
   }
   invisible(x)
 }

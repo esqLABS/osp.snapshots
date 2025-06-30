@@ -464,3 +464,92 @@ get_expression_profiles_dfs <- function(snapshot) {
 
   return(result)
 }
+
+#' Get all protocols in a snapshot as a single consolidated data frame
+#'
+#' @description
+#' This function extracts all protocols from a snapshot and converts them to
+#' a single consolidated data frame containing all protocol information, including
+#' simple protocol parameters and advanced protocol schema details.
+#'
+#' @param snapshot A Snapshot object
+#'
+#' @return A tibble containing all protocol data with the following columns:
+#' \itemize{
+#'   \item protocol_id: Protocol identifier
+#'   \item protocol_name: Protocol name
+#'   \item is_advanced: Whether the protocol is advanced (schema-based)
+#'   \item protocol_application_type: Application type (for simple protocols)
+#'   \item protocol_dosing_interval: Dosing interval (for simple protocols)
+#'   \item protocol_time_unit: Time unit
+#'   \item schema_id: Schema identifier (NA for simple protocols)
+#'   \item schema_name: Schema name (NA for simple protocols)
+#'   \item schema_item_id: Schema item identifier (NA for simple protocols)
+#'   \item schema_item_name: Schema item name (NA for simple protocols)
+#'   \item schema_item_application_type: Schema item application type (NA for simple protocols)
+#'   \item schema_item_formulation_key: Schema item formulation key (NA for simple protocols)
+#'   \item parameter_name: Parameter name (NA if no parameters)
+#'   \item parameter_value: Parameter value (NA if no parameters)
+#'   \item parameter_unit: Parameter unit (NA if no parameters)
+#'   \item parameter_source: Parameter source (NA if no parameters)
+#'   \item parameter_description: Parameter description (NA if no parameters)
+#'   \item parameter_source_id: Parameter source ID (NA if no parameters)
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#'
+#' # Get all protocol data as a single data frame
+#' protocols_df <- get_protocols_dfs(snapshot)
+#'
+#' # Filter simple protocols
+#' simple_protocols <- protocols_df[!protocols_df$is_advanced, ]
+#'
+#' # Filter advanced protocols
+#' advanced_protocols <- protocols_df[protocols_df$is_advanced, ]
+#' }
+get_protocols_dfs <- function(snapshot) {
+  # Check if input is a snapshot
+  validate_snapshot(snapshot)
+
+  # Get all protocols from the snapshot
+  protocols <- snapshot$protocols
+
+  # If there are no protocols, return an empty tibble with correct structure
+  if (length(protocols) == 0) {
+    return(tibble::tibble(
+      protocol_id = character(0),
+      protocol_name = character(0),
+      is_advanced = logical(0),
+      protocol_application_type = character(0),
+      protocol_dosing_interval = character(0),
+      protocol_time_unit = character(0),
+      schema_id = character(0),
+      schema_name = character(0),
+      schema_item_id = character(0),
+      schema_item_name = character(0),
+      schema_item_application_type = character(0),
+      schema_item_formulation_key = character(0),
+      parameter_name = character(0),
+      parameter_value = numeric(0),
+      parameter_unit = character(0),
+      parameter_source = character(0),
+      parameter_description = character(0),
+      parameter_source_id = integer(0)
+    ))
+  }
+
+  # Get data frames for each protocol and combine them
+  protocol_dfs <- lapply(protocols, function(protocol) {
+    protocol$to_df()
+  })
+
+  # Combine all data frames
+  result <- dplyr::bind_rows(protocol_dfs)
+
+  return(result)
+}
