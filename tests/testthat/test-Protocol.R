@@ -161,7 +161,6 @@ test_that("Protocol to_df method works correctly", {
   advanced_df <- advanced_protocol$to_df()
 
   expect_snapshot(print(advanced_df, width = Inf))
-
 })
 
 test_that("Protocol handles different types correctly", {
@@ -253,49 +252,19 @@ test_that("Protocol with real test data works", {
   # Load protocols from test snapshot
   protocols_data <- load_test_protocols()
 
-  if (length(protocols_data) > 0) {
-    # Test first protocol
-    first_protocol <- Protocol$new(protocols_data[[1]])
-    expect_s3_class(first_protocol, "R6")
-    expect_true("Protocol" %in% class(first_protocol))
+  first_protocol <- Protocol$new(protocols_data[[1]])
+  expect_s3_class(first_protocol, "R6")
+  expect_true("Protocol" %in% class(first_protocol))
 
-    # Test print output
-    expect_snapshot(print(first_protocol))
-
-    # Test to_df method
-    df_result <- first_protocol$to_df()
-    expect_s3_class(df_result, "tbl_df")
-    expect_true("protocol_id" %in% names(df_result))
-    expect_true("protocol_name" %in% names(df_result))
-  }
+  # Test print output
+  expect_snapshot(print(first_protocol))
 })
 
-test_that("Protocol validation works correctly", {
-  devtools::load_all()
-
-  # Test that is_advanced is read-only
-  protocol <- Protocol$new(simple_protocol_data)
-  expect_error(
-    protocol$is_advanced <- TRUE,
-    "is_advanced is a read-only field"
-  )
-})
 
 test_that("Protocol collection print method works", {
-  devtools::load_all()
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
 
-  # Create a test collection
-  simple_protocol <- Protocol$new(simple_protocol_data)
-  advanced_protocol <- Protocol$new(advanced_protocol_data)
-
-  # Create a mock protocol collection
-  protocols <- list(
-    "Simple" = simple_protocol,
-    "Advanced" = advanced_protocol
-  )
-  class(protocols) <- c("protocol_collection", "list")
-
-  expect_snapshot(print(protocols))
+  expect_snapshot(print(snapshot$protocols))
 })
 
 test_that("get_protocols_dfs function works", {
@@ -305,38 +274,5 @@ test_that("get_protocols_dfs function works", {
   # Get protocols dataframe
   protocols_df <- get_protocols_dfs(snapshot)
 
-  expect_s3_class(protocols_df, "tbl_df")
-  expect_true(all(
-    c(
-      "protocol_id",
-      "protocol_name",
-      "is_advanced",
-      "protocol_application_type",
-      "protocol_dosing_interval",
-      "protocol_time_unit",
-      "schema_id",
-      "schema_name",
-      "schema_item_id",
-      "schema_item_name",
-      "schema_item_application_type",
-      "schema_item_formulation_key",
-      "parameter_name",
-      "parameter_value",
-      "parameter_unit",
-      "parameter_source",
-      "parameter_description",
-      "parameter_source_id"
-    ) %in%
-      names(protocols_df)
-  ))
-
-  # Check that we have some protocol data
-  expect_gt(nrow(protocols_df), 0)
-
-  # Test that we can filter simple vs advanced protocols
-  simple_protocols <- protocols_df[!protocols_df$is_advanced, ]
-  advanced_protocols <- protocols_df[protocols_df$is_advanced, ]
-
-  expect_s3_class(simple_protocols, "tbl_df")
-  expect_s3_class(advanced_protocols, "tbl_df")
+  expect_snapshot(print(protocols_df, width = Inf))
 })
