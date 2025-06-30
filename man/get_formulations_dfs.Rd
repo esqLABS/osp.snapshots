@@ -13,7 +13,9 @@ get_formulations_dfs(snapshot)
 A list containing two data frames:
 \itemize{
   \item formulations: Basic information about each formulation
-  \item formulations_parameters: All parameters for all formulations
+  \item formulations_parameters: All parameters for all formulations, including
+        table parameter points. Table parameter points have is_table_point=TRUE
+        and include x_value, y_value, and table_name values.
 }
 }
 \description{
@@ -31,5 +33,8 @@ dfs <- get_formulations_dfs(snapshot)
 # Access specific data frames
 formulations_df <- dfs$formulations
 formulations_parameters_df <- dfs$formulations_parameters
+
+# Filter to get only table points
+table_points <- formulations_parameters_df[formulations_parameters_df$is_table_point, ]
 }
 }

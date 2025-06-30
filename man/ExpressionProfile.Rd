@@ -28,6 +28,8 @@ and display a summary of its information.
 
 \item{\code{localization}}{The localization of the expression profile}
 
+\item{\code{transportType}}{The transport type of the expression profile}
+
 \item{\code{ontogeny}}{The ontogeny information of the expression profile}
 
 \item{\code{parameters}}{The parameters of the expression profile}

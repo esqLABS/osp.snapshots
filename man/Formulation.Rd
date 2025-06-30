@@ -88,7 +88,22 @@ Convert formulation data to tibbles
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A list of tibbles containing the requested data
+A list of tibbles containing the requested data:
+  * formulations: Basic formulation information (ID, name, type)
+  * formulations_parameters: All parameters including table parameter points
+
+The formulations_parameters tibble includes the following columns:
+  * formulation_id: ID of the formulation
+  * name: Name of the parameter
+  * value: Value of the parameter (NA for table points)
+  * unit: Unit of the parameter (NA for table points)
+  * is_table_point: TRUE for table parameter points, FALSE for regular parameters
+  * x_value: X-axis value for table points (NA for regular parameters)
+  * y_value: Y-axis value for table points (NA for regular parameters)
+  * table_name: Name of the table (usually "Time" for release profiles)
+  * source: Source of the parameter (NA if not available)
+  * description: Description of the parameter (NA if not available)
+  * source_id: ID of the source (NA if not available)
 }
 }
 \if{html}{\out{<hr>}}

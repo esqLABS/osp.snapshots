@@ -113,6 +113,8 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 \item{\code{populations}}{List of Population objects in the snapshot}
 
 \item{\code{events}}{List of Event objects in the snapshot}
+
+\item{\code{protocols}}{List of Protocol objects in the snapshot}
 }
 \if{html}{\out{</div>}}
 }
