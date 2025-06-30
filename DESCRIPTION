@@ -23,7 +23,9 @@ Imports:
     ospsuite (>= 12.2.0),
     tibble,
     dplyr,
-    glue
+    glue,
+    lubridate,
+    stringr
 Suggests: 
     devtools,
     testthat (>= 3.0.0)
