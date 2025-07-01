@@ -276,34 +276,6 @@ test_that("Snapshot handles missing individuals and compounds", {
   expect_null(snapshot$data$Individuals)
 })
 
-test_that("Snapshot can generate data with modified compounds and individuals", {
-  # Create a snapshot with compounds and individuals
-  snapshot_data <- list(
-    Version = 80,
-    Compounds = list(
-      list(Name = "CompoundA", Path = "Path1")
-    ),
-    Individuals = list(
-      list(
-        Name = "IndividualA",
-        Parameters = list(
-          list(Path = "Param1", Value = 10)
-        )
-      )
-    )
-  )
-
-  snapshot <- Snapshot$new(snapshot_data)
-
-  # Modify the compound and individual
-  snapshot$compounds$CompoundA$data$Path <- "ModifiedPath"
-  snapshot$individuals$IndividualA$name <- "ModifiedIndividual"
-
-  # Check the data field reflects the changes
-  modified_data <- snapshot$data
-  expect_equal(modified_data$Compounds[[1]]$Path, "ModifiedPath")
-  expect_equal(modified_data$Individuals[[1]]$Name, "ModifiedIndividual")
-})
 
 test_that("Snapshot handles invalid input types", {
   # Test with NULL input

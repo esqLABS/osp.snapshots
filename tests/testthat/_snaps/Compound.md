@@ -1,3 +1,467 @@
+# Compound collection is printed correctly
+
+    Code
+      print(snapshot$compounds)
+    Message
+      
+      -- Compounds (6) ---------------------------------------------------------------
+      * Rifampicin
+      * BI 123456
+      * Perpetrator_2
+      * BI 100777- initial table parameters
+      * BI 100777
+      * test
+
+# Compounds are printed correctly
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: Rifampicin --------------------------------------------------------
+      
+      -- Basic Properties --
+      
+      * Type: Small Molecule
+      * Plasma Protein Binding Partner: Albumin
+      * Molecular Weight: 822.94 g/mol
+      
+      -- Calculation Methods --
+      
+      * Partition Coefficient: Rodgers and Rowland
+      * Permeability: PK-Sim Standard
+      
+      -- Physicochemical Properties --
+      
+      * Lipophilicity:
+        * 2.5 Log Units [Publication - Other - (R13-5357)]
+      * Fraction Unbound:
+        * 17 % [Publication - InVitro - (R13-5357)]
+      * Solubility:
+        * Aqueous: 2800 mg/l (pH 7.5) [Publication - (R20-1499)]
+        * test: 345 mg/l (pH 7) [Unknown]
+      * Intestinal Permeability:
+        * 3.836e-07 cm/min [Publication - (PK-Sim default calculation)]
+      * pKa Types:
+        * Base: 7.9 [Database - (R24-3728)]
+        * Acid: 1.7 [Database - (R24-3728)]
+      
+      -- Processes --
+      
+      * Processes (22 total):
+        * Metabolism
+          * MetabolizationSpecific_MM (AADAC): Enzyme concentration=1 µmol/l, Vmax=12
+          µmol/l/min, Km=195.1 µmol/l, kcat=9.865 1/min [Nakajima 2011]
+        * Transport
+          * ActiveTransportSpecific_MM (P-gp): Transporter concentration=1 nmol/l,
+          Vmax=0 µmol/l/min, Km=55 µmol/l, kcat=0.6088 1/min [Collett 2004]
+          * ActiveTransportSpecific_MM (OATP1B1): Transporter concentration=1 µmol/l,
+          Vmax=0 µmol/l/min, Km=1.5 µmol/l, kcat=7.796 1/min [Tirona 2003]
+        * Clearance
+          * GlomerularFiltration: GFR fraction=1 [GFR]
+          * BiliaryClearance [BCL]
+          * LiverClearance: Specific clearance=47.3 1/min [test567]
+          * LiverClearance: Specific clearance=666 1/h [test123]
+        * Inhibition
+          * CompetitiveInhibition (CYP3A4): Ki=18.5 µmol/l [Kajosaari 2005]
+          * CompetitiveInhibition (P-gp): Ki=169 µmol/l [Reitman 2011]
+          * CompetitiveInhibition (CYP2C8): Ki=30.2 µmol/l [Kajosaari 2005]
+          * CompetitiveInhibition (OATP1B1): Ki=0.477 µmol/l [Hirano 2006]
+          * CompetitiveInhibition (OATP1B3): Ki=0.9 µmol/l [Annaert 2010]
+          * CompetitiveInhibition (CYP3A4): Ki=23 µmol/l [Comp]
+          * MixedInhibition (CYP3A4): Ki_c=23 µmol/l, Ki_u=3 µmol/l [Mixed]
+          * IrreversibleInhibition (CYP3A4): kinact=2 1/min, K_kinact_half=22 µmol/l
+          [Irreversible]
+        * Induction
+          * Induction (CYP3A4): EC50=0.34 µmol/l, Emax=9 [Templeton 2011]
+          * Induction (P-gp): EC50=0.34 µmol/l, Emax=2.5 [Greiner 1999]
+          * Induction (OATP1B1): EC50=0.34 µmol/l, Emax=0.383 [Dixit 2007]
+          * Induction (AADAC): EC50=0.34 µmol/l, Emax=0.985 [Assumed]
+          * Induction (CYP2C8): EC50=0.34 µmol/l, Emax=3.2 [Buckley 2014]
+          * Induction (CYP1A2): EC50=0.34 µmol/l, Emax=0.65 [Chen 2010]
+          * Induction (CYP2E1): EC50=0.34 µmol/l, Emax=0.8 [Rae 2001]
+
+---
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: BI 123456 ---------------------------------------------------------
+      
+      -- Basic Properties --
+      
+      * Type: Large Molecule
+      * Plasma Protein Binding Partner: Glycoprotein
+      * Molecular Weight: 150000 g/mol
+      
+      -- Calculation Methods --
+      
+      * Partition Coefficient: Rodgers and Rowland
+      * Permeability: Charge dependent Schmitt
+      
+      -- Physicochemical Properties --
+      
+      * Lipophilicity:
+        * Optimized: 2.8972038771 Log Units [ParameterIdentification - (Value updated
+        from '3.3.2 - Base oral model (SD, solution, + DDI, + MD), with CatC, both
+        pKa fitted' on 2024-03-11 17:39)]
+        * LogP (Simcyp): 3.53 Log Units [Publication - (R13-5357)]
+      * Fraction Unbound:
+        * Gertz et al. 2010: 0.031 [ParameterIdentification - (Value updated from 'PI
+        Hohmann iv+po, Hyland feUr MDZG, Thummel feUr unchanged - Pint' on 2019-04-09
+        16:10)]
+        * test: 12 % [Publication - (R13-5357)]
+      * Solubility:
+        * FaSSiF: 0.049 mg/ml (pH 6.5) [ParameterIdentification - (Value updated from
+        'PI Hohmann iv+po, Hyland feUr MDZG, Thummel feUr unchanged - Pint' on
+        2019-04-09 16:10)]
+        * Table: 5000 mg/l (Table: pH 3→5000 mg/l, pH 6→3000 mg/l, pH 6.8→90 mg/l)
+        [Publication - (R20-1499)]
+      * Intestinal Permeability:
+        * 0.00015549970673 cm/min [ParameterIdentification - (Value updated from 'PI
+        Hohmann iv+po, Hyland feUr MDZG, Thummel feUr unchanged - Pint' on 2019-04-09
+        16:10)]
+      * pKa Types:
+        * Base: 6.2 [Publication - (c26475781)]
+        * Acid: 10.95 [Publication - (c26475781)]
+      
+      -- Processes --
+      
+      * Processes (30 total):
+        * Metabolism
+          * MetabolizationLiverMicrosomes_MM (UGT1A4) → Midazolam-N-glucuronide: In
+          vitro Vmax for liver microsomes=0 pmol/min/mg mic. protein, Km=37.8 µmol/l,
+          kcat=3.5911771641 1/min [Optimized]
+          * MetabolizationSpecific_Hill (UGT1A4): Enzyme concentration=1 µmol/l,
+          Vmax=0 µmol/l/min, Km=1 µmol/l, kcat=2 1/min, Hill coefficient=1 [Kim et
+          al, 2020]
+          * MetabolizationIntrinsic_MM (CYP3A4): Vmax (liver tissue)=12 µmol/min/kg
+          tissue, Km=1 µmol/l, Vmax=14.93 µmol/l/min [Int-MM]
+          * MetabolizationIntrinsic_FirstOrder (CYP3A4): Fraction intracellular
+          (liver)=0.8, Intrinsic clearance=800 l/min, Specific clearance=234 1/min
+          [Int_FO]
+          * MetabolizationSpecific_FirstOrder (CYP3A4): Enzyme concentration=1
+          µmol/l, Specific clearance=330 1/min, CLspec/[Enzyme]=12 l/µmol/min [In
+          vitro_FO]
+          * MetabolizationSpecific_MM (CYP3A4): Enzyme concentration=1 µmol/l, Vmax=0
+          µmol/l/min, Km=1 µmol/l, kcat=56 1/min [In vitro_MM]
+          * MetabolizationSpecific_Hill (CYP3A4): Enzyme concentration=1 µmol/l,
+          Vmax=0 µmol/l/min, Km=12 µmol/l, kcat=211 1/min, Hill coefficient=8 [In
+          vitro_H]
+          * rCYP450_FirstOrder (CYP3A4): In vitro CL/recombinant enzyme=0 µl/min/pmol
+          rec. enzyme, CLspec/[Enzyme]=45 l/µmol/min [In vitro_recombinant_FO]
+          * rCYP450_MM (CYP3A4): In vitro Vmax/recombinant enzyme=59 nmol/min/pmol
+          rec. enzyme, Km=3 µmol/l, kcat=13 1/min [In vitro_recombinant_MM]
+          * MetabolizationLiverMicrosomes_FirstOrder (CYP3A4): In vitro CL for liver
+          microsomes=56 µl/min/mg mic. protein, Content of CYP proteins in liver
+          microsomes=120 pmol/mg mic. protein, CLspec/[Enzyme]=0.467 l/µmol/min
+          [liv_micros_FO]
+          * MetabolizationLiverMicrosomes_MM (CYP3A4): In vitro Vmax for liver
+          microsomes=0 pmol/min/mg mic. protein, Km=3 µmol/l, kcat=44 1/min
+          [liv_micros_MM]
+          * MetabolizationLiverMicrosomes_FirstOrder (CYP3A4): In vitro CL for liver
+          microsomes=0 µl/min/mg mic. protein, CLspec/[Enzyme]=23 l/µmol/min [test3]
+        * Transport
+          * SpecificBinding (GABRG2): koff=1 1/min, Kd=1.8 nmol/l [Buhr 1997]
+          * ActiveTransportIntrinsic_MM (OATP1B1): Vmax (liver tissue)=23 µmol/min/kg
+          tissue, Km=1 µmol/l, Vmax=26 µmol/l/min [Int _ MM]
+          * ActiveTransportSpecific_MM (OATP1B1): Transporter concentration=3 µmol/l,
+          Vmax=100 µmol/l/min, Km=2 µmol/l [Spec_MM]
+          * ActiveTransportSpecific_Hill (OATP1B1): Transporter concentration=1
+          µmol/l, Vmax=12 µmol/l/min, Km=1 µmol/l, kcat=222 1/min, Hill coefficient=2
+          [Spec_H]
+          * ActiveTransport_InVitro_VesicularAssay_MM (OATP1B1): In vitro
+          Vmax/transporter=56 nmol/min/pmol transporter, Km=1 µmol/l, kcat=45 1/min
+          [In vitro_MM]
+          * SpecificBinding (NTCP): koff=3 1/min, Kd=4 µmol/l [wer]
+        * Clearance
+          * BiliaryClearance: Specific clearance=34 1/min [n45678]
+          * KidneyClearance: Specific clearance=66 1/min [Kidney_plasma_CL]
+        * Inhibition
+          * CompetitiveInhibition (CYP3A4): Ki=2 µmol/l [comp_inh]
+          * UncompetitiveInhibition (CYP3A4): Ki=1.667 µmol/l [uncomp_inh]
+          * NoncompetitiveInhibition (CYP3A4): Ki=3 µmol/l [non-comp_inh]
+          * MixedInhibition (CYP3A4): Ki_c=1 µmol/l, Ki_u=1 µmol/l [mixed_inh]
+          * IrreversibleInhibition (CYP3A4): kinact=2 1/min, K_kinact_half=1 µmol/l,
+          Ki=2 µmol/l [irr_ing_2]
+          * CompetitiveInhibition (ABCB1): Ki=23 µmol/l [test]
+          * IrreversibleInhibition (CYP3A4): kinact=1.67 1/min, K_kinact_half=6
+          µmol/l [irr_3]
+        * Induction
+          * Induction (CYP2E1): EC50=1 µmol/l, Emax=67 [induction]
+          * Induction (GABRG2): EC50=1 µmol/l, Emax=200 [GABRG2-ind]
+        * Other
+          * LiverMicrosomeHalfTime: t1/2 (microsomal assay)=23 min, Specific
+          clearance=19.49 1/min [In vitro_mic_t1/2]
+      
+      -- Additional Parameters --
+      
+      • Additional Parameters (2 total):
+        * Cl: 1 [Publication - (c01835608)]
+        * F: 1 [Publication - (c01835608)]
+
+---
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: Perpetrator_2 -----------------------------------------------------
+      
+      -- Basic Properties --
+      
+      * Type: Small Molecule
+      * Plasma Protein Binding Partner: Albumin
+      * Molecular Weight: 822.94 g/mol
+      
+      -- Calculation Methods --
+      
+      * Partition Coefficient: Rodgers and Rowland
+      * Permeability: PK-Sim Standard
+      
+      -- Physicochemical Properties --
+      
+      * Lipophilicity:
+        * 2.5 Log Units [Publication - Other - (R13-5357)]
+      * Fraction Unbound:
+        * 17 % [Publication - InVitro - (R13-5357)]
+      * Solubility:
+        * Aqueous: 2800 mg/l (pH 7.5) [Publication - (R20-1499)]
+        * test: 345 mg/l (pH 7) [Unknown]
+      * pKa Types:
+        * Base: 7.9 [Database - (R24-3728)]
+        * Acid: 1.7 [Database - (R24-3728)]
+      
+      -- Processes --
+      
+      * Processes (2 total):
+        * Clearance
+          * GlomerularFiltration: GFR fraction=1 [GFR]
+          * HepatocytesRes: Measuring time=12 min, Residual fraction=23 % [In vitro
+          hep_res]
+
+---
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: BI 100777- initial table parameters -------------------------------
+      
+      -- Basic Properties --
+      
+      * Type: Large Molecule
+      * Plasma Protein Binding Partner: Albumin
+      * Molecular Weight: 150000 g/mol
+      
+      -- Calculation Methods --
+      
+      * Partition Coefficient: Rodgers and Rowland
+      * Permeability: Charge dependent Schmitt
+      
+      -- Physicochemical Properties --
+      
+      * Lipophilicity:
+        * 2.8972038771 Log Units [Publication - InVitro - (R24-4081)]
+      * Fraction Unbound:
+        * 0.031 % [Publication - InVitro - (R24-4081)]
+      * Solubility:
+        * 0.049 mg/ml (pH 6.5) [Publication - InVivo - (n00261417)]
+      * Intestinal Permeability:
+        * 0.00015549970673 cm/min [Publication - InVitro - (n00265826)]
+      * pKa Types:
+        * Base: 6.2 [Publication - (c26475781)]
+        * Acid: 10.95 [Publication - (c26475781)]
+      
+      -- Processes --
+      
+      * Processes (9 total):
+        * Metabolism
+          * MetabolizationLiverMicrosomes_MM (UGT1A4) → Midazolam-N-glucuronide: In
+          vitro Vmax for liver microsomes=0 pmol/min/mg mic. protein, Km=37.8 µmol/l,
+          kcat=3.5911771641 1/min [Optimized]
+          * MetabolizationIntrinsic_FirstOrder (CYP3A4): Intrinsic clearance=342
+          l/min, Specific clearance=234 1/min [Int_FO]
+        * Transport
+          * SpecificBinding (GABRG2): koff=1 1/min, Kd=1.8 nmol/l [in-vitro]
+          * ActiveTransportSpecific_Hill (OATP1B1): Transporter concentration=1
+          µmol/l, Vmax=0 µmol/l/min, Km=1 µmol/l, kcat=222 1/min, Hill coefficient=2
+          [Spec_H]
+        * Clearance
+          * BiliaryClearance: Specific clearance=34 1/min [n45678]
+          * TubularSecretion_MM: TSmax=0 µmol/min, Km=33 µmol/l, TSmax_spec=23
+          µmol/l/min [TuSec_MM]
+        * Inhibition
+          * CompetitiveInhibition (CYP3A4): Ki=2 µmol/l [comp_inh]
+        * Induction
+          * Induction (CYP2E1): EC50=1 µmol/l, Emax=67 [induction]
+        * Other
+          * LiverMicrosomeRes: Measuring time=345 min, Residual fraction=34 % [In
+          vitro_mic_res]
+      
+      -- Additional Parameters --
+      
+      • Additional Parameters (2 total):
+        * Cl: 1 [Publication - (c26475781)]
+        * F: 1 [Publication - (c26475781)]
+
+---
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: BI 100777 ---------------------------------------------------------
+      
+      -- Basic Properties --
+      
+      * Type: Large Molecule
+      * Molecular Weight: 150000 g/mol
+      
+      -- Calculation Methods --
+      
+      * Partition Coefficient: Poulin and Theil
+      * Permeability: Charge dependent Schmitt
+      
+      -- Physicochemical Properties --
+      
+      * Lipophilicity:
+        * 3.233 Log Units [ParameterIdentification]
+      * Fraction Unbound:
+        * 0.031 % [Publication - InVitro - (n00261417)]
+      * Solubility:
+        * 0.5 mg/ml (pH 6.5) [ParameterIdentification]
+      * Intestinal Permeability:
+        * 2.04 cm/min [ParameterIdentification]
+      * pKa Types:
+        * Base: 6.2 [Publication - (c26475781)]
+        * Acid: 10.95 [Publication - (c26475781)]
+      
+      -- Processes --
+      
+      * Processes (9 total):
+        * Metabolism
+          * MetabolizationLiverMicrosomes_MM (UGT1A4) → Midazolam-N-glucuronide: In
+          vitro Vmax for liver microsomes=12 pmol/min/mg mic. protein, Km=40.23
+          µmol/l [Optimized]
+          * MetabolizationIntrinsic_FirstOrder (CYP3A4): Intrinsic clearance=888
+          l/min, Specific clearance=234 1/min [Int_FO]
+        * Transport
+          * SpecificBinding (GABRG2): koff=1 1/min, Kd=2.81 nmol/l [in-vitro]
+          * ActiveTransportSpecific_Hill (OATP1B1): Transporter concentration=12
+          µmol/l, Vmax=0 µmol/l/min, Km=1 µmol/l, kcat=222 1/min, Hill coefficient=2
+          [Spec_H]
+        * Clearance
+          * BiliaryClearance: Specific clearance=32.88 1/min [n45678]
+          * TubularSecretion_MM: TSmax=0 µmol/min, Km=33 µmol/l, TSmax_spec=22.65
+          µmol/l/min [TuSec_MM]
+        * Inhibition
+          * CompetitiveInhibition (CYP3A4): Ki=2 µmol/l [comp_inh]
+        * Induction
+          * Induction (CYP2E1): EC50=1 µmol/l, Emax=65.134 [induction]
+        * Other
+          * LiverMicrosomeRes: Measuring time=345 min, Residual fraction=34 % [In
+          vitro_mic_res]
+      
+      -- Additional Parameters --
+      
+      • Additional Parameters (2 total):
+        * Cl: 1 [Publication - (c26475781)]
+        * F: 1 [Publication - (c26475781)]
+
+---
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: test --------------------------------------------------------------
+      
+      -- Basic Properties --
+      
+      * Type: Small Molecule
+      * Plasma Protein Binding Partner: Albumin
+      * Molecular Weight: 123 g/mol
+      
+      -- Calculation Methods --
+      
+      * Partition Coefficient: PK-Sim Standard
+      * Permeability: PK-Sim Standard
+      
+      -- Physicochemical Properties --
+      
+      * Lipophilicity:
+        * 2 Log Units [ParameterIdentification]
+      * Fraction Unbound:
+        * 0.45 [ParameterIdentification]
+      * Solubility:
+        * Measurement: 3 mg/l (pH 7) [ParameterIdentification]
+        * test: 5 mg/l (pH 7) [Unknown]
+      * pKa Types:
+        * Base: 2 [Unknown]
+      
+      -- Additional Parameters --
+      
+      • Additional Parameters (2 total):
+        * Br: 1 [Unknown]
+        * Cl: 1 [Unknown]
+
+# Compounds sections can be accessed and are correctly printed
+
+    Code
+      snapshot$compounds[[1]]$lipophilicity
+    Message
+      * Lipophilicity:
+        * 2.5 Log Units [Publication - Other - (R13-5357)]
+
+---
+
+    Code
+      snapshot$compounds[[1]]$processes
+    Message
+      * Processes (22 total):
+        * Metabolism
+          * MetabolizationSpecific_MM (AADAC): Enzyme concentration=1 µmol/l, Vmax=12
+          µmol/l/min, Km=195.1 µmol/l, kcat=9.865 1/min [Nakajima 2011]
+        * Transport
+          * ActiveTransportSpecific_MM (P-gp): Transporter concentration=1 nmol/l,
+          Vmax=0 µmol/l/min, Km=55 µmol/l, kcat=0.6088 1/min [Collett 2004]
+          * ActiveTransportSpecific_MM (OATP1B1): Transporter concentration=1 µmol/l,
+          Vmax=0 µmol/l/min, Km=1.5 µmol/l, kcat=7.796 1/min [Tirona 2003]
+        * Clearance
+          * GlomerularFiltration: GFR fraction=1 [GFR]
+          * BiliaryClearance [BCL]
+          * LiverClearance: Specific clearance=47.3 1/min [test567]
+          * LiverClearance: Specific clearance=666 1/h [test123]
+        * Inhibition
+          * CompetitiveInhibition (CYP3A4): Ki=18.5 µmol/l [Kajosaari 2005]
+          * CompetitiveInhibition (P-gp): Ki=169 µmol/l [Reitman 2011]
+          * CompetitiveInhibition (CYP2C8): Ki=30.2 µmol/l [Kajosaari 2005]
+          * CompetitiveInhibition (OATP1B1): Ki=0.477 µmol/l [Hirano 2006]
+          * CompetitiveInhibition (OATP1B3): Ki=0.9 µmol/l [Annaert 2010]
+          * CompetitiveInhibition (CYP3A4): Ki=23 µmol/l [Comp]
+          * MixedInhibition (CYP3A4): Ki_c=23 µmol/l, Ki_u=3 µmol/l [Mixed]
+          * IrreversibleInhibition (CYP3A4): kinact=2 1/min, K_kinact_half=22 µmol/l
+          [Irreversible]
+        * Induction
+          * Induction (CYP3A4): EC50=0.34 µmol/l, Emax=9 [Templeton 2011]
+          * Induction (P-gp): EC50=0.34 µmol/l, Emax=2.5 [Greiner 1999]
+          * Induction (OATP1B1): EC50=0.34 µmol/l, Emax=0.383 [Dixit 2007]
+          * Induction (AADAC): EC50=0.34 µmol/l, Emax=0.985 [Assumed]
+          * Induction (CYP2C8): EC50=0.34 µmol/l, Emax=3.2 [Buckley 2014]
+          * Induction (CYP1A2): EC50=0.34 µmol/l, Emax=0.65 [Chen 2010]
+          * Induction (CYP2E1): EC50=0.34 µmol/l, Emax=0.8 [Rae 2001]
+
+---
+
+    Code
+      snapshot$compounds[[2]]$parameters
+    Message
+      • Additional Parameters (2 total):
+        * Cl: 1 [Publication - (c01835608)]
+        * F: 1 [Publication - (c01835608)]
+
 # Compounds can be converted to dataframes
 
     Code
