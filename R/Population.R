@@ -84,8 +84,11 @@ Population <- R6::R6Class(
     #' @return Invisibly returns the Population object for method chaining
     print = function(...) {
       # Header with name and seed (if available)
-      seed_text <- if (!is.null(self$seed))
-        glue::glue(" (Seed: {self$seed})") else ""
+      seed_text <- if (!is.null(self$seed)) {
+        glue::glue(" (Seed: {self$seed})")
+      } else {
+        ""
+      }
       cli::cli_h2("Population: {self$name}{seed_text}")
 
       # Individual name (if available)

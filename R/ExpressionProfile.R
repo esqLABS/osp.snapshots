@@ -64,8 +64,13 @@ ExpressionProfile <- R6::R6Class(
         category = self$category %||% NA_character_,
         localization = self$localization %||% NA_character_,
         transport_type = self$transportType %||% NA_character_,
-        ontogeny = if (!is.null(self$ontogeny) && !is.null(self$ontogeny$Name))
-          self$ontogeny$Name else NA_character_
+        ontogeny = if (
+          !is.null(self$ontogeny) && !is.null(self$ontogeny$Name)
+        ) {
+          self$ontogeny$Name
+        } else {
+          NA_character_
+        }
       )
 
       # If there are parameters, create a parameter dataframe

@@ -192,18 +192,27 @@ Formulation <- R6::R6Class(
                   x_value = NA_real_,
                   y_value = NA_real_,
                   table_name = NA_character_,
-                  source = if (!is.null(param$value_origin))
-                    param$value_origin$Source else NA_character_,
+                  source = if (!is.null(param$value_origin)) {
+                    param$value_origin$Source
+                  } else {
+                    NA_character_
+                  },
                   description = if (
                     !is.null(param$value_origin) &&
                       !is.null(param$value_origin$Description)
-                  )
-                    param$value_origin$Description else NA_character_,
+                  ) {
+                    param$value_origin$Description
+                  } else {
+                    NA_character_
+                  },
                   source_id = if (
                     !is.null(param$value_origin) &&
                       !is.null(param$value_origin$Id)
-                  )
-                    param$value_origin$Id else NA_integer_
+                  ) {
+                    param$value_origin$Id
+                  } else {
+                    NA_integer_
+                  }
                 ))
               )
 
@@ -242,18 +251,27 @@ Formulation <- R6::R6Class(
                   x_value = NA_real_,
                   y_value = NA_real_,
                   table_name = NA_character_,
-                  source = if (!is.null(param$value_origin))
-                    param$value_origin$Source else NA_character_,
+                  source = if (!is.null(param$value_origin)) {
+                    param$value_origin$Source
+                  } else {
+                    NA_character_
+                  },
                   description = if (
                     !is.null(param$value_origin) &&
                       !is.null(param$value_origin$Description)
-                  )
-                    param$value_origin$Description else NA_character_,
+                  ) {
+                    param$value_origin$Description
+                  } else {
+                    NA_character_
+                  },
                   source_id = if (
                     !is.null(param$value_origin) &&
                       !is.null(param$value_origin$Id)
-                  )
-                    param$value_origin$Id else NA_integer_
+                  ) {
+                    param$value_origin$Id
+                  } else {
+                    NA_integer_
+                  }
                 ))
               )
             }
@@ -269,7 +287,9 @@ Formulation <- R6::R6Class(
       # If only one type requested, return just that tibble
       if (type != "all") {
         # Return the new key if present
-        if (type == "parameters") return(result$formulations_parameters)
+        if (type == "parameters") {
+          return(result$formulations_parameters)
+        }
         if (type == "basic") return(result$formulations)
       }
 

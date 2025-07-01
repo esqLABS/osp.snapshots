@@ -598,22 +598,41 @@ create_individual <- function(
   seed = NULL
 ) {
   # Validate inputs if provided
-  if (!is.null(species)) validate_species(species)
-  if (!is.null(population)) validate_population(population)
-  if (!is.null(gender)) validate_gender(gender)
-  if (!is.null(age_unit)) validate_unit(age_unit, "Age in years")
-  if (!is.null(weight_unit)) validate_unit(weight_unit, "Mass")
-  if (!is.null(height_unit)) validate_unit(height_unit, "Length")
-  if (!is.null(gestational_age_unit))
+  if (!is.null(species)) {
+    validate_species(species)
+  }
+  if (!is.null(population)) {
+    validate_population(population)
+  }
+  if (!is.null(gender)) {
+    validate_gender(gender)
+  }
+  if (!is.null(age_unit)) {
+    validate_unit(age_unit, "Age in years")
+  }
+  if (!is.null(weight_unit)) {
+    validate_unit(weight_unit, "Mass")
+  }
+  if (!is.null(height_unit)) {
+    validate_unit(height_unit, "Length")
+  }
+  if (!is.null(gestational_age_unit)) {
     validate_unit(gestational_age_unit, "Time")
+  }
 
   # Create characteristics data structure
   characteristics_data <- list()
 
   # Add basic demographic information
-  if (!is.null(species)) characteristics_data$Species <- species
-  if (!is.null(population)) characteristics_data$Population <- population
-  if (!is.null(gender)) characteristics_data$Gender <- gender
+  if (!is.null(species)) {
+    characteristics_data$Species <- species
+  }
+  if (!is.null(population)) {
+    characteristics_data$Population <- population
+  }
+  if (!is.null(gender)) {
+    characteristics_data$Gender <- gender
+  }
 
   # Add measurements with units
   if (!is.null(age)) {
