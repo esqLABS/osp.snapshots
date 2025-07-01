@@ -8,16 +8,11 @@ An R6 class that represents a compound in an OSP snapshot.
 This class provides methods to access different properties of a compound
 and display a summary of its information.
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{data}}{The raw data of the compound}
-}
-\if{html}{\out{</div>}}
-}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
+\item{\code{data}}{The raw data of the compound (read-only)}
+
 \item{\code{name}}{The name of the compound}
 
 \item{\code{is_small_molecule}}{Whether the compound is a small molecule}
@@ -42,7 +37,7 @@ and display a summary of its information.
 
 \item{\code{calculation_methods}}{The calculation methods of the compound}
 
-\item{\code{parameters}}{The parameters of the compound}
+\item{\code{parameters}}{The additional parameters of the compound (excluding molecular weight)}
 }
 \if{html}{\out{</div>}}
 }
@@ -51,6 +46,7 @@ and display a summary of its information.
 \itemize{
 \item \href{#method-Compound-new}{\code{Compound$new()}}
 \item \href{#method-Compound-print}{\code{Compound$print()}}
+\item \href{#method-Compound-to_df}{\code{Compound$to_df()}}
 \item \href{#method-Compound-clone}{\code{Compound$clone()}}
 }
 }
@@ -78,7 +74,7 @@ A new Compound object
 \if{html}{\out{<a id="method-Compound-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Compound-print}{}}}
 \subsection{Method \code{print()}}{
-Print a summary of the compound
+Print a summary of the compound including its properties and parameters.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Compound$print(...)}\if{html}{\out{</div>}}
 }
@@ -91,7 +87,20 @@ Print a summary of the compound
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisibly returns the object
+Invisibly returns the Compound object for method chaining
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Compound-to_df"></a>}}
+\if{latex}{\out{\hypertarget{method-Compound-to_df}{}}}
+\subsection{Method \code{to_df()}}{
+Convert compound data to tibbles for analysis
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Compound$to_df()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A tibble containing compound parameter data in the same format as legacy code
 }
 }
 \if{html}{\out{<hr>}}

@@ -1,3 +1,69 @@
+#' Get all compounds in a snapshot as data frames
+#'
+#' @description
+#' This function extracts all compounds from a snapshot and converts them to
+#' data frames for easier analysis and visualization, following the same format
+#' as the legacy compound dataframe functions.
+#'
+#' @param snapshot A Snapshot object
+#' @return A data frame with compound parameter data including:
+#' \itemize{
+#'   \item name: Compound name
+#'   \item parameter: Parameter category (e.g., lipophilicity, molecular_weight)
+#'   \item type: Parameter type or subcategory
+#'   \item value: Parameter value (raw values from data)
+#'   \item unit: Parameter unit
+#'   \item source: Data source information
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#'
+#' # Get all compound data as a data frame
+#' compounds_df <- get_compounds_dfs(snapshot)
+#'
+#' }
+get_compounds_dfs <- function(snapshot) {
+  # Check if input is a snapshot
+  validate_snapshot(snapshot)
+
+  # Get all compounds from the snapshot
+  compounds <- snapshot$compounds
+
+  # Initialize empty result dataframe
+  result <- tibble::tibble(
+    name = character(0),
+    parameter = character(0),
+    type = character(0),
+    value = character(0),
+    unit = character(0),
+    source = character(0)
+  )
+
+  # If there are no compounds, return the empty tibble
+  if (length(compounds) == 0) {
+    return(result)
+  }
+
+  # Get data frames for each compound and combine them
+  compound_dfs <- lapply(compounds, function(compound) {
+    compound$to_df()
+  })
+
+  # Combine all compound data frames
+  if (length(compound_dfs) > 0) {
+    result <- dplyr::bind_rows(compound_dfs)
+  }
+
+  # Sort compounds by name
+  result <- result[order(result$name), ]
+  return(result)
+}
+
 #' Get all individuals in a snapshot as data frames
 #'
 #' @description

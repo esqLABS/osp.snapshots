@@ -102,16 +102,25 @@ Parameter <- R6::R6Class(
         path = self$path,
         value = if (!is.null(self$table_formula)) "Table" else self$value,
         unit = self$unit %||% NA_character_,
-        source = if (!is.null(self$value_origin)) self$value_origin$Source else
-          NA_character_,
+        source = if (!is.null(self$value_origin)) {
+          self$value_origin$Source
+        } else {
+          NA_character_
+        },
         description = if (
           !is.null(self$value_origin) && !is.null(self$value_origin$Description)
-        )
-          self$value_origin$Description else NA_character_,
+        ) {
+          self$value_origin$Description
+        } else {
+          NA_character_
+        },
         source_id = if (
           !is.null(self$value_origin) && !is.null(self$value_origin$Id)
-        )
-          self$value_origin$Id else NA_integer_
+        ) {
+          self$value_origin$Id
+        } else {
+          NA_integer_
+        }
       )
 
       # For table parameters, also create separate dataframe of points
@@ -148,7 +157,7 @@ Parameter <- R6::R6Class(
     #' @field path The path of the parameter
     path = function(value) {
       if (missing(value)) {
-        return(self$data$Path)
+        return(self$data$Path %||% self$data$Name)
       }
       self$data$Path <- value
     },
@@ -156,9 +165,9 @@ Parameter <- R6::R6Class(
     #' @field name The name of the parameter (same as path)
     name = function(value) {
       if (missing(value)) {
-        return(self$data$Path)
+        return(self$data$Name %||% self$data$Path)
       }
-      self$data$Path <- value
+      self$data$Name <- value
     },
 
     #' @field value The value of the parameter
@@ -306,9 +315,15 @@ create_parameter <- function(
   # Add value origin if any source information is provided
   if (!is.null(source) || !is.null(description) || !is.null(source_id)) {
     value_origin <- list()
-    if (!is.null(source)) value_origin$Source <- source
-    if (!is.null(description)) value_origin$Description <- description
-    if (!is.null(source_id)) value_origin$Id <- source_id
+    if (!is.null(source)) {
+      value_origin$Source <- source
+    }
+    if (!is.null(description)) {
+      value_origin$Description <- description
+    }
+    if (!is.null(source_id)) {
+      value_origin$Id <- source_id
+    }
     data$ValueOrigin <- value_origin
   }
 

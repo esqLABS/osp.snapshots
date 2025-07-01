@@ -230,3 +230,378 @@ print.protocol_collection <- function(x, ...) {
   }
   invisible(x)
 }
+
+#' S3 print method for physicochemical properties
+#'
+#' @param x A physicochemical_property object
+#' @param ... Additional arguments passed to print methods
+#' @return Invisibly returns the physicochemical property
+#' @export
+print.physicochemical_property <- function(x, ...) {
+  # Get the property name from the attribute
+  property_name <- attr(x, "property_name") %||% "Physicochemical Property"
+
+  if (length(x) == 0) {
+    cli::cli_li("{property_name}: No data available")
+    return(invisible(x))
+  }
+
+  # Helper function to extract value and unit from parameters
+  extract_value_unit <- function(entry) {
+    if (!is.null(entry$Parameters) && length(entry$Parameters) > 0) {
+      # Find the main parameter (usually matches the property name)
+      main_param <- NULL
+      for (param in entry$Parameters) {
+        if (
+          !is.null(param$Name) &&
+            (grepl(property_name, param$Name, ignore.case = TRUE) ||
+              grepl(
+                gsub(" ", "", property_name),
+                param$Name,
+                ignore.case = TRUE
+              ))
+        ) {
+          main_param <- param
+          break
+        }
+      }
+
+      # If no main parameter found, use the first one
+      if (is.null(main_param) && length(entry$Parameters) > 0) {
+        main_param <- entry$Parameters[[1]]
+      }
+
+      if (!is.null(main_param)) {
+        value <- main_param$Value %||% "N/A"
+        unit <- main_param$Unit %||% ""
+        return(
+          if (unit != "") glue::glue("{value} {unit}") else as.character(value)
+        )
+      }
+    }
+    return("N/A")
+  }
+
+  # Helper function to get source information
+  get_source <- function(entry) {
+    if (!is.null(entry$Parameters) && length(entry$Parameters) > 0) {
+      param <- entry$Parameters[[1]]
+      if (!is.null(param$ValueOrigin)) {
+        source <- param$ValueOrigin$Source %||% "Unknown"
+        method <- param$ValueOrigin$Method %||% ""
+        description <- param$ValueOrigin$Description %||% ""
+
+        source_parts <- c(source)
+        if (method != "" && method != source) {
+          source_parts <- c(source_parts, method)
+        }
+        if (description != "" && description != method) {
+          source_parts <- c(source_parts, glue::glue("({description})"))
+        }
+
+        return(paste(source_parts, collapse = " - "))
+      }
+    }
+    return("Unknown")
+  }
+
+  # Always show property name as main bullet point
+  cli::cli_li("{property_name}:")
+  cli::cli_ul(id = "prop_details")
+
+  # Handle special cases for different property types
+  for (i in seq_along(x)) {
+    entry <- x[[i]]
+    entry_name <- entry$Name %||% glue::glue("Entry {i}")
+
+    if (property_name == "pKa Types") {
+      # Special handling for pKa types - show both type and value
+      pka_value <- entry$Pka %||% "Unknown"
+      pka_type <- entry$Type %||% "Unknown"
+      source_info <- if (!is.null(entry$ValueOrigin)) {
+        source <- entry$ValueOrigin$Source %||% "Unknown"
+        description <- entry$ValueOrigin$Description %||% ""
+        if (description != "") {
+          glue::glue("{source} - ({description})")
+        } else {
+          source
+        }
+      } else {
+        "Unknown"
+      }
+
+      cli::cli_li("{pka_type}: {pka_value} [{source_info}]")
+    } else if (property_name == "Solubility") {
+      # Special handling for solubility (include pH info and table data)
+      value_unit <- extract_value_unit(entry)
+
+      # Get pH info if available
+      ph_info <- ""
+      if (!is.null(entry$Parameters)) {
+        ref_ph_param <- purrr::keep(
+          entry$Parameters,
+          ~ .x$Name == "Reference pH"
+        )
+        if (length(ref_ph_param) > 0) {
+          ph_info <- glue::glue(" (pH {ref_ph_param[[1]]$Value})")
+        }
+      }
+
+      # Check if this is a table-based solubility entry
+      table_info <- ""
+      if (!is.null(entry$Parameters)) {
+        table_param <- purrr::keep(
+          entry$Parameters,
+          ~ .x$Name == "Solubility table"
+        )
+        if (
+          length(table_param) > 0 && !is.null(table_param[[1]]$TableFormula)
+        ) {
+          table_formula <- table_param[[1]]$TableFormula
+          if (
+            !is.null(table_formula$Points) && length(table_formula$Points) > 0
+          ) {
+            # Extract table points
+            points_text <- sapply(table_formula$Points, function(point) {
+              glue::glue("pH {point$X}→{point$Y} mg/l")
+            })
+            table_info <- glue::glue(
+              " (Table: {paste(points_text, collapse=', ')})"
+            )
+          }
+        }
+      }
+
+      source_info <- get_source(entry)
+      if (length(x) > 1) {
+        cli::cli_li(
+          "{entry_name}: {value_unit}{ph_info}{table_info} [{source_info}]"
+        )
+      } else {
+        cli::cli_li("{value_unit}{ph_info}{table_info} [{source_info}]")
+      }
+    } else {
+      # General handling for other properties
+      value_unit <- extract_value_unit(entry)
+      source_info <- get_source(entry)
+
+      if (length(x) > 1) {
+        cli::cli_li("{entry_name}: {value_unit} [{source_info}]")
+      } else {
+        cli::cli_li("{value_unit} [{source_info}]")
+      }
+    }
+  }
+
+  # End nested list
+  cli::cli_end(id = "prop_details")
+
+  invisible(x)
+}
+
+#' S3 print method for compound processes
+#'
+#' @param x A compound_processes object
+#' @param ... Additional arguments passed to print methods
+#' @return Invisibly returns the compound processes
+#' @export
+print.compound_processes <- function(x, ...) {
+  if (length(x) == 0) {
+    cli::cli_li("Processes: No processes available")
+    return(invisible(x))
+  }
+
+  cli::cli_li("Processes ({length(x)} total):")
+  cli::cli_ul(id = "processes_list")
+
+  # Categorize processes (ordered by specificity - more specific patterns first)
+  process_categories <- list(
+    "Metabolism" = c("Metabolization", "rCYP"),
+    "Transport" = c("ActiveTransport", "SpecificBinding"),
+    "Clearance" = c(
+      "^Glomerular",
+      "^Tubular",
+      "^Biliary",
+      "^LiverClearance",
+      "^Hepatocytes",
+      "Clearance"
+    ),
+    "Inhibition" = c("Inhibition"),
+    "Induction" = c("Induction")
+  )
+
+  # Helper function to extract parameters and create formatted string
+  format_process <- function(p) {
+    # Get process name with molecule if available
+    process_name <- p$InternalName
+    molecule_name <- p$Molecule %||% p$MoleculeName
+    if (!is.null(molecule_name) && molecule_name != "") {
+      process_name <- paste0(process_name, " (", molecule_name, ")")
+    }
+
+    # Add metabolite information if available (for metabolism processes)
+    if (!is.null(p$Metabolite) && p$Metabolite != "") {
+      process_name <- paste0(process_name, " → ", p$Metabolite)
+    }
+
+    # Extract all relevant parameters (more comprehensive)
+    key_params <- c()
+    if (!is.null(p$Parameters) && length(p$Parameters) > 0) {
+      for (param in p$Parameters) {
+        if (!is.null(param$Name)) {
+          # Include most parameters, excluding very common/less informative ones
+          exclude_params <- c(
+            "Fraction unbound (experiment)",
+            "Lipophilicity (experiment)",
+            "Plasma clearance"
+          )
+
+          if (!param$Name %in% exclude_params) {
+            value_unit <- if (!is.null(param$Unit) && param$Unit != "") {
+              paste0(param$Value, " ", param$Unit)
+            } else {
+              as.character(param$Value)
+            }
+            key_params <- c(key_params, paste0(param$Name, "=", value_unit))
+          }
+        }
+      }
+    }
+
+    # Format parameters
+    param_str <- if (length(key_params) > 0) {
+      paste0(": ", paste(key_params, collapse = ", "))
+    } else {
+      ""
+    }
+
+    # Add source information
+    source_info <- if (!is.null(p$DataSource) && p$DataSource != "") {
+      paste0(" [", p$DataSource, "]")
+    } else {
+      ""
+    }
+
+    return(paste0(process_name, param_str, source_info))
+  }
+
+  categorized_processes <- character()
+
+  # Process categories in order of priority (more specific first)
+  for (category in names(process_categories)) {
+    # Only consider processes that haven't been categorized yet
+    available_processes <- purrr::keep(seq_along(x), function(i) {
+      !x[[i]]$InternalName %in% categorized_processes
+    })
+
+    matching_processes <- purrr::keep(available_processes, function(i) {
+      any(sapply(process_categories[[category]], function(pattern) {
+        grepl(pattern, x[[i]]$InternalName)
+      }))
+    })
+
+    if (length(matching_processes) > 0) {
+      categorized_processes <- c(
+        categorized_processes,
+        sapply(matching_processes, function(i) x[[i]]$InternalName)
+      )
+
+      cli::cli_li("{category}")
+      cli::cli_ul(id = "proc_{category}")
+      for (i in matching_processes) {
+        formatted_process <- format_process(x[[i]])
+        cli::cli_li("{formatted_process}")
+      }
+      cli::cli_end(id = "proc_{category}")
+    }
+  }
+
+  # Show uncategorized processes
+  uncategorized <- purrr::keep(seq_along(x), function(i) {
+    !x[[i]]$InternalName %in% categorized_processes
+  })
+  if (length(uncategorized) > 0) {
+    cli::cli_li("Other")
+    cli::cli_ul(id = "proc_other")
+    for (i in uncategorized) {
+      formatted_process <- format_process(x[[i]])
+      cli::cli_li("{formatted_process}")
+    }
+    cli::cli_end(id = "proc_other")
+  }
+
+  cli::cli_end(id = "processes_list")
+
+  invisible(x)
+}
+
+#' Print method for compound additional parameters
+#'
+#' @param x A compound_additional_parameters object
+#' @param ... Additional arguments (unused)
+#' @export
+print.compound_additional_parameters <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    return(invisible(x))
+  }
+
+  # Extract and format parameters
+  param_data <- purrr::map(x, function(param) {
+    param_name <- param$Name %||% "Unknown"
+    value <- param$Value %||% "N/A"
+    unit <- param$Unit %||% ""
+    value_origin <- param$ValueOrigin
+
+    # Format value
+    value_display <- if (is.numeric(value)) {
+      formatC(value, format = "g", digits = 6)
+    } else {
+      as.character(value)
+    }
+
+    # Format unit
+    unit_display <- if (unit != "") {
+      glue::glue(" {unit}")
+    } else {
+      ""
+    }
+
+    # Format source information
+    source_info <- "Unknown"
+    if (!is.null(value_origin)) {
+      source_parts <- character()
+      if (!is.null(value_origin$Source)) {
+        source_parts <- c(source_parts, value_origin$Source)
+      }
+      if (!is.null(value_origin$Method)) {
+        source_parts <- c(source_parts, value_origin$Method)
+      }
+      if (!is.null(value_origin$Description)) {
+        source_parts <- c(
+          source_parts,
+          glue::glue("({value_origin$Description})")
+        )
+      }
+      if (length(source_parts) > 0) {
+        source_info <- paste(source_parts, collapse = " - ")
+      }
+    }
+
+    list(
+      name = param_name,
+      value = value_display,
+      unit = unit_display,
+      source = source_info
+    )
+  })
+
+  # Display parameters
+  cli::cli_text("• Additional Parameters ({length(param_data)} total):")
+  cli::cli_ul()
+  for (param in param_data) {
+    cli::cli_li("{param$name}: {param$value}{param$unit} [{param$source}]")
+  }
+  cli::cli_end()
+
+  invisible(x)
+}
