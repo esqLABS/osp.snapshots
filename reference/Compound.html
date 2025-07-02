@@ -11,7 +11,7 @@ and display a summary of its information."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9017</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9018</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,16 +44,12 @@ and display a summary of its information.</p>
 
 
     <div class="section level2">
-    <h2 id="public-fields">Public fields<a class="anchor" aria-label="anchor" href="#public-fields"></a></h2>
-    <p></p><div class="r6-fields"><dl><dt><code>data</code></dt>
-<dd><p>The raw data of the compound</p></dd>
-
-
-</dl><p></p></div>
-    </div>
-    <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
-    <p></p><div class="r6-active-bindings"><dl><dt><code>name</code></dt>
+    <p></p><div class="r6-active-bindings"><dl><dt><code>data</code></dt>
+<dd><p>The raw data of the compound (read-only)</p></dd>
+
+
+<dt><code>name</code></dt>
 <dd><p>The name of the compound</p></dd>
 
 
@@ -102,7 +98,7 @@ and display a summary of its information.</p>
 
 
 <dt><code>parameters</code></dt>
-<dd><p>The parameters of the compound</p></dd>
+<dd><p>The additional parameters of the compound (excluding molecular weight)</p></dd>
 
 
 </dl><p></p></div>
@@ -115,6 +111,7 @@ and display a summary of its information.</p>
 
 <ul><li><p><a href="#method-Compound-new"><code>Compound$new()</code></a></p></li>
 <li><p><a href="#method-Compound-print"><code>Compound$print()</code></a></p></li>
+<li><p><a href="#method-Compound-to_df"><code>Compound$to_df()</code></a></p></li>
 <li><p><a href="#method-Compound-clone"><code>Compound$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-Compound-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -138,7 +135,7 @@ and display a summary of its information.</p>
 
 </div><p></p><hr><a id="method-Compound-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
-<p>Print a summary of the compound</p><div class="section">
+<p>Print a summary of the compound including its properties and parameters.</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Compound</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -153,13 +150,25 @@ and display a summary of its information.</p>
 </div>
 <div class="section">
 <h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
-<p>Invisibly returns the object</p>
+<p>Invisibly returns the Compound object for method chaining</p>
+</div>
+
+</div><p></p><hr><a id="method-Compound-to_df"></a><div class="section">
+<h3 id="method-to-df-">Method <code>to_df()</code><a class="anchor" aria-label="anchor" href="#method-to-df-"></a></h3>
+<p>Convert compound data to tibbles for analysis</p><div class="section">
+<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Compound</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
+<p>A tibble containing compound parameter data in the same format as legacy code</p>
 </div>
 
 </div><p></p><hr><a id="method-Compound-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
+<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Compound</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
