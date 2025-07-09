@@ -47,7 +47,7 @@
     Code
       dfs$populations
     Output
-      # A tibble: 6 x 22
+      # A tibble: 7 x 22
         population_id name         seed number_of_individuals proportion_of_females
         <chr>         <chr>       <int>                 <int>                 <dbl>
       1 pop_1         pop_1   202395203                   100                    50
@@ -56,6 +56,7 @@
       4 pop4          pop4    235227359                    10                    50
       5 pop6          pop6    324184656                    15                    50
       6 pop7          pop7    486878578                    12                    50
+      7 pop           pop    1002856343                   100                    50
       # i 17 more variables: source_population <chr>, individual_name <chr>,
       #   age_min <dbl>, age_max <dbl>, age_unit <chr>, weight_min <dbl>,
       #   weight_max <dbl>, weight_unit <chr>, height_min <dbl>, height_max <dbl>,
@@ -67,7 +68,7 @@
     Code
       dfs$populations_parameters
     Output
-      # A tibble: 28 x 9
+      # A tibble: 30 x 9
          population_id parameter        seed distribution_type statistic   value unit 
          <chr>         <chr>           <int> <chr>             <chr>       <dbl> <chr>
        1 pop_1         CYP3A4|t1/2 ~  2.02e8 Normal            Mean      2.3 e+1 h    
@@ -76,11 +77,11 @@
        4 pop_1         Organism|Bon~  2.03e8 Uniform           Minimum   1.2 e+1 <NA> 
        5 pop_1         Organism|Bon~  2.03e8 Uniform           Maximum   1.4 e+1 <NA> 
        6 pop_1         Organism|Gal~  2.03e8 Discrete          Mean      1.97e+1 min  
-       7 pop2          Organism|pH ~ -1.75e9 LogNormal         Mean      7   e+0 <NA> 
-       8 pop2          Organism|pH ~ -1.75e9 LogNormal         Geometri~ 1   e+0 <NA> 
-       9 pop2          Organism|Vf ~ -1.75e9 Uniform           Minimum   0       <NA> 
-      10 pop2          Organism|Vf ~ -1.75e9 Uniform           Maximum   1   e+0 <NA> 
-      # i 18 more rows
+       7 pop_1         P-gp|t1/2 (i~  1.16e9 Normal            Mean      4.32e+2 h    
+       8 pop_1         P-gp|t1/2 (i~  1.16e9 Normal            Deviation 1   e+0 h    
+       9 pop2          Organism|pH ~ -1.75e9 LogNormal         Mean      7   e+0 <NA> 
+      10 pop2          Organism|pH ~ -1.75e9 LogNormal         Geometri~ 1   e+0 <NA> 
+      # i 20 more rows
       # i 2 more variables: source <chr>, description <chr>
 
 ---

@@ -232,9 +232,9 @@
         <chr>                    <chr>  <int> <chr>   <chr>      <chr>  <dbl> <chr>   
       1 European (P-gp modified~ Euro~ 1.72e7 Human   European_~ MALE    30   year(s) 
       2 Korean (Yu 2004 study)   Kore~ 5.30e7 Human   Asian_Tan~ MALE    23.3 year(s) 
-      3 CKD                      CKD   3.91e8 Human   European_~ MALE    50   year(s) 
-      4 ind_modified             ind_~ 4.88e8 Human   BlackAmer~ MALE    56   year(s) 
-      5 baby                     baby  1.99e9 Human   Preterm    MALE    10   day(s)  
+      3 ind_modified             ind_~ 4.88e8 Human   BlackAmer~ MALE    56   year(s) 
+      4 Asian                    Asian 9.18e8 Human   Asian_Tan~ MALE    26   year(s) 
+      5 CKD                      CKD   1.52e9 Human   European_~ MALE    50   year(s) 
       # i 9 more variables: gestational_age <dbl>, gestational_age_unit <chr>,
       #   weight <dbl>, weight_unit <chr>, height <dbl>, height_unit <chr>,
       #   disease_state <chr>, calculation_methods <glue>,
@@ -245,22 +245,21 @@
     Code
       dfs$individuals_parameters
     Output
-      # A tibble: 6 x 7
+      # A tibble: 5 x 7
         individual_id                   path  value unit  source description source_id
         <chr>                           <chr> <dbl> <chr> <chr>  <chr>           <int>
       1 European (P-gp modified, CYP3A~ Orga~  0.8  <NA>  Publi~ R24-4081           NA
       2 European (P-gp modified, CYP3A~ Orga~  1    <NA>  Publi~ R24-4081           NA
       3 Korean (Yu 2004 study)          Orga~  1    <NA>  Unkno~ <NA>               NA
       4 Korean (Yu 2004 study)          Orga~  0.89 <NA>  Publi~ R24-4081           NA
-      5 CKD                             Orga~  7.25 <NA>  Datab~ Assumed            NA
-      6 ind_modified                    Orga~ 33    ml/m~ Other  Assumed            15
+      5 ind_modified                    Orga~ 33    ml/m~ Other  Assumed            15
 
 ---
 
     Code
       dfs$individuals_expressions
     Output
-      # A tibble: 15 x 2
+      # A tibble: 16 x 2
          individual_id                         profile                             
          <chr>                                 <chr>                               
        1 European (P-gp modified, CYP3A4 36 h) CYP3A4|Human|Healthy                
@@ -277,7 +276,8 @@
       12 Korean (Yu 2004 study)                ATP1A2|Human|Korean (Yu 2004 study) 
       13 Korean (Yu 2004 study)                UGT1A4|Human|Korean (Yu 2004 study) 
       14 Korean (Yu 2004 study)                GABRG2|Human|Korean (Yu 2004 study) 
-      15 CKD                                   CYP3A4|Human|Korean (Yu 2004 study) 
+      15 Asian                                 CYP3A4|Human|Healthy                
+      16 CKD                                   CYP3A4|Human|Korean (Yu 2004 study) 
 
 ---
 

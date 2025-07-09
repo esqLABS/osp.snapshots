@@ -30,9 +30,9 @@
       -- Individuals (5) -------------------------------------------------------------
       * European (P-gp modified, CYP3A4 36 h)
       * Korean (Yu 2004 study)
-      * CKD
       * ind_modified
-      * baby
+      * Asian
+      * CKD
 
 # print.individual_collection works with empty collection
 
@@ -54,11 +54,11 @@
       * Oral solution (Dissolved)
       * form_dissolved (Dissolved)
       * form_Lint80 (Lint80)
-      * form-partdiss (Particle)
+      * form-particle-dissolution (Particle)
       * form-table (Table)
       * form-ZO (Zero Order)
       * form-FO (First Order)
-      * form-partdiss2 (Particle)
+      * form-particle-dissolution-2 (Particle)
 
 # print.formulation_collection works with empty collection
 

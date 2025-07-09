@@ -407,11 +407,11 @@ print.physicochemical_property <- function(x, ...) {
 #' @export
 print.compound_processes <- function(x, ...) {
   if (length(x) == 0) {
-    cli::cli_li("Processes: No processes available")
+    cli::cli_text("Processes: No processes available")
     return(invisible(x))
   }
 
-  cli::cli_li("Processes ({length(x)} total):")
+  cli::cli_text("Processes ({length(x)} total):")
   cli::cli_ul(id = "processes_list")
 
   # Categorize processes (ordered by specificity - more specific patterns first)
@@ -475,14 +475,7 @@ print.compound_processes <- function(x, ...) {
       ""
     }
 
-    # Add source information
-    source_info <- if (!is.null(p$DataSource) && p$DataSource != "") {
-      paste0(" [", p$DataSource, "]")
-    } else {
-      ""
-    }
-
-    return(paste0(process_name, param_str, source_info))
+    return(paste0(process_name, param_str))
   }
 
   categorized_processes <- character()
@@ -506,12 +499,21 @@ print.compound_processes <- function(x, ...) {
         sapply(matching_processes, function(i) x[[i]]$InternalName)
       )
 
-      cli::cli_li("{category}")
+      cli::cli_li("{category}:")
       cli::cli_ul(id = "proc_{category}")
+
       for (i in matching_processes) {
         formatted_process <- format_process(x[[i]])
-        cli::cli_li("{formatted_process}")
+        source_info <- if (
+          !is.null(x[[i]]$DataSource) && x[[i]]$DataSource != ""
+        ) {
+          paste0(" [", x[[i]]$DataSource, "]")
+        } else {
+          ""
+        }
+        cli::cli_li("{formatted_process}{source_info}")
       }
+
       cli::cli_end(id = "proc_{category}")
     }
   }
@@ -521,12 +523,21 @@ print.compound_processes <- function(x, ...) {
     !x[[i]]$InternalName %in% categorized_processes
   })
   if (length(uncategorized) > 0) {
-    cli::cli_li("Other")
+    cli::cli_li("Other:")
     cli::cli_ul(id = "proc_other")
+
     for (i in uncategorized) {
       formatted_process <- format_process(x[[i]])
-      cli::cli_li("{formatted_process}")
+      source_info <- if (
+        !is.null(x[[i]]$DataSource) && x[[i]]$DataSource != ""
+      ) {
+        paste0(" [", x[[i]]$DataSource, "]")
+      } else {
+        ""
+      }
+      cli::cli_li("{formatted_process}{source_info}")
     }
+
     cli::cli_end(id = "proc_other")
   }
 
@@ -598,10 +609,479 @@ print.compound_additional_parameters <- function(x, ...) {
   # Display parameters
   cli::cli_text("• Additional Parameters ({length(param_data)} total):")
   cli::cli_ul()
+
   for (param in param_data) {
     cli::cli_li("{param$name}: {param$value}{param$unit} [{param$source}]")
   }
+
   cli::cli_end()
 
+  invisible(x)
+}
+
+#' Print method for metabolizing enzymes
+#'
+#' @param x A metabolizing_enzymes object
+#' @param ... Additional arguments (unused)
+#' @export
+print.metabolizing_enzymes <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    cli::cli_text("Metabolizing Enzymes: No data available")
+    return(invisible(x))
+  }
+
+  cli::cli_text("Metabolizing Enzymes:")
+  cli::cli_ul(id = "met_enzymes")
+
+  for (datasource in names(x)) {
+    for (process in x[[datasource]]) {
+      molecule <- process$Molecule %||% "Unknown"
+      process_name <- process$Process %||% "Unknown"
+      metabolite <- process$Metabolite
+
+      # Format process name with metabolite if available
+      process_display <- if (!is.null(metabolite) && metabolite != "") {
+        paste0(process_name, " (", molecule, ") → ", metabolite)
+      } else {
+        paste0(process_name, " (", molecule, ")")
+      }
+
+      # Extract key parameters
+      key_params <- c()
+      param_data <- process[
+        !names(process) %in%
+          c("Process", "Molecule", "Metabolite", "DataSource")
+      ]
+
+      for (param_name in names(param_data)) {
+        param <- param_data[[param_name]]
+        if (param_name %in% c("kcat", "Km", "Vmax", "Ki", "Kd")) {
+          value_unit <- if (!is.null(param$Unit) && param$Unit != "") {
+            paste0(param$Value, " ", param$Unit)
+          } else {
+            as.character(param$Value)
+          }
+          key_params <- c(key_params, paste0(param_name, "=", value_unit))
+        }
+      }
+
+      param_str <- if (length(key_params) > 0) {
+        paste0(": ", paste(key_params, collapse = ", "))
+      } else {
+        ""
+      }
+
+      cli::cli_li("{process_display}{param_str} [{datasource}]")
+    }
+  }
+
+  cli::cli_end(id = "met_enzymes")
+  invisible(x)
+}
+
+#' Print method for transporter proteins
+#'
+#' @param x A transporter_proteins object
+#' @param ... Additional arguments (unused)
+#' @export
+print.transporter_proteins <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    cli::cli_text("Transporter Proteins: No data available")
+    return(invisible(x))
+  }
+
+  cli::cli_text("Transporter Proteins:")
+  cli::cli_ul(id = "transporters")
+
+  for (datasource in names(x)) {
+    for (process in x[[datasource]]) {
+      molecule <- process$Molecule %||% "Unknown"
+      process_name <- process$Process %||% "Unknown"
+
+      process_display <- paste0(process_name, " (", molecule, ")")
+
+      # Extract key parameters
+      key_params <- c()
+      param_data <- process[
+        !names(process) %in% c("Process", "Molecule", "DataSource")
+      ]
+
+      for (param_name in names(param_data)) {
+        param <- param_data[[param_name]]
+        if (
+          param_name %in% c("kcat", "Km", "Vmax", "Ki", "Kd", "kon", "koff")
+        ) {
+          value_unit <- if (!is.null(param$Unit) && param$Unit != "") {
+            paste0(param$Value, " ", param$Unit)
+          } else {
+            as.character(param$Value)
+          }
+          key_params <- c(key_params, paste0(param_name, "=", value_unit))
+        }
+      }
+
+      param_str <- if (length(key_params) > 0) {
+        paste0(": ", paste(key_params, collapse = ", "))
+      } else {
+        ""
+      }
+
+      cli::cli_li("{process_display}{param_str} [{datasource}]")
+    }
+  }
+
+  cli::cli_end(id = "transporters")
+  invisible(x)
+}
+
+#' Print method for protein binding partners
+#'
+#' @param x A protein_binding_partners object
+#' @param ... Additional arguments (unused)
+#' @export
+print.protein_binding_partners <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    cli::cli_text("Protein Binding Partners: No data available")
+    return(invisible(x))
+  }
+
+  cli::cli_text("Protein Binding Partners:")
+  cli::cli_ul(id = "binding")
+
+  for (datasource in names(x)) {
+    for (process in x[[datasource]]) {
+      molecule <- process$Molecule %||% "Unknown"
+      process_name <- process$Process %||% "Unknown"
+
+      process_display <- paste0(process_name, " (", molecule, ")")
+
+      # Extract key parameters
+      key_params <- c()
+      param_data <- process[
+        !names(process) %in% c("Process", "Molecule", "DataSource")
+      ]
+
+      for (param_name in names(param_data)) {
+        param <- param_data[[param_name]]
+        if (param_name %in% c("koff", "Kd", "kon")) {
+          value_unit <- if (!is.null(param$Unit) && param$Unit != "") {
+            paste0(param$Value, " ", param$Unit)
+          } else {
+            as.character(param$Value)
+          }
+          key_params <- c(key_params, paste0(param_name, "=", value_unit))
+        }
+      }
+
+      param_str <- if (length(key_params) > 0) {
+        paste0(": ", paste(key_params, collapse = ", "))
+      } else {
+        ""
+      }
+
+      cli::cli_li("{process_display}{param_str} [{datasource}]")
+    }
+  }
+
+  cli::cli_end(id = "binding")
+  invisible(x)
+}
+
+#' Print method for inhibition processes
+#'
+#' @param x An inhibition object
+#' @param ... Additional arguments (unused)
+#' @export
+print.inhibition <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    cli::cli_text("Inhibition: No data available")
+    return(invisible(x))
+  }
+
+  cli::cli_text("Inhibition:")
+  cli::cli_ul(id = "inhibition")
+
+  for (datasource in names(x)) {
+    for (process in x[[datasource]]) {
+      molecule <- process$Molecule %||% "Unknown"
+      process_name <- process$Process %||% "Unknown"
+
+      process_display <- paste0(process_name, " (", molecule, ")")
+
+      # Extract key parameters
+      key_params <- c()
+      param_data <- process[
+        !names(process) %in% c("Process", "Molecule", "DataSource")
+      ]
+
+      for (param_name in names(param_data)) {
+        param <- param_data[[param_name]]
+        if (param_name %in% c("Ki", "Kd", "kinact", "K_kinact_half", "Km")) {
+          value_unit <- if (!is.null(param$Unit) && param$Unit != "") {
+            paste0(param$Value, " ", param$Unit)
+          } else {
+            as.character(param$Value)
+          }
+          key_params <- c(key_params, paste0(param_name, "=", value_unit))
+        }
+      }
+
+      param_str <- if (length(key_params) > 0) {
+        paste0(": ", paste(key_params, collapse = ", "))
+      } else {
+        ""
+      }
+
+      cli::cli_li("{process_display}{param_str} [{datasource}]")
+    }
+  }
+
+  cli::cli_end(id = "inhibition")
+  invisible(x)
+}
+
+#' Print method for induction processes
+#'
+#' @param x An induction object
+#' @param ... Additional arguments (unused)
+#' @export
+print.induction <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    cli::cli_text("Induction: No data available")
+    return(invisible(x))
+  }
+
+  cli::cli_text("Induction:")
+  cli::cli_ul(id = "induction")
+
+  for (datasource in names(x)) {
+    for (process in x[[datasource]]) {
+      molecule <- process$Molecule %||% "Unknown"
+      process_name <- process$Process %||% "Unknown"
+
+      process_display <- paste0(process_name, " (", molecule, ")")
+
+      # Extract key parameters
+      key_params <- c()
+      param_data <- process[
+        !names(process) %in% c("Process", "Molecule", "DataSource")
+      ]
+
+      for (param_name in names(param_data)) {
+        param <- param_data[[param_name]]
+        if (param_name %in% c("EC50", "Emax", "Km")) {
+          value_unit <- if (!is.null(param$Unit) && param$Unit != "") {
+            paste0(param$Value, " ", param$Unit)
+          } else {
+            as.character(param$Value)
+          }
+          key_params <- c(key_params, paste0(param_name, "=", value_unit))
+        }
+      }
+
+      param_str <- if (length(key_params) > 0) {
+        paste0(": ", paste(key_params, collapse = ", "))
+      } else {
+        ""
+      }
+
+      cli::cli_li("{process_display}{param_str} [{datasource}]")
+    }
+  }
+
+  cli::cli_end(id = "induction")
+  invisible(x)
+}
+
+#' Print method for hepatic clearance processes
+#'
+#' @param x A hepatic_clearance object
+#' @param ... Additional arguments (unused)
+#' @export
+print.hepatic_clearance <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    cli::cli_text("Hepatic Clearance: No data available")
+    return(invisible(x))
+  }
+
+  cli::cli_text("Hepatic Clearance:")
+  cli::cli_ul(id = "hepatic")
+
+  for (datasource in names(x)) {
+    cli::cli_li("{datasource}:")
+    cli::cli_ul(id = "datasource_{datasource}")
+
+    for (process in x[[datasource]]) {
+      process_name <- process$Process %||% "Unknown"
+
+      # Extract key parameters
+      key_params <- c()
+      param_data <- process[!names(process) %in% c("Process", "DataSource")]
+
+      for (param_name in names(param_data)) {
+        param <- param_data[[param_name]]
+        if (
+          param_name %in%
+            c("Specific clearance", "Intrinsic clearance", "Vmax", "Km", "kcat")
+        ) {
+          value_unit <- if (!is.null(param$Unit) && param$Unit != "") {
+            paste0(param$Value, " ", param$Unit)
+          } else {
+            as.character(param$Value)
+          }
+          key_params <- c(key_params, paste0(param_name, "=", value_unit))
+        }
+      }
+
+      param_str <- if (length(key_params) > 0) {
+        paste0(": ", paste(key_params, collapse = ", "))
+      } else {
+        ""
+      }
+
+      cli::cli_li("{process_name}{param_str} [{datasource}]")
+    }
+
+    cli::cli_end(id = "datasource_{datasource}")
+  }
+
+  cli::cli_end(id = "hepatic")
+  invisible(x)
+}
+
+#' Print method for renal clearance processes
+#'
+#' @param x A renal_clearance object
+#' @param ... Additional arguments (unused)
+#' @export
+print.renal_clearance <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    cli::cli_text("Renal Clearance: No data available")
+    return(invisible(x))
+  }
+
+  cli::cli_text("Renal Clearance:")
+  cli::cli_ul(id = "renal")
+
+  for (datasource in names(x)) {
+    cli::cli_li("{datasource}:")
+    cli::cli_ul(id = "datasource_{datasource}")
+
+    for (process in x[[datasource]]) {
+      process_name <- process$Process %||% "Unknown"
+
+      # Extract key parameters
+      key_params <- c()
+      param_data <- process[!names(process) %in% c("Process", "DataSource")]
+
+      for (param_name in names(param_data)) {
+        param <- param_data[[param_name]]
+        if (
+          param_name %in%
+            c("Specific clearance", "Intrinsic clearance", "GFR fraction")
+        ) {
+          value_unit <- if (!is.null(param$Unit) && param$Unit != "") {
+            paste0(param$Value, " ", param$Unit)
+          } else {
+            as.character(param$Value)
+          }
+          key_params <- c(key_params, paste0(param_name, "=", value_unit))
+        }
+      }
+
+      param_str <- if (length(key_params) > 0) {
+        paste0(": ", paste(key_params, collapse = ", "))
+      } else {
+        ""
+      }
+
+      cli::cli_li("{process_name}{param_str} [{datasource}]")
+    }
+
+    cli::cli_end(id = "datasource_{datasource}")
+  }
+
+  cli::cli_end(id = "renal")
+  invisible(x)
+}
+
+#' Print method for biliary clearance processes
+#'
+#' @param x A biliary_clearance object
+#' @param ... Additional arguments (unused)
+#' @export
+print.biliary_clearance <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    cli::cli_text("Biliary Clearance: No data available")
+    return(invisible(x))
+  }
+
+  cli::cli_text("Biliary Clearance:")
+  cli::cli_ul(id = "biliary")
+
+  for (datasource in names(x)) {
+    cli::cli_li("{datasource}:")
+    cli::cli_ul(id = "datasource_{datasource}")
+
+    for (process in x[[datasource]]) {
+      process_name <- process$Process %||% "Unknown"
+
+      # Extract key parameters
+      key_params <- c()
+      param_data <- process[!names(process) %in% c("Process", "DataSource")]
+
+      for (param_name in names(param_data)) {
+        param <- param_data[[param_name]]
+        if (param_name %in% c("Specific clearance", "Plasma clearance")) {
+          value_unit <- if (!is.null(param$Unit) && param$Unit != "") {
+            paste0(param$Value, " ", param$Unit)
+          } else {
+            as.character(param$Value)
+          }
+          key_params <- c(key_params, paste0(param_name, "=", value_unit))
+        }
+      }
+
+      param_str <- if (length(key_params) > 0) {
+        paste0(": ", paste(key_params, collapse = ", "))
+      } else {
+        ""
+      }
+
+      cli::cli_li("{process_name}{param_str} [{datasource}]")
+    }
+
+    cli::cli_end(id = "datasource_{datasource}")
+  }
+
+  cli::cli_end(id = "biliary")
+  invisible(x)
+}
+
+#' Print method for compound calculation methods
+#'
+#' @param x A compound_calculation_methods object
+#' @param ... Additional arguments (unused)
+#' @export
+print.compound_calculation_methods <- function(x, ...) {
+  if (is.null(x) || length(x) == 0) {
+    cli::cli_text("Calculation Methods: No data available")
+    return(invisible(x))
+  }
+
+  cli::cli_text("Calculation Methods:")
+  cli::cli_ul(id = "calc_methods")
+
+  # Display partition coefficient method
+  if (!is.null(x$partition_coef)) {
+    cli::cli_li("Partition Coefficient: {x$partition_coef}")
+  }
+
+  # Display permeability method
+  if (!is.null(x$permeability)) {
+    cli::cli_li("Permeability: {x$permeability}")
+  }
+
+  cli::cli_end(id = "calc_methods")
   invisible(x)
 }

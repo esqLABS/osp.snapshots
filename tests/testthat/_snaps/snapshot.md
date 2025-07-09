@@ -15,7 +15,7 @@
       * ObservedDataClassifications: 20
       * ObserverSets: 1
       * ParameterIdentifications: 1
-      * Populations: 6
+      * Populations: 7
       * Protocols: 9
       * Simulations: 2
 
