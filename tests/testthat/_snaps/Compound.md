@@ -463,6 +463,15 @@
         * Cl: 1 [Publication - (c01835608)]
         * F: 1 [Publication - (c01835608)]
 
+---
+
+    Code
+      snapshot$compounds[[1]]$calculation_methods
+    Message
+      Calculation Methods:
+        * Partition Coefficient: Rodgers and Rowland
+        * Permeability: PK-Sim Standard
+
 # Compounds can be converted to dataframes
 
     Code
