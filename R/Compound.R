@@ -113,11 +113,13 @@ Compound <- R6::R6Class(
 
       # Initialize the dataframe
       df <- tibble::tibble(
-        name = character(),
-        parameter = character(),
+        compound = character(),
+        category = character(),
         type = character(),
+        parameter = character(),
         value = character(),
         unit = character(),
+        data_source = character(),
         source = character()
       )
 
@@ -416,18 +418,21 @@ Compound <- R6::R6Class(
     ) {
       if (parameter == "molecular_weight" && !is.list(prop_data)) {
         return(tibble::tibble(
-          name = compound_name,
-          parameter = parameter,
-          type = NA_character_,
+          compound = compound_name,
+          category = "physicochemical_property",
+          type = parameter,
+          parameter = NA_character_,
           value = private$.format_value(prop_data$Value),
           unit = prop_data$Unit %||% NA_character_,
+          data_source = NA_character_,
           source = prop_data$Source
         ))
       } else if (is.list(prop_data)) {
         rows <- tibble::tibble(
-          name = compound_name,
-          parameter = parameter,
-          type = if (parameter == "solubility") {
+          compound = compound_name,
+          category = "physicochemical_property",
+          type = parameter,
+          parameter = if (parameter == "solubility") {
             purrr::map_chr(prop_data, ~ .x$table_name %||% names(prop_data))
           } else {
             names(prop_data)
@@ -449,11 +454,21 @@ Compound <- R6::R6Class(
             }
           ),
           unit = purrr::map_chr(prop_data, ~ .x$Unit %||% NA_character_),
+          data_source = NA_character_,
           source = purrr::map_chr(prop_data, ~ .x$Source)
         )
         return(rows)
       }
-      return(tibble::tibble())
+      return(tibble::tibble(
+        compound = character(0),
+        category = character(0),
+        type = character(0),
+        parameter = character(0),
+        value = character(0),
+        unit = character(0),
+        data_source = character(0),
+        source = character(0)
+      ))
     },
 
     # Extract lipophilicity data
@@ -700,13 +715,14 @@ Compound <- R6::R6Class(
 
             purrr::imap(data, function(param, param_name) {
               tibble::tibble(
-                name = compound_name,
-                parameter = "protein_binding_partners",
-                type = paste(param_name, molecule_name, sep = ", "),
+                compound = compound_name,
+                category = "protein_binding_partners",
+                type = binding$Process,
+                parameter = paste(param_name, molecule_name, sep = ", "),
                 value = private$.format_value(param$Value),
                 unit = param$Unit,
-                source = param$Source,
-                dataSource = datasource_name
+                data_source = datasource_name,
+                source = param$Source
               )
             }) %>%
               dplyr::bind_rows()
@@ -812,13 +828,14 @@ Compound <- R6::R6Class(
                 )
               }
               tibble::tibble(
-                name = compound_name,
-                parameter = "metabolizing_enzymes",
-                type = type_string,
+                compound = compound_name,
+                category = "metabolizing_enzymes",
+                type = metabolization$Process,
+                parameter = type_string,
                 value = private$.format_value(param$Value),
                 unit = param$Unit,
-                source = param$Source,
-                dataSource = datasource_name
+                data_source = datasource_name,
+                source = param$Source
               )
             }) %>%
               dplyr::bind_rows()
@@ -901,7 +918,16 @@ Compound <- R6::R6Class(
         is.null(private$.hepatic_clearance) ||
           length(private$.hepatic_clearance) == 0
       ) {
-        return(tibble::tibble())
+        return(tibble::tibble(
+          compound = character(0),
+          category = character(0),
+          type = character(0),
+          parameter = character(0),
+          value = character(0),
+          unit = character(0),
+          data_source = character(0),
+          source = character(0)
+        ))
       }
 
       purrr::imap(
@@ -914,13 +940,14 @@ Compound <- R6::R6Class(
 
             purrr::imap(data, function(param, param_name) {
               tibble::tibble(
-                name = compound_name,
-                parameter = "hepatic_clearance",
-                type = param_name,
+                compound = compound_name,
+                category = "hepatic_clearance",
+                type = hepatic$Process,
+                parameter = param_name,
                 value = private$.format_value(param$Value),
                 unit = param$Unit,
-                source = param$Source,
-                dataSource = datasource_name
+                data_source = datasource_name,
+                source = param$Source
               )
             }) %>%
               dplyr::bind_rows()
@@ -1004,7 +1031,16 @@ Compound <- R6::R6Class(
         is.null(private$.transporter_proteins) ||
           length(private$.transporter_proteins) == 0
       ) {
-        return(tibble::tibble())
+        return(tibble::tibble(
+          compound = character(0),
+          category = character(0),
+          type = character(0),
+          parameter = character(0),
+          value = character(0),
+          unit = character(0),
+          data_source = character(0),
+          source = character(0)
+        ))
       }
 
       purrr::imap(
@@ -1024,13 +1060,14 @@ Compound <- R6::R6Class(
               type_string <- paste(param_name, molecule_name, sep = ", ")
 
               tibble::tibble(
-                name = compound_name,
-                parameter = "transporter_proteins",
-                type = type_string,
+                compound = compound_name,
+                category = "transporter_proteins",
+                type = transport$Process,
+                parameter = type_string,
                 value = private$.format_value(param$Value),
                 unit = param$Unit,
-                source = param$Source,
-                dataSource = datasource_name
+                data_source = datasource_name,
+                source = param$Source
               )
             }) %>%
               dplyr::bind_rows()
@@ -1110,7 +1147,16 @@ Compound <- R6::R6Class(
         is.null(private$.renal_clearance) ||
           length(private$.renal_clearance) == 0
       ) {
-        return(tibble::tibble())
+        return(tibble::tibble(
+          compound = character(0),
+          category = character(0),
+          type = character(0),
+          parameter = character(0),
+          value = character(0),
+          unit = character(0),
+          data_source = character(0),
+          source = character(0)
+        ))
       }
 
       purrr::imap(
@@ -1123,13 +1169,14 @@ Compound <- R6::R6Class(
 
             purrr::imap(data, function(param, param_name) {
               tibble::tibble(
-                name = compound_name,
-                parameter = "renal_clearance",
-                type = param_name,
+                compound = compound_name,
+                category = "renal_clearance",
+                type = renal$Process,
+                parameter = param_name,
                 value = private$.format_value(param$Value),
                 unit = param$Unit,
-                source = param$Source,
-                dataSource = datasource_name
+                data_source = datasource_name,
+                source = param$Source
               )
             }) %>%
               dplyr::bind_rows()
@@ -1209,7 +1256,16 @@ Compound <- R6::R6Class(
         is.null(private$.biliary_clearance) ||
           length(private$.biliary_clearance) == 0
       ) {
-        return(tibble::tibble())
+        return(tibble::tibble(
+          compound = character(0),
+          category = character(0),
+          type = character(0),
+          parameter = character(0),
+          value = character(0),
+          unit = character(0),
+          data_source = character(0),
+          source = character(0)
+        ))
       }
 
       purrr::imap(
@@ -1222,13 +1278,14 @@ Compound <- R6::R6Class(
 
             purrr::imap(data, function(param, param_name) {
               tibble::tibble(
-                name = compound_name,
-                parameter = "biliary_clearance",
-                type = param_name,
+                compound = compound_name,
+                category = "biliary_clearance",
+                type = biliary$Process,
+                parameter = param_name,
                 value = private$.format_value(param$Value),
                 unit = param$Unit,
-                source = param$Source,
-                dataSource = datasource_name
+                data_source = datasource_name,
+                source = param$Source
               )
             }) %>%
               dplyr::bind_rows()
@@ -1315,7 +1372,16 @@ Compound <- R6::R6Class(
     # Inhibition table conversion
     .inhibition_to_table = function(compound_name) {
       if (is.null(private$.inhibition) || length(private$.inhibition) == 0) {
-        return(tibble::tibble())
+        return(tibble::tibble(
+          compound = character(0),
+          category = character(0),
+          type = character(0),
+          parameter = character(0),
+          value = character(0),
+          unit = character(0),
+          data_source = character(0),
+          source = character(0)
+        ))
       }
 
       purrr::imap(
@@ -1336,13 +1402,14 @@ Compound <- R6::R6Class(
               )
 
               tibble::tibble(
-                name = compound_name,
-                parameter = "inhibition",
-                type = type_string,
+                compound = compound_name,
+                category = "inhibition",
+                type = inhibition$Process,
+                parameter = type_string,
                 value = private$.format_value(param$Value),
                 unit = param$Unit,
-                source = param$Source,
-                dataSource = datasource_name
+                data_source = datasource_name,
+                source = param$Source
               )
             }) %>%
               dplyr::bind_rows()
@@ -1417,7 +1484,16 @@ Compound <- R6::R6Class(
     # Induction table conversion
     .induction_to_table = function(compound_name) {
       if (is.null(private$.induction) || length(private$.induction) == 0) {
-        return(tibble::tibble())
+        return(tibble::tibble(
+          compound = character(0),
+          category = character(0),
+          type = character(0),
+          parameter = character(0),
+          value = character(0),
+          unit = character(0),
+          data_source = character(0),
+          source = character(0)
+        ))
       }
 
       purrr::imap(
@@ -1434,13 +1510,14 @@ Compound <- R6::R6Class(
               type_string <- paste(param_name, molecule_name, sep = ", ")
 
               tibble::tibble(
-                name = compound_name,
-                parameter = "induction",
-                type = type_string,
+                compound = compound_name,
+                category = "induction",
+                type = induction$Process,
+                parameter = type_string,
                 value = private$.format_value(param$Value),
                 unit = param$Unit,
-                source = param$Source,
-                dataSource = datasource_name
+                data_source = datasource_name,
+                source = param$Source
               )
             }) %>%
               dplyr::bind_rows()

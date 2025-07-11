@@ -477,244 +477,244 @@
     Code
       print(get_compounds_dfs(snapshot), n = Inf)
     Output
-      # A tibble: 237 x 7
-          name                           parameter type  value unit  source dataSource
-          <chr>                          <chr>     <chr> <chr> <chr> <chr>  <chr>     
-        1 BI 100777                      lipophil~ "Opt~ "3.2~ Log ~ "Para~ <NA>      
-        2 BI 100777                      fraction~ "Ger~ "0.0~ %     "n002~ <NA>      
-        3 BI 100777                      molecula~  <NA> "150~ g/mol "c264~ <NA>      
-        4 BI 100777                      halogens  "Cl"  "1"   <NA>  "c264~ <NA>      
-        5 BI 100777                      halogens  "F"   "1"   <NA>  "c264~ <NA>      
-        6 BI 100777                      pKa       "bas~ "6.2" <NA>  "c264~ <NA>      
-        7 BI 100777                      pKa       "aci~ "10.~ <NA>  "c264~ <NA>      
-        8 BI 100777                      solubili~ "pH ~ "0.5" mg/ml "Para~ <NA>      
-        9 BI 100777                      intestin~ "Opt~ "2.0~ cm/m~ "Para~ <NA>      
-       10 BI 100777                      protein_~ "kof~ "1"   1/min "Para~ in-vitro  
-       11 BI 100777                      protein_~ "Kd,~ "2.8~ nmol~ "Para~ in-vitro  
-       12 BI 100777                      metaboli~ "In ~ "12"  pmol~ "n002~ Optimized 
-       13 BI 100777                      metaboli~ "Con~ "109" pmol~ "n002~ Optimized 
-       14 BI 100777                      metaboli~ "Km,~ "40.~ µmol~ "Para~ Optimized 
-       15 BI 100777                      metaboli~ "kca~ "0.1~ 1/min "PK-S~ Optimized 
-       16 BI 100777                      metaboli~ "Int~ "888" l/min  <NA>  Int_FO    
-       17 BI 100777                      metaboli~ "Spe~ "234" 1/min "n002~ Int_FO    
-       18 BI 100777                      hepatic_~ "Lip~ "3.2~ Log ~  <NA>  In vitro_~
-       19 BI 100777                      hepatic_~ "Mea~ "345" min   "R24-~ In vitro_~
-       20 BI 100777                      hepatic_~ "Res~ "34"  %     "R24-~ In vitro_~
-       21 BI 100777                      transpor~ "Tra~ "12"  µmol~  <NA>  Spec_H    
-       22 BI 100777                      transpor~ "Vma~ "0"   µmol~  <NA>  Spec_H    
-       23 BI 100777                      transpor~ "Km,~ "1"   µmol~ "n002~ Spec_H    
-       24 BI 100777                      transpor~ "kca~ "222" 1/min "n002~ Spec_H    
-       25 BI 100777                      transpor~ "Hil~ "2"   <NA>   <NA>  Spec_H    
-       26 BI 100777                      renal_cl~ "TSm~ "12"  µmol~  <NA>  TuSec_MM  
-       27 BI 100777                      renal_cl~ "Km"  "33"  µmol~ "n002~ TuSec_MM  
-       28 BI 100777                      renal_cl~ "TSm~ "22.~ µmol~ "Para~ TuSec_MM  
-       29 BI 100777                      biliary_~ "Fra~ "0.0~ <NA>   <NA>  n45678    
-       30 BI 100777                      biliary_~ "Lip~ "2.8~ Log ~  <NA>  n45678    
-       31 BI 100777                      biliary_~ "Pla~ "34"  ml/m~ "Assu~ n45678    
-       32 BI 100777                      biliary_~ "Spe~ "32.~ 1/min "Para~ n45678    
-       33 BI 100777                      inhibiti~ "Ki,~ "2"   µmol~ "n002~ comp_inh  
-       34 BI 100777                      induction "EC5~ "1"   µmol~ "n002~ induction 
-       35 BI 100777                      induction "Ema~ "65.~ <NA>  "Para~ induction 
-       36 BI 100777- initial table para~ lipophil~ "Opt~ "2.8~ Log ~ "R24-~ <NA>      
-       37 BI 100777- initial table para~ fraction~ "Ger~ "0.0~ %     "R24-~ <NA>      
-       38 BI 100777- initial table para~ molecula~  <NA> "150~ g/mol "c264~ <NA>      
-       39 BI 100777- initial table para~ halogens  "Cl"  "1"   <NA>  "c264~ <NA>      
-       40 BI 100777- initial table para~ halogens  "F"   "1"   <NA>  "c264~ <NA>      
-       41 BI 100777- initial table para~ pKa       "bas~ "6.2" <NA>  "c264~ <NA>      
-       42 BI 100777- initial table para~ pKa       "aci~ "10.~ <NA>  "c264~ <NA>      
-       43 BI 100777- initial table para~ solubili~ "pH ~ "0.0~ mg/ml "n002~ <NA>      
-       44 BI 100777- initial table para~ intestin~ "Opt~ "0.0~ cm/m~ "1234~ <NA>      
-       45 BI 100777- initial table para~ protein_~ "kof~ "1"   1/min "Assu~ in-vitro  
-       46 BI 100777- initial table para~ protein_~ "Kd,~ "1.8" nmol~  <NA>  in-vitro  
-       47 BI 100777- initial table para~ metaboli~ "In ~ "0"   pmol~  <NA>  Optimized 
-       48 BI 100777- initial table para~ metaboli~ "Km,~ "37.~ µmol~ "Assu~ Optimized 
-       49 BI 100777- initial table para~ metaboli~ "kca~ "3.5~ 1/min "n002~ Optimized 
-       50 BI 100777- initial table para~ metaboli~ "Int~ "342" l/min "n002~ Int_FO    
-       51 BI 100777- initial table para~ metaboli~ "Spe~ "234" 1/min "Calc~ Int_FO    
-       52 BI 100777- initial table para~ hepatic_~ "Lip~ "2.8~ Log ~  <NA>  In vitro_~
-       53 BI 100777- initial table para~ hepatic_~ "Mea~ "345" min   "R24-~ In vitro_~
-       54 BI 100777- initial table para~ hepatic_~ "Res~ "34"  %     "R24-~ In vitro_~
-       55 BI 100777- initial table para~ transpor~ "Tra~ "1"   µmol~  <NA>  Spec_H    
-       56 BI 100777- initial table para~ transpor~ "Vma~ "0"   µmol~  <NA>  Spec_H    
-       57 BI 100777- initial table para~ transpor~ "Km,~ "1"   µmol~ "n002~ Spec_H    
-       58 BI 100777- initial table para~ transpor~ "kca~ "222" 1/min "n002~ Spec_H    
-       59 BI 100777- initial table para~ transpor~ "Hil~ "2"   <NA>   <NA>  Spec_H    
-       60 BI 100777- initial table para~ renal_cl~ "TSm~ "0"   µmol~  <NA>  TuSec_MM  
-       61 BI 100777- initial table para~ renal_cl~ "Km"  "33"  µmol~ "n002~ TuSec_MM  
-       62 BI 100777- initial table para~ renal_cl~ "TSm~ "23"  µmol~ "Assu~ TuSec_MM  
-       63 BI 100777- initial table para~ biliary_~ "Fra~ "0.0~ <NA>   <NA>  n45678    
-       64 BI 100777- initial table para~ biliary_~ "Lip~ "2.8~ Log ~  <NA>  n45678    
-       65 BI 100777- initial table para~ biliary_~ "Pla~ "0"   ml/m~  <NA>  n45678    
-       66 BI 100777- initial table para~ biliary_~ "Spe~ "34"  1/min "Assu~ n45678    
-       67 BI 100777- initial table para~ inhibiti~ "Ki,~ "2"   µmol~ "n002~ comp_inh  
-       68 BI 100777- initial table para~ induction "EC5~ "1"   µmol~ "n002~ induction 
-       69 BI 100777- initial table para~ induction "Ema~ "67"  <NA>  "n002~ induction 
-       70 BI 123456                      lipophil~ "Opt~ "2.8~ Log ~ "Para~ <NA>      
-       71 BI 123456                      lipophil~ "Log~ "3.5~ Log ~ "R13-~ <NA>      
-       72 BI 123456                      fraction~ "Ger~ "0.0~ <NA>  "Para~ <NA>      
-       73 BI 123456                      fraction~ "tes~ "12"  %     "R13-~ <NA>      
-       74 BI 123456                      molecula~  <NA> "150~ g/mol "c018~ <NA>      
-       75 BI 123456                      halogens  "Cl"  "1"   <NA>  "c018~ <NA>      
-       76 BI 123456                      halogens  "F"   "1"   <NA>  "c018~ <NA>      
-       77 BI 123456                      pKa       "bas~ "6.2" <NA>  "c264~ <NA>      
-       78 BI 123456                      pKa       "aci~ "10.~ <NA>  "c264~ <NA>      
-       79 BI 123456                      solubili~ "FaS~ "0.0~ mg/ml "Para~ <NA>      
-       80 BI 123456                      solubili~ "Tab~ "pH ~ mg/l  "R20-~ <NA>      
-       81 BI 123456                      intestin~ "Opt~ "0.0~ cm/m~ "Para~ <NA>      
-       82 BI 123456                      protein_~ "kof~ "1"   1/min "Para~ Buhr 1997 
-       83 BI 123456                      protein_~ "Kd,~ "1.8" nmol~ "Para~ Buhr 1997 
-       84 BI 123456                      protein_~ "kof~ "3"   1/min "c443~ wer       
-       85 BI 123456                      protein_~ "Kd,~ "4"   µmol~ "c443~ wer       
-       86 BI 123456                      metaboli~ "In ~ "0"   pmol~  <NA>  Optimized 
-       87 BI 123456                      metaboli~ "Km,~ "37.~ µmol~ "Para~ Optimized 
-       88 BI 123456                      metaboli~ "kca~ "3.5~ 1/min "Para~ Optimized 
-       89 BI 123456                      metaboli~ "Enz~ "1"   µmol~  <NA>  Kim et al~
-       90 BI 123456                      metaboli~ "Vma~ "0"   µmol~  <NA>  Kim et al~
-       91 BI 123456                      metaboli~ "Km,~ "1"   µmol~ "R07-~ Kim et al~
-       92 BI 123456                      metaboli~ "kca~ "2"   1/min "R07-~ Kim et al~
-       93 BI 123456                      metaboli~ "Hil~ "1"   <NA>  "Assu~ Kim et al~
-       94 BI 123456                      metaboli~ "Fra~ "0.4~ <NA>  "Assu~ Int-MM    
-       95 BI 123456                      metaboli~ "Vma~ "12"  µmol~ "c443~ Int-MM    
-       96 BI 123456                      metaboli~ "Km,~ "1"   µmol~ "Assu~ Int-MM    
-       97 BI 123456                      metaboli~ "Vma~ "14.~ µmol~ "PK-S~ Int-MM    
-       98 BI 123456                      metaboli~ "Fra~ "0.8" <NA>  "Assu~ Int_FO    
-       99 BI 123456                      metaboli~ "Int~ "800" l/min "c123~ Int_FO    
-      100 BI 123456                      metaboli~ "Spe~ "234" 1/min "PK-S~ Int_FO    
-      101 BI 123456                      metaboli~ "Enz~ "1"   µmol~  <NA>  In vitro_~
-      102 BI 123456                      metaboli~ "Spe~ "330" 1/min  <NA>  In vitro_~
-      103 BI 123456                      metaboli~ "CLs~ "12"  l/µm~ "Para~ In vitro_~
-      104 BI 123456                      metaboli~ "Enz~ "1"   µmol~  <NA>  In vitro_~
-      105 BI 123456                      metaboli~ "Vma~ "0"   µmol~  <NA>  In vitro_~
-      106 BI 123456                      metaboli~ "Km,~ "1"   µmol~ "Para~ In vitro_~
-      107 BI 123456                      metaboli~ "kca~ "56"  1/min "c264~ In vitro_~
-      108 BI 123456                      metaboli~ "Enz~ "1"   µmol~  <NA>  In vitro_H
-      109 BI 123456                      metaboli~ "Vma~ "0"   µmol~  <NA>  In vitro_H
-      110 BI 123456                      metaboli~ "Km,~ "12"  µmol~ "c443~ In vitro_H
-      111 BI 123456                      metaboli~ "kca~ "211" 1/min "c443~ In vitro_H
-      112 BI 123456                      metaboli~ "Hil~ "8"   <NA>  "Assu~ In vitro_H
-      113 BI 123456                      metaboli~ "In ~ "0"   µl/m~  <NA>  In vitro_~
-      114 BI 123456                      metaboli~ "CLs~ "45"  l/µm~ "c264~ In vitro_~
-      115 BI 123456                      metaboli~ "In ~ "59"  nmol~ "c443~ In vitro_~
-      116 BI 123456                      metaboli~ "Km,~ "3"   µmol~ "c443~ In vitro_~
-      117 BI 123456                      metaboli~ "kca~ "13"  1/min "Para~ In vitro_~
-      118 BI 123456                      metaboli~ "In ~ "56"  µl/m~ "c443~ liv_micro~
-      119 BI 123456                      metaboli~ "Con~ "120" pmol~ "c443~ liv_micro~
-      120 BI 123456                      metaboli~ "CLs~ "0.4~ l/µm~ "PK-S~ liv_micro~
-      121 BI 123456                      metaboli~ "In ~ "0"   pmol~  <NA>  liv_micro~
-      122 BI 123456                      metaboli~ "Km,~ "3"   µmol~ "c319~ liv_micro~
-      123 BI 123456                      metaboli~ "kca~ "44"  1/min "Para~ liv_micro~
-      124 BI 123456                      metaboli~ "Int~ "78.~ l/min "c443~ test      
-      125 BI 123456                      hepatic_~ "Lip~ "2.8~ Log ~ "PK-S~ In vitro_~
-      126 BI 123456                      hepatic_~ "t1/~ "23"  min   "R24-~ In vitro_~
-      127 BI 123456                      hepatic_~ "Spe~ "19.~ 1/min "PK-S~ In vitro_~
-      128 BI 123456                      transpor~ "Vma~ "23"  µmol~  <NA>  Int _ MM  
-      129 BI 123456                      transpor~ "Km,~ "1"   µmol~ "c264~ Int _ MM  
-      130 BI 123456                      transpor~ "Vma~ "26"  µmol~ "c264~ Int _ MM  
-      131 BI 123456                      transpor~ "Tra~ "3"   µmol~ "c264~ Spec_MM   
-      132 BI 123456                      transpor~ "Vma~ "100" µmol~ "c264~ Spec_MM   
-      133 BI 123456                      transpor~ "Km,~ "2"   µmol~ "c443~ Spec_MM   
-      134 BI 123456                      transpor~ "kca~ "33.~ 1/min "PK-S~ Spec_MM   
-      135 BI 123456                      transpor~ "Tra~ "1"   µmol~  <NA>  Spec_H    
-      136 BI 123456                      transpor~ "Vma~ "12"  µmol~  <NA>  Spec_H    
-      137 BI 123456                      transpor~ "Km,~ "1"   µmol~ "c443~ Spec_H    
-      138 BI 123456                      transpor~ "kca~ "222" 1/min "c443~ Spec_H    
-      139 BI 123456                      transpor~ "Hil~ "2"   <NA>  "Assu~ Spec_H    
-      140 BI 123456                      transpor~ "In ~ "56"  nmol~  <NA>  In vitro_~
-      141 BI 123456                      transpor~ "Km,~ "1"   µmol~ "Para~ In vitro_~
-      142 BI 123456                      transpor~ "kca~ "45"  1/min "Para~ In vitro_~
-      143 BI 123456                      renal_cl~ "Fra~ "0.0~ <NA>   <NA>  Kidney_pl~
-      144 BI 123456                      renal_cl~ "Pla~ "24"  ml/m~  <NA>  Kidney_pl~
-      145 BI 123456                      renal_cl~ "Spe~ "66"  1/min "Para~ Kidney_pl~
-      146 BI 123456                      biliary_~ "Fra~ "0.0~ <NA>   <NA>  n45678    
-      147 BI 123456                      biliary_~ "Lip~ "2.8~ Log ~  <NA>  n45678    
-      148 BI 123456                      biliary_~ "Pla~ "12"  ml/m~  <NA>  n45678    
-      149 BI 123456                      biliary_~ "Spe~ "34"  1/min "Para~ n45678    
-      150 BI 123456                      inhibiti~ "Ki,~ "2"   µmol~ "c264~ comp_inh  
-      151 BI 123456                      inhibiti~ "Ki,~ "1.6~ µmol~ "Para~ uncomp_inh
-      152 BI 123456                      inhibiti~ "Ki,~ "3"   µmol~ "c443~ non-comp_~
-      153 BI 123456                      inhibiti~ "Ki_~ "1"   µmol~ "c443~ mixed_inh 
-      154 BI 123456                      inhibiti~ "Ki_~ "1"   µmol~ "Para~ mixed_inh 
-      155 BI 123456                      inhibiti~ "kin~ "2"   1/min "Para~ irr_ing_2 
-      156 BI 123456                      inhibiti~ "K_k~ "1"   µmol~ "R24-~ irr_ing_2 
-      157 BI 123456                      inhibiti~ "Ki,~ "2"   µmol~ "c264~ irr_ing_2 
-      158 BI 123456                      inhibiti~ "Ki,~ "23"  µmol~ "Para~ test      
-      159 BI 123456                      inhibiti~ "kin~ "1.6~ 1/min "c319~ irr_3     
-      160 BI 123456                      inhibiti~ "K_k~ "6"   µmol~ "c319~ irr_3     
-      161 BI 123456                      inhibiti~ "Ki,~ "6"   µmol~ "Assu~ irr_3     
-      162 BI 123456                      induction "EC5~ "1"   µmol~ "Para~ induction 
-      163 BI 123456                      induction "Ema~ "67"  <NA>  "c443~ induction 
-      164 BI 123456                      induction "EC5~ "1"   µmol~ "Para~ GABRG2-ind
-      165 BI 123456                      induction "Ema~ "200" <NA>  "Para~ GABRG2-ind
-      166 Perpetrator_2                  lipophil~ "Opt~ "2.5" Log ~ "R13-~ <NA>      
-      167 Perpetrator_2                  fraction~ "Tem~ "17"  %     "R13-~ <NA>      
-      168 Perpetrator_2                  molecula~  <NA> "822~ g/mol  <NA>  <NA>      
-      169 Perpetrator_2                  pKa       "bas~ "7.9" <NA>  "R24-~ <NA>      
-      170 Perpetrator_2                  pKa       "aci~ "1.7" <NA>  "R24-~ <NA>      
-      171 Perpetrator_2                  solubili~ "Aqu~ "280~ mg/l  "R20-~ <NA>      
-      172 Perpetrator_2                  solubili~ "tes~ "345" mg/l   <NA>  <NA>      
-      173 Perpetrator_2                  hepatic_~ "Mea~ "12"  min   "c319~ In vitro ~
-      174 Perpetrator_2                  hepatic_~ "Res~ "23"  %     "c319~ In vitro ~
-      175 Perpetrator_2                  renal_cl~ "GFR~ "1"   <NA>  "R20-~ GFR       
-      176 Rifampicin                     lipophil~ "Opt~ "2.5" Log ~ "R13-~ <NA>      
-      177 Rifampicin                     fraction~ "Tem~ "17"  %     "R13-~ <NA>      
-      178 Rifampicin                     molecula~  <NA> "822~ g/mol "R13-~ <NA>      
-      179 Rifampicin                     pKa       "bas~ "7.9" <NA>  "R24-~ <NA>      
-      180 Rifampicin                     pKa       "aci~ "1.7" <NA>  "R24-~ <NA>      
-      181 Rifampicin                     solubili~ "Aqu~ "280~ mg/l  "R20-~ <NA>      
-      182 Rifampicin                     solubili~ "tes~ "345" mg/l   <NA>  <NA>      
-      183 Rifampicin                     intestin~ "PK-~ "3.8~ cm/m~ "PK-S~ <NA>      
-      184 Rifampicin                     metaboli~ "Enz~ "1"   µmol~  <NA>  Nakajima ~
-      185 Rifampicin                     metaboli~ "Vma~ "12"  µmol~  <NA>  Nakajima ~
-      186 Rifampicin                     metaboli~ "Km,~ "195~ µmol~ "Para~ Nakajima ~
-      187 Rifampicin                     metaboli~ "kca~ "9.8~ 1/min "R24-~ Nakajima ~
-      188 Rifampicin                     hepatic_~ "Fra~ "0.1~ <NA>   <NA>  test123   
-      189 Rifampicin                     hepatic_~ "Lip~ "2.5" Log ~  <NA>  test123   
-      190 Rifampicin                     hepatic_~ "Pla~ "12"  ml/m~  <NA>  test123   
-      191 Rifampicin                     hepatic_~ "Spe~ "666" 1/h   "c443~ test123   
-      192 Rifampicin                     transpor~ "Tra~ "1"   nmol~  <NA>  Collett 2~
-      193 Rifampicin                     transpor~ "Vma~ "0"   µmol~  <NA>  Collett 2~
-      194 Rifampicin                     transpor~ "Km,~ "55"  µmol~ "Para~ Collett 2~
-      195 Rifampicin                     transpor~ "kca~ "0.6~ 1/min "R20-~ Collett 2~
-      196 Rifampicin                     transpor~ "Tra~ "1"   µmol~  <NA>  Tirona 20~
-      197 Rifampicin                     transpor~ "Vma~ "0"   µmol~  <NA>  Tirona 20~
-      198 Rifampicin                     transpor~ "Km,~ "1.5" µmol~ "Para~ Tirona 20~
-      199 Rifampicin                     transpor~ "kca~ "7.7~ 1/min "R20-~ Tirona 20~
-      200 Rifampicin                     renal_cl~ "Tub~ "33"  l/min  <NA>  RenCL_rif 
-      201 Rifampicin                     renal_cl~ "TSs~ "55"  1/min "Assu~ RenCL_rif 
-      202 Rifampicin                     biliary_~ "Fra~ "0.1~ <NA>  "PK-S~ BCL       
-      203 Rifampicin                     biliary_~ "Lip~ "2.5" Log ~ "PK-S~ BCL       
-      204 Rifampicin                     biliary_~ "Pla~ "12"  ml/m~ "Assu~ BCL       
-      205 Rifampicin                     inhibiti~ "Ki,~ "18.~ µmol~ "R18-~ Kajosaari~
-      206 Rifampicin                     inhibiti~ "Ki,~ "30.~ µmol~ "R18-~ Kajosaari~
-      207 Rifampicin                     inhibiti~ "Ki,~ "169" µmol~ "R24-~ Reitman 2~
-      208 Rifampicin                     inhibiti~ "Ki,~ "0.4~ µmol~ "R24-~ Hirano 20~
-      209 Rifampicin                     inhibiti~ "Ki,~ "0.9" µmol~ "R24-~ Annaert 2~
-      210 Rifampicin                     inhibiti~ "Ki,~ "23"  µmol~ "Para~ Comp      
-      211 Rifampicin                     inhibiti~ "Ki_~ "23"  µmol~ "R18-~ Mixed     
-      212 Rifampicin                     inhibiti~ "Ki_~ "3"   µmol~ "Para~ Mixed     
-      213 Rifampicin                     inhibiti~ "kin~ "2"   1/min "R24-~ Irreversi~
-      214 Rifampicin                     inhibiti~ "K_k~ "22"  µmol~ "R24-~ Irreversi~
-      215 Rifampicin                     inhibiti~ "Ki,~ "22"  µmol~ "Assu~ Irreversi~
-      216 Rifampicin                     induction "EC5~ "0.3~ µmol~ "R24-~ Templeton~
-      217 Rifampicin                     induction "Ema~ "9"   <NA>  "R24-~ Templeton~
-      218 Rifampicin                     induction "EC5~ "0.3~ µmol~ "R20-~ Greiner 1~
-      219 Rifampicin                     induction "Ema~ "2.5" <NA>  "R20-~ Greiner 1~
-      220 Rifampicin                     induction "EC5~ "0.3~ µmol~ "Para~ Dixit 2007
-      221 Rifampicin                     induction "Ema~ "0.3~ <NA>  "Para~ Dixit 2007
-      222 Rifampicin                     induction "EC5~ "0.3~ µmol~ "R20-~ Assumed   
-      223 Rifampicin                     induction "Ema~ "0.9~ <NA>  "Para~ Assumed   
-      224 Rifampicin                     induction "EC5~ "0.3~ µmol~ "Para~ Buckley 2~
-      225 Rifampicin                     induction "Ema~ "3.2" <NA>  "R20-~ Buckley 2~
-      226 Rifampicin                     induction "EC5~ "0.3~ µmol~ "P07-~ Chen 2010 
-      227 Rifampicin                     induction "Ema~ "0.6~ <NA>  "Para~ Chen 2010 
-      228 Rifampicin                     induction "EC5~ "0.3~ µmol~ "P07-~ Rae 2001  
-      229 Rifampicin                     induction "Ema~ "0.8" <NA>  "R24-~ Rae 2001  
-      230 test                           lipophil~ "Mea~ "2"   Log ~ "Para~ <NA>      
-      231 test                           fraction~ "Mea~ "0.4~ <NA>  "Para~ <NA>      
-      232 test                           molecula~  <NA> "123" g/mol  <NA>  <NA>      
-      233 test                           halogens  "Br"  "1"   <NA>   <NA>  <NA>      
-      234 test                           halogens  "Cl"  "1"   <NA>   <NA>  <NA>      
-      235 test                           pKa       "bas~ "2"   <NA>   <NA>  <NA>      
-      236 test                           solubili~ "Mea~ "3"   mg/l  "Para~ <NA>      
-      237 test                           solubili~ "tes~ "5"   mg/l   <NA>  <NA>      
+      # A tibble: 237 x 8
+          compound             category type  parameter value unit  data_source source
+          <chr>                <chr>    <chr> <chr>     <chr> <chr> <chr>       <chr> 
+        1 BI 100777            physico~ lipo~ "Optimiz~ "3.2~ Log ~ <NA>        "Para~
+        2 BI 100777            physico~ frac~ "Gertz e~ "0.0~ %     <NA>        "n002~
+        3 BI 100777            physico~ mole~  <NA>     "150~ g/mol <NA>        "c264~
+        4 BI 100777            physico~ halo~ "Cl"      "1"   <NA>  <NA>        "c264~
+        5 BI 100777            physico~ halo~ "F"       "1"   <NA>  <NA>        "c264~
+        6 BI 100777            physico~ pKa   "base"    "6.2" <NA>  <NA>        "c264~
+        7 BI 100777            physico~ pKa   "acid"    "10.~ <NA>  <NA>        "c264~
+        8 BI 100777            physico~ solu~ "pH 6.5"  "0.5" mg/ml <NA>        "Para~
+        9 BI 100777            physico~ inte~ "Optimiz~ "2.0~ cm/m~ <NA>        "Para~
+       10 BI 100777            protein~ Spec~ "koff, G~ "1"   1/min in-vitro    "Para~
+       11 BI 100777            protein~ Spec~ "Kd, GAB~ "2.8~ nmol~ in-vitro    "Para~
+       12 BI 100777            metabol~ Meta~ "In vitr~ "12"  pmol~ Optimized   "n002~
+       13 BI 100777            metabol~ Meta~ "Content~ "109" pmol~ Optimized   "n002~
+       14 BI 100777            metabol~ Meta~ "Km, UGT~ "40.~ µmol~ Optimized   "Para~
+       15 BI 100777            metabol~ Meta~ "kcat, U~ "0.1~ 1/min Optimized   "PK-S~
+       16 BI 100777            metabol~ Meta~ "Intrins~ "888" l/min Int_FO       <NA> 
+       17 BI 100777            metabol~ Meta~ "Specifi~ "234" 1/min Int_FO      "n002~
+       18 BI 100777            hepatic~ Live~ "Lipophi~ "3.2~ Log ~ In vitro_m~  <NA> 
+       19 BI 100777            hepatic~ Live~ "Measuri~ "345" min   In vitro_m~ "R24-~
+       20 BI 100777            hepatic~ Live~ "Residua~ "34"  %     In vitro_m~ "R24-~
+       21 BI 100777            transpo~ Acti~ "Transpo~ "12"  µmol~ Spec_H       <NA> 
+       22 BI 100777            transpo~ Acti~ "Vmax, O~ "0"   µmol~ Spec_H       <NA> 
+       23 BI 100777            transpo~ Acti~ "Km, OAT~ "1"   µmol~ Spec_H      "n002~
+       24 BI 100777            transpo~ Acti~ "kcat, O~ "222" 1/min Spec_H      "n002~
+       25 BI 100777            transpo~ Acti~ "Hill co~ "2"   <NA>  Spec_H       <NA> 
+       26 BI 100777            renal_c~ Tubu~ "TSmax"   "12"  µmol~ TuSec_MM     <NA> 
+       27 BI 100777            renal_c~ Tubu~ "Km"      "33"  µmol~ TuSec_MM    "n002~
+       28 BI 100777            renal_c~ Tubu~ "TSmax_s~ "22.~ µmol~ TuSec_MM    "Para~
+       29 BI 100777            biliary~ Bili~ "Fractio~ "0.0~ <NA>  n45678       <NA> 
+       30 BI 100777            biliary~ Bili~ "Lipophi~ "2.8~ Log ~ n45678       <NA> 
+       31 BI 100777            biliary~ Bili~ "Plasma ~ "34"  ml/m~ n45678      "Assu~
+       32 BI 100777            biliary~ Bili~ "Specifi~ "32.~ 1/min n45678      "Para~
+       33 BI 100777            inhibit~ Comp~ "Ki, CYP~ "2"   µmol~ comp_inh    "n002~
+       34 BI 100777            inducti~ Indu~ "EC50, C~ "1"   µmol~ induction   "n002~
+       35 BI 100777            inducti~ Indu~ "Emax, C~ "65.~ <NA>  induction   "Para~
+       36 BI 100777- initial ~ physico~ lipo~ "Optimiz~ "2.8~ Log ~ <NA>        "R24-~
+       37 BI 100777- initial ~ physico~ frac~ "Gertz e~ "0.0~ %     <NA>        "R24-~
+       38 BI 100777- initial ~ physico~ mole~  <NA>     "150~ g/mol <NA>        "c264~
+       39 BI 100777- initial ~ physico~ halo~ "Cl"      "1"   <NA>  <NA>        "c264~
+       40 BI 100777- initial ~ physico~ halo~ "F"       "1"   <NA>  <NA>        "c264~
+       41 BI 100777- initial ~ physico~ pKa   "base"    "6.2" <NA>  <NA>        "c264~
+       42 BI 100777- initial ~ physico~ pKa   "acid"    "10.~ <NA>  <NA>        "c264~
+       43 BI 100777- initial ~ physico~ solu~ "pH 6.5"  "0.0~ mg/ml <NA>        "n002~
+       44 BI 100777- initial ~ physico~ inte~ "Optimiz~ "0.0~ cm/m~ <NA>        "1234~
+       45 BI 100777- initial ~ protein~ Spec~ "koff, G~ "1"   1/min in-vitro    "Assu~
+       46 BI 100777- initial ~ protein~ Spec~ "Kd, GAB~ "1.8" nmol~ in-vitro     <NA> 
+       47 BI 100777- initial ~ metabol~ Meta~ "In vitr~ "0"   pmol~ Optimized    <NA> 
+       48 BI 100777- initial ~ metabol~ Meta~ "Km, UGT~ "37.~ µmol~ Optimized   "Assu~
+       49 BI 100777- initial ~ metabol~ Meta~ "kcat, U~ "3.5~ 1/min Optimized   "n002~
+       50 BI 100777- initial ~ metabol~ Meta~ "Intrins~ "342" l/min Int_FO      "n002~
+       51 BI 100777- initial ~ metabol~ Meta~ "Specifi~ "234" 1/min Int_FO      "Calc~
+       52 BI 100777- initial ~ hepatic~ Live~ "Lipophi~ "2.8~ Log ~ In vitro_m~  <NA> 
+       53 BI 100777- initial ~ hepatic~ Live~ "Measuri~ "345" min   In vitro_m~ "R24-~
+       54 BI 100777- initial ~ hepatic~ Live~ "Residua~ "34"  %     In vitro_m~ "R24-~
+       55 BI 100777- initial ~ transpo~ Acti~ "Transpo~ "1"   µmol~ Spec_H       <NA> 
+       56 BI 100777- initial ~ transpo~ Acti~ "Vmax, O~ "0"   µmol~ Spec_H       <NA> 
+       57 BI 100777- initial ~ transpo~ Acti~ "Km, OAT~ "1"   µmol~ Spec_H      "n002~
+       58 BI 100777- initial ~ transpo~ Acti~ "kcat, O~ "222" 1/min Spec_H      "n002~
+       59 BI 100777- initial ~ transpo~ Acti~ "Hill co~ "2"   <NA>  Spec_H       <NA> 
+       60 BI 100777- initial ~ renal_c~ Tubu~ "TSmax"   "0"   µmol~ TuSec_MM     <NA> 
+       61 BI 100777- initial ~ renal_c~ Tubu~ "Km"      "33"  µmol~ TuSec_MM    "n002~
+       62 BI 100777- initial ~ renal_c~ Tubu~ "TSmax_s~ "23"  µmol~ TuSec_MM    "Assu~
+       63 BI 100777- initial ~ biliary~ Bili~ "Fractio~ "0.0~ <NA>  n45678       <NA> 
+       64 BI 100777- initial ~ biliary~ Bili~ "Lipophi~ "2.8~ Log ~ n45678       <NA> 
+       65 BI 100777- initial ~ biliary~ Bili~ "Plasma ~ "0"   ml/m~ n45678       <NA> 
+       66 BI 100777- initial ~ biliary~ Bili~ "Specifi~ "34"  1/min n45678      "Assu~
+       67 BI 100777- initial ~ inhibit~ Comp~ "Ki, CYP~ "2"   µmol~ comp_inh    "n002~
+       68 BI 100777- initial ~ inducti~ Indu~ "EC50, C~ "1"   µmol~ induction   "n002~
+       69 BI 100777- initial ~ inducti~ Indu~ "Emax, C~ "67"  <NA>  induction   "n002~
+       70 BI 123456            physico~ lipo~ "Optimiz~ "2.8~ Log ~ <NA>        "Para~
+       71 BI 123456            physico~ lipo~ "LogP (S~ "3.5~ Log ~ <NA>        "R13-~
+       72 BI 123456            physico~ frac~ "Gertz e~ "0.0~ <NA>  <NA>        "Para~
+       73 BI 123456            physico~ frac~ "test"    "12"  %     <NA>        "R13-~
+       74 BI 123456            physico~ mole~  <NA>     "150~ g/mol <NA>        "c018~
+       75 BI 123456            physico~ halo~ "Cl"      "1"   <NA>  <NA>        "c018~
+       76 BI 123456            physico~ halo~ "F"       "1"   <NA>  <NA>        "c018~
+       77 BI 123456            physico~ pKa   "base"    "6.2" <NA>  <NA>        "c264~
+       78 BI 123456            physico~ pKa   "acid"    "10.~ <NA>  <NA>        "c264~
+       79 BI 123456            physico~ solu~ "FaSSiF,~ "0.0~ mg/ml <NA>        "Para~
+       80 BI 123456            physico~ solu~ "Table"   "pH ~ mg/l  <NA>        "R20-~
+       81 BI 123456            physico~ inte~ "Optimiz~ "0.0~ cm/m~ <NA>        "Para~
+       82 BI 123456            protein~ Spec~ "koff, G~ "1"   1/min Buhr 1997   "Para~
+       83 BI 123456            protein~ Spec~ "Kd, GAB~ "1.8" nmol~ Buhr 1997   "Para~
+       84 BI 123456            protein~ Spec~ "koff, N~ "3"   1/min wer         "c443~
+       85 BI 123456            protein~ Spec~ "Kd, NTC~ "4"   µmol~ wer         "c443~
+       86 BI 123456            metabol~ Meta~ "In vitr~ "0"   pmol~ Optimized    <NA> 
+       87 BI 123456            metabol~ Meta~ "Km, UGT~ "37.~ µmol~ Optimized   "Para~
+       88 BI 123456            metabol~ Meta~ "kcat, U~ "3.5~ 1/min Optimized   "Para~
+       89 BI 123456            metabol~ Meta~ "Enzyme ~ "1"   µmol~ Kim et al,~  <NA> 
+       90 BI 123456            metabol~ Meta~ "Vmax, U~ "0"   µmol~ Kim et al,~  <NA> 
+       91 BI 123456            metabol~ Meta~ "Km, UGT~ "1"   µmol~ Kim et al,~ "R07-~
+       92 BI 123456            metabol~ Meta~ "kcat, U~ "2"   1/min Kim et al,~ "R07-~
+       93 BI 123456            metabol~ Meta~ "Hill co~ "1"   <NA>  Kim et al,~ "Assu~
+       94 BI 123456            metabol~ Meta~ "Fractio~ "0.4~ <NA>  Int-MM      "Assu~
+       95 BI 123456            metabol~ Meta~ "Vmax (l~ "12"  µmol~ Int-MM      "c443~
+       96 BI 123456            metabol~ Meta~ "Km, CYP~ "1"   µmol~ Int-MM      "Assu~
+       97 BI 123456            metabol~ Meta~ "Vmax, C~ "14.~ µmol~ Int-MM      "PK-S~
+       98 BI 123456            metabol~ Meta~ "Fractio~ "0.8" <NA>  Int_FO      "Assu~
+       99 BI 123456            metabol~ Meta~ "Intrins~ "800" l/min Int_FO      "c123~
+      100 BI 123456            metabol~ Meta~ "Specifi~ "234" 1/min Int_FO      "PK-S~
+      101 BI 123456            metabol~ Meta~ "Enzyme ~ "1"   µmol~ In vitro_FO  <NA> 
+      102 BI 123456            metabol~ Meta~ "Specifi~ "330" 1/min In vitro_FO  <NA> 
+      103 BI 123456            metabol~ Meta~ "CLspec/~ "12"  l/µm~ In vitro_FO "Para~
+      104 BI 123456            metabol~ Meta~ "Enzyme ~ "1"   µmol~ In vitro_MM  <NA> 
+      105 BI 123456            metabol~ Meta~ "Vmax, C~ "0"   µmol~ In vitro_MM  <NA> 
+      106 BI 123456            metabol~ Meta~ "Km, CYP~ "1"   µmol~ In vitro_MM "Para~
+      107 BI 123456            metabol~ Meta~ "kcat, C~ "56"  1/min In vitro_MM "c264~
+      108 BI 123456            metabol~ Meta~ "Enzyme ~ "1"   µmol~ In vitro_H   <NA> 
+      109 BI 123456            metabol~ Meta~ "Vmax, C~ "0"   µmol~ In vitro_H   <NA> 
+      110 BI 123456            metabol~ Meta~ "Km, CYP~ "12"  µmol~ In vitro_H  "c443~
+      111 BI 123456            metabol~ Meta~ "kcat, C~ "211" 1/min In vitro_H  "c443~
+      112 BI 123456            metabol~ Meta~ "Hill co~ "8"   <NA>  In vitro_H  "Assu~
+      113 BI 123456            metabol~ rCYP~ "In vitr~ "0"   µl/m~ In vitro_r~  <NA> 
+      114 BI 123456            metabol~ rCYP~ "CLspec/~ "45"  l/µm~ In vitro_r~ "c264~
+      115 BI 123456            metabol~ rCYP~ "In vitr~ "59"  nmol~ In vitro_r~ "c443~
+      116 BI 123456            metabol~ rCYP~ "Km, CYP~ "3"   µmol~ In vitro_r~ "c443~
+      117 BI 123456            metabol~ rCYP~ "kcat, C~ "13"  1/min In vitro_r~ "Para~
+      118 BI 123456            metabol~ Meta~ "In vitr~ "56"  µl/m~ liv_micros~ "c443~
+      119 BI 123456            metabol~ Meta~ "Content~ "120" pmol~ liv_micros~ "c443~
+      120 BI 123456            metabol~ Meta~ "CLspec/~ "0.4~ l/µm~ liv_micros~ "PK-S~
+      121 BI 123456            metabol~ Meta~ "In vitr~ "0"   pmol~ liv_micros~  <NA> 
+      122 BI 123456            metabol~ Meta~ "Km, CYP~ "3"   µmol~ liv_micros~ "c319~
+      123 BI 123456            metabol~ Meta~ "kcat, C~ "44"  1/min liv_micros~ "Para~
+      124 BI 123456            metabol~ Meta~ "Intrins~ "78.~ l/min test        "c443~
+      125 BI 123456            hepatic~ Live~ "Lipophi~ "2.8~ Log ~ In vitro_m~ "PK-S~
+      126 BI 123456            hepatic~ Live~ "t1/2 (m~ "23"  min   In vitro_m~ "R24-~
+      127 BI 123456            hepatic~ Live~ "Specifi~ "19.~ 1/min In vitro_m~ "PK-S~
+      128 BI 123456            transpo~ Acti~ "Vmax (l~ "23"  µmol~ Int _ MM     <NA> 
+      129 BI 123456            transpo~ Acti~ "Km, OAT~ "1"   µmol~ Int _ MM    "c264~
+      130 BI 123456            transpo~ Acti~ "Vmax, O~ "26"  µmol~ Int _ MM    "c264~
+      131 BI 123456            transpo~ Acti~ "Transpo~ "3"   µmol~ Spec_MM     "c264~
+      132 BI 123456            transpo~ Acti~ "Vmax, O~ "100" µmol~ Spec_MM     "c264~
+      133 BI 123456            transpo~ Acti~ "Km, OAT~ "2"   µmol~ Spec_MM     "c443~
+      134 BI 123456            transpo~ Acti~ "kcat, O~ "33.~ 1/min Spec_MM     "PK-S~
+      135 BI 123456            transpo~ Acti~ "Transpo~ "1"   µmol~ Spec_H       <NA> 
+      136 BI 123456            transpo~ Acti~ "Vmax, O~ "12"  µmol~ Spec_H       <NA> 
+      137 BI 123456            transpo~ Acti~ "Km, OAT~ "1"   µmol~ Spec_H      "c443~
+      138 BI 123456            transpo~ Acti~ "kcat, O~ "222" 1/min Spec_H      "c443~
+      139 BI 123456            transpo~ Acti~ "Hill co~ "2"   <NA>  Spec_H      "Assu~
+      140 BI 123456            transpo~ Acti~ "In vitr~ "56"  nmol~ In vitro_MM  <NA> 
+      141 BI 123456            transpo~ Acti~ "Km, OAT~ "1"   µmol~ In vitro_MM "Para~
+      142 BI 123456            transpo~ Acti~ "kcat, O~ "45"  1/min In vitro_MM "Para~
+      143 BI 123456            renal_c~ Kidn~ "Fractio~ "0.0~ <NA>  Kidney_pla~  <NA> 
+      144 BI 123456            renal_c~ Kidn~ "Plasma ~ "24"  ml/m~ Kidney_pla~  <NA> 
+      145 BI 123456            renal_c~ Kidn~ "Specifi~ "66"  1/min Kidney_pla~ "Para~
+      146 BI 123456            biliary~ Bili~ "Fractio~ "0.0~ <NA>  n45678       <NA> 
+      147 BI 123456            biliary~ Bili~ "Lipophi~ "2.8~ Log ~ n45678       <NA> 
+      148 BI 123456            biliary~ Bili~ "Plasma ~ "12"  ml/m~ n45678       <NA> 
+      149 BI 123456            biliary~ Bili~ "Specifi~ "34"  1/min n45678      "Para~
+      150 BI 123456            inhibit~ Comp~ "Ki, CYP~ "2"   µmol~ comp_inh    "c264~
+      151 BI 123456            inhibit~ Unco~ "Ki, CYP~ "1.6~ µmol~ uncomp_inh  "Para~
+      152 BI 123456            inhibit~ Nonc~ "Ki, CYP~ "3"   µmol~ non-comp_i~ "c443~
+      153 BI 123456            inhibit~ Mixe~ "Ki_c, C~ "1"   µmol~ mixed_inh   "c443~
+      154 BI 123456            inhibit~ Mixe~ "Ki_u, C~ "1"   µmol~ mixed_inh   "Para~
+      155 BI 123456            inhibit~ Irre~ "kinact,~ "2"   1/min irr_ing_2   "Para~
+      156 BI 123456            inhibit~ Irre~ "K_kinac~ "1"   µmol~ irr_ing_2   "R24-~
+      157 BI 123456            inhibit~ Irre~ "Ki, CYP~ "2"   µmol~ irr_ing_2   "c264~
+      158 BI 123456            inhibit~ Comp~ "Ki, ABC~ "23"  µmol~ test        "Para~
+      159 BI 123456            inhibit~ Irre~ "kinact,~ "1.6~ 1/min irr_3       "c319~
+      160 BI 123456            inhibit~ Irre~ "K_kinac~ "6"   µmol~ irr_3       "c319~
+      161 BI 123456            inhibit~ Irre~ "Ki, CYP~ "6"   µmol~ irr_3       "Assu~
+      162 BI 123456            inducti~ Indu~ "EC50, C~ "1"   µmol~ induction   "Para~
+      163 BI 123456            inducti~ Indu~ "Emax, C~ "67"  <NA>  induction   "c443~
+      164 BI 123456            inducti~ Indu~ "EC50, G~ "1"   µmol~ GABRG2-ind  "Para~
+      165 BI 123456            inducti~ Indu~ "Emax, G~ "200" <NA>  GABRG2-ind  "Para~
+      166 Perpetrator_2        physico~ lipo~ "Optimiz~ "2.5" Log ~ <NA>        "R13-~
+      167 Perpetrator_2        physico~ frac~ "Templet~ "17"  %     <NA>        "R13-~
+      168 Perpetrator_2        physico~ mole~  <NA>     "822~ g/mol <NA>         <NA> 
+      169 Perpetrator_2        physico~ pKa   "base"    "7.9" <NA>  <NA>        "R24-~
+      170 Perpetrator_2        physico~ pKa   "acid"    "1.7" <NA>  <NA>        "R24-~
+      171 Perpetrator_2        physico~ solu~ "Aqueous~ "280~ mg/l  <NA>        "R20-~
+      172 Perpetrator_2        physico~ solu~ "test, p~ "345" mg/l  <NA>         <NA> 
+      173 Perpetrator_2        hepatic~ Hepa~ "Measuri~ "12"  min   In vitro h~ "c319~
+      174 Perpetrator_2        hepatic~ Hepa~ "Residua~ "23"  %     In vitro h~ "c319~
+      175 Perpetrator_2        renal_c~ Glom~ "GFR fra~ "1"   <NA>  GFR         "R20-~
+      176 Rifampicin           physico~ lipo~ "Optimiz~ "2.5" Log ~ <NA>        "R13-~
+      177 Rifampicin           physico~ frac~ "Templet~ "17"  %     <NA>        "R13-~
+      178 Rifampicin           physico~ mole~  <NA>     "822~ g/mol <NA>        "R13-~
+      179 Rifampicin           physico~ pKa   "base"    "7.9" <NA>  <NA>        "R24-~
+      180 Rifampicin           physico~ pKa   "acid"    "1.7" <NA>  <NA>        "R24-~
+      181 Rifampicin           physico~ solu~ "Aqueous~ "280~ mg/l  <NA>        "R20-~
+      182 Rifampicin           physico~ solu~ "test, p~ "345" mg/l  <NA>         <NA> 
+      183 Rifampicin           physico~ inte~ "PK-Sim ~ "3.8~ cm/m~ <NA>        "PK-S~
+      184 Rifampicin           metabol~ Meta~ "Enzyme ~ "1"   µmol~ Nakajima 2~  <NA> 
+      185 Rifampicin           metabol~ Meta~ "Vmax, A~ "12"  µmol~ Nakajima 2~  <NA> 
+      186 Rifampicin           metabol~ Meta~ "Km, AAD~ "195~ µmol~ Nakajima 2~ "Para~
+      187 Rifampicin           metabol~ Meta~ "kcat, A~ "9.8~ 1/min Nakajima 2~ "R24-~
+      188 Rifampicin           hepatic~ Live~ "Fractio~ "0.1~ <NA>  test123      <NA> 
+      189 Rifampicin           hepatic~ Live~ "Lipophi~ "2.5" Log ~ test123      <NA> 
+      190 Rifampicin           hepatic~ Live~ "Plasma ~ "12"  ml/m~ test123      <NA> 
+      191 Rifampicin           hepatic~ Live~ "Specifi~ "666" 1/h   test123     "c443~
+      192 Rifampicin           transpo~ Acti~ "Transpo~ "1"   nmol~ Collett 20~  <NA> 
+      193 Rifampicin           transpo~ Acti~ "Vmax, P~ "0"   µmol~ Collett 20~  <NA> 
+      194 Rifampicin           transpo~ Acti~ "Km, P-g~ "55"  µmol~ Collett 20~ "Para~
+      195 Rifampicin           transpo~ Acti~ "kcat, P~ "0.6~ 1/min Collett 20~ "R20-~
+      196 Rifampicin           transpo~ Acti~ "Transpo~ "1"   µmol~ Tirona 2003  <NA> 
+      197 Rifampicin           transpo~ Acti~ "Vmax, O~ "0"   µmol~ Tirona 2003  <NA> 
+      198 Rifampicin           transpo~ Acti~ "Km, OAT~ "1.5" µmol~ Tirona 2003 "Para~
+      199 Rifampicin           transpo~ Acti~ "kcat, O~ "7.7~ 1/min Tirona 2003 "R20-~
+      200 Rifampicin           renal_c~ Tubu~ "Tubular~ "33"  l/min RenCL_rif    <NA> 
+      201 Rifampicin           renal_c~ Tubu~ "TSspec"  "55"  1/min RenCL_rif   "Assu~
+      202 Rifampicin           biliary~ Bili~ "Fractio~ "0.1~ <NA>  BCL         "PK-S~
+      203 Rifampicin           biliary~ Bili~ "Lipophi~ "2.5" Log ~ BCL         "PK-S~
+      204 Rifampicin           biliary~ Bili~ "Plasma ~ "12"  ml/m~ BCL         "Assu~
+      205 Rifampicin           inhibit~ Comp~ "Ki, CYP~ "18.~ µmol~ Kajosaari ~ "R18-~
+      206 Rifampicin           inhibit~ Comp~ "Ki, CYP~ "30.~ µmol~ Kajosaari ~ "R18-~
+      207 Rifampicin           inhibit~ Comp~ "Ki, P-g~ "169" µmol~ Reitman 20~ "R24-~
+      208 Rifampicin           inhibit~ Comp~ "Ki, OAT~ "0.4~ µmol~ Hirano 2006 "R24-~
+      209 Rifampicin           inhibit~ Comp~ "Ki, OAT~ "0.9" µmol~ Annaert 20~ "R24-~
+      210 Rifampicin           inhibit~ Comp~ "Ki, CYP~ "23"  µmol~ Comp        "Para~
+      211 Rifampicin           inhibit~ Mixe~ "Ki_c, C~ "23"  µmol~ Mixed       "R18-~
+      212 Rifampicin           inhibit~ Mixe~ "Ki_u, C~ "3"   µmol~ Mixed       "Para~
+      213 Rifampicin           inhibit~ Irre~ "kinact,~ "2"   1/min Irreversib~ "R24-~
+      214 Rifampicin           inhibit~ Irre~ "K_kinac~ "22"  µmol~ Irreversib~ "R24-~
+      215 Rifampicin           inhibit~ Irre~ "Ki, CYP~ "22"  µmol~ Irreversib~ "Assu~
+      216 Rifampicin           inducti~ Indu~ "EC50, C~ "0.3~ µmol~ Templeton ~ "R24-~
+      217 Rifampicin           inducti~ Indu~ "Emax, C~ "9"   <NA>  Templeton ~ "R24-~
+      218 Rifampicin           inducti~ Indu~ "EC50, P~ "0.3~ µmol~ Greiner 19~ "R20-~
+      219 Rifampicin           inducti~ Indu~ "Emax, P~ "2.5" <NA>  Greiner 19~ "R20-~
+      220 Rifampicin           inducti~ Indu~ "EC50, O~ "0.3~ µmol~ Dixit 2007  "Para~
+      221 Rifampicin           inducti~ Indu~ "Emax, O~ "0.3~ <NA>  Dixit 2007  "Para~
+      222 Rifampicin           inducti~ Indu~ "EC50, A~ "0.3~ µmol~ Assumed     "R20-~
+      223 Rifampicin           inducti~ Indu~ "Emax, A~ "0.9~ <NA>  Assumed     "Para~
+      224 Rifampicin           inducti~ Indu~ "EC50, C~ "0.3~ µmol~ Buckley 20~ "Para~
+      225 Rifampicin           inducti~ Indu~ "Emax, C~ "3.2" <NA>  Buckley 20~ "R20-~
+      226 Rifampicin           inducti~ Indu~ "EC50, C~ "0.3~ µmol~ Chen 2010   "P07-~
+      227 Rifampicin           inducti~ Indu~ "Emax, C~ "0.6~ <NA>  Chen 2010   "Para~
+      228 Rifampicin           inducti~ Indu~ "EC50, C~ "0.3~ µmol~ Rae 2001    "P07-~
+      229 Rifampicin           inducti~ Indu~ "Emax, C~ "0.8" <NA>  Rae 2001    "R24-~
+      230 test                 physico~ lipo~ "Measure~ "2"   Log ~ <NA>        "Para~
+      231 test                 physico~ frac~ "Measure~ "0.4~ <NA>  <NA>        "Para~
+      232 test                 physico~ mole~  <NA>     "123" g/mol <NA>         <NA> 
+      233 test                 physico~ halo~ "Br"      "1"   <NA>  <NA>         <NA> 
+      234 test                 physico~ halo~ "Cl"      "1"   <NA>  <NA>         <NA> 
+      235 test                 physico~ pKa   "base"    "2"   <NA>  <NA>         <NA> 
+      236 test                 physico~ solu~ "Measure~ "3"   mg/l  <NA>        "Para~
+      237 test                 physico~ solu~ "test, p~ "5"   mg/l  <NA>         <NA> 
 
