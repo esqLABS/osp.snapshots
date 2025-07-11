@@ -75,15 +75,6 @@ test_that("Compounds can be converted to dataframes", {
   # Generate snapshot with legacy code
   snapshot <- test_snapshot$clone()
 
-  for (f in list.files(
-    here::here("legacy_code"),
-    pattern = "*.R",
-    full.names = TRUE
-  )) {
-    source(f)
-  }
-  c_data <- get_compound_data(snapshot$data)
-
   # expect_snapshot(print(get_compound_df(c_data, 5),n=Inf, width = Inf))
   expect_snapshot(print(get_compounds_dfs(snapshot), n = Inf))
 })
