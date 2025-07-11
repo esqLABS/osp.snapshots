@@ -173,17 +173,17 @@
       print(dfs$formulations, n = Inf)
     Output
       # A tibble: 9 x 4
-        formulation_id    name              formulation               formulation_type
-        <chr>             <chr>             <chr>                     <chr>           
-      1 Tablet (Dormicum) Tablet (Dormicum) Formulation_Tablet_Weibu~ Weibull         
-      2 Oral solution     Oral solution     Formulation_Dissolved     Dissolved       
-      3 form_dissolved    form_dissolved    Formulation_Dissolved     Dissolved       
-      4 form_Lint80       form_Lint80       Formulation_Tablet_Lint80 Lint80          
-      5 form-partdiss     form-partdiss     Formulation_Particles     Particle        
-      6 form-table        form-table        Formulation_Table         Table           
-      7 form-ZO           form-ZO           Formulation_ZeroOrder     Zero Order      
-      8 form-FO           form-FO           Formulation_FirstOrder    First Order     
-      9 form-partdiss2    form-partdiss2    Formulation_Particles     Particle        
+        formulation_id              name                  formulation formulation_type
+        <chr>                       <chr>                 <chr>       <chr>           
+      1 Tablet (Dormicum)           Tablet (Dormicum)     Formulatio~ Weibull         
+      2 Oral solution               Oral solution         Formulatio~ Dissolved       
+      3 form_dissolved              form_dissolved        Formulatio~ Dissolved       
+      4 form_Lint80                 form_Lint80           Formulatio~ Lint80          
+      5 form-particle-dissolution   form-particle-dissol~ Formulatio~ Particle        
+      6 form-table                  form-table            Formulatio~ Table           
+      7 form-ZO                     form-ZO               Formulatio~ Zero Order      
+      8 form-FO                     form-FO               Formulatio~ First Order     
+      9 form-particle-dissolution-2 form-particle-dissol~ Formulatio~ Particle        
 
 ---
 
@@ -200,9 +200,9 @@
        5 form_Lint80    Diss~ 240      min   FALSE             NA      NA   <NA>      
        6 form_Lint80    Lag ~   0      min   FALSE             NA      NA   <NA>      
        7 form_Lint80    Use ~   1      <NA>  FALSE             NA      NA   <NA>      
-       8 form-partdiss  Thic~  30      µm    FALSE             NA      NA   <NA>      
-       9 form-partdiss  Type~   0      <NA>  FALSE             NA      NA   <NA>      
-      10 form-partdiss  Part~  10      µm    FALSE             NA      NA   <NA>      
+       8 form-particle~ Thic~  30      µm    FALSE             NA      NA   <NA>      
+       9 form-particle~ Type~   0      <NA>  FALSE             NA      NA   <NA>      
+      10 form-particle~ Part~  10      µm    FALSE             NA      NA   <NA>      
       11 form-table     Frac~   0      <NA>  FALSE             NA      NA   <NA>      
       12 form-table     Frac~  NA      <NA>  TRUE               0       0   Time      
       13 form-table     Frac~  NA      <NA>  TRUE               0.1     0.1 Time      
@@ -213,14 +213,14 @@
       18 form-table     Use ~   1      <NA>  FALSE             NA      NA   <NA>      
       19 form-ZO        End ~  60      min   FALSE             NA      NA   <NA>      
       20 form-FO        t1/2    0.01   min   FALSE             NA      NA   <NA>      
-      21 form-partdiss2 Thic~  23      µm    FALSE             NA      NA   <NA>      
-      22 form-partdiss2 Part~   0      <NA>  FALSE             NA      NA   <NA>      
-      23 form-partdiss2 Type~   1      <NA>  FALSE             NA      NA   <NA>      
-      24 form-partdiss2 Part~  10      µm    FALSE             NA      NA   <NA>      
-      25 form-partdiss2 Part~   3      µm    FALSE             NA      NA   <NA>      
-      26 form-partdiss2 Numb~   3      <NA>  FALSE             NA      NA   <NA>      
-      27 form-partdiss2 Part~   1      µm    FALSE             NA      NA   <NA>      
-      28 form-partdiss2 Part~  19      µm    FALSE             NA      NA   <NA>      
+      21 form-particle~ Thic~  23      µm    FALSE             NA      NA   <NA>      
+      22 form-particle~ Part~   0      <NA>  FALSE             NA      NA   <NA>      
+      23 form-particle~ Type~   1      <NA>  FALSE             NA      NA   <NA>      
+      24 form-particle~ Part~  10      µm    FALSE             NA      NA   <NA>      
+      25 form-particle~ Part~   3      µm    FALSE             NA      NA   <NA>      
+      26 form-particle~ Numb~   3      <NA>  FALSE             NA      NA   <NA>      
+      27 form-particle~ Part~   1      µm    FALSE             NA      NA   <NA>      
+      28 form-particle~ Part~  19      µm    FALSE             NA      NA   <NA>      
       # i 3 more variables: source <chr>, description <chr>, source_id <int>
 
 # get_formulations_dfs returns correct data frames
@@ -230,17 +230,17 @@
     Output
       $formulations
       # A tibble: 9 x 4
-        formulation_id    name              formulation               formulation_type
-        <chr>             <chr>             <chr>                     <chr>           
-      1 Tablet (Dormicum) Tablet (Dormicum) Formulation_Tablet_Weibu~ Weibull         
-      2 Oral solution     Oral solution     Formulation_Dissolved     Dissolved       
-      3 form_dissolved    form_dissolved    Formulation_Dissolved     Dissolved       
-      4 form_Lint80       form_Lint80       Formulation_Tablet_Lint80 Lint80          
-      5 form-partdiss     form-partdiss     Formulation_Particles     Particle        
-      6 form-table        form-table        Formulation_Table         Table           
-      7 form-ZO           form-ZO           Formulation_ZeroOrder     Zero Order      
-      8 form-FO           form-FO           Formulation_FirstOrder    First Order     
-      9 form-partdiss2    form-partdiss2    Formulation_Particles     Particle        
+        formulation_id              name                  formulation formulation_type
+        <chr>                       <chr>                 <chr>       <chr>           
+      1 Tablet (Dormicum)           Tablet (Dormicum)     Formulatio~ Weibull         
+      2 Oral solution               Oral solution         Formulatio~ Dissolved       
+      3 form_dissolved              form_dissolved        Formulatio~ Dissolved       
+      4 form_Lint80                 form_Lint80           Formulatio~ Lint80          
+      5 form-particle-dissolution   form-particle-dissol~ Formulatio~ Particle        
+      6 form-table                  form-table            Formulatio~ Table           
+      7 form-ZO                     form-ZO               Formulatio~ Zero Order      
+      8 form-FO                     form-FO               Formulatio~ First Order     
+      9 form-particle-dissolution-2 form-particle-dissol~ Formulatio~ Particle        
       
       $formulations_parameters
       # A tibble: 28 x 11
@@ -253,9 +253,9 @@
        5 form_Lint80     Diss~ 2.4 e+2 min   FALSE               NA      NA <NA>      
        6 form_Lint80     Lag ~ 0       min   FALSE               NA      NA <NA>      
        7 form_Lint80     Use ~ 1   e+0 <NA>  FALSE               NA      NA <NA>      
-       8 form-partdiss   Thic~ 3   e+1 µm    FALSE               NA      NA <NA>      
-       9 form-partdiss   Type~ 0       <NA>  FALSE               NA      NA <NA>      
-      10 form-partdiss   Part~ 1   e+1 µm    FALSE               NA      NA <NA>      
+       8 form-particle-~ Thic~ 3   e+1 µm    FALSE               NA      NA <NA>      
+       9 form-particle-~ Type~ 0       <NA>  FALSE               NA      NA <NA>      
+      10 form-particle-~ Part~ 1   e+1 µm    FALSE               NA      NA <NA>      
       # i 18 more rows
       # i 3 more variables: source <chr>, description <chr>, source_id <int>
       

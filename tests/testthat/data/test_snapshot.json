@@ -99,7 +99,7 @@
           "Value": 1.0,
           "Unit": "µmol/l",
           "ValueOrigin": {
-            "Source": "Publication",
+            "Source": "Other",
             "Description": "PK-Sim default value"
           }
         },
@@ -112,7 +112,7 @@
           "Value": 23.0,
           "Unit": "h",
           "ValueOrigin": {
-            "Source": "Publication",
+            "Source": "Other",
             "Description": "PK-Sim default value"
           }
         },
@@ -121,7 +121,7 @@
           "Value": 36.0,
           "Unit": "h",
           "ValueOrigin": {
-            "Source": "Publication",
+            "Source": "Other",
             "Description": "PK-Sim default value"
           }
         }
@@ -1037,8 +1037,8 @@
           "Value": 23.0,
           "Unit": "h",
           "ValueOrigin": {
-            "Source": "Publication",
-            "Description": "PK-Sim default value"
+            "Source": "Other",
+            "Description": "PK-Sim default"
           }
         },
         {
@@ -1046,7 +1046,7 @@
           "Value": 36.0,
           "Unit": "h",
           "ValueOrigin": {
-            "Source": "Publication",
+            "Source": "Other",
             "Description": "PK-Sim default value"
           }
         },
@@ -1335,7 +1335,7 @@
           "Value": 1.0,
           "Unit": "µmol/l",
           "ValueOrigin": {
-            "Source": "Publication",
+            "Source": "Database",
             "Description": "PK-Sim default value"
           }
         },
@@ -1352,8 +1352,8 @@
           "Value": 23.0,
           "Unit": "h",
           "ValueOrigin": {
-            "Source": "Unknown",
-            "Description": "PK-Sim default value"
+            "Source": "Database",
+            "Description": "PK-Sim database"
           }
         },
         {
@@ -2372,8 +2372,8 @@
           "Value": 23.0,
           "Unit": "h",
           "ValueOrigin": {
-            "Source": "Publication",
-            "Description": "PK-Sim default value"
+            "Source": "Database",
+            "Description": "PK-Sim database"
           }
         },
         {
@@ -2381,7 +2381,7 @@
           "Value": 36.0,
           "Unit": "h",
           "ValueOrigin": {
-            "Source": "Publication",
+            "Source": "Database",
             "Description": "PK-Sim default value"
           }
         },
@@ -2669,52 +2669,6 @@
       ]
     },
     {
-      "Name": "CKD",
-      "Seed": 391487890,
-      "OriginData": {
-        "CalculationMethods": [
-          "SurfaceAreaPlsInt_VAR1",
-          "Body surface area - Mosteller"
-        ],
-        "Species": "Human",
-        "Population": "European_ICRP_2002",
-        "Gender": "MALE",
-        "Age": {
-          "Value": 50.0,
-          "Unit": "year(s)"
-        },
-        "Weight": {
-          "Value": 70.0,
-          "Unit": "kg"
-        },
-        "Height": {
-          "Value": 178.0,
-          "Unit": "cm"
-        },
-        "DiseaseState": "CKD",
-        "DiseaseStateParameters": [
-          {
-            "Name": "eGFR",
-            "Value": 45.0,
-            "Unit": "ml/min/1.73m²"
-          }
-        ]
-      },
-      "Parameters": [
-        {
-          "Path": "Organism|Liver|Interstitial|pH",
-          "Value": 7.2456,
-          "ValueOrigin": {
-            "Source": "Database",
-            "Description": "Assumed"
-          }
-        }
-      ],
-      "ExpressionProfiles": [
-        "CYP3A4|Human|Korean (Yu 2004 study)"
-      ]
-    },
-    {
       "Name": "ind_modified",
       "Seed": 487796515,
       "OriginData": {
@@ -2749,26 +2703,64 @@
       "ExpressionProfiles": []
     },
     {
-      "Name": "baby",
-      "Seed": 1987729687,
+      "Name": "Asian",
+      "Seed": 918371890,
       "OriginData": {
         "CalculationMethods": [
           "SurfaceAreaPlsInt_VAR1",
           "Body surface area - Mosteller"
         ],
         "Species": "Human",
-        "Population": "Preterm",
+        "Population": "Asian_Tanaka_1996",
         "Gender": "MALE",
         "Age": {
-          "Value": 10.0,
-          "Unit": "day(s)"
+          "Value": 26.0,
+          "Unit": "year(s)"
         },
-        "GestationalAge": {
-          "Value": 30.0,
-          "Unit": "week(s)"
+        "Weight": {
+          "Value": 67.0,
+          "Unit": "kg"
         }
       },
-      "ExpressionProfiles": []
+      "ExpressionProfiles": [
+        "CYP3A4|Human|Healthy"
+      ]
+    },
+    {
+      "Name": "CKD",
+      "Seed": 1515438109,
+      "OriginData": {
+        "CalculationMethods": [
+          "SurfaceAreaPlsInt_VAR1",
+          "Body surface area - Mosteller"
+        ],
+        "Species": "Human",
+        "Population": "European_ICRP_2002",
+        "Gender": "MALE",
+        "Age": {
+          "Value": 50.0,
+          "Unit": "year(s)"
+        },
+        "Weight": {
+          "Value": 70.0,
+          "Unit": "kg"
+        },
+        "Height": {
+          "Value": 178.0,
+          "Unit": "cm"
+        },
+        "DiseaseState": "CKD",
+        "DiseaseStateParameters": [
+          {
+            "Name": "eGFR",
+            "Value": 45.0,
+            "Unit": "ml/min/1.73m²"
+          }
+        ]
+      },
+      "ExpressionProfiles": [
+        "CYP3A4|Human|Korean (Yu 2004 study)"
+      ]
     }
   ],
   "Populations": [
@@ -2894,6 +2886,27 @@
               "ValueOrigin": {
                 "Source": "Publication",
                 "Description": "R24-4085"
+              }
+            }
+          ]
+        },
+        {
+          "Name": "P-gp|t1/2 (intestine)",
+          "Seed": 1159568750,
+          "DistributionType": "Normal",
+          "Parameters": [
+            {
+              "Name": "Mean",
+              "Value": 432.0,
+              "Unit": "h"
+            },
+            {
+              "Name": "Deviation",
+              "Value": 1.0,
+              "Unit": "h",
+              "ValueOrigin": {
+                "Source": "Unknown",
+                "Description": "Assumed"
               }
             }
           ]
@@ -3352,14 +3365,6 @@
           "Max": 100.0,
           "Unit": "year(s)"
         },
-        "DiseaseStateParameters": [
-          {
-            "Name": "eGFR",
-            "Min": 0.0,
-            "Max": 60.00159,
-            "Unit": "ml/min/1.73m²"
-          }
-        ],
         "Individual": {
           "Name": "CKD",
           "Seed": 391487890,
@@ -3382,15 +3387,7 @@
             "Height": {
               "Value": 178.0,
               "Unit": "cm"
-            },
-            "DiseaseState": "CKD",
-            "DiseaseStateParameters": [
-              {
-                "Name": "eGFR",
-                "Value": 45.0,
-                "Unit": "ml/min/1.73m²"
-              }
-            ]
+            }
           },
           "Parameters": [
             {
@@ -3468,6 +3465,68 @@
             "ATP1A2|Human|Korean (Yu 2004 study)",
             "UGT1A4|Human|Korean (Yu 2004 study)",
             "GABRG2|Human|Korean (Yu 2004 study)"
+          ]
+        }
+      }
+    },
+    {
+      "Name": "pop",
+      "Seed": 1002856343,
+      "Settings": {
+        "NumberOfIndividuals": 100,
+        "ProportionOfFemales": 50,
+        "Age": {
+          "Min": 30.0,
+          "Max": 100.0,
+          "Unit": "year(s)"
+        },
+        "Weight": {
+          "Min": 55.0,
+          "Max": 120.0,
+          "Unit": "kg"
+        },
+        "Individual": {
+          "Name": "European (P-gp modified, CYP3A4 36 h)",
+          "Seed": 17189110,
+          "OriginData": {
+            "CalculationMethods": [
+              "SurfaceAreaPlsInt_VAR1",
+              "Body surface area - Mosteller"
+            ],
+            "Species": "Human",
+            "Population": "European_ICRP_2002",
+            "Gender": "MALE",
+            "Age": {
+              "Value": 30.0,
+              "Unit": "year(s)"
+            }
+          },
+          "Parameters": [
+            {
+              "Path": "Organism|Gallbladder|Gallbladder ejection fraction",
+              "Value": 0.8,
+              "ValueOrigin": {
+                "Source": "Publication",
+                "Description": "R24-4081"
+              }
+            },
+            {
+              "Path": "Organism|Liver|EHC continuous fraction",
+              "Value": 1.0,
+              "ValueOrigin": {
+                "Source": "Publication",
+                "Description": "R24-4081"
+              }
+            }
+          ],
+          "ExpressionProfiles": [
+            "CYP3A4|Human|Healthy",
+            "AADAC|Human|Healthy",
+            "P-gp|Human|Healthy",
+            "OATP1B1|Human|Healthy",
+            "ATP1A2|Human|Healthy",
+            "UGT1A4|Human|Healthy",
+            "GABRG2|Human|Healthy"
           ]
         }
       }
@@ -3692,22 +3751,6 @@
               "Name": "kcat",
               "Value": 7.796,
               "Unit": "1/min",
-              "ValueOrigin": {
-                "Source": "Publication",
-                "Method": "InVitro",
-                "Description": "R20-1499"
-              }
-            }
-          ]
-        },
-        {
-          "InternalName": "GlomerularFiltration",
-          "DataSource": "GFR",
-          "Species": "Human",
-          "Parameters": [
-            {
-              "Name": "GFR fraction",
-              "Value": 1.0,
               "ValueOrigin": {
                 "Source": "Publication",
                 "Method": "InVitro",
@@ -4066,35 +4109,6 @@
         },
         {
           "InternalName": "LiverClearance",
-          "DataSource": "test567",
-          "Species": "Human",
-          "Parameters": [
-            {
-              "Name": "Fraction unbound (experiment)",
-              "Value": 0.17
-            },
-            {
-              "Name": "Lipophilicity (experiment)",
-              "Value": 2.5,
-              "Unit": "Log Units"
-            },
-            {
-              "Name": "Plasma clearance",
-              "Value": 12.0,
-              "Unit": "ml/min/kg"
-            },
-            {
-              "Name": "Specific clearance",
-              "Value": 47.3,
-              "Unit": "1/min",
-              "ValueOrigin": {
-                "Source": "ParameterIdentification"
-              }
-            }
-          ]
-        },
-        {
-          "InternalName": "LiverClearance",
           "DataSource": "test123",
           "Species": "Human",
           "Parameters": [
@@ -4119,6 +4133,27 @@
               "ValueOrigin": {
                 "Source": "Publication",
                 "Description": "c44363122"
+              }
+            }
+          ]
+        },
+        {
+          "InternalName": "TubularSecretion_FirstOrder",
+          "DataSource": "RenCL_rif",
+          "Species": "Human",
+          "Parameters": [
+            {
+              "Name": "Tubular secretion",
+              "Value": 33.0,
+              "Unit": "l/min"
+            },
+            {
+              "Name": "TSspec",
+              "Value": 55.0,
+              "Unit": "1/min",
+              "ValueOrigin": {
+                "Source": "Other",
+                "Description": "Assumed"
               }
             }
           ]
@@ -4435,7 +4470,7 @@
             },
             {
               "Name": "Plasma clearance",
-              "Value": 0.0,
+              "Value": 12.0,
               "Unit": "ml/min/kg"
             },
             {
@@ -4454,6 +4489,14 @@
           "Species": "Human",
           "Molecule": "CYP3A4",
           "Parameters": [
+            {
+              "Name": "Fraction intracellular (liver)",
+              "Value": 0.45,
+              "ValueOrigin": {
+                "Source": "Other",
+                "Description": "Assumed"
+              }
+            },
             {
               "Name": "Vmax (liver tissue)",
               "Value": 12.0,
@@ -4651,7 +4694,7 @@
               "Unit": "Log Units",
               "ValueOrigin": {
                 "Source": "Other",
-                "Description": "PK-Sim default value"
+                "Description": "PK-Sim default "
               }
             },
             {
@@ -4735,6 +4778,15 @@
               "ValueOrigin": {
                 "Source": "Publication",
                 "Description": "c44363122"
+              }
+            },
+            {
+              "Name": "kcat",
+              "Value": 33.3333333333,
+              "Unit": "1/min",
+              "ValueOrigin": {
+                "Source": "Other",
+                "Description": "PK-Sim default calculation"
               }
             }
           ]
@@ -4821,7 +4873,7 @@
             },
             {
               "Name": "Plasma clearance",
-              "Value": 0.0,
+              "Value": 24.0,
               "Unit": "ml/min/kg"
             },
             {
@@ -5084,26 +5136,6 @@
           ]
         },
         {
-          "InternalName": "MetabolizationLiverMicrosomes_FirstOrder",
-          "DataSource": "test3",
-          "Molecule": "CYP3A4",
-          "Parameters": [
-            {
-              "Name": "In vitro CL for liver microsomes",
-              "Value": 0.0,
-              "Unit": "µl/min/mg mic. protein"
-            },
-            {
-              "Name": "CLspec/[Enzyme]",
-              "Value": 23.0,
-              "Unit": "l/µmol/min",
-              "ValueOrigin": {
-                "Source": "ParameterIdentification"
-              }
-            }
-          ]
-        },
-        {
           "InternalName": "CompetitiveInhibition",
           "DataSource": "test",
           "Molecule": "ABCB1",
@@ -5161,6 +5193,23 @@
               "ValueOrigin": {
                 "Source": "Publication",
                 "Description": "c31959734"
+              }
+            }
+          ]
+        },
+        {
+          "InternalName": "MetabolizationIntrinsic_FirstOrder",
+          "DataSource": "test",
+          "Species": "Human",
+          "Molecule": "CYP3A4",
+          "Parameters": [
+            {
+              "Name": "Intrinsic clearance",
+              "Value": 78.6,
+              "Unit": "l/min",
+              "ValueOrigin": {
+                "Source": "Publication",
+                "Description": "c44363122"
               }
             }
           ]
@@ -5360,7 +5409,6 @@
     {
       "Name": "BI 100777- initial table parameters",
       "IsSmallMolecule": false,
-      "PlasmaProteinBindingPartner": "Albumin",
       "Lipophilicity": [
         {
           "Name": "Optimized",
@@ -5442,7 +5490,7 @@
               "ValueOrigin": {
                 "Source": "Publication",
                 "Method": "InVitro",
-                "Description": "n00265826"
+                "Description": "123456_456444_4.0"
               }
             }
           ]
@@ -5902,12 +5950,30 @@
               }
             },
             {
+              "Name": "Content of CYP proteins in liver microsomes",
+              "Value": 109.0,
+              "Unit": "pmol/mg mic. protein",
+              "ValueOrigin": {
+                "Source": "Publication",
+                "Description": "n00261417"
+              }
+            },
+            {
               "Name": "Km",
               "Value": 40.23,
               "Unit": "µmol/l",
               "ValueOrigin": {
                 "Source": "ParameterIdentification",
                 "Method": "ParameterIdentification"
+              }
+            },
+            {
+              "Name": "kcat",
+              "Value": 0.1111111111,
+              "Unit": "1/min",
+              "ValueOrigin": {
+                "Source": "Other",
+                "Description": "PK-Sim default calculation"
               }
             }
           ]
@@ -5928,8 +5994,12 @@
             },
             {
               "Name": "Plasma clearance",
-              "Value": 0.0,
-              "Unit": "ml/min/kg"
+              "Value": 34.0,
+              "Unit": "ml/min/kg",
+              "ValueOrigin": {
+                "Source": "Other",
+                "Description": "Assumed"
+              }
             },
             {
               "Name": "Specific clearance",
@@ -6012,7 +6082,7 @@
           "Parameters": [
             {
               "Name": "TSmax",
-              "Value": 0.0,
+              "Value": 12.0,
               "Unit": "µmol/min"
             },
             {
@@ -6322,7 +6392,7 @@
       ]
     },
     {
-      "Name": "form-partdiss",
+      "Name": "form-particle-dissolution",
       "FormulationType": "Formulation_Particles",
       "Parameters": [
         {
@@ -6431,7 +6501,7 @@
       ]
     },
     {
-      "Name": "form-partdiss2",
+      "Name": "form-particle-dissolution-2",
       "FormulationType": "Formulation_Particles",
       "Parameters": [
         {
@@ -7327,15 +7397,6 @@
       ],
       "Parameters": [
         {
-          "Path": "AADAC|t1/2 (liver)",
-          "Value": 36.0,
-          "Unit": "h",
-          "ValueOrigin": {
-            "Source": "Publication",
-            "Description": "c26475781"
-          }
-        },
-        {
           "Path": "Applications|Yu 2004 - Rifampicin - 600 mg MD OD 10 days|Oral solution|Application_1|ProtocolSchemaItem|Volume of water/body weight",
           "Value": 3.5,
           "Unit": "ml/kg"
@@ -7386,33 +7447,6 @@
           "Unit": "ml/kg"
         },
         {
-          "Path": "CYP3A4|t1/2 (intestine)",
-          "Value": 23.0,
-          "Unit": "h",
-          "ValueOrigin": {
-            "Source": "Other",
-            "Description": "PK-Sim default value"
-          }
-        },
-        {
-          "Path": "CYP3A4|t1/2 (liver)",
-          "Value": 36.0,
-          "Unit": "h",
-          "ValueOrigin": {
-            "Source": "Publication",
-            "Description": "R24-3730"
-          }
-        },
-        {
-          "Path": "OATP1B1|t1/2 (intestine)",
-          "Value": 23.0,
-          "Unit": "h",
-          "ValueOrigin": {
-            "Source": "Publication",
-            "Description": "n00261417"
-          }
-        },
-        {
           "Path": "Undefined Liver Transporter|Reference concentration",
           "Value": 1.0,
           "Unit": "µmol/l"
@@ -7424,21 +7458,6 @@
         },
         {
           "Path": "Undefined Liver Transporter|t1/2 (liver)",
-          "Value": 2160.0,
-          "Unit": "min"
-        },
-        {
-          "Path": "Undefined Liver|Reference concentration",
-          "Value": 1.0,
-          "Unit": "µmol/l"
-        },
-        {
-          "Path": "Undefined Liver|t1/2 (intestine)",
-          "Value": 1380.0,
-          "Unit": "min"
-        },
-        {
-          "Path": "Undefined Liver|t1/2 (liver)",
           "Value": 2160.0,
           "Unit": "min"
         }
@@ -7478,7 +7497,6 @@
               "MoleculeName": "UGT1A4"
             },
             {
-              "Name": "Total Hepatic Clearance-test567",
               "SystemicProcessType": "Hepatic"
             },
             {
@@ -7490,8 +7508,8 @@
               "MoleculeName": "OATP1B1"
             },
             {
-              "Name": "Glomerular Filtration-GFR",
-              "SystemicProcessType": "GFR"
+              "Name": "Renal Clearances-RenCL_rif",
+              "SystemicProcessType": "Renal"
             },
             {
               "Name": "Biliary Clearance-BCL",
@@ -7626,7 +7644,7 @@
             "BackColor": "#00FFFFFF",
             "DiagramBackColor": "#FFFFFF"
           },
-          "OriginText": "Rifampicin-Midazolam-DDI\nsimulation1\n2025-03-21 16:39"
+          "OriginText": "Rifampicin-Midazolam-DDI\nsimulation1\n2025-07-08 12:14"
         }
       ],
       "Interactions": [
@@ -7840,7 +7858,7 @@
           "ObservedData": "Backman 1998 - Phase I (Control (Perpetrator Placebo)) - Midazolam - PO - 15 mg - Plasma - agg. (n=9)"
         }
       ],
-      "Individual": "CKD",
+      "Individual": "European (P-gp modified, CYP3A4 36 h)",
       "Compounds": [
         {
           "Name": "BI 123456",
@@ -7872,8 +7890,43 @@
               "MoleculeName": "CYP3A4"
             },
             {
+              "MoleculeName": "CYP3A4"
+            },
+            {
+              "MoleculeName": "CYP3A4"
+            },
+            {
+              "MoleculeName": "AADAC"
+            },
+            {
+              "Name": "UGT1A4-Optimized",
+              "MoleculeName": "UGT1A4"
+            },
+            {
+              "MoleculeName": "CYP3A4"
+            },
+            {
+              "MoleculeName": "AADAC"
+            },
+            {
+              "MoleculeName": "UGT1A4"
+            },
+            {
               "Name": "Total Hepatic Clearance-In vitro_mic_t1/2",
               "SystemicProcessType": "Hepatic"
+            },
+            {
+              "MoleculeName": "P-gp"
+            },
+            {
+              "Name": "OATP1B1-Int _ MM",
+              "MoleculeName": "OATP1B1"
+            },
+            {
+              "MoleculeName": "P-gp"
+            },
+            {
+              "MoleculeName": "OATP1B1"
             },
             {
               "Name": "Renal Clearances-Kidney_plasma_CL",
@@ -7884,7 +7937,11 @@
               "SystemicProcessType": "Biliary"
             },
             {
-              "MoleculeName": "CYP3A4"
+              "MoleculeName": "ATP1A2"
+            },
+            {
+              "Name": "GABRG2-Buhr 1997",
+              "MoleculeName": "GABRG2"
             }
           ],
           "Protocol": {
@@ -7912,12 +7969,26 @@
               "MoleculeName": "CYP3A4"
             },
             {
-              "Name": "Total Hepatic Clearance-test567",
+              "Name": "AADAC-Nakajima 2011",
+              "MoleculeName": "AADAC"
+            },
+            {
+              "MoleculeName": "UGT1A4"
+            },
+            {
               "SystemicProcessType": "Hepatic"
             },
             {
-              "Name": "Glomerular Filtration-GFR",
-              "SystemicProcessType": "GFR"
+              "Name": "P-gp-Collett 2004",
+              "MoleculeName": "P-gp"
+            },
+            {
+              "Name": "OATP1B1-Tirona 2003",
+              "MoleculeName": "OATP1B1"
+            },
+            {
+              "Name": "Renal Clearances-RenCL_rif",
+              "SystemicProcessType": "Renal"
             },
             {
               "Name": "Biliary Clearance-BCL",
@@ -8005,7 +8076,7 @@
             "BackColor": "#FFFFFF",
             "DiagramBackColor": "#FFFFFF"
           },
-          "OriginText": "Rifampicin-Midazolam-DDI\nsimulation2\n2025-03-21 21:25"
+          "OriginText": "Rifampicin-Midazolam-DDI_today\nsimulation2\n2025-07-08 13:26"
         }
       ],
       "Interactions": [
@@ -18241,17 +18312,17 @@
             "LLOQ": 1E-10
           },
           "Values": [
-            50.80218,
-            26.35205,
-            16.48901,
-            12.0628,
-            9.104918,
-            4.975452,
-            2.0954,
-            0.9793777
+            0.0508021824,
+            0.0263520516,
+            0.0164890084,
+            0.0120628,
+            0.009104918,
+            0.004975452,
+            0.00209540012,
+            0.0009793777
           ],
           "Dimension": "Concentration (mass)",
-          "Unit": "ng/ml"
+          "Unit": "mg/l"
         }
       ],
       "BaseGrid": {

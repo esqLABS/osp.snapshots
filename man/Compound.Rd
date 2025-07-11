@@ -38,6 +38,22 @@ and display a summary of its information.
 \item{\code{calculation_methods}}{The calculation methods of the compound}
 
 \item{\code{parameters}}{The additional parameters of the compound (excluding molecular weight)}
+
+\item{\code{protein_binding_partners}}{The protein binding partners data of the compound}
+
+\item{\code{metabolizing_enzymes}}{The metabolizing enzymes data of the compound}
+
+\item{\code{hepatic_clearance}}{The hepatic clearance data of the compound}
+
+\item{\code{transporter_proteins}}{The transporter proteins data of the compound}
+
+\item{\code{renal_clearance}}{The renal clearance data of the compound}
+
+\item{\code{biliary_clearance}}{The biliary clearance data of the compound}
+
+\item{\code{inhibition}}{The inhibition data of the compound}
+
+\item{\code{induction}}{The induction data of the compound}
 }
 \if{html}{\out{</div>}}
 }
