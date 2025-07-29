@@ -9,7 +9,7 @@ methods to access different components of the snapshot and visualize its structu
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9023</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,14 +41,6 @@ methods to access different components of the snapshot and visualize its structu
 
 
     <div class="section level2">
-    <h2 id="public-fields">Public fields<a class="anchor" aria-label="anchor" href="#public-fields"></a></h2>
-    <p></p><div class="r6-fields"><dl><dt><code>path</code></dt>
-<dd><p>The path to the snapshot file if loaded from file, NULL otherwise</p></dd>
-
-
-</dl><p></p></div>
-    </div>
-    <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
     <p></p><div class="r6-active-bindings"><dl><dt><code>data</code></dt>
 <dd><p>The aggregated data of the snapshot from all components</p></dd>
@@ -56,6 +48,10 @@ methods to access different components of the snapshot and visualize its structu
 
 <dt><code>pksim_version</code></dt>
 <dd><p>The human-readable PKSIM version corresponding to the snapshot version</p></dd>
+
+
+<dt><code>path</code></dt>
+<dd><p>The path to the snapshot file relative to the working directory</p></dd>
 
 
 <dt><code>compounds</code></dt>
