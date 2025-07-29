@@ -88,19 +88,14 @@ snapshot$add_expression_profile(profile)
 snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 }
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{path}}{The path to the snapshot file if loaded from file, NULL otherwise}
-}
-\if{html}{\out{</div>}}
-}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{data}}{The aggregated data of the snapshot from all components}
 
 \item{\code{pksim_version}}{The human-readable PKSIM version corresponding to the snapshot version}
+
+\item{\code{path}}{The path to the snapshot file relative to the working directory}
 
 \item{\code{compounds}}{List of Compound objects in the snapshot}
 

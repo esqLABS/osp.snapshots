@@ -8,9 +8,6 @@
 Snapshot <- R6::R6Class(
   classname = "Snapshot",
   public = list(
-    #' @field path The path to the snapshot file if loaded from file, NULL otherwise
-    path = NULL,
-
     #' @description
     #' Create a new Snapshot object from a JSON file or a list
     #' @param input Path to the snapshot JSON file, URL, template name, or a list containing snapshot data
@@ -18,7 +15,12 @@ Snapshot <- R6::R6Class(
     initialize = function(input) {
       if (is.character(input)) {
         cli::cli_alert_info("Reading snapshot from {.file {input}}")
-        self$path <- input
+        # Store as absolute path
+        if (file.exists(input)) {
+          private$.abs_path <- normalizePath(input, mustWork = TRUE)
+        } else {
+          private$.abs_path <- input # Keep URLs as is
+        }
         private$.original_data <- jsonlite::fromJSON(
           txt = input,
           simplifyDataFrame = FALSE
@@ -135,6 +137,11 @@ Snapshot <- R6::R6Class(
       pksim_version <- self$pksim_version
       cli::cli_alert_info("Version: {raw_version} (PKSIM {pksim_version})")
 
+      # Display path if available
+      if (!is.null(private$.abs_path)) {
+        cli::cli_alert_info("Path: {.file {self$path}}")
+      }
+
       # Get all sections dynamically from the data
       # We'll exclude Version as it's already displayed
       sections <- names(self$data)[names(self$data) != "Version"]
@@ -158,14 +165,21 @@ Snapshot <- R6::R6Class(
     #' @param path Path to save the JSON file
     #' @return Invisibly returns the object
     export = function(path) {
+      # Convert to absolute path
+      abs_path <- normalizePath(path, mustWork = FALSE)
+
       jsonlite::write_json(
         self$data,
-        path,
+        abs_path,
         auto_unbox = TRUE,
         pretty = TRUE,
         digits = NA
       )
-      cli::cli_alert_success("Snapshot exported to {.file {path}}")
+
+      # Store the absolute path
+      private$.abs_path <- abs_path
+
+      cli::cli_alert_success("Snapshot exported to {.file {self$path}}")
       invisible(self)
     },
 
@@ -541,6 +555,21 @@ Snapshot <- R6::R6Class(
       }
     },
 
+    #' @field path The path to the snapshot file relative to the working directory
+    path = function() {
+      if (is.null(private$.abs_path)) {
+        return(NULL)
+      }
+
+      # If it's a URL, return as is
+      if (grepl("^https?://", private$.abs_path)) {
+        return(private$.abs_path)
+      }
+
+      # Use fs::path_rel to get the relative path
+      return(fs::path_rel(private$.abs_path, start = getwd()))
+    },
+
     #' @field compounds List of Compound objects in the snapshot
     compounds = function(value = NULL) {
       # Build the named list if it doesn't exist yet
@@ -646,6 +675,8 @@ Snapshot <- R6::R6Class(
   private = list(
     .original_data = NULL,
     .pksim_version = NULL,
+    .abs_path = NULL,
+
     # Convert the raw version number to a human-readable PKSIM version
     # Returns a string with the human-readable PKSIM version
     .get_pksim_version = function() {

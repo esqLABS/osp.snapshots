@@ -31,6 +31,94 @@ test_that("Snapshot class works", {
   )
 })
 
+
+test_that("Snapshot path handling works correctly", {
+  # Create a temporary JSON file
+  temp_file <- withr::local_tempfile(fileext = ".json")
+
+  # Create minimal snapshot data
+  snapshot_data <- list(Version = 80)
+  jsonlite::write_json(snapshot_data, temp_file)
+
+  # Get absolute path
+  abs_path <- normalizePath(temp_file)
+
+  # Load snapshot from file
+  snapshot <- Snapshot$new(temp_file)
+
+  # Test that the path is stored as absolute path internally
+  expect_equal(snapshot$.__enclos_env__$private$.abs_path, abs_path)
+
+  # Test that path active binding returns relative path
+  expected_rel_path <- fs::path_rel(abs_path, start = getwd())
+  expect_equal(snapshot$path, expected_rel_path)
+
+  # Test exporting to a new location
+  new_temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(new_temp_file)
+
+  # Check that the new path is stored correctly
+  new_abs_path <- normalizePath(new_temp_file)
+  expect_equal(snapshot$.__enclos_env__$private$.abs_path, new_abs_path)
+
+  # Check that the path active binding returns the new relative path
+  new_rel_path <- fs::path_rel(new_abs_path, start = getwd())
+  expect_equal(snapshot$path, new_rel_path)
+
+  expect_equal(test_snapshot$path, fs::path_rel(testthat::test_path("data", "test_snapshot.json")))
+})
+
+
+test_that("load_snapshot handles local file paths", {
+  # Test with an existing file
+  snapshot <- test_snapshot$clone()
+  expect_s3_class(snapshot, "Snapshot")
+
+  # Test with invalid input
+  expect_error(load_snapshot(NULL), "Source must be a single character string")
+  expect_error(
+    load_snapshot(c("file1.json", "file2.json")),
+    "Source must be a single character string"
+  )
+  expect_error(load_snapshot(123), "Source must be a single character string")
+})
+
+test_that("load_snapshot handles OSP Models", {
+  expect_snapshot(load_snapshot("Rifampicin"))
+})
+
+
+test_that("load_snapshot handles URL input", {
+  # Define a real URL to use for testing
+  test_url <- "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Efavirenz-Model/refs/heads/master/Efavirenz-Model.json"
+
+  # Skip this test if there's no internet connection
+  testthat::skip_if_offline()
+
+  # Test with a valid URL
+  tryCatch(
+    {
+      snapshot <- load_snapshot(test_url)
+      expect_s3_class(snapshot, "Snapshot")
+      expect_equal(snapshot$path, test_url) # path should be the URL for URL-based snapshots
+      expect_true("Compounds" %in% names(snapshot$data))
+      expect_true("Individuals" %in% names(snapshot$data))
+    },
+    error = function(e) {
+      skip(glue::glue("Could not access test URL: {e$message}"))
+    }
+  )
+
+  # Test with an invalid URL
+  expect_error(
+    suppressWarnings(load_snapshot(
+      "https://not-a-real-url.example/snapshot.json"
+    )),
+    "Failed to download snapshot from URL"
+  )
+})
+
+
 test_that("Snapshot data can be exported and reimported", {
   # Create a snapshot object from test data
   snapshot <- test_snapshot$clone()
@@ -157,52 +245,6 @@ test_that("Snapshot handles duplicated individual and compound names correctly",
     )
   }
 })
-
-
-test_that("load_snapshot handles local file paths", {
-  # Test with an existing file
-  snapshot <- test_snapshot$clone()
-  expect_s3_class(snapshot, "Snapshot")
-
-  # Test with invalid input
-  expect_error(load_snapshot(NULL), "Source must be a single character string")
-  expect_error(
-    load_snapshot(c("file1.json", "file2.json")),
-    "Source must be a single character string"
-  )
-  expect_error(load_snapshot(123), "Source must be a single character string")
-})
-
-test_that("load_snapshot handles URL input", {
-  # Define a real URL to use for testing
-  test_url <- "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Efavirenz-Model/refs/heads/master/Efavirenz-Model.json"
-
-  # Skip this test if there's no internet connection
-  testthat::skip_if_offline()
-
-  # Test with a valid URL
-  tryCatch(
-    {
-      snapshot <- load_snapshot(test_url)
-      expect_s3_class(snapshot, "Snapshot")
-      expect_null(snapshot$path) # path should be NULL for URL-based snapshots
-      expect_true("Compounds" %in% names(snapshot$data))
-      expect_true("Individuals" %in% names(snapshot$data))
-    },
-    error = function(e) {
-      skip(glue::glue("Could not access test URL: {e$message}"))
-    }
-  )
-
-  # Test with an invalid URL
-  expect_error(
-    suppressWarnings(load_snapshot(
-      "https://not-a-real-url.example/snapshot.json"
-    )),
-    "Failed to download snapshot from URL"
-  )
-})
-
 
 test_that("Snapshot handles duplicated compound names correctly", {
   # Create a snapshot with duplicate compound names
