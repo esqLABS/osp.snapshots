@@ -65,7 +65,10 @@ test_that("Snapshot path handling works correctly", {
   new_rel_path <- fs::path_rel(new_abs_path, start = getwd())
   expect_equal(snapshot$path, new_rel_path)
 
-  expect_equal(test_snapshot$path, fs::path_rel(testthat::test_path("data", "test_snapshot.json")))
+  expect_equal(
+    test_snapshot$path,
+    fs::path_rel(testthat::test_path("data", "test_snapshot.json"))
+  )
 })
 
 

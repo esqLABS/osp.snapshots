@@ -12,12 +12,19 @@ get_compounds_dfs(snapshot)
 \value{
 A data frame with compound parameter data including:
 \itemize{
-  \item name: Compound name
-  \item parameter: Parameter category (e.g., lipophilicity, molecular_weight)
-  \item type: Parameter type or subcategory
+  \item compound: Compound name
+  \item category: Broad parameter category - "physicochemical_property" for basic properties,
+        or descriptive categories like "protein_binding_partners", "metabolizing_enzymes",
+        "hepatic_clearance", "transporter_proteins", "renal_clearance", "biliary_clearance",
+        "inhibition", "induction" for process-related data
+  \item type: Specific type within category - for physicochemical properties: property type
+        (e.g., "lipophilicity", "fraction_unbound", "molecular_weight"); for processes:
+        the InternalName from process data (e.g., "SpecificBinding", "Metabolization", "ActiveTransport")
+  \item parameter: Specific parameter details (e.g., parameter names, molecule names)
   \item value: Parameter value (raw values from data)
   \item unit: Parameter unit
-  \item source: Data source information
+  \item data_source: Data source information from the snapshot
+  \item source: Original source information
 }
 }
 \description{
