@@ -5,16 +5,20 @@
 #' @return Invisibly returns the compound collection
 #' @export
 print.compound_collection <- function(x, ...) {
-  cli::cli_h1("Compounds ({length(x)})")
+  output <- cli::cli_format_method({
+    cli::cli_h1("Compounds ({length(x)})")
 
-  if (length(x) > 0) {
-    # Create a simple bullet point list with just the names
-    for (name in names(x)) {
-      cli::cli_li("{name}")
+    if (length(x) > 0) {
+      # Create a simple bullet point list with just the names
+      for (name in names(x)) {
+        cli::cli_li("{name}")
+      }
+    } else {
+      cli::cli_alert_info("No compounds found")
     }
-  } else {
-    cli::cli_alert_info("No compounds found")
-  }
+  })
+
+  cat(output, sep = "\n")
   invisible(x)
 }
 
@@ -25,16 +29,20 @@ print.compound_collection <- function(x, ...) {
 #' @return Invisibly returns the individual collection
 #' @export
 print.individual_collection <- function(x, ...) {
-  cli::cli_h1("Individuals ({length(x)})")
+  output <- cli::cli_format_method({
+    cli::cli_h1("Individuals ({length(x)})")
 
-  if (length(x) > 0) {
-    # Create a simple bullet point list with just the names
-    for (name in names(x)) {
-      cli::cli_li("{name}")
+    if (length(x) > 0) {
+      # Create a simple bullet point list with just the names
+      for (name in names(x)) {
+        cli::cli_li("{name}")
+      }
+    } else {
+      cli::cli_alert_info("No individuals found")
     }
-  } else {
-    cli::cli_alert_info("No individuals found")
-  }
+  })
+
+  cat(output, sep = "\n")
   invisible(x)
 }
 
@@ -45,22 +53,26 @@ print.individual_collection <- function(x, ...) {
 #' @return Invisibly returns the population collection
 #' @export
 print.population_collection <- function(x, ...) {
-  cli::cli_h1("Populations ({length(x)})")
+  output <- cli::cli_format_method({
+    cli::cli_h1("Populations ({length(x)})")
 
-  if (length(x) > 0) {
-    # Create a simple bullet point list with name and number of individuals
-    for (name in names(x)) {
-      n_individuals <- x[[name]]$number_of_individuals
-      source_text <- if (!is.null(x[[name]]$source_population)) {
-        glue::glue(" [Source: {x[[name]]$source_population}]")
-      } else {
-        ""
+    if (length(x) > 0) {
+      # Create a simple bullet point list with name and number of individuals
+      for (name in names(x)) {
+        n_individuals <- x[[name]]$number_of_individuals
+        source_text <- if (!is.null(x[[name]]$source_population)) {
+          glue::glue(" [Source: {x[[name]]$source_population}]")
+        } else {
+          ""
+        }
+        cli::cli_li("{name}{source_text} ({n_individuals} individuals)")
       }
-      cli::cli_li("{name}{source_text} ({n_individuals} individuals)")
+    } else {
+      cli::cli_alert_info("No populations found")
     }
-  } else {
-    cli::cli_alert_info("No populations found")
-  }
+  })
+
+  cat(output, sep = "\n")
   invisible(x)
 }
 
@@ -71,17 +83,21 @@ print.population_collection <- function(x, ...) {
 #' @return Invisibly returns the formulation collection
 #' @export
 print.formulation_collection <- function(x, ...) {
-  cli::cli_h1("Formulations ({length(x)})")
+  output <- cli::cli_format_method({
+    cli::cli_h1("Formulations ({length(x)})")
 
-  if (length(x) > 0) {
-    # Create a bullet point list with names and formulation types
-    for (name in names(x)) {
-      formulation_type_human <- x[[name]]$get_human_formulation_type()
-      cli::cli_li("{name} ({formulation_type_human})")
+    if (length(x) > 0) {
+      # Create a bullet point list with names and formulation types
+      for (name in names(x)) {
+        formulation_type_human <- x[[name]]$get_human_formulation_type()
+        cli::cli_li("{name} ({formulation_type_human})")
+      }
+    } else {
+      cli::cli_alert_info("No formulations found")
     }
-  } else {
-    cli::cli_alert_info("No formulations found")
-  }
+  })
+
+  cat(output, sep = "\n")
   invisible(x)
 }
 
@@ -92,24 +108,28 @@ print.formulation_collection <- function(x, ...) {
 #' @return Invisibly returns the event collection
 #' @export
 print.event_collection <- function(x, ...) {
-  cli::cli_h1("Events ({length(x)})")
+  output <- cli::cli_format_method({
+    cli::cli_h1("Events ({length(x)})")
 
-  if (length(x) > 0) {
-    # Create a bullet point list with names, templates, and parameter counts
-    for (name in names(x)) {
-      event <- x[[name]]
-      template <- event$template
-      param_count <- length(event$parameters)
+    if (length(x) > 0) {
+      # Create a bullet point list with names, templates, and parameter counts
+      for (name in names(x)) {
+        event <- x[[name]]
+        template <- event$template
+        param_count <- length(event$parameters)
 
-      if (param_count > 0) {
-        cli::cli_li("{name} ({template}) - {param_count} parameter{?s}")
-      } else {
-        cli::cli_li("{name} ({template})")
+        if (param_count > 0) {
+          cli::cli_li("{name} ({template}) - {param_count} parameter{?s}")
+        } else {
+          cli::cli_li("{name} ({template})")
+        }
       }
+    } else {
+      cli::cli_alert_info("No events found")
     }
-  } else {
-    cli::cli_alert_info("No events found")
-  }
+  })
+
+  cat(output, sep = "\n")
   invisible(x)
 }
 
@@ -176,22 +196,26 @@ print.parameter_collection <- function(x, ...) {
 #' @return Invisibly returns the expression profile collection
 #' @export
 print.expression_profile_collection <- function(x, ...) {
-  cli::cli_h1("Expression Profiles ({length(x)})")
+  output <- cli::cli_format_method({
+    cli::cli_h1("Expression Profiles ({length(x)})")
 
-  if (length(x) > 0) {
-    # Create a bullet point list with molecule, type and species
-    for (name in names(x)) {
-      profile <- x[[name]]
-      type <- profile$type
-      species <- profile$species
-      molecule <- profile$molecule
-      category <- if (!is.null(profile$category)) profile$category else "N/A"
+    if (length(x) > 0) {
+      # Create a bullet point list with molecule, type and species
+      for (name in names(x)) {
+        profile <- x[[name]]
+        type <- profile$type
+        species <- profile$species
+        molecule <- profile$molecule
+        category <- if (!is.null(profile$category)) profile$category else "N/A"
 
-      cli::cli_li("{molecule} ({type}, {species}, {category})")
+        cli::cli_li("{molecule} ({type}, {species}, {category})")
+      }
+    } else {
+      cli::cli_alert_info("No expression profiles found")
     }
-  } else {
-    cli::cli_alert_info("No expression profiles found")
-  }
+  })
+
+  cat(output, sep = "\n")
   invisible(x)
 }
 
@@ -202,32 +226,36 @@ print.expression_profile_collection <- function(x, ...) {
 #' @return Invisibly returns the protocol collection
 #' @export
 print.protocol_collection <- function(x, ...) {
-  cli::cli_h1("Protocols ({length(x)})")
+  output <- cli::cli_format_method({
+    cli::cli_h1("Protocols ({length(x)})")
 
-  if (length(x) > 0) {
-    # Create a bullet point list with protocol names and types
-    for (name in names(x)) {
-      protocol <- x[[name]]
-      if (protocol$is_advanced) {
-        schema_count <- length(protocol$schemas)
-        cli::cli_li("{name} (Advanced - {schema_count} schema{?s})")
-      } else {
-        type_text <- if (!is.null(protocol$application_type)) {
-          glue::glue(" - {protocol$get_human_application_type()}")
+    if (length(x) > 0) {
+      # Create a bullet point list with protocol names and types
+      for (name in names(x)) {
+        protocol <- x[[name]]
+        if (protocol$is_advanced) {
+          schema_count <- length(protocol$schemas)
+          cli::cli_li("{name} (Advanced - {schema_count} schema{?s})")
         } else {
-          ""
+          type_text <- if (!is.null(protocol$application_type)) {
+            glue::glue(" - {protocol$get_human_application_type()}")
+          } else {
+            ""
+          }
+          interval_text <- if (!is.null(protocol$dosing_interval)) {
+            glue::glue(" - {protocol$get_human_dosing_interval()}")
+          } else {
+            ""
+          }
+          cli::cli_li("{name} (Simple{type_text}{interval_text})")
         }
-        interval_text <- if (!is.null(protocol$dosing_interval)) {
-          glue::glue(" - {protocol$get_human_dosing_interval()}")
-        } else {
-          ""
-        }
-        cli::cli_li("{name} (Simple{type_text}{interval_text})")
       }
+    } else {
+      cli::cli_alert_info("No protocols found")
     }
-  } else {
-    cli::cli_alert_info("No protocols found")
-  }
+  })
+
+  cat(output, sep = "\n")
   invisible(x)
 }
 

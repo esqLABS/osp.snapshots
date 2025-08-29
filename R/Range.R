@@ -73,10 +73,14 @@ Range <- R6::R6Class(
     #'
     #' @return Invisibly returns the Range object for method chaining
     print = function(...) {
-      min_text <- if (is.null(private$.min)) "-∞" else private$.min
-      max_text <- if (is.null(private$.max)) "∞" else private$.max
+      output <- cli::cli_format_method({
+        min_text <- if (is.null(private$.min)) "-∞" else private$.min
+        max_text <- if (is.null(private$.max)) "∞" else private$.max
 
-      cli::cli_text("{min_text} - {max_text} {private$.unit}")
+        cli::cli_text("{min_text} - {max_text} {private$.unit}")
+      })
+
+      cat(output, sep = "\n")
       invisible(self)
     }
   ),

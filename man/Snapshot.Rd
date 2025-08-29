@@ -166,7 +166,7 @@ Print a summary of the snapshot
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisibly returns the object
+Invisibly returns the snapshot object
 }
 }
 \if{html}{\out{<hr>}}

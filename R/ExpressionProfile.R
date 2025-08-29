@@ -23,32 +23,36 @@ ExpressionProfile <- R6::R6Class(
     #' @param ... Additional arguments passed to print methods
     #' @return Invisibly returns the object
     print = function(...) {
-      cli::cli_h1("Expression Profile: {self$molecule} ({self$type})")
+      output <- cli::cli_format_method({
+        cli::cli_h1("Expression Profile: {self$molecule} ({self$type})")
 
-      # Display basic information
-      cli::cli_li("Species: {self$species}")
-      cli::cli_li("Category: {self$category}")
+        # Display basic information
+        cli::cli_li("Species: {self$species}")
+        cli::cli_li("Category: {self$category}")
 
-      if (!is.null(self$data$Localization) && !is.na(self$data$Localization)) {
-        cli::cli_li("Localization: {self$data$Localization}")
-      }
+        if (
+          !is.null(self$data$Localization) && !is.na(self$data$Localization)
+        ) {
+          cli::cli_li("Localization: {self$data$Localization}")
+        }
 
-      if (
-        !is.null(self$data$TransportType) && !is.na(self$data$TransportType)
-      ) {
-        cli::cli_li("Transport Type: {self$transportType}")
-      }
+        if (
+          !is.null(self$data$TransportType) && !is.na(self$data$TransportType)
+        ) {
+          cli::cli_li("Transport Type: {self$transportType}")
+        }
 
-      if (!is.null(self$data$Ontogeny) && length(self$data$Ontogeny) > 0) {
-        cli::cli_li("Ontogeny: {self$data$Ontogeny$Name}")
-      }
+        if (!is.null(self$data$Ontogeny) && length(self$data$Ontogeny) > 0) {
+          cli::cli_li("Ontogeny: {self$data$Ontogeny$Name}")
+        }
 
-      # Display parameter count
-      if (length(self$parameters) > 0) {
-        cli::cli_li("Parameters: {length(self$parameters)}")
-      }
+        # Display parameter count
+        if (length(self$parameters) > 0) {
+          cli::cli_li("Parameters: {length(self$parameters)}")
+        }
+      })
 
-      # Return the object invisibly
+      cat(output, sep = "\n")
       invisible(self)
     },
     #' @description
