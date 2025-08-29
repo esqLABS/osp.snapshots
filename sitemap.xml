@@ -18,6 +18,8 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/add_expression_profile.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/add_formulation.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/add_individual.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/convert_ospsuite_time_to_duration.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/convert_ospsuite_time_unit_to_lubridate.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_formulation.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_individual.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_parameter.html</loc></url>
