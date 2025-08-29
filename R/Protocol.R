@@ -200,14 +200,17 @@ Protocol <- R6::R6Class(
           end_param <- private$extract_parameter(self$parameters, "End time")
 
           if (!is.null(start_param) && !is.null(end_param)) {
-            duration <- lubridate::duration(
+            duration <- convert_ospsuite_time_to_duration(
               end_param$value,
-              units = end_param$unit
+              end_param$unit
             ) -
-              lubridate::duration(start_param$value, units = start_param$unit)
+              convert_ospsuite_time_to_duration(
+                start_param$value,
+                start_param$unit
+              )
             rep_number_val <- as.numeric(duration) /
               as.numeric(
-                lubridate::duration(rep_time_val, units = "h")
+                convert_ospsuite_time_to_duration(rep_time_val, "h")
               )
           }
 
@@ -491,11 +494,14 @@ Protocol <- R6::R6Class(
         return("Once")
       }
 
-      total_time_hours <- rep_time
-      if (rep_time_unit != "h") {
-        # Simple conversion, may need to be more robust for other units
-        total_time_hours <- total_time_hours / 60 # Assuming minutes
-      }
+      # Convert any time unit to hours using the robust conversion function
+      rep_time_duration <- convert_ospsuite_time_to_duration(
+        rep_time,
+        rep_time_unit
+      )
+      one_hour_duration <- convert_ospsuite_time_to_duration(1, "h")
+      total_time_hours <- as.numeric(rep_time_duration) /
+        as.numeric(one_hour_duration)
 
       doses_per_day <- 24 / total_time_hours
 
