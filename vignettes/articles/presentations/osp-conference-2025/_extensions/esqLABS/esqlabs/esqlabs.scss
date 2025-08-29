@@ -1,0 +1,89 @@
+/*-- scss:defaults --*/
+
+// fonts
+
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+$presentation-font-size-root: 30px !default;
+
+// Colors
+$black: rgb(44, 50, 63);
+$white: white;
+$body-color: $black !default;
+$body-bg: $white !default;
+$code-block-bg: #e9e9e9 !default;
+$blue: #26B042 !default;
+$green: #0C87D1 !default;
+$red: #EB1733 !default;
+
+// headings
+$presentation-heading-font: 'Comfortaa', sans-serif !default;
+$presentation-h1-text-shadow: 2px 4px 3px rgba($body-color, 0.3) !default;
+$presentation-h2-text-shadow: 2px 1px 2px rgba($body-color, 0.3) !default;
+$presentation-heading-font-weight: bold !default;
+$presentation-h3-font-size: 1.1em !default;
+$presentation-heading-line-height: 1.8 !default;
+
+// text
+$font-family-sans-serif: 'Open Sans', sans-serif !default;
+$presentation-line-height: 1.4 !default;
+
+// code
+$font-family-monospace: 'Fira Code', monospace !default;
+
+/*-- scss:rules --*/
+
+.picture {
+  border-style: solid;
+  border-width: 3pt;
+  border-color: $body-color;
+  border-radius: 50%;
+  padding: 5pt;
+  height: 50%;
+  width: auto;
+}
+
+#title-slide .subtitle {
+  font-family: $presentation-heading-font;
+  font-size: $presentation-h4-font-size;
+  font-weight: 700;
+  font-style: italic;
+}
+
+#title-slide .quarto-title-author-name {
+  font-size: 0.7em;
+}
+
+#title-slide .quarto-title-affiliation {
+  font-size: 0.7em;
+}
+
+#title-slide .date {
+  font-size: 0.7em;
+}
+
+.kable-table {
+  font-size: 0.9rem;
+}
+
+.pagedtable-footer {
+  font-size: 0.8rem;
+}
+
+
+.center-x {
+  text-align: center;
+}
+
+.reveal .slide figure>figcaption {
+   text-align: center;
+   font-size: 0.6em;
+   color: #A9A9A9;
+}
+
+.caption {
+   text-align: center;
+   font-size: 0.6em;
+   color: #A9A9A9;
+}

@@ -1,0 +1,276 @@
+---
+format: 
+  esqlabs-revealjs:
+    code-block-height: 400px
+execute: 
+  echo: true
+  output: true
+auto-stretch: false
+---
+
+# Tools and workflows for automated reporting of PBPK modeling with OSP.  {.center}
+
+::: center
+**Felix Mil** (ESQlabs)\
+**Ghazal Montaseri** (Boehringer Ingelheim Pharma GmbH)
+
+📍 OSP Conference, Paris\
+📅 September 29, 2025
+:::
+
+# What is available today?
+
+::: center
+*Current reporting toolbox*
+:::
+
+## Reporting Engine: Streamlined report generation using predefined workflows. {.center}
+
+![](images/paste-1.png){fig-align="center"}
+
+## `{ospsuite}` can generate some standardized and reusable outputs. {.center}
+
+![](images/paste-2.png){fig-align="center" height="400px"}
+
+## `{ospsuite}` lacks ways to easily generate other outputs than plots. {.center}
+
+![](images/paste-4.png){fig-align="center" height="400px"}
+
+# PK-Sim Snapshots
+
+::: center
+*JSON representation of PK-Sim projects*
+:::
+
+## PK-Sim Snapshots are comprehensive.  {.center}
+
+``` json
+{
+  "Version": 79,
+  "ExpressionProfiles": [...],
+  "Individuals": [],
+  "Populations": [...],
+  "Compounds": [...],
+  "Formulations": [...],
+  "Protocols": [...],
+  "ObserverSets": [...],
+  "Events": [...],
+  "Simulations": [...],
+  "ParameterIdentifications": [...],
+  "ObservedData": [...]
+} 
+```
+
+## PK-Sim Snapshots are deeply nested data structure.  {.center}
+ 
+```json
+"Individuals": [
+    {
+      "Name": "European (P-gp modified, CYP3A4 36 h)",
+      "Seed": 17189110,
+      "OriginData": {
+        "CalculationMethods": [
+          "SurfaceAreaPlsInt_VAR1",
+          "Body surface area - Mosteller"
+        ],
+        "Species": "Human",
+        "Population": "European_ICRP_2002",
+        "Gender": "MALE",
+        "Age": {
+          "Value": 30.0,
+          "Unit": "year(s)"
+        }
+      },
+      "Parameters": [
+        {
+          "Path": "Organism|Gallbladder|Gallbladder ejection fraction",
+          "Value": 0.8,
+          "ValueOrigin": {
+            "Source": "Publication",
+            "Description": "R24-4081"
+          }
+        },
+        {
+          "Path": "Organism|Liver|EHC continuous fraction",
+          "Value": 1.0,
+          "ValueOrigin": {
+            "Source": "Publication",
+            "Description": "R24-4081"
+          }
+        }
+      ],
+      "ExpressionProfiles": [
+        "CYP3A4|Human|Healthy",
+        "AADAC|Human|Healthy",
+        "P-gp|Human|Healthy",
+        "OATP1B1|Human|Healthy",
+        "ATP1A2|Human|Healthy",
+        "UGT1A4|Human|Healthy",
+        "GABRG2|Human|Healthy"
+      ]
+    },
+    {
+      "Name": "Korean (Yu 2004 study)",
+      "Seed": 52995890,
+      "OriginData": {
+        "CalculationMethods": [
+          "SurfaceAreaPlsInt_VAR1",
+          "Body surface area - Mosteller"
+        ],
+        "Species": "Human",
+        "Population": "Asian_Tanaka_1996",
+        "Gender": "MALE",
+        "Age": {
+          "Value": 23.3,
+          "Unit": "year(s)"
+        },
+        "Weight": {
+          "Value": 66.9,
+          "Unit": "kg"
+        },
+        "Height": {
+          "Value": 172.9,
+          "Unit": "cm"
+        }
+      },
+      "Parameters": [
+        {
+          "Path": "Organism|Liver|EHC continuous fraction",
+          "Value": 1.0,
+          "ValueOrigin": {
+            "Source": "Unknown"
+          }
+        },
+        {
+          "Path": "Organism|Ontogeny factor (albumin)",
+          "Value": 0.89,
+          "ValueOrigin": {
+            "Source": "Publication",
+            "Description": "R24-4081"
+          }
+        }
+      ],
+      "ExpressionProfiles": [
+        "CYP3A4|Human|Korean (Yu 2004 study)",
+        "AADAC|Human|Korean (Yu 2004 study)",
+        "P-gp|Human|Korean (Yu 2004 study)",
+        "OATP1B1|Human|Korean (Yu 2004 study)",
+        "ATP1A2|Human|Korean (Yu 2004 study)",
+        "UGT1A4|Human|Korean (Yu 2004 study)",
+        "GABRG2|Human|Korean (Yu 2004 study)"
+      ]
+    },
+
+```
+
+
+
+## PK-Sim Snapshots are difficult to navigate. {.center}
+
+```{r}
+#| echo: false
+snapshot <- jsonlite::fromJSON(
+  system.file(
+    "extdata",
+    "test_snapshot.json",
+    package = "osp.snapshots"
+  ),
+  simplifyVector = FALSE,
+  simplifyDataFrame = FALSE
+)
+```
+
+```{r}
+snapshot$Individuals
+```
+
+## PK-Sim Snapshots are difficult to navigate.  {.center}
+```{r}
+snapshot$Individuals[[1]]$Parameters[[1]]$Path
+snapshot$Individuals[[1]]$Parameters[[1]]$Value
+```
+
+## PK-Sim Snapshots are difficult to extract data from. {.center}
+
+```{r}
+# Extract individual parameters paths
+purrr::map(
+  snapshot$Individuals,
+  ~ purrr::map(
+    .x$Parameters,
+    ~ .x$Path
+  ) |>
+    purrr::list_c()
+) |>
+  purrr::list_c()
+
+```
+
+# `{osp.snapshots}`
+
+::: center
+*A R package to work with PK-Sim Snapshots*
+:::
+
+
+## `{osp.snapshots}`
+
+- Load
+- Explore
+- Edit
+- Extract
+- Report
+- Export
+
+
+
+```{r}
+#| label: setup
+#| include: false
+
+devtools::load_all()
+
+```
+
+## Load Library
+
+```{r}
+#| eval: false
+library(osp.snapshots)
+```
+
+## Load Snapshot
+
+```{r}
+snapshot_path <- system.file(
+  "extdata",
+  "test_snapshot.json",
+  package = "osp.snapshots"
+)
+
+snapshot <- load_snapshot(snapshot_path)
+```
+
+## Explore Snapshot
+
+{osp.snapshots} provides a print method for snapshot objects that summarizes the content of the snapshot.
+
+```{r}
+snapshot
+```
+
+## Explore building blocks
+
+### List elements per building block type
+
+```{r}
+snapshot$individuals
+```
+
+------------------------------------------------------------------------
+
+### Explore a specific building block
+
+```{r}
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+```
