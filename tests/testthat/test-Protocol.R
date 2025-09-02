@@ -164,8 +164,6 @@ test_that("Protocol to_df method works correctly", {
 })
 
 test_that("Protocol handles different types correctly", {
-  devtools::load_all()
-
   # Test different application types
   iv_data <- simple_protocol_data
   iv_data$ApplicationType <- "IntravenousBolus"
@@ -188,8 +186,6 @@ test_that("Protocol handles different types correctly", {
 })
 
 test_that("Protocol parameters are converted to Parameter objects", {
-  devtools::load_all()
-
   simple_protocol <- Protocol$new(simple_protocol_data)
 
   # Test that parameters are Parameter objects
@@ -207,8 +203,6 @@ test_that("Protocol parameters are converted to Parameter objects", {
 })
 
 test_that("Protocol schema structure is correct", {
-  devtools::load_all()
-
   advanced_protocol <- Protocol$new(advanced_protocol_data)
 
   # Test schema structure
@@ -228,8 +222,6 @@ test_that("Protocol schema structure is correct", {
 })
 
 test_that("Protocol handles empty data gracefully", {
-  devtools::load_all()
-
   # Test minimal protocol data
   minimal_data <- list(
     Name = "Minimal Protocol",
@@ -275,4 +267,153 @@ test_that("get_protocols_dfs function works", {
   protocols_df <- get_protocols_dfs(snapshot)
 
   expect_snapshot(print(protocols_df, width = Inf))
+})
+
+test_that("Protocol handles problematic time units correctly", {
+  # Create a protocol with the problematic "day(s)" unit
+  protocol_data_with_days <- list(
+    Name = "Test Protocol with day(s) unit",
+    ApplicationType = "Oral",
+    DosingInterval = "DI_12_12",
+    Parameters = list(
+      list(
+        Name = "Start time",
+        Value = 0.0,
+        Unit = "day(s)"
+      ),
+      list(
+        Name = "End time",
+        Value = 7.0,
+        Unit = "day(s)"
+      ),
+      list(
+        Name = "InputDose",
+        Value = 10.0,
+        Unit = "mg"
+      )
+    ),
+    TimeUnit = "day(s)"
+  )
+
+  # This should not throw an error anymore
+  protocol <- Protocol$new(protocol_data_with_days)
+  expect_s3_class(protocol, "R6")
+  expect_true("Protocol" %in% class(protocol))
+
+  # Converting to data frame should work without errors
+  expect_no_error(df <- protocol$to_df())
+  expect_s3_class(df, "tbl_df")
+  expect_true(nrow(df) > 0)
+})
+
+test_that("Protocol handles various ospsuite time units", {
+  # Test different time units that ospsuite supports
+  time_units_to_test <- c(
+    "s",
+    "min",
+    "h",
+    "day(s)",
+    "week(s)",
+    "month(s)",
+    "year(s)",
+    "ks"
+  )
+
+  for (unit in time_units_to_test) {
+    protocol_data <- list(
+      Name = paste("Test Protocol with", unit, "unit"),
+      ApplicationType = "Oral",
+      DosingInterval = "Single",
+      Parameters = list(
+        list(
+          Name = "Start time",
+          Value = 0.0,
+          Unit = unit
+        ),
+        list(
+          Name = "InputDose",
+          Value = 10.0,
+          Unit = "mg"
+        )
+      ),
+      TimeUnit = unit
+    )
+
+    # Should not throw errors for any supported ospsuite time unit
+    expect_no_error({
+      protocol <- Protocol$new(protocol_data)
+      df <- protocol$to_df()
+    })
+  }
+})
+
+test_that("Protocol get_dosing_interval_from_reps handles various time units", {
+  # Create an advanced protocol to test get_dosing_interval_from_reps with different units
+  create_advanced_protocol_with_time_unit <- function(time_val, time_unit) {
+    list(
+      Name = "Test Advanced Protocol",
+      DosingInterval = "Single",
+      Schemas = list(
+        list(
+          Name = "Schema 1",
+          SchemaItems = list(
+            list(
+              Name = "Schema Item 1",
+              ApplicationType = "Oral",
+              FormulationKey = "Test Formulation",
+              Parameters = list(
+                list(
+                  Name = "Start time",
+                  Value = 0.0,
+                  Unit = "h"
+                ),
+                list(
+                  Name = "InputDose",
+                  Value = 15.0,
+                  Unit = "mg"
+                )
+              )
+            )
+          ),
+          Parameters = list(
+            list(
+              Name = "Start time",
+              Value = 0.0,
+              Unit = "h"
+            ),
+            list(
+              Name = "NumberOfRepetitions",
+              Value = 3.0
+            ),
+            list(
+              Name = "TimeBetweenRepetitions",
+              Value = time_val,
+              Unit = time_unit
+            )
+          )
+        )
+      ),
+      TimeUnit = "h"
+    )
+  }
+
+  # Test different time units for TimeBetweenRepetitions
+  test_cases <- list(
+    list(value = 8, unit = "h", expected_interval = "3 times a day"), # 8 hours = 3 times/day
+    list(value = 12, unit = "h", expected_interval = "2 times a day"), # 12 hours = 2 times/day
+    list(value = 0.5, unit = "day(s)", expected_interval = "2 times a day"), # 0.5 days = 12 hours = 2 times/day
+    list(value = 480, unit = "min", expected_interval = "3 times a day"), # 480 minutes = 8 hours = 3 times/day
+    list(value = 1, unit = "day(s)", expected_interval = "Once a day") # 1 day = once/day
+  )
+
+  for (test_case in test_cases) {
+    protocol_data <- create_advanced_protocol_with_time_unit(
+      test_case$value,
+      test_case$unit
+    )
+    protocol <- Protocol$new(protocol_data)
+    df <- protocol$to_df()
+
+    expect_equal(df$dosing_interval[1], test_case$expected_interval)
+  }
 })
