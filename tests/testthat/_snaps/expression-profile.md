@@ -2,7 +2,7 @@
 
     Code
       print(complete_expression_profile)
-    Message
+    Output
       
       -- Expression Profile: CYP3A4 (Enzyme) -----------------------------------------
       * Species: Human
@@ -16,7 +16,7 @@
 
     Code
       print(minimal_expression_profile)
-    Message
+    Output
       
       -- Expression Profile: P-gp (Transporter) --------------------------------------
       * Species: Human
@@ -26,7 +26,7 @@
 
     Code
       print(without_category_expression_profile)
-    Message
+    Output
       
       -- Expression Profile: OATP1B1 (Transporter) -----------------------------------
       * Species: Rat
@@ -37,7 +37,7 @@
 
     Code
       print(profiles)
-    Message
+    Output
       
       -- Expression Profiles (3) -----------------------------------------------------
       * CYP3A4 (Enzyme, Human, Healthy)
@@ -48,7 +48,7 @@
 
     Code
       print(empty_profiles)
-    Message
+    Output
       
       -- Expression Profiles (0) -----------------------------------------------------
       i No expression profiles found
@@ -57,7 +57,7 @@
 
     Code
       print(profiles)
-    Message
+    Output
       
       -- Expression Profiles (14) ----------------------------------------------------
       * CYP3A4 (Enzyme, Human, Healthy)

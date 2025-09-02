@@ -431,3 +431,56 @@ test_that("All main sections are empty in an empty snapshot", {
   expect_equal(snapshot$data$ObservedDataClassifications, list())
   expect_equal(snapshot$data$ParameterIdentifications, list())
 })
+
+test_that("export_snapshot function works correctly", {
+  # Create a snapshot object
+  snapshot <- test_snapshot$clone()
+
+  # Test with valid inputs
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  result <- export_snapshot(snapshot, temp_file)
+
+  # Check that the function returns the snapshot invisibly
+  expect_s3_class(result, "Snapshot")
+  expect_identical(result, snapshot)
+
+  # Check that the file was created
+  expect_true(file.exists(temp_file))
+
+  # Verify the exported data is valid JSON
+  exported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE)
+  expect_equal(exported_data$Version, snapshot$data$Version)
+
+  # Test error handling for invalid snapshot input
+  expect_error(
+    export_snapshot("not_a_snapshot", temp_file),
+    "Expected a Snapshot object"
+  )
+
+  expect_error(
+    export_snapshot(NULL, temp_file),
+    "Expected a Snapshot object"
+  )
+
+  # Test error handling for invalid path input
+  expect_error(
+    export_snapshot(snapshot, NULL),
+    "Path must be a single character string"
+  )
+
+  expect_error(
+    export_snapshot(snapshot, c("path1", "path2")),
+    "Path must be a single character string"
+  )
+
+  expect_error(
+    export_snapshot(snapshot, 123),
+    "Path must be a single character string"
+  )
+
+  # Test missing path argument
+  expect_error(
+    export_snapshot(snapshot),
+    "Path must be a single character string"
+  )
+})

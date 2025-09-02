@@ -1384,3 +1384,40 @@ remove_expression_profile <- function(snapshot, profile_id) {
   # Return the updated snapshot
   invisible(snapshot)
 }
+
+#' Export a snapshot to a JSON file
+#'
+#' @description
+#' Export a Snapshot object to a JSON file. This is a convenient wrapper
+#' around the `$export()` method of the Snapshot class.
+#'
+#' @param snapshot A Snapshot object
+#' @param path Character string. Path where to save the JSON file
+#' @return Invisibly returns the snapshot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#'
+#' # Export to a new file
+#' export_snapshot(snapshot, "path/to/exported_snapshot.json")
+#' }
+export_snapshot <- function(snapshot, path) {
+  # Validate that the snapshot is a Snapshot object
+  validate_snapshot(snapshot)
+
+  # Validate that path is provided and is a character string
+  if (
+    missing(path) || is.null(path) || !is.character(path) || length(path) != 1
+  ) {
+    cli::cli_abort("Path must be a single character string")
+  }
+
+  # Call the export method of the Snapshot class
+  snapshot$export(path)
+
+  # Return the updated snapshot invisibly
+  invisible(snapshot)
+}
