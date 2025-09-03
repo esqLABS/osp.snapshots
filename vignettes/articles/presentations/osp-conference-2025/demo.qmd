@@ -9,15 +9,17 @@ execute:
 auto-stretch: false
 ---
 
+##  {footer="false" background-image="images/paste-5.png" background-size="contain" header="false"}
 
-## {footer='false' background-image="images/paste-5.png" background-size="contain" header='false' }
-
+```{=html}
 <style>
 .reveal .reveal-header.hide-on-first {
   display: none !important;
 }
 </style>
+```
 
+```{=html}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const header = document.querySelector('.reveal .reveal-header');
@@ -40,10 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
   Reveal.addEventListener('slidechanged', toggleHeaderOnFirstSlide);
 });
 </script>
-
-
-
-
+```
 
 # What is available today?
 
@@ -171,7 +170,7 @@ snapshot <- jsonlite::fromJSON(
 snapshot$Compounds
 ```
 
-## PK-Sim Snapshots are difficult to navigate.
+------------------------------------------------------------------------
 
 ```{r}
 snapshot$Compounds[[1]]$Lipophilicity[[1]]
@@ -193,18 +192,30 @@ purrr::map(
 
 ```
 
+## The Problem {.center}
+
+::: {.fragment .fade-in}
+PK-Sim Snapshots are **comprehensive** but **complex**
+:::
+
+::: {.fragment .fade-in}
+Standard R tools make data extraction **tedious** and **error-prone**
+:::
+
+## The Solution {.center}
+
+An **intuitive** and **powerful** interface: `{osp.snapshots}`.
+
 # `{osp.snapshots}`
 
 ::: center
-*A R package to work with PK-Sim Snapshots*
+*An R package to work with PK-Sim Snapshots*
 :::
 
 ```{r}
 #| label: setup
 #| include: false
-
 devtools::load_all()
-
 ```
 
 ## `{osp.snapshots}` is an open source package that anyone can use and contribute to.
@@ -219,7 +230,7 @@ library(osp.snapshots)
 
 ## `{osp.snapshots}` Features
 
--   **Load** snapshots
+-   📂 **Load** snapshots
 
 ## `{osp.snapshots}` can load snapshots from different sources
 
@@ -250,8 +261,8 @@ snapshot <- load_snapshot("Rifampicin")
 
 ## `{osp.snapshots}` Features
 
--   **Load** from different sources
--   **Explore** snapshots and its building blocks
+-   📂 **Load** from different sources
+-   🔍 **Explore** snapshots and its building blocks
 
 ## `{osp.snapshots}` provides an intuitive interface to navigate snapshots
 
@@ -260,6 +271,8 @@ snapshot <- load_snapshot("Rifampicin")
 ```{r}
 snapshot
 ```
+
+------------------------------------------------------------------------
 
 ### List elements per building block type
 
@@ -292,11 +305,13 @@ snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$gender
 snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$weight
 ```
 
+------------------------------------------------------------------------
+
 ## `{osp.snapshots}` Features
 
--   **Load** from different sources
--   **Explore** snapshots and building blocks
--   **Edit** snapshots programmatically
+-   📂 **Load** from different sources
+-   🔍 **Explore** snapshots and building blocks
+-   ✏️ **Edit** snapshots programmatically
 
 ------------------------------------------------------------------------
 
@@ -320,21 +335,33 @@ snapshot$individuals
 
 ------------------------------------------------------------------------
 
+**Before:**
+
 ```{r}
 # Edit building block
 snapshot$individuals$`Demo Patient`
+```
 
+**Modify:**
+
+```{r}
 snapshot$individuals$`Demo Patient`$height <- 165
+```
 
+**After:**
+
+```{r}
 snapshot$individuals$`Demo Patient`
 ```
 
+------------------------------------------------------------------------
+
 ## `{osp.snapshots}` Features
 
--   **Load** from different sources
--   **Explore** snapshots and building blocks
--   **Edit** snapshots programmatically
--   **Extract** deeply nested data into flat structures
+-   📂 **Load** from different sources
+-   🔍 **Explore** snapshots and building blocks
+-   ✏️ **Edit** snapshots programmatically
+-   📊 **Extract** deeply nested data into flat structures
 
 ## `{osp.snapshots}` extracts data and generates data frames
 
@@ -358,8 +385,6 @@ head(dplyr::select(
 
 ------------------------------------------------------------------------
 
-### Individual parameters as data frame
-
 ```{r}
 # Some building blocks are extracted as list of data frames
 get_individuals_dfs(snapshot)
@@ -367,11 +392,11 @@ get_individuals_dfs(snapshot)
 
 ## `{osp.snapshots}` Features
 
--   **Load** from different sources
--   **Explore** snapshots and building blocks
--   **Edit** snapshots programmatically
--   **Extract** deeply nested data into flat structures
--   **Export** snapshots
+-   📂 **Load** from different sources
+-   🔍 **Explore** snapshots and building blocks
+-   ✏️ **Edit** snapshots programmatically
+-   📊 **Extract** deeply nested data into flat structures
+-   💾 **Export** snapshots
 
 ## `{osp.snapshots}` is fully interoperable with PK-Sim
 
@@ -383,24 +408,27 @@ export_snapshot(snapshot, "Rifampicin_modified.json")
 
 ## `{osp.snapshots}` Features
 
--   **Load** from different sources
--   **Explore** snapshots and building blocks
--   **Edit** snapshots programmatically
--   **Extract** deeply nested data into flat structures
--   **Export** snapshots
+-   📂 **Load** from different sources
+-   🔍 **Explore** snapshots and building blocks
+-   ✏️ **Edit** snapshots programmatically
+-   📊 **Extract** deeply nested data into flat structures
+-   💾 **Export** snapshots
+
+::: notes
+All these features makes reporting easier and less error-prone: The abilitity to load, interactively explore and programatically edit and extract all pbpk project details to tidy formats is the perfect toolbox to streamline report generation.
+:::
 
 # What's next?
 
 ::: incremental
--   **More building blocks**
--   **Plotting**
--   **Simulations Design**
+-   🧱 **More building blocks**
+-   📈 **Plotting**
+-   🔬 **Simulations Design**
 :::
 
 # Thank you!
 
 ::: header
-
 :::
 
 🔗 [github.com/esqLABS/osp.snapshots](https://github.com/esqLABS/osp.snapshots)
