@@ -7,6 +7,7 @@
       i Found template: https://raw.githubusercontent.com/Open-Systems-Pharmacology/Rifampicin-Model/v2.0/Rifampicin-Model.json
       i Creating snapshot from list data
       v Snapshot loaded successfully
+    Output
       
       -- PKSIM Snapshot --------------------------------------------------------------
       i Version: 80 (PKSIM 12.0)
@@ -26,7 +27,7 @@
 
     Code
       snapshot
-    Message
+    Output
       
       -- PKSIM Snapshot --------------------------------------------------------------
       i Version: 79 (PKSIM 11.2)

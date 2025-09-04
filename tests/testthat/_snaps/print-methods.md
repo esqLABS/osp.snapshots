@@ -2,7 +2,7 @@
 
     Code
       print(test_snapshot$compounds)
-    Message
+    Output
       
       -- Compounds (6) ---------------------------------------------------------------
       * Rifampicin
@@ -16,7 +16,7 @@
 
     Code
       print(compounds_named)
-    Message
+    Output
       
       -- Compounds (0) ---------------------------------------------------------------
       i No compounds found
@@ -25,7 +25,7 @@
 
     Code
       print(test_snapshot$individuals)
-    Message
+    Output
       
       -- Individuals (5) -------------------------------------------------------------
       * European (P-gp modified, CYP3A4 36 h)
@@ -38,7 +38,7 @@
 
     Code
       print(individuals_named)
-    Message
+    Output
       
       -- Individuals (0) -------------------------------------------------------------
       i No individuals found
@@ -47,7 +47,7 @@
 
     Code
       print(test_snapshot$formulations)
-    Message
+    Output
       
       -- Formulations (9) ------------------------------------------------------------
       * Tablet (Dormicum) (Weibull)
@@ -64,7 +64,7 @@
 
     Code
       print(formulations_named)
-    Message
+    Output
       
       -- Formulations (0) ------------------------------------------------------------
       i No formulations found
@@ -105,7 +105,7 @@
 
     Code
       print(profiles)
-    Message
+    Output
       
       -- Expression Profiles (3) -----------------------------------------------------
       * CYP3A4 (Enzyme, Human, Healthy)
@@ -116,7 +116,7 @@
 
     Code
       print(profiles_named)
-    Message
+    Output
       
       -- Expression Profiles (0) -----------------------------------------------------
       i No expression profiles found

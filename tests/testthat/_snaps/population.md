@@ -2,7 +2,7 @@
 
     Code
       print(complete_population)
-    Message
+    Output
       
       -- Population: Test Population (Seed: 12345) --
       
@@ -23,7 +23,7 @@
 
     Code
       print(minimal_population)
-    Message
+    Output
       
       -- Population: Minimal Population --
       
@@ -35,7 +35,7 @@
 
     Code
       print(advanced_param)
-    Message
+    Output
       Parameter: Modified Parameter
       Distribution type: LogNormal
       Seed: 98765
@@ -112,7 +112,7 @@
 
     Code
       print(snapshot$populations)
-    Message
+    Output
       
       -- Populations (0) -------------------------------------------------------------
       i No populations found
