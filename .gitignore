@@ -5,3 +5,5 @@
 docs
 legacy_code
 /.quarto/
+**/.quarto/
+**_cache/

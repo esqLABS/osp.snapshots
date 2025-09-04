@@ -10,3 +10,6 @@
 ^\.cursor/
 ^legacy_code$
 ^legacy_code/
+^vignettes/articles/\.quarto$
+^vignettes/articles/*_files$
+^vignettes/articles$

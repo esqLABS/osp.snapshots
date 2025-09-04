@@ -40,24 +40,26 @@ Event <- R6::R6Class(
     #' @param ... Additional arguments passed to print methods
     #' @return Invisibly returns the object
     print = function(...) {
-      cli::cli_h1("Event: {self$name}")
+      output <- cli::cli_format_method({
+        cli::cli_h1("Event: {self$name}")
 
-      # Display the template
-      cli::cli_li("Template: {self$template}")
+        # Display the template
+        cli::cli_li("Template: {self$template}")
 
-      # Display parameters if any
-      if (length(self$parameters) > 0) {
-        cli::cli_h2("Parameters:")
-        for (param in self$parameters) {
-          if (!is.null(param$unit)) {
-            cli::cli_li("{param$name}: {param$value} {param$unit}")
-          } else {
-            cli::cli_li("{param$name}: {param$value}")
+        # Display parameters if any
+        if (length(self$parameters) > 0) {
+          cli::cli_h2("Parameters:")
+          for (param in self$parameters) {
+            if (!is.null(param$unit)) {
+              cli::cli_li("{param$name}: {param$value} {param$unit}")
+            } else {
+              cli::cli_li("{param$name}: {param$value}")
+            }
           }
         }
-      }
+      })
 
-      # Return the object invisibly
+      cat(output, sep = "\n")
       invisible(self)
     },
 

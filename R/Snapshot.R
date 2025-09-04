@@ -128,35 +128,43 @@ Snapshot <- R6::R6Class(
     #' @description
     #' Print a summary of the snapshot
     #' @param ... Additional arguments passed to print methods
-    #' @return Invisibly returns the object
+    #' @return Invisibly returns the snapshot object
     print = function(...) {
-      cli::cli_h1("PKSIM Snapshot")
+      # Use cli_format_method for beautiful CLI formatting
+      output <- cli::cli_format_method({
+        cli::cli_h1("PKSIM Snapshot")
 
-      # Version information
-      raw_version <- private$.original_data$Version
-      pksim_version <- self$pksim_version
-      cli::cli_alert_info("Version: {raw_version} (PKSIM {pksim_version})")
+        # Version information
+        raw_version <- private$.original_data$Version
+        pksim_version <- self$pksim_version
+        cli::cli_alert_info("Version: {raw_version} (PKSIM {pksim_version})")
 
-      # Display path if available
-      if (!is.null(private$.abs_path)) {
-        cli::cli_alert_info("Path: {.file {self$path}}")
-      }
-
-      # Get all sections dynamically from the data
-      # We'll exclude Version as it's already displayed
-      sections <- names(self$data)[names(self$data) != "Version"]
-
-      # Display counts for each section in alphabetical order
-      for (section in sort(sections)) {
-        # Only display sections that are lists (collections)
-        if (is.list(self$data[[section]])) {
-          items <- self$data[[section]]
-          count <- length(items)
-          cli::cli_li("{section}: {count}")
+        # Display path if available
+        if (!is.null(private$.abs_path)) {
+          cli::cli_alert_info("Path: {.file {self$path}}")
         }
-      }
 
-      # Return the object invisibly
+        # Get all sections dynamically from the data
+        # We'll exclude Version as it's already displayed
+        sections <- names(self$data)[names(self$data) != "Version"]
+
+        # Display counts for each section in alphabetical order
+        if (length(sections) > 0) {
+          for (section in sort(sections)) {
+            # Only display sections that are lists (collections)
+            if (is.list(self$data[[section]])) {
+              items <- self$data[[section]]
+              count <- length(items)
+              cli::cli_li("{section}: {count}")
+            }
+          }
+        }
+      })
+
+      # Use cat for consistent output with other print methods
+      cat(output, sep = "\n")
+
+      # Return invisibly for method chaining
       invisible(self)
     },
 
@@ -1374,5 +1382,42 @@ remove_expression_profile <- function(snapshot, profile_id) {
   snapshot$remove_expression_profile(profile_id)
 
   # Return the updated snapshot
+  invisible(snapshot)
+}
+
+#' Export a snapshot to a JSON file
+#'
+#' @description
+#' Export a Snapshot object to a JSON file. This is a convenient wrapper
+#' around the `$export()` method of the Snapshot class.
+#'
+#' @param snapshot A Snapshot object
+#' @param path Character string. Path where to save the JSON file
+#' @return Invisibly returns the snapshot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#'
+#' # Export to a new file
+#' export_snapshot(snapshot, "path/to/exported_snapshot.json")
+#' }
+export_snapshot <- function(snapshot, path) {
+  # Validate that the snapshot is a Snapshot object
+  validate_snapshot(snapshot)
+
+  # Validate that path is provided and is a character string
+  if (
+    missing(path) || is.null(path) || !is.character(path) || length(path) != 1
+  ) {
+    cli::cli_abort("Path must be a single character string")
+  }
+
+  # Call the export method of the Snapshot class
+  snapshot$export(path)
+
+  # Return the updated snapshot invisibly
   invisible(snapshot)
 }

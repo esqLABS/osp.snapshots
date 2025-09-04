@@ -2,7 +2,7 @@
 
     Code
       print(snapshot$compounds)
-    Message
+    Output
       
       -- Compounds (6) ---------------------------------------------------------------
       * Rifampicin

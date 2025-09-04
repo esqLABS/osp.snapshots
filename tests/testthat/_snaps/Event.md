@@ -2,7 +2,7 @@
 
     Code
       print(events)
-    Message
+    Output
       
       -- Events (2) ------------------------------------------------------------------
       * meal (Meal: Standard (Human)) - 3 parameters
@@ -12,7 +12,7 @@
 
     Code
       print(empty_events)
-    Message
+    Output
       
       -- Events (0) ------------------------------------------------------------------
       i No events found
@@ -21,7 +21,7 @@
 
     Code
       snapshot$events
-    Message
+    Output
       
       -- Events (10) -----------------------------------------------------------------
       * GB emptying (Gallbladder emptying)

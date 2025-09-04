@@ -83,75 +83,78 @@ Population <- R6::R6Class(
     #'
     #' @return Invisibly returns the Population object for method chaining
     print = function(...) {
-      # Header with name and seed (if available)
-      seed_text <- if (!is.null(self$seed)) {
-        glue::glue(" (Seed: {self$seed})")
-      } else {
-        ""
-      }
-      cli::cli_h2("Population: {self$name}{seed_text}")
+      output <- cli::cli_format_method({
+        # Header with name and seed (if available)
+        seed_text <- if (!is.null(self$seed)) {
+          glue::glue(" (Seed: {self$seed})")
+        } else {
+          ""
+        }
+        cli::cli_h2("Population: {self$name}{seed_text}")
 
-      # Individual name (if available)
-      if (!is.null(self$individual_name)) {
-        cli::cli_text("Individual name: {self$individual_name}")
-      }
+        # Individual name (if available)
+        if (!is.null(self$individual_name)) {
+          cli::cli_text("Individual name: {self$individual_name}")
+        }
 
-      # Source population (if available)
-      if (!is.null(self$source_population)) {
+        # Source population (if available)
+        if (!is.null(self$source_population)) {
+          cli::cli_text(
+            "Source Population: {self$source_population}"
+          )
+        }
+
+        # Basic properties
+        cli::cli_text("Number of individuals: {self$number_of_individuals}")
         cli::cli_text(
-          "Source Population: {self$source_population}"
+          "Proportion of females: {self$proportion_of_females}%"
         )
-      }
 
-      # Basic properties
-      cli::cli_text("Number of individuals: {self$number_of_individuals}")
-      cli::cli_text(
-        "Proportion of females: {self$proportion_of_females}%"
-      )
+        # Age range
+        if (!is.null(self$age_range)) {
+          cli::cli_text(
+            "Age range: {self$age_range$min} - {self$age_range$max} {self$age_range$unit}"
+          )
+        }
 
-      # Age range
-      if (!is.null(self$age_range)) {
-        cli::cli_text(
-          "Age range: {self$age_range$min} - {self$age_range$max} {self$age_range$unit}"
-        )
-      }
+        # Weight range (if available)
+        if (!is.null(self$weight_range)) {
+          cli::cli_text(
+            "Weight range: {self$weight_range$min} - {self$weight_range$max} {self$weight_range$unit}"
+          )
+        }
 
-      # Weight range (if available)
-      if (!is.null(self$weight_range)) {
-        cli::cli_text(
-          "Weight range: {self$weight_range$min} - {self$weight_range$max} {self$weight_range$unit}"
-        )
-      }
+        # Height range (if available)
+        if (!is.null(self$height_range)) {
+          cli::cli_text(
+            "Height range: {self$height_range$min} - {self$height_range$max} {self$height_range$unit}"
+          )
+        }
 
-      # Height range (if available)
-      if (!is.null(self$height_range)) {
-        cli::cli_text(
-          "Height range: {self$height_range$min} - {self$height_range$max} {self$height_range$unit}"
-        )
-      }
+        # BMI range (if available)
+        if (!is.null(self$bmi_range)) {
+          cli::cli_text(
+            "BMI range: {self$bmi_range$min} - {self$bmi_range$max} {self$bmi_range$unit}"
+          )
+        }
 
-      # BMI range (if available)
-      if (!is.null(self$bmi_range)) {
-        cli::cli_text(
-          "BMI range: {self$bmi_range$min} - {self$bmi_range$max} {self$bmi_range$unit}"
-        )
-      }
+        # Disease state parameter ranges (eGFR for now)
+        if (!is.null(self$egfr_range)) {
+          cli::cli_text(
+            "eGFR range: {self$egfr_range$min} - {self$egfr_range$max} {self$egfr_range$unit}"
+          )
+        }
 
-      # Disease state parameter ranges (eGFR for now)
-      if (!is.null(self$egfr_range)) {
-        cli::cli_text(
-          "eGFR range: {self$egfr_range$min} - {self$egfr_range$max} {self$egfr_range$unit}"
-        )
-      }
+        # Advanced parameters
+        if (length(private$.advanced_parameters) > 0) {
+          cli::cli_h3("Advanced Parameters")
+          cli::cli_text(
+            "{length(private$.advanced_parameters)} advanced parameters defined"
+          )
+        }
+      })
 
-      # Advanced parameters
-      if (length(private$.advanced_parameters) > 0) {
-        cli::cli_h3("Advanced Parameters")
-        cli::cli_text(
-          "{length(private$.advanced_parameters)} advanced parameters defined"
-        )
-      }
-
+      cat(output, sep = "\n")
       invisible(self)
     },
 
@@ -508,21 +511,24 @@ AdvancedParameter <- R6::R6Class(
     #'
     #' @return Invisibly returns the AdvancedParameter object for method chaining
     print = function(...) {
-      cli::cli_text("Parameter: {self$name}")
-      cli::cli_text("Distribution type: {self$distribution_type}")
-      cli::cli_text("Seed: {self$seed}")
+      output <- cli::cli_format_method({
+        cli::cli_text("Parameter: {self$name}")
+        cli::cli_text("Distribution type: {self$distribution_type}")
+        cli::cli_text("Seed: {self$seed}")
 
-      if (length(self$parameters) > 0) {
-        for (param in self$parameters) {
-          unit_text <- ifelse(
-            is.null(param$Unit),
-            "",
-            paste0(" ", param$Unit)
-          )
-          cli::cli_text("  {param$Name}: {param$Value}{unit_text}")
+        if (length(self$parameters) > 0) {
+          for (param in self$parameters) {
+            unit_text <- ifelse(
+              is.null(param$Unit),
+              "",
+              paste0(" ", param$Unit)
+            )
+            cli::cli_text("  {param$Name}: {param$Value}{unit_text}")
+          }
         }
-      }
+      })
 
+      cat(output, sep = "\n")
       invisible(self)
     }
   ),

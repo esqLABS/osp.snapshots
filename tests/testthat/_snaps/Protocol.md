@@ -94,7 +94,7 @@
 
     Code
       print(snapshot$protocols)
-    Message
+    Output
       
       -- Protocols (9) ---------------------------------------------------------------
       * Backman 1996 - Midazolam - 15 mg (Control) (Advanced - 1 schema)

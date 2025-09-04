@@ -217,7 +217,7 @@
 
     Code
       print(snapshot$individuals)
-    Message
+    Output
       
       -- Individuals (0) -------------------------------------------------------------
       i No individuals found
