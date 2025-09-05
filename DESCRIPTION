@@ -1,7 +1,7 @@
 Package: osp.snapshots
 Type: Package
 Title: An R interface to manage and create snapshots of OSP models and projects
-Version: 0.1.0.9028
+Version: 0.1.0.9029
 Authors@R: c(
     person(
       "Felix", "MIL",
