@@ -5,11 +5,10 @@ format:
 execute: 
   echo: true
   output: true
-  cache: refresh
 auto-stretch: false
 ---
 
-##  {footer="false" background-image="images/paste-5.png" background-size="contain" header="false"}
+{{< include _hide_logo.qmd >}}
 
 ```{=html}
 <style>
@@ -19,9 +18,11 @@ auto-stretch: false
 </style>
 ```
 
+##  {footer="false" background-image="images/paste-5.png" background-size="contain" header="false"}
+
+
 ## {footer="false" background-image="images/paste-7.png" background-size="contain" header="false"}
 
-{{< include hide_logo.qmd >}}
 
 # What is available today?
 
