@@ -123,6 +123,19 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Initialize observed data list during snapshot initialization
+      if (is.null(private$.original_data$ObservedData)) {
+        private$.observed_data <- list()
+      } else {
+        # Create DataSet objects and store in an unnamed list
+        private$.observed_data <- lapply(
+          private$.original_data$ObservedData,
+          function(observed_data_item) {
+            loadDataSetFromSnapshot(observed_data_item)
+          }
+        )
+      }
+
       cli::cli_alert_success("Snapshot loaded successfully")
     },
     #' @description
@@ -479,6 +492,70 @@ Snapshot <- R6::R6Class(
         "Removed {length(profile_id)} expression profile(s)"
       )
       invisible(self)
+    },
+
+    #' @description
+    #' Add a DataSet object (observed data) to the snapshot
+    #' @param observed_data A DataSet object created from snapshot observed data
+    #' @return Invisibly returns the object
+    add_observed_data = function(observed_data) {
+      # Validate that the input is a DataSet object
+      if (!inherits(observed_data, "DataSet")) {
+        cli::cli_abort(
+          "Expected a DataSet object, but got {.cls {class(observed_data)[1]}}"
+        )
+      }
+
+      # Add the observed data to the list
+      private$.observed_data <- c(private$.observed_data, list(observed_data))
+
+      # Reset the named list to include the new observed data
+      private$.observed_data_named <- NULL
+      private$.build_observed_data_named_list()
+
+      cli::cli_alert_success(
+        "Added observed data '{observed_data$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    #' @description
+    #' Remove observed data from the snapshot by name
+    #' @param observed_data_name Character vector of observed data names to remove
+    #' @return Invisibly returns the object
+    remove_observed_data = function(observed_data_name) {
+      if (length(private$.observed_data) == 0) {
+        cli::cli_warn("No observed data to remove")
+        return(invisible(self))
+      }
+
+      # Get current observed data names
+      current_names <- sapply(private$.observed_data, function(od) od$name)
+
+      # Check if requested observed data exist
+      for (name in observed_data_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Observed data '{name}' not found in snapshot")
+        }
+      }
+
+      # Remove the requested observed data
+      keep_indices <- which(!(current_names %in% observed_data_name))
+
+      if (length(keep_indices) == 0) {
+        private$.observed_data <- list()
+      } else {
+        private$.observed_data <- private$.observed_data[keep_indices]
+      }
+
+      # Reset the named list
+      private$.observed_data_named <- NULL
+      private$.build_observed_data_named_list()
+
+      cli::cli_alert_success(
+        "Removed {length(observed_data_name)} observed data item(s)"
+      )
+      invisible(self)
     }
   ),
   active = list(
@@ -549,6 +626,17 @@ Snapshot <- R6::R6Class(
           function(protocol) protocol$data
         )
         result$Protocols <- protocol_data
+      }
+
+      # Update with current observed data
+      # Note: DataSet objects don't have $data property, so we return the original data
+      # This preserves the original snapshot format for export/reimport
+      if (length(private$.observed_data) > 0) {
+        # Return original observed data to maintain snapshot format compatibility
+        result$ObservedData <- private$.original_data$ObservedData
+      } else {
+        # Remove ObservedData section if no data exists
+        result$ObservedData <- NULL
       }
 
       return(result)
@@ -677,6 +765,20 @@ Snapshot <- R6::R6Class(
         private$.protocols <- value
         private$.build_protocols_named_list()
         return(private$.protocols_named)
+      }
+    },
+
+    #' @field observed_data List of DataSet objects (observed data) in the snapshot
+    observed_data = function(value = NULL) {
+      # Build the named list if it doesn't exist yet
+      private$.build_observed_data_named_list()
+
+      if (is.null(value)) {
+        return(private$.observed_data_named)
+      } else {
+        private$.observed_data <- value
+        private$.build_observed_data_named_list()
+        return(private$.observed_data_named)
       }
     }
   ),
@@ -915,6 +1017,12 @@ Snapshot <- R6::R6Class(
     # Cache for the named protocols list with disambiguated names
     .protocols_named = NULL,
 
+    # Store observed data objects in an unnamed list
+    .observed_data = NULL,
+
+    # Cache for the named observed data list with disambiguated names
+    .observed_data_named = NULL,
+
     # Build the named list of events with disambiguated names
     .build_events_named_list = function() {
       # Create a named list with event names, handling duplicates
@@ -1051,6 +1159,49 @@ Snapshot <- R6::R6Class(
 
       class(protocols_named) <- c("protocol_collection", "list")
       private$.protocols_named <- protocols_named
+    },
+
+    # Build the named list of observed data with disambiguated names
+    .build_observed_data_named_list = function() {
+      # Create a named list with observed data names, handling duplicates
+      observed_data_named <- list()
+
+      # Handle empty observed data list
+      if (length(private$.observed_data) == 0) {
+        class(observed_data_named) <- c("observed_data_collection", "list")
+        private$.observed_data_named <- observed_data_named
+        return()
+      }
+
+      observed_data_names <- sapply(private$.observed_data, function(x) x$name)
+
+      # Track name occurrences to handle duplicates
+      name_counts <- table(observed_data_names)
+      name_indices <- list()
+
+      for (i in seq_along(private$.observed_data)) {
+        name <- observed_data_names[i]
+
+        # Initialize counter for this name if not already done
+        if (is.null(name_indices[[name]])) {
+          name_indices[[name]] <- 0
+        }
+
+        # Increment counter
+        name_indices[[name]] <- name_indices[[name]] + 1
+
+        # Construct the final name (with suffix if needed)
+        if (name_counts[name] > 1) {
+          final_name <- glue::glue("{name}_{name_indices[[name]]}")
+        } else {
+          final_name <- name
+        }
+
+        observed_data_named[[final_name]] <- private$.observed_data[[i]]
+      }
+
+      class(observed_data_named) <- c("observed_data_collection", "list")
+      private$.observed_data_named <- observed_data_named
     }
   )
 )

@@ -110,6 +110,8 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 \item{\code{events}}{List of Event objects in the snapshot}
 
 \item{\code{protocols}}{List of Protocol objects in the snapshot}
+
+\item{\code{observed_data}}{List of DataSet objects (observed data) in the snapshot}
 }
 \if{html}{\out{</div>}}
 }
@@ -126,6 +128,8 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 \item \href{#method-Snapshot-remove_population}{\code{Snapshot$remove_population()}}
 \item \href{#method-Snapshot-add_expression_profile}{\code{Snapshot$add_expression_profile()}}
 \item \href{#method-Snapshot-remove_expression_profile}{\code{Snapshot$remove_expression_profile()}}
+\item \href{#method-Snapshot-add_observed_data}{\code{Snapshot$add_observed_data()}}
+\item \href{#method-Snapshot-remove_observed_data}{\code{Snapshot$remove_observed_data()}}
 \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
 }
 }
@@ -421,6 +425,46 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_observed_data"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_observed_data}{}}}
+\subsection{Method \code{add_observed_data()}}{
+Add a DataSet object (observed data) to the snapshot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$add_observed_data(observed_data)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{observed_data}}{A DataSet object created from snapshot observed data}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns the object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_observed_data"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_observed_data}{}}}
+\subsection{Method \code{remove_observed_data()}}{
+Remove observed data from the snapshot by name
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_observed_data(observed_data_name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{observed_data_name}}{Character vector of observed data names to remove}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns the object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-clone"></a>}}

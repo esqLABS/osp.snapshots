@@ -233,9 +233,10 @@ Individual <- R6::R6Class(
         } else {
           # Extract parameter data using Parameter's to_df method
           param_data <- lapply(self$parameters, function(param) {
-            param$to_df() %>%
-              dplyr::mutate(individual_id = individual_id) %>%
-              dplyr::relocate(individual_id)
+            df <- param$to_df()
+            df <- dplyr::mutate(df, individual_id = individual_id)
+            df <- dplyr::relocate(df, individual_id)
+            return(df)
           })
           result$individuals_parameters <- dplyr::bind_rows(param_data)
         }

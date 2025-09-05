@@ -1113,3 +1113,36 @@ print.compound_calculation_methods <- function(x, ...) {
   cli::cli_end(id = "calc_methods")
   invisible(x)
 }
+
+#' Print method for observed data collection
+#'
+#' @param x An observed_data_collection object (a named list of DataSet objects)
+#' @param n Number of observed data names to display (default: 10)
+#' @param ... Additional arguments (not used)
+#' @return The input object x, invisibly
+#' @export
+print.observed_data_collection <- function(x, n = 5, ...) {
+  output <- cli::cli_format_method({
+    cli::cli_h1("Observed Data ({length(x)})")
+
+    if (length(x) == 0) {
+      cli::cli_alert_info("No observed data available")
+    } else {
+      # Show first n names
+      names_to_show <- head(names(x), n)
+
+      for (name in names_to_show) {
+        cli::cli_li("{name}")
+      }
+
+      # Show "... and X more" if there are additional items
+      remaining <- length(x) - length(names_to_show)
+      if (remaining > 0) {
+        cli::cli_text("... and {remaining} more")
+      }
+    }
+  })
+
+  cat(output, sep = "\n")
+  invisible(x)
+}
