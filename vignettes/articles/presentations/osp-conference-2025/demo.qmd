@@ -19,30 +19,9 @@ auto-stretch: false
 </style>
 ```
 
-```{=html}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const header = document.querySelector('.reveal .reveal-header');
-  
-  function toggleHeaderOnFirstSlide() {
-    const currentSlide = Reveal.getCurrentSlide();
-    const isFirstSlide = Reveal.getIndices().h === 0;
-    
-    if (isFirstSlide) {
-      header.classList.add('hide-on-first');
-    } else {
-      header.classList.remove('hide-on-first');
-    }
-  }
-  
-  // Initial check
-  Reveal.addEventListener('ready', toggleHeaderOnFirstSlide);
-  
-  // Check on slide change
-  Reveal.addEventListener('slidechanged', toggleHeaderOnFirstSlide);
-});
-</script>
-```
+## {footer="false" background-image="images/paste-7.png" background-size="contain" header="false"}
+
+{{< include hide_logo.qmd >}}
 
 # What is available today?
 
