@@ -5,7 +5,6 @@ format:
 execute: 
   echo: true
   output: true
-  cache: refresh
 auto-stretch: false
 ---
 

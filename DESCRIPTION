@@ -1,11 +1,11 @@
 Package: osp.snapshots
 Type: Package
-Title: What the Package Does (Title Case)
+Title: An R interface to manage and create snapshots of OSP models and projects
 Version: 0.1.0.9027
 Authors@R: c(
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      "Felix", "MIL",
+      email = "felix.mil@esqlabs.com",
       role = c("aut", "cre")
     )
   )
