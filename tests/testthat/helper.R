@@ -1,6 +1,5 @@
 # Load test snapshot ----------------------------------------------------------
 test_snapshot <- Snapshot$new(testthat::test_path("data", "test_snapshot.json"))
-
 empty_snapshot <- Snapshot$new(testthat::test_path(
   "data",
   "empty_snapshot.json"

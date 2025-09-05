@@ -628,3 +628,72 @@ get_protocols_dfs <- function(snapshot) {
 
   return(result)
 }
+
+#' Get all observed data in a snapshot as data frames
+#'
+#' @description
+#' This function extracts all observed data from a snapshot and converts them to
+#' data frames for easier analysis and visualization.
+#'
+#' @param snapshot A Snapshot object
+#'
+#' @return A tibble containing all observed data in long format with columns:
+#' \itemize{
+#'   \item observed_data_name: Name of the observed data set
+#'   \item time: Time values
+#'   \item time_unit: Unit for time values
+#'   \item column_name: Name of the measurement column
+#'   \item value: Measured values
+#'   \item unit: Unit for the measured values
+#'   \item path: Full path of the measurement
+#'   \item auxiliary_type: Type of auxiliary data (e.g., ArithmeticMean, ArithmeticStdDev)
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Load a snapshot
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#'
+#' # Get all observed data as data frames
+#' observed_data_df <- get_observed_data_dfs(snapshot)
+#' }
+get_observed_data_dfs <- function(snapshot) {
+  # Check if input is a snapshot
+  validate_snapshot(snapshot)
+
+  # Get all observed data from the snapshot
+  observed_data_items <- snapshot$observed_data
+
+  # Initialize empty result dataframe with compatible structure
+  result <- tibble::tibble(
+    name = character(0),
+    xValues = numeric(0),
+    yValues = numeric(0),
+    yErrorValues = numeric(0),
+    xDimension = character(0),
+    xUnit = character(0),
+    yDimension = character(0),
+    yUnit = character(0),
+    yErrorType = character(0),
+    yErrorUnit = character(0),
+    molWeight = numeric(0),
+    lloq = numeric(0)
+  )
+
+  # If there are no observed data items, return the empty tibble
+  if (length(observed_data_items) == 0) {
+    return(result)
+  }
+
+  # Convert DataSet objects to tibble using ospsuite function
+  if (length(observed_data_items) > 0) {
+    # Convert list of DataSet objects to a combined tibble
+    result <- ospsuite::dataSetToTibble(dataSets = unname(observed_data_items))
+  }
+
+  # Sort by name and time
+  result <- result[order(result$name, result$xValues), ]
+  return(result)
+}
