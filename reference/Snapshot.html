@@ -9,7 +9,7 @@ methods to access different components of the snapshot and visualize its structu
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9028</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9029</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,6 +82,10 @@ methods to access different components of the snapshot and visualize its structu
 <dd><p>List of Protocol objects in the snapshot</p></dd>
 
 
+<dt><code>observed_data</code></dt>
+<dd><p>List of DataSet objects (observed data) in the snapshot</p></dd>
+
+
 </dl><p></p></div>
     </div>
     <div class="section level2">
@@ -100,6 +104,8 @@ methods to access different components of the snapshot and visualize its structu
 <li><p><a href="#method-Snapshot-remove_population"><code>Snapshot$remove_population()</code></a></p></li>
 <li><p><a href="#method-Snapshot-add_expression_profile"><code>Snapshot$add_expression_profile()</code></a></p></li>
 <li><p><a href="#method-Snapshot-remove_expression_profile"><code>Snapshot$remove_expression_profile()</code></a></p></li>
+<li><p><a href="#method-Snapshot-add_observed_data"><code>Snapshot$add_observed_data()</code></a></p></li>
+<li><p><a href="#method-Snapshot-remove_observed_data"><code>Snapshot$remove_observed_data()</code></a></p></li>
 <li><p><a href="#method-Snapshot-clone"><code>Snapshot$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-Snapshot-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -380,15 +386,55 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 </div>
 
 
-</div><p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-Snapshot-add_observed_data"></a><div class="section">
+<h3 id="method-add-observed-data-">Method <code>add_observed_data()</code><a class="anchor" aria-label="anchor" href="#method-add-observed-data-"></a></h3>
+<p>Add a DataSet object (observed data) to the snapshot</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_observed_data</span><span class="op">(</span><span class="va">observed_data</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>observed_data</code></dt>
+<dd><p>A DataSet object created from snapshot observed data</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
+<p>Invisibly returns the object</p>
+</div>
+
+</div><p></p><hr><a id="method-Snapshot-remove_observed_data"></a><div class="section">
+<h3 id="method-remove-observed-data-">Method <code>remove_observed_data()</code><a class="anchor" aria-label="anchor" href="#method-remove-observed-data-"></a></h3>
+<p>Remove observed data from the snapshot by name</p><div class="section">
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_observed_data</span><span class="op">(</span><span class="va">observed_data_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>observed_data_name</code></dt>
+<dd><p>Character vector of observed data names to remove</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
+<p>Invisibly returns the object</p>
+</div>
+
+</div><p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

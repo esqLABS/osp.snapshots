@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9028</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9029</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,11 +73,26 @@
 <p>For this demo, we’ll use a test snapshot included with the package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://esqlabs.github.io/osp.snapshots/">osp.snapshots</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'osp.snapshots'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     range</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter, lag</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load the test snapshot</span></span>
 <span><span class="va">snapshot_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"test_snapshot.json"</span>, package <span class="op">=</span> <span class="st">"osp.snapshots"</span><span class="op">)</span></span>
 <span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="va">snapshot_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Reading snapshot from '/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library/osp.snapshots/extdata/test_snapshot.json'</span></span>
+<span><span class="co">#&gt; ℹ Reading snapshot from '/private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/Rtmpm8wOi0/temp_libpathf209764b7e64/osp.snapshots/extdata/test_snapshot.json'</span></span>
 <span><span class="co">#&gt; ✔ Snapshot loaded successfully</span></span>
 <span></span>
 <span><span class="co"># View snapshot overview</span></span>
@@ -85,6 +100,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── PKSIM Snapshot ──────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; ℹ Version: 79 (PKSIM 11.2)</span></span>
+<span><span class="co">#&gt; ℹ Path: '../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/Rtmpm8wOi0/temp_libpathf209764b7e64/osp.snapshots/extdata/test_snapshot.json'</span></span>
 <span><span class="co">#&gt; • Compounds: 6</span></span>
 <span><span class="co">#&gt; • Events: 10</span></span>
 <span><span class="co">#&gt; • ExpressionProfiles: 14</span></span>
@@ -94,7 +110,7 @@
 <span><span class="co">#&gt; • ObservedDataClassifications: 20</span></span>
 <span><span class="co">#&gt; • ObserverSets: 1</span></span>
 <span><span class="co">#&gt; • ParameterIdentifications: 1</span></span>
-<span><span class="co">#&gt; • Populations: 6</span></span>
+<span><span class="co">#&gt; • Populations: 7</span></span>
 <span><span class="co">#&gt; • Protocols: 9</span></span>
 <span><span class="co">#&gt; • Simulations: 2</span></span></code></pre></div>
 </div>
@@ -108,16 +124,16 @@
 <span><span class="co">#&gt; ── Individuals (5) ─────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; • European (P-gp modified, CYP3A4 36 h)</span></span>
 <span><span class="co">#&gt; • Korean (Yu 2004 study)</span></span>
-<span><span class="co">#&gt; • CKD</span></span>
 <span><span class="co">#&gt; • ind_modified</span></span>
-<span><span class="co">#&gt; • baby</span></span>
+<span><span class="co">#&gt; • Asian</span></span>
+<span><span class="co">#&gt; • CKD</span></span>
 <span></span>
 <span><span class="co"># Get a detailed view of a building block</span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Individual: European (P-gp modified, CYP3A4 36 h) | Seed: 17189110 ──────────</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Origin Data ──</span></span>
+<span><span class="co">#&gt; ── Characteristics ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; • Species: Human</span></span>
 <span><span class="co">#&gt; • Population: European_ICRP_2002</span></span>
@@ -151,7 +167,7 @@
 <span><span class="co"># Parameters are also accessible as list element but they have their own nested structure and behavior</span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">parameters</span></span>
 <span><span class="co">#&gt; Parameter Collection with 2 parameters:</span></span>
-<span><span class="co">#&gt; Path                                     | Value           | Unit</span></span>
+<span><span class="co">#&gt; Name                                     | Value           | Unit</span></span>
 <span><span class="co">#&gt; -----------------------------------------|-----------------|----------------</span></span>
 <span><span class="co">#&gt; ...bladder|Gallbladder ejection fraction | 0.8             | </span></span>
 <span><span class="co">#&gt; Organism|Liver|EHC continuous fraction   | 1               |</span></span>
@@ -165,10 +181,161 @@
 <span><span class="co">#&gt; • Description: R24-4081</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="exploring-other-collections">Exploring Other Collections<a class="anchor" aria-label="anchor" href="#exploring-other-collections"></a>
+</h3>
+<p>The snapshot provides access to all building block types used in PK-Sim:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># View all compounds</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">compounds</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Compounds (6) ───────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • Rifampicin</span></span>
+<span><span class="co">#&gt; • BI 123456</span></span>
+<span><span class="co">#&gt; • Perpetrator_2</span></span>
+<span><span class="co">#&gt; • BI 100777- initial table parameters</span></span>
+<span><span class="co">#&gt; • BI 100777</span></span>
+<span><span class="co">#&gt; • test</span></span>
+<span></span>
+<span><span class="co"># View all populations  </span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">populations</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Populations (7) ─────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • pop_1 [Source: European_ICRP_2002] (100 individuals)</span></span>
+<span><span class="co">#&gt; • pop2 [Source: European_ICRP_2002] (10 individuals)</span></span>
+<span><span class="co">#&gt; • pop3 [Source: Asian_Tanaka_1996] (10 individuals)</span></span>
+<span><span class="co">#&gt; • pop4 [Source: European_ICRP_2002] (10 individuals)</span></span>
+<span><span class="co">#&gt; • pop6 [Source: European_ICRP_2002] (15 individuals)</span></span>
+<span><span class="co">#&gt; • pop7 [Source: Asian_Tanaka_1996] (12 individuals)</span></span>
+<span><span class="co">#&gt; • pop [Source: European_ICRP_2002] (100 individuals)</span></span>
+<span></span>
+<span><span class="co"># View all events</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">events</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Events (10) ─────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • GB emptying (Gallbladder emptying)</span></span>
+<span><span class="co">#&gt; • urinary (Urinary bladder emptying)</span></span>
+<span><span class="co">#&gt; • urinary2 (Urinary bladder emptying) - 1 parameter</span></span>
+<span><span class="co">#&gt; • Standard Meal (Meal: Standard (Human))</span></span>
+<span><span class="co">#&gt; • High fat Breakfast (Meal: High-fat breakfast (Human))</span></span>
+<span><span class="co">#&gt; • Ensure plus (Meal: Ensure Plus (Human))</span></span>
+<span><span class="co">#&gt; • High fat soup (Meal: High-fat soup (Human))</span></span>
+<span><span class="co">#&gt; • mixed (Meal: Mixed solid/liquid meal (Human))</span></span>
+<span><span class="co">#&gt; • Dextrose_1984 (Meal: Dextrose solution (Human)) - 3 parameters</span></span>
+<span><span class="co">#&gt; • Egg sandwich (Meal: Egg sandwich (Human)) - 2 parameters</span></span>
+<span></span>
+<span><span class="co"># View all protocols</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">protocols</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Protocols (9) ───────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • Backman 1996 - Midazolam - 15 mg (Control) (Advanced - 1 schema)</span></span>
+<span><span class="co">#&gt; • Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56) (Advanced - 4</span></span>
+<span><span class="co">#&gt; schemas)</span></span>
+<span><span class="co">#&gt; • Kharasch 2011 - Midazolam - iv 1 mg and po 3 mg (with Rifampicin) (Advanced -</span></span>
+<span><span class="co">#&gt; 2 schemas)</span></span>
+<span><span class="co">#&gt; • Shin 2016 - Midazolam - iv 1 mg (Control) (Simple - Intravenous bolus - Once)</span></span>
+<span><span class="co">#&gt; • Yu 2004 - Rifampicin - 600 mg MD OD 10 days (Advanced - 1 schema)</span></span>
+<span><span class="co">#&gt; • Wiesinger - Rifampicin - low dose and high dose OD (Advanced - 2 schemas)</span></span>
+<span><span class="co">#&gt; • test 6-6-12 till 48 (Simple - Oral - 3 times a day)</span></span>
+<span><span class="co">#&gt; • test 12-12 till 24 (Simple - Intravenous bolus - 2 times a day)</span></span>
+<span><span class="co">#&gt; • test_single_34 (Advanced - 1 schema)</span></span>
+<span></span>
+<span><span class="co"># View all expression profiles</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">expression_profiles</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Expression Profiles (14) ────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • CYP3A4 (Enzyme, Human, Healthy)</span></span>
+<span><span class="co">#&gt; • AADAC (Enzyme, Human, Healthy)</span></span>
+<span><span class="co">#&gt; • P-gp (Transporter, Human, Healthy)</span></span>
+<span><span class="co">#&gt; • OATP1B1 (Transporter, Human, Healthy)</span></span>
+<span><span class="co">#&gt; • ATP1A2 (OtherProtein, Human, Healthy)</span></span>
+<span><span class="co">#&gt; • UGT1A4 (Enzyme, Human, Healthy)</span></span>
+<span><span class="co">#&gt; • GABRG2 (OtherProtein, Human, Healthy)</span></span>
+<span><span class="co">#&gt; • CYP3A4 (Enzyme, Human, Korean (Yu 2004 study))</span></span>
+<span><span class="co">#&gt; • AADAC (Enzyme, Human, Korean (Yu 2004 study))</span></span>
+<span><span class="co">#&gt; • P-gp (Transporter, Human, Korean (Yu 2004 study))</span></span>
+<span><span class="co">#&gt; • OATP1B1 (Transporter, Human, Korean (Yu 2004 study))</span></span>
+<span><span class="co">#&gt; • ATP1A2 (OtherProtein, Human, Korean (Yu 2004 study))</span></span>
+<span><span class="co">#&gt; • UGT1A4 (Enzyme, Human, Korean (Yu 2004 study))</span></span>
+<span><span class="co">#&gt; • GABRG2 (OtherProtein, Human, Korean (Yu 2004 study))</span></span>
+<span></span>
+<span><span class="co"># View all formulations</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">formulations</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Formulations (9) ────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • Tablet (Dormicum) (Weibull)</span></span>
+<span><span class="co">#&gt; • Oral solution (Dissolved)</span></span>
+<span><span class="co">#&gt; • form_dissolved (Dissolved)</span></span>
+<span><span class="co">#&gt; • form_Lint80 (Lint80)</span></span>
+<span><span class="co">#&gt; • form-particle-dissolution (Particle)</span></span>
+<span><span class="co">#&gt; • form-table (Table)</span></span>
+<span><span class="co">#&gt; • form-ZO (Zero Order)</span></span>
+<span><span class="co">#&gt; • form-FO (First Order)</span></span>
+<span><span class="co">#&gt; • form-particle-dissolution-2 (Particle)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="working-with-observed-data">Working with Observed Data<a class="anchor" aria-label="anchor" href="#working-with-observed-data"></a>
+</h3>
+<p>The snapshot contains observed data that can be easily accessed and manipulated:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># View all observed data in the snapshot</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">observed_data</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── Observed Data (64) ──────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; • Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg -</span></span>
+<span><span class="co">#&gt; Plasma - agg. (n=10)</span></span>
+<span><span class="co">#&gt; • Backman 1996 - with Perpetrator (Rifampicin) - Midazolam - PO - 15 mg -</span></span>
+<span><span class="co">#&gt; Plasma - agg. (n=10)</span></span>
+<span><span class="co">#&gt; • Backman 1998 - Phase I (Control (Perpetrator Placebo)) - Midazolam - PO - 15</span></span>
+<span><span class="co">#&gt; mg - Plasma - agg. (n=9)</span></span>
+<span><span class="co">#&gt; • Backman 1998 - Phase IV (during Perpetrator (Rifampicin)) - Midazolam - PO -</span></span>
+<span><span class="co">#&gt; 15 mg - Plasma - agg. (n=9)</span></span>
+<span><span class="co">#&gt; • Backman 1998 - Phase V (4 days after Perpetrator (Rifampicin)) - Midazolam -</span></span>
+<span><span class="co">#&gt; PO - 15 mg - Plasma - agg. (n=9)</span></span>
+<span><span class="co">#&gt; ... and 59 more</span></span>
+<span></span>
+<span><span class="co"># Access a specific observed data set</span></span>
+<span><span class="va">first_obs_data</span> <span class="op">&lt;-</span> <span class="va">snapshot</span><span class="op">$</span><span class="va">observed_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">first_obs_data</span></span>
+<span><span class="co">#&gt; &lt;DataSet&gt;</span></span>
+<span><span class="co">#&gt;   • Name: Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg</span></span>
+<span><span class="co">#&gt;   - Plasma - agg. (n=10)</span></span>
+<span><span class="co">#&gt;   • X dimension: Time</span></span>
+<span><span class="co">#&gt;   • X unit: h</span></span>
+<span><span class="co">#&gt;   • Y dimension: Concentration (mass)</span></span>
+<span><span class="co">#&gt;   • Y unit: mg/l</span></span>
+<span><span class="co">#&gt;   • Error type: NULL</span></span>
+<span><span class="co">#&gt;   • Error unit: NULL</span></span>
+<span><span class="co">#&gt;   • Molecular weight: NULL</span></span>
+<span><span class="co">#&gt;   • LLOQ: NULL</span></span>
+<span><span class="co">#&gt; Meta data:</span></span>
+<span><span class="co">#&gt;   • DB Version: OSP DATABASE</span></span>
+<span><span class="co">#&gt;   • ID: 53</span></span>
+<span><span class="co">#&gt;   • Study Id: Backman 1996</span></span>
+<span><span class="co">#&gt;   • Reference: https://www.ncbi.nlm.nih.gov/pubmed/8549036</span></span>
+<span><span class="co">#&gt;   • Source: Fig. 1</span></span>
+<span><span class="co">#&gt;   • Grouping: Control (Perpetrator Placebo)</span></span>
+<span><span class="co">#&gt;   • Data type: aggregated</span></span>
+<span><span class="co">#&gt;   • N: 10</span></span>
+<span><span class="co">#&gt;   • Molecule: BI 123456</span></span>
+<span><span class="co">#&gt;   • Species: Human</span></span>
+<span><span class="co">#&gt;   • Organ: Peripheral Venous Blood</span></span>
+<span><span class="co">#&gt;   • Compartment: Plasma</span></span>
+<span><span class="co">#&gt;   • Route: PO</span></span>
+<span><span class="co">#&gt;   • Dose: 15 mg</span></span>
+<span><span class="co">#&gt;   • Times of Administration [h]: 0</span></span>
+<span><span class="co">#&gt;   • Formulation: Dormicum, tablet</span></span>
+<span><span class="co">#&gt;   • Food state: fasted</span></span>
+<span><span class="co">#&gt;   • Comment: Arith. SEM converted to arith. SD</span></span>
+<span></span>
+<span><span class="co"># Observed data are DataSet objects from the ospsuite package</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">first_obs_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "DataSet"       "DotNetWrapper" "NetObject"     "R6"</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="modifying-building-blocks">Modifying Building Blocks<a class="anchor" aria-label="anchor" href="#modifying-building-blocks"></a>
 </h3>
 <p>All these elements are mutable and can be modified in place.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="fl">35</span></span>
 <span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">`Organism|Gallbladder|Gallbladder ejection fraction`</span><span class="op">$</span><span class="va">value</span> <span class="op">&lt;-</span> <span class="fl">0.6</span></span>
@@ -177,7 +344,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Individual: European (P-gp modified, CYP3A4 36 h) | Seed: 17189110 ──────────</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Origin Data ──</span></span>
+<span><span class="co">#&gt; ── Characteristics ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; • Species: Human</span></span>
 <span><span class="co">#&gt; • Population: European_ICRP_2002</span></span>
@@ -209,7 +376,7 @@
 <div class="section level3">
 <h3 id="creating-a-new-individual">Creating a New Individual<a class="anchor" aria-label="anchor" href="#creating-a-new-individual"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a new individual</span></span>
 <span><span class="va">new_individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_individual.html">create_individual</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"Patient_001"</span>,</span>
@@ -226,7 +393,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Individual: Patient_001 ─────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Origin Data ──</span></span>
+<span><span class="co">#&gt; ── Characteristics ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; • Species: Human</span></span>
 <span><span class="co">#&gt; • Population: European_ICRP_2002</span></span>
@@ -245,15 +412,15 @@
 <span><span class="co">#&gt; ── Individuals (6) ─────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; • European (P-gp modified, CYP3A4 36 h)</span></span>
 <span><span class="co">#&gt; • Korean (Yu 2004 study)</span></span>
-<span><span class="co">#&gt; • CKD</span></span>
 <span><span class="co">#&gt; • ind_modified</span></span>
-<span><span class="co">#&gt; • baby</span></span>
+<span><span class="co">#&gt; • Asian</span></span>
+<span><span class="co">#&gt; • CKD</span></span>
 <span><span class="co">#&gt; • Patient_001</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="creating-a-new-formulation">Creating a New Formulation<a class="anchor" aria-label="anchor" href="#creating-a-new-formulation"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a simple dissolved formulation</span></span>
 <span><span class="va">dissolved_form</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_formulation.html">create_formulation</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"Oral Solution"</span>,</span>
@@ -299,13 +466,64 @@
 <span><span class="co">#&gt; • Oral solution (Dissolved)</span></span>
 <span><span class="co">#&gt; • form_dissolved (Dissolved)</span></span>
 <span><span class="co">#&gt; • form_Lint80 (Lint80)</span></span>
-<span><span class="co">#&gt; • form-partdiss (Particle)</span></span>
+<span><span class="co">#&gt; • form-particle-dissolution (Particle)</span></span>
 <span><span class="co">#&gt; • form-table (Table)</span></span>
 <span><span class="co">#&gt; • form-ZO (Zero Order)</span></span>
 <span><span class="co">#&gt; • form-FO (First Order)</span></span>
-<span><span class="co">#&gt; • form-partdiss2 (Particle)</span></span>
+<span><span class="co">#&gt; • form-particle-dissolution-2 (Particle)</span></span>
 <span><span class="co">#&gt; • Standard Tablet (Weibull)</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="managing-building-blocks">Managing Building Blocks<a class="anchor" aria-label="anchor" href="#managing-building-blocks"></a>
+</h3>
+<p>You can add and remove various building blocks from snapshots:</p>
+<div class="section level4">
+<h4 id="managing-observed-data">Managing Observed Data<a class="anchor" aria-label="anchor" href="#managing-observed-data"></a>
+</h4>
+<p>Observed data should be provided as <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">ospsuite::DataSet</a></code> objects:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a new DataSet object (this is just an example)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/open-systems-pharmacology/ospsuite-r" class="external-link">ospsuite</a></span><span class="op">)</span></span>
+<span><span class="va">new_dataset</span> <span class="op">&lt;-</span> <span class="va"><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">DataSet</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">new_dataset</span><span class="op">$</span><span class="fu">setValues</span><span class="op">(</span>xValues <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>, yValues <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">80</span>, <span class="fl">60</span>, <span class="fl">40</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">new_dataset</span><span class="op">$</span><span class="va">name</span> <span class="op">&lt;-</span> <span class="st">"New Study Data"</span></span>
+<span><span class="va">new_dataset</span><span class="op">$</span><span class="va">xDimension</span> <span class="op">&lt;-</span> <span class="st">"Time"</span></span>
+<span><span class="va">new_dataset</span><span class="op">$</span><span class="va">xUnit</span> <span class="op">&lt;-</span> <span class="st">"h"</span> </span>
+<span><span class="va">new_dataset</span><span class="op">$</span><span class="va">yDimension</span> <span class="op">&lt;-</span> <span class="st">"Concentration"</span></span>
+<span><span class="va">new_dataset</span><span class="op">$</span><span class="va">yUnit</span> <span class="op">&lt;-</span> <span class="st">"mg/l"</span></span>
+<span></span>
+<span><span class="co"># Add to snapshot</span></span>
+<span><span class="fu">add_observed_data</span><span class="op">(</span><span class="va">snapshot</span>, <span class="va">new_dataset</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Remove observed data by name</span></span>
+<span><span class="fu">remove_observed_data</span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"New Study Data"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="removing-other-building-blocks">Removing Other Building Blocks<a class="anchor" aria-label="anchor" href="#removing-other-building-blocks"></a>
+</h4>
+<p>All building block types can be removed by name:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Remove individuals</span></span>
+<span><span class="fu"><a href="reference/remove_individual.html">remove_individual</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"Patient_001"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/remove_individual.html">remove_individual</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Patient_001"</span>, <span class="st">"Patient_002"</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Multiple at once</span></span>
+<span></span>
+<span><span class="co"># Remove formulations</span></span>
+<span><span class="fu"><a href="reference/remove_formulation.html">remove_formulation</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"Standard Tablet"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Remove populations</span></span>
+<span><span class="fu"><a href="reference/remove_population.html">remove_population</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"Population_1"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Remove expression profiles (by ID: molecule|species|category)</span></span>
+<span><span class="fu"><a href="reference/remove_expression_profile.html">remove_expression_profile</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"CYP3A4|Human|Healthy"</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="exporting-modified-snapshots">Exporting Modified Snapshots<a class="anchor" aria-label="anchor" href="#exporting-modified-snapshots"></a>
+</h2>
+<p>After making modifications to a snapshot, you can export it back to a JSON file using the <code><a href="reference/export_snapshot.html">export_snapshot()</a></code> function. It can then be imported back to PK-Sim.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/export_snapshot.html">export_snapshot</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"path/to/modified_snapshot.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="converting-to-data-frames">Converting to Data Frames<a class="anchor" aria-label="anchor" href="#converting-to-data-frames"></a>
@@ -315,7 +533,7 @@
 <h3 id="converting-individuals">Converting Individuals<a class="anchor" aria-label="anchor" href="#converting-individuals"></a>
 </h3>
 <p>You can convert all individuals in a snapshot to combined data frames:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get data frames for all individuals in the snapshot</span></span>
 <span><span class="va">dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_individuals_dfs.html">get_individuals_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
 <span><span class="va">dfs</span></span></code></pre></div>
@@ -398,25 +616,6 @@
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">CKD</td>
-<td align="left">CKD</td>
-<td align="right">391487890</td>
-<td align="left">Human</td>
-<td align="left">European_ICRP_2002</td>
-<td align="left">MALE</td>
-<td align="right">50.0</td>
-<td align="left">year(s)</td>
-<td align="right">NA</td>
-<td align="left">NA</td>
-<td align="right">70.0</td>
-<td align="left">kg</td>
-<td align="right">178.0</td>
-<td align="left">cm</td>
-<td align="left">CKD</td>
-<td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
-<td align="left">eGFR: 45 ml/min/1.73m²</td>
-</tr>
-<tr class="even">
 <td align="left">ind_modified</td>
 <td align="left">ind_modified</td>
 <td align="right">487796515</td>
@@ -435,24 +634,43 @@
 <td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
 <td align="left">NA</td>
 </tr>
-<tr class="odd">
-<td align="left">baby</td>
-<td align="left">baby</td>
-<td align="right">1987729687</td>
+<tr class="even">
+<td align="left">Asian</td>
+<td align="left">Asian</td>
+<td align="right">918371890</td>
 <td align="left">Human</td>
-<td align="left">Preterm</td>
+<td align="left">Asian_Tanaka_1996</td>
 <td align="left">MALE</td>
-<td align="right">10.0</td>
-<td align="left">day(s)</td>
-<td align="right">30</td>
-<td align="left">week(s)</td>
+<td align="right">26.0</td>
+<td align="left">year(s)</td>
 <td align="right">NA</td>
 <td align="left">NA</td>
+<td align="right">67.0</td>
+<td align="left">kg</td>
 <td align="right">NA</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
 <td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CKD</td>
+<td align="left">CKD</td>
+<td align="right">1515438109</td>
+<td align="left">Human</td>
+<td align="left">European_ICRP_2002</td>
+<td align="left">MALE</td>
+<td align="right">50.0</td>
+<td align="left">year(s)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">70.0</td>
+<td align="left">kg</td>
+<td align="right">178.0</td>
+<td align="left">cm</td>
+<td align="left">CKD</td>
+<td align="left">SurfaceAreaPlsInt_VAR1; Body surface area - Mosteller</td>
+<td align="left">eGFR: 45 ml/min/1.73m²</td>
 </tr>
 <tr class="even">
 <td align="left">Patient_001</td>
@@ -498,7 +716,7 @@
 <tr class="odd">
 <td align="left">European (P-gp modified, CYP3A4 36 h)</td>
 <td align="left">Organism|Gallbladder|Gallbladder ejection fraction</td>
-<td align="right">0.6000</td>
+<td align="right">0.60</td>
 <td align="left">NA</td>
 <td align="left">Publication</td>
 <td align="left">R24-4081</td>
@@ -507,7 +725,7 @@
 <tr class="even">
 <td align="left">European (P-gp modified, CYP3A4 36 h)</td>
 <td align="left">Organism|Liver|EHC continuous fraction</td>
-<td align="right">1.0000</td>
+<td align="right">1.00</td>
 <td align="left">NA</td>
 <td align="left">Publication</td>
 <td align="left">R24-4081</td>
@@ -516,7 +734,7 @@
 <tr class="odd">
 <td align="left">Korean (Yu 2004 study)</td>
 <td align="left">Organism|Liver|EHC continuous fraction</td>
-<td align="right">1.0000</td>
+<td align="right">1.00</td>
 <td align="left">NA</td>
 <td align="left">Unknown</td>
 <td align="left">NA</td>
@@ -525,25 +743,16 @@
 <tr class="even">
 <td align="left">Korean (Yu 2004 study)</td>
 <td align="left">Organism|Ontogeny factor (albumin)</td>
-<td align="right">0.8900</td>
+<td align="right">0.89</td>
 <td align="left">NA</td>
 <td align="left">Publication</td>
 <td align="left">R24-4081</td>
 <td align="right">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">CKD</td>
-<td align="left">Organism|Liver|Interstitial|pH</td>
-<td align="right">7.2456</td>
-<td align="left">NA</td>
-<td align="left">Database</td>
-<td align="left">Assumed</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
 <td align="left">ind_modified</td>
 <td align="left">Organism|Kidney|GFR (specific)</td>
-<td align="right">33.0000</td>
+<td align="right">33.00</td>
 <td align="left">ml/min/100g organ</td>
 <td align="left">Other</td>
 <td align="left">Assumed</td>
@@ -614,13 +823,17 @@
 <td align="left">GABRG2|Human|Korean (Yu 2004 study)</td>
 </tr>
 <tr class="odd">
+<td align="left">Asian</td>
+<td align="left">CYP3A4|Human|Healthy</td>
+</tr>
+<tr class="even">
 <td align="left">CKD</td>
 <td align="left">CYP3A4|Human|Korean (Yu 2004 study)</td>
 </tr>
 </tbody>
 </table>
 <p>It is also possible to get dataframe for a specific individual using <code>to_df()</code> method on an individual object:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">individual_df</span> <span class="op">&lt;-</span> <span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">individual_df</span></span></code></pre></div>
 <table class="table">
@@ -684,12 +897,13 @@
 </table>
 <table style="width:100%;" class="table">
 <colgroup>
-<col width="16%">
-<col width="16%">
-<col width="16%">
-<col width="16%">
-<col width="16%">
-<col width="16%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">individual_id</th>
@@ -698,6 +912,7 @@
 <th align="left">unit</th>
 <th align="left">source</th>
 <th align="left">description</th>
+<th align="right">source_id</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -707,6 +922,7 @@
 <td align="left">NA</td>
 <td align="left">Publication</td>
 <td align="left">R24-4081</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">European (P-gp modified, CYP3A4 36 h)</td>
@@ -715,6 +931,7 @@
 <td align="left">NA</td>
 <td align="left">Publication</td>
 <td align="left">R24-4081</td>
+<td align="right">NA</td>
 </tr>
 </tbody>
 </table>
@@ -759,7 +976,7 @@
 <h3 id="converting-formulations">Converting Formulations<a class="anchor" aria-label="anchor" href="#converting-formulations"></a>
 </h3>
 <p>Similar to individuals, you can convert formulations to data frames:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get data frames for all formulations in the snapshot</span></span>
 <span><span class="va">formulation_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_formulations_dfs.html">get_formulations_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
 <span><span class="va">formulation_dfs</span></span></code></pre></div>
@@ -773,8 +990,8 @@
 <thead><tr class="header">
 <th align="left">formulation_id</th>
 <th align="left">name</th>
+<th align="left">formulation</th>
 <th align="left">formulation_type</th>
-<th align="left">formulation_type_human</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -802,8 +1019,8 @@
 <td align="left">Lint80</td>
 </tr>
 <tr class="odd">
-<td align="left">form-partdiss</td>
-<td align="left">form-partdiss</td>
+<td align="left">form-particle-dissolution</td>
+<td align="left">form-particle-dissolution</td>
 <td align="left">Formulation_Particles</td>
 <td align="left">Particle</td>
 </tr>
@@ -826,8 +1043,8 @@
 <td align="left">First Order</td>
 </tr>
 <tr class="odd">
-<td align="left">form-partdiss2</td>
-<td align="left">form-partdiss2</td>
+<td align="left">form-particle-dissolution-2</td>
+<td align="left">form-particle-dissolution-2</td>
 <td align="left">Formulation_Particles</td>
 <td align="left">Particle</td>
 </tr>
@@ -841,16 +1058,30 @@
 </table>
 <table class="table">
 <colgroup>
-<col width="25%">
-<col width="48%">
-<col width="17%">
-<col width="8%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">formulation_id</th>
 <th align="left">name</th>
 <th align="right">value</th>
 <th align="left">unit</th>
+<th align="left">is_table_point</th>
+<th align="right">x_value</th>
+<th align="right">y_value</th>
+<th align="left">table_name</th>
+<th align="left">source</th>
+<th align="left">description</th>
+<th align="right">source_id</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -858,175 +1089,435 @@
 <td align="left">Dissolution time (50% dissolved)</td>
 <td align="right">0.0107481</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">ParameterIdentification</td>
+<td align="left">Value updated from ‘PI Tablet 7.5 mg’ on 2019-04-09 16:30</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">Tablet (Dormicum)</td>
 <td align="left">Lag time</td>
 <td align="right">12.0000000</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">c01835608</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">Tablet (Dormicum)</td>
 <td align="left">Dissolution shape</td>
 <td align="right">4.3802943</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">ParameterIdentification</td>
+<td align="left">Value updated from ‘PI Tablet 7.5 mg’ on 2019-04-09 16:30</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">Tablet (Dormicum)</td>
 <td align="left">Use as suspension</td>
 <td align="right">1.0000000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Other</td>
+<td align="left">Assumed</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">form_Lint80</td>
 <td align="left">Dissolution time (80% dissolved)</td>
 <td align="right">240.0000000</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">R13-5357</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">form_Lint80</td>
 <td align="left">Lag time</td>
 <td align="right">0.0000000</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">R13-5357</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">form_Lint80</td>
 <td align="left">Use as suspension</td>
 <td align="right">1.0000000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Other</td>
+<td align="left">Assumed</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">form-partdiss</td>
+<td align="left">form-particle-dissolution</td>
 <td align="left">Thickness (unstirred water layer)</td>
 <td align="right">30.0000000</td>
 <td align="left">µm</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">form-partdiss</td>
+<td align="left">form-particle-dissolution</td>
 <td align="left">Type of particle size distribution</td>
 <td align="right">0.0000000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Other</td>
+<td align="left">Assumed</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">form-partdiss</td>
+<td align="left">form-particle-dissolution</td>
 <td align="left">Particle radius (mean)</td>
 <td align="right">10.0000000</td>
 <td align="left">µm</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">c01835608</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">form-table</td>
 <td align="left">Fraction (dose)</td>
 <td align="right">0.0000000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">form-table</td>
+<td align="left">Fraction (dose)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">TRUE</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="left">Time</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">form-table</td>
+<td align="left">Fraction (dose)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">TRUE</td>
+<td align="right">0.1</td>
+<td align="right">0.1</td>
+<td align="left">Time</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">form-table</td>
+<td align="left">Fraction (dose)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">TRUE</td>
+<td align="right">0.5</td>
+<td align="right">0.6</td>
+<td align="left">Time</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">form-table</td>
+<td align="left">Fraction (dose)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">TRUE</td>
+<td align="right">1.0</td>
+<td align="right">0.7</td>
+<td align="left">Time</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">form-table</td>
+<td align="left">Fraction (dose)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">TRUE</td>
+<td align="right">3.0</td>
+<td align="right">0.8</td>
+<td align="left">Time</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">form-table</td>
+<td align="left">Fraction (dose)</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">TRUE</td>
+<td align="right">7.0</td>
+<td align="right">0.9</td>
+<td align="left">Time</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">form-table</td>
 <td align="left">Use as suspension</td>
 <td align="right">1.0000000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">c26475781</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">form-ZO</td>
 <td align="left">End time</td>
 <td align="right">60.0000000</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">form-FO</td>
 <td align="left">t1/2</td>
 <td align="right">0.0100000</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">form-partdiss2</td>
+<td align="left">form-particle-dissolution-2</td>
 <td align="left">Thickness (unstirred water layer)</td>
 <td align="right">23.0000000</td>
 <td align="left">µm</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">Assumed</td>
+<td align="right">32</td>
 </tr>
 <tr class="even">
-<td align="left">form-partdiss2</td>
+<td align="left">form-particle-dissolution-2</td>
 <td align="left">Particle size distribution</td>
 <td align="right">0.0000000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Other</td>
+<td align="left">Assumed</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">form-partdiss2</td>
+<td align="left">form-particle-dissolution-2</td>
 <td align="left">Type of particle size distribution</td>
 <td align="right">1.0000000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Other</td>
+<td align="left">Assumed</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">form-partdiss2</td>
+<td align="left">form-particle-dissolution-2</td>
 <td align="left">Particle radius (mean)</td>
 <td align="right">10.0000000</td>
 <td align="left">µm</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">ParameterIdentification</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">form-partdiss2</td>
+<td align="left">form-particle-dissolution-2</td>
 <td align="left">Particle radius (SD)</td>
 <td align="right">3.0000000</td>
 <td align="left">µm</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">c01835608</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">form-partdiss2</td>
+<td align="left">form-particle-dissolution-2</td>
 <td align="left">Number of bins</td>
 <td align="right">3.0000000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Other</td>
+<td align="left">Assumed</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">form-partdiss2</td>
+<td align="left">form-particle-dissolution-2</td>
 <td align="left">Particle radius (min)</td>
 <td align="right">1.0000000</td>
 <td align="left">µm</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">c01835608</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">form-partdiss2</td>
+<td align="left">form-particle-dissolution-2</td>
 <td align="left">Particle radius (max)</td>
 <td align="right">19.0000000</td>
 <td align="left">µm</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Publication</td>
+<td align="left">c01835608</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">Standard Tablet</td>
 <td align="left">Dissolution time (50% dissolved)</td>
 <td align="right">60.0000000</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">Standard Tablet</td>
 <td align="left">Lag time</td>
 <td align="right">10.0000000</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">Standard Tablet</td>
 <td align="left">Dissolution shape</td>
 <td align="right">0.9200000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">Standard Tablet</td>
 <td align="left">Use as suspension</td>
 <td align="right">1.0000000</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 </tbody>
 </table>
 <p>You can also convert a specific formulation to a data frame:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert a specific formulation to data frame</span></span>
 <span><span class="va">form_df</span> <span class="op">&lt;-</span> <span class="va">snapshot</span><span class="op">$</span><span class="va">formulations</span><span class="op">$</span><span class="va">`Standard Tablet`</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <colgroup>
-<col width="25%">
-<col width="25%">
-<col width="25%">
-<col width="25%">
+<col width="21%">
+<col width="21%">
+<col width="35%">
+<col width="22%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">formulation_id</th>
 <th align="left">name</th>
+<th align="left">formulation</th>
 <th align="left">formulation_type</th>
-<th align="left">formulation_type_human</th>
 </tr></thead>
 <tbody><tr class="odd">
 <td align="left">Standard Tablet</td>
@@ -1036,11 +1527,31 @@
 </tr></tbody>
 </table>
 <table class="table">
+<colgroup>
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+<col width="9%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">formulation_id</th>
 <th align="left">name</th>
 <th align="right">value</th>
 <th align="left">unit</th>
+<th align="left">is_table_point</th>
+<th align="right">x_value</th>
+<th align="right">y_value</th>
+<th align="left">table_name</th>
+<th align="left">source</th>
+<th align="left">description</th>
+<th align="right">source_id</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -1048,27 +1559,474 @@
 <td align="left">Dissolution time (50% dissolved)</td>
 <td align="right">60.00</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">Standard Tablet</td>
 <td align="left">Lag time</td>
 <td align="right">10.00</td>
 <td align="left">min</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">Standard Tablet</td>
 <td align="left">Dissolution shape</td>
 <td align="right">0.92</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">Standard Tablet</td>
 <td align="left">Use as suspension</td>
 <td align="right">1.00</td>
 <td align="left">NA</td>
+<td align="left">FALSE</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section level3">
+<h3 id="converting-observed-data">Converting Observed Data<a class="anchor" aria-label="anchor" href="#converting-observed-data"></a>
+</h3>
+<p>Observed data can be easily converted to data frames for analysis and visualization:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get data frames for all observed data in the snapshot</span></span>
+<span><span class="va">obs_data_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_observed_data_dfs.html">get_observed_data_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<span><span class="va">obs_data_dfs</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+<col width="3%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">name</th>
+<th align="right">xValues</th>
+<th align="right">yValues</th>
+<th align="right">yErrorValues</th>
+<th align="left">xDimension</th>
+<th align="left">xUnit</th>
+<th align="left">yDimension</th>
+<th align="left">yUnit</th>
+<th align="left">yErrorType</th>
+<th align="left">yErrorUnit</th>
+<th align="right">molWeight</th>
+<th align="right">lloq</th>
+<th align="left">DB Version</th>
+<th align="left">ID</th>
+<th align="left">Study Id</th>
+<th align="left">Reference</th>
+<th align="left">Source</th>
+<th align="left">Grouping</th>
+<th align="left">Data type</th>
+<th align="left">N</th>
+<th align="left">Molecule</th>
+<th align="left">Species</th>
+<th align="left">Organ</th>
+<th align="left">Compartment</th>
+<th align="left">Route</th>
+<th align="left">Dose</th>
+<th align="left">Times of Administration [h]</th>
+<th align="left">Formulation</th>
+<th align="left">Food state</th>
+<th align="left">Comment</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">0.5</td>
+<td align="right">0.0085872</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+<tr class="even">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">1.0</td>
+<td align="right">0.0465688</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+<tr class="odd">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">1.5</td>
+<td align="right">0.0434862</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+<tr class="even">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">2.0</td>
+<td align="right">0.0374312</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+<tr class="odd">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">3.0</td>
+<td align="right">0.0236697</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+<tr class="even">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">4.0</td>
+<td align="right">0.0170642</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+<tr class="odd">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">5.0</td>
+<td align="right">0.0104587</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+<tr class="even">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">6.0</td>
+<td align="right">0.0074862</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+<tr class="odd">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">8.0</td>
+<td align="right">0.0050642</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+<tr class="even">
+<td align="left">Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)</td>
+<td align="right">10.0</td>
+<td align="right">0.0033028</td>
+<td align="right">NA</td>
+<td align="left">Time</td>
+<td align="left">h</td>
+<td align="left">Concentration (mass)</td>
+<td align="left">mg/l</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">OSP DATABASE</td>
+<td align="left">53</td>
+<td align="left">Backman 1996</td>
+<td align="left"><a href="https://www.ncbi.nlm.nih.gov/pubmed/8549036" class="external-link uri">https://www.ncbi.nlm.nih.gov/pubmed/8549036</a></td>
+<td align="left">Fig. 1</td>
+<td align="left">Control (Perpetrator Placebo)</td>
+<td align="left">aggregated</td>
+<td align="left">10</td>
+<td align="left">BI 123456</td>
+<td align="left">Human</td>
+<td align="left">Peripheral Venous Blood</td>
+<td align="left">Plasma</td>
+<td align="left">PO</td>
+<td align="left">15 mg</td>
+<td align="left">0</td>
+<td align="left">Dormicum, tablet</td>
+<td align="left">fasted</td>
+<td align="left">Arith. SEM converted to arith. SD</td>
+</tr>
+</tbody>
+</table>
+<p>The observed data data frame contains all the time-series data with metadata, making it easy to work with in R for analysis and plotting.</p>
+</div>
+<div class="section level3">
+<h3 id="converting-other-collections">Converting Other Collections<a class="anchor" aria-label="anchor" href="#converting-other-collections"></a>
+</h3>
+<p>All other snapshot collections can also be converted to data frames:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Convert compounds to data frame</span></span>
+<span><span class="va">compounds_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_compounds_dfs.html">get_compounds_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert populations to data frame  </span></span>
+<span><span class="va">populations_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_populations_dfs.html">get_populations_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert events to data frame</span></span>
+<span><span class="va">events_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_events_dfs.html">get_events_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert protocols to data frame</span></span>
+<span><span class="va">protocols_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_protocols_dfs.html">get_protocols_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert expression profiles to data frame</span></span>
+<span><span class="va">expression_profiles_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_expression_profiles_dfs.html">get_expression_profiles_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span></code></pre></div>
+<p>These functions follow the same pattern as the examples above, providing structured data frames that make it easy to analyze, filter, and visualize the snapshot contents using standard R data manipulation tools.</p>
 </div>
 </div>
 </div>
