@@ -7,32 +7,31 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  message = FALSE,
+  warning = FALSE
 )
 ```
 
 # osp.snapshots
 
 <!-- badges: start -->
-
 [![R-CMD-check](https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/esqLABS/osp.snapshots/graph/badge.svg)](https://app.codecov.io/gh/esqLABS/osp.snapshots)
 <!-- badges: end -->
 
-The goal of osp.snapshots is to provide an R interface to work with PK-Sim project snapshots.
+osp.snapshots provides a convenient R interface for working with PKSIM project snapshots. Import, navigate, modify, and export snapshot data with ease, making complex nested JSON structures accessible for analysis within the R ecosystem.
 
 ## Installation
 
 You can install the development version of osp.snapshots from [GitHub](https://github.com/) with:
 
-``` r
+```r
 # install.packages("pak")
 pak::pak("esqLABS/osp.snapshots")
 ```
 
-## Basic Usage
-
-### Importing a Snapshot
+## Quick Start
 
 ```{r, include=FALSE}
 # Copy the test snapshot file to the package's extdata directory
@@ -43,309 +42,47 @@ file.copy(
 )
 ```
 
-```{r, eval=FALSE}
+```{r example, message=FALSE}
 library(osp.snapshots)
 
-# Load a snapshot from a JSON file
-snapshot <- load_snapshot("path/to/snapshot.json")
-```
-
-For this demo, we'll use a test snapshot included with the package:
-
-```{r}
-library(osp.snapshots)
-library(dplyr)
-library(magrittr)
-
-# Load the test snapshot
-snapshot_path <- system.file("extdata", "test_snapshot.json", package = "osp.snapshots")
+# Load a snapshot
+snapshot_path <- system.file(
+  "extdata",
+  "test_snapshot.json",
+  package = "osp.snapshots"
+)
 snapshot <- load_snapshot(snapshot_path)
 
-# View snapshot overview
+# Explore the snapshot
 snapshot
-```
 
-### Exploring Snapshot Contents
-
-```{r}
-# List all individuals in the snapshot
-snapshot$individuals
-
-# Get a detailed view of a building block
+# Access building blocks
 snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 
-# All fields are accessible as list elements
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$gender
+# Modify parameters
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age <- 40
 
-# Parameters are also accessible as list element but they have their own nested structure and behavior
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$parameters
-
-# They can be accessed by path
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`
+# Convert to data frames for analysis
+individual_dfs <- get_individuals_dfs(snapshot)
 ```
 
-### Exploring Other Collections
+## Key Features
 
-The snapshot provides access to all building block types used in PK-Sim:
+- **Import/Export**: Load snapshots from JSON files, URLs, or templates; export back to JSON
+- **Navigate**: Access all building blocks (individuals, compounds, formulations, etc.) with intuitive R syntax
+- **Modify**: Change parameters, add/remove building blocks in place
+- **Convert**: Transform any building block collection to structured data frames
+- **Integrate**: Full compatibility with `ospsuite::DataSet` objects
 
-```{r}
-# View all compounds
-snapshot$compounds
+## Learn More
 
-# View all populations  
-snapshot$populations
+Get started with osp.snapshots:
 
-# View all events
-snapshot$events
+- `vignette("osp-snapshots")` - Getting started guide
+- `vignette("working-with-dataframes")` - Converting snapshots to data frames
+- `vignette("creating-building-blocks")` - Creating and managing building blocks
 
-# View all protocols
-snapshot$protocols
+## Getting Help
 
-# View all expression profiles
-snapshot$expression_profiles
-
-# View all formulations
-snapshot$formulations
-```
-
-### Working with Observed Data
-
-The snapshot contains observed data that can be easily accessed and manipulated:
-
-```{r}
-# View all observed data in the snapshot
-snapshot$observed_data
-
-# Access a specific observed data set
-first_obs_data <- snapshot$observed_data[[1]]
-first_obs_data
-
-# Observed data are DataSet objects from the ospsuite package
-class(first_obs_data)
-```
-
-
-### Modifying Building Blocks
-All these elements are mutable and can be modified in place.
-
-```{r}
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age <- 35
-
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`$value <- 0.6
-
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
-```
-
-## Creating new building blocks
-### Creating a New Individual
-
-```{r}
-# Create a new individual
-new_individual <- create_individual(
-  name = "Patient_001",
-  species = "Human",
-  population = "European_ICRP_2002",
-  gender = "MALE",
-  age = 45,
-  weight = 85,
-  height = 180
-)
-
-# Display the new individual
-new_individual
-
-# Add to snapshot
-add_individual(snapshot, new_individual)
-
-# Verify it was added
-snapshot$individuals
-```
-
-### Creating a New Formulation
-
-```{r}
-# Create a simple dissolved formulation
-dissolved_form <- create_formulation(
-  name = "Oral Solution",
-  type = "Dissolved"
-)
-
-# Create a tablet formulation with Weibull dissolution profile
-tablet_form <- create_formulation(
-  name = "Standard Tablet",
-  type = "Weibull",
-  parameters = list(
-    dissolution_time = 60,
-    dissolution_time_unit = "min",
-    lag_time = 10,
-    lag_time_unit = "min",
-    dissolution_shape = 0.92,
-    suspension = TRUE
-  )
-)
-
-# Display the tablet formulation
-tablet_form
-
-# Add to snapshot
-add_formulation(snapshot, tablet_form)
-
-# Verify it was added
-snapshot$formulations
-```
-
-### Managing Building Blocks
-
-You can add and remove various building blocks from snapshots:
-
-#### Managing Observed Data
-
-Observed data should be provided as `ospsuite::DataSet` objects:
-
-```{r, eval=FALSE}
-# Create a new DataSet object (this is just an example)
-library(ospsuite)
-new_dataset <- DataSet$new()
-new_dataset$setValues(xValues = c(0, 1, 2, 4, 8), yValues = c(100, 80, 60, 40, 20))
-new_dataset$name <- "New Study Data"
-new_dataset$xDimension <- "Time"
-new_dataset$xUnit <- "h" 
-new_dataset$yDimension <- "Concentration"
-new_dataset$yUnit <- "mg/l"
-
-# Add to snapshot
-add_observed_data(snapshot, new_dataset)
-
-# Remove observed data by name
-remove_observed_data(snapshot, "New Study Data")
-```
-
-#### Removing Other Building Blocks
-
-All building block types can be removed by name:
-
-```{r, eval=FALSE}
-# Remove individuals
-remove_individual(snapshot, "Patient_001")
-remove_individual(snapshot, c("Patient_001", "Patient_002"))  # Multiple at once
-
-# Remove formulations
-remove_formulation(snapshot, "Standard Tablet")
-
-# Remove populations
-remove_population(snapshot, "Population_1")
-
-# Remove expression profiles (by ID: molecule|species|category)
-remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
-```
-
-## Exporting Modified Snapshots
-
-After making modifications to a snapshot, you can export it back to a JSON file using the `export_snapshot()` function. It can then be imported back to PK-Sim.
-
-```{r, eval=FALSE}
-export_snapshot(snapshot, "path/to/modified_snapshot.json")
-```
-
-## Converting to Data Frames
-
-You can convert snapshot elements to data frames for easier analysis, visualization, and integration with other R tools.
-
-### Converting Individuals
-
-You can convert all individuals in a snapshot to combined data frames:
-
-```{r,results='hide'}
-# Get data frames for all individuals in the snapshot
-dfs <- get_individuals_dfs(snapshot)
-dfs
-```
-
-```{r, results='asis', echo=FALSE}
-for (df in dfs) {
-  print(knitr::kable(df))
-}
-```
-
-It is also possible to get dataframe for a specific individual using `to_df()` method on an individual object:
-
-```{r, results="hide"}
-individual_df <- snapshot$individuals[[1]]$to_df()
-individual_df
-```
-```{r, results='asis', echo=FALSE}
-for (df in individual_df) {
-  print(knitr::kable(df))
-}
-```
-
-### Converting Formulations
-
-Similar to individuals, you can convert formulations to data frames:
-
-```{r, results="hide"}
-# Get data frames for all formulations in the snapshot
-formulation_dfs <- get_formulations_dfs(snapshot)
-formulation_dfs
-```
-
-```{r, results='asis', echo=FALSE}
-for (df in formulation_dfs) {
-  print(knitr::kable(df))
-}
-```
-
-You can also convert a specific formulation to a data frame:
-
-```{r, results="hide"}
-# Convert a specific formulation to data frame
-form_df <- snapshot$formulations$`Standard Tablet`$to_df()
-```
-
-```{r, results='asis', echo=FALSE}
-for (df in form_df) {
-  print(knitr::kable(df))
-}
-```
-
-### Converting Observed Data
-
-Observed data can be easily converted to data frames for analysis and visualization:
-
-```{r, results="hide"}
-# Get data frames for all observed data in the snapshot
-obs_data_dfs <- get_observed_data_dfs(snapshot)
-obs_data_dfs
-```
-
-```{r, results='asis', echo=FALSE}
-# Show just the first few rows due to the large dataset
-obs_sample <- head(obs_data_dfs, 10)
-print(knitr::kable(obs_sample))
-```
-
-The observed data data frame contains all the time-series data with metadata, making it easy to work with in R for analysis and plotting.
-
-### Converting Other Collections
-
-All other snapshot collections can also be converted to data frames:
-
-```{r, eval=FALSE}
-# Convert compounds to data frame
-compounds_df <- get_compounds_dfs(snapshot)
-
-# Convert populations to data frame  
-populations_df <- get_populations_dfs(snapshot)
-
-# Convert events to data frame
-events_df <- get_events_dfs(snapshot)
-
-# Convert protocols to data frame
-protocols_df <- get_protocols_dfs(snapshot)
-
-# Convert expression profiles to data frame
-expression_profiles_df <- get_expression_profiles_dfs(snapshot)
-```
-
-These functions follow the same pattern as the examples above, providing structured data frames that make it easy to analyze, filter, and visualize the snapshot contents using standard R data manipulation tools.
+- [Function reference](https://esqlabs.github.io/osp.snapshots/reference/)
+- [Report bugs](https://github.com/esqLABS/osp.snapshots/issues)
