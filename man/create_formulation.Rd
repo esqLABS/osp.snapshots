@@ -50,20 +50,20 @@ All arguments are optional except for name and type.
 \section{Particle formulation parameters}{
 
 * thickness - Thickness of unstirred water layer (numeric, default: 30)
-* thickness_unit - Unit for thickness (character, default: "µm")
+* thickness_unit - Unit for thickness (character, default: "\\u00b5m")
 * distribution_type - Type of distribution, "mono" or "poly" (character, default: "mono")
 * radius - Particle radius (mean or geometric mean) (numeric, default: 10)
-* radius_unit - Unit for radius (character, default: "µm")
+* radius_unit - Unit for radius (character, default: "\\u00b5m")
 
 Parameters for polydisperse distribution (when distribution_type = "poly"):
 * particle_size_distribution - "normal" or "lognormal" (character, default: "normal")
 * radius_sd - Radius standard deviation, for normal distribution (numeric, default: 3)
-* radius_sd_unit - Unit for radius SD (character, default: "µm")
+* radius_sd_unit - Unit for radius SD (character, default: "\\u00b5m")
 * radius_cv - Coefficient of variation, for lognormal distribution (numeric, default: 1.5)
 * radius_min - Minimum particle radius (numeric, default: 1)
-* radius_min_unit - Unit for minimum radius (character, default: "µm")
+* radius_min_unit - Unit for minimum radius (character, default: "\\u00b5m")
 * radius_max - Maximum particle radius (numeric, default: 19)
-* radius_max_unit - Unit for maximum radius (character, default: "µm")
+* radius_max_unit - Unit for maximum radius (character, default: "\\u00b5m")
 * n_bins - Number of bins (integer, default: 3)
 }
 
@@ -110,9 +110,9 @@ particle <- create_formulation(
   type = "Particle",
   parameters = list(
     thickness = 25,
-    thickness_unit = "µm",
+    thickness_unit = "\\\\u00b5m",
     radius = 5,
-    radius_unit = "µm"
+    radius_unit = "\\\\u00b5m"
   )
 )
 
