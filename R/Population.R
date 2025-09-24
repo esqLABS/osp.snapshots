@@ -7,6 +7,8 @@
 #'
 #' @importFrom tibble tibble as_tibble
 #' @importFrom glue glue
+#' @importFrom R6 R6Class
+#'
 #' @export
 Population <- R6::R6Class(
   classname = "Population",

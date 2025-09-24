@@ -4,6 +4,9 @@
 #' An R6 class that represents an OSP snapshot file. This class provides
 #' methods to access different components of the snapshot and visualize its structure.
 #'
+#' @importFrom R6 R6Class
+#' @importFrom fs path_rel
+#'
 #' @export
 Snapshot <- R6::R6Class(
   classname = "Snapshot",

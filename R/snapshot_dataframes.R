@@ -425,17 +425,17 @@ get_events_dfs <- function(snapshot) {
       !is.null(event_df$events_parameters) &&
         nrow(event_df$events_parameters) > 0
     ) {
-      # Add event_id and rename columns to match expected structure
+      # Add event_id to parameters data
       param_df <- dplyr::bind_cols(
         tibble::tibble(
           event_id = rep(event_name, nrow(event_df$events_parameters))
         ),
         event_df$events_parameters
-      ) %>%
+      ) |>
         dplyr::rename(
-          parameter = param_name,
-          value = param_value,
-          unit = param_unit
+          "parameter" = "param_name",
+          "value" = "param_value",
+          "unit" = "param_unit"
         )
 
       params_list[[length(params_list) + 1]] <- param_df

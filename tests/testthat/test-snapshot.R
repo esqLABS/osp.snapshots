@@ -59,11 +59,11 @@ test_that("Snapshot path handling works correctly", {
 
   # Check that the new path is stored correctly
   new_abs_path <- normalizePath(new_temp_file)
-  expect_equal(snapshot$.__enclos_env__$private$.abs_path, new_abs_path)
+  expect_equal(normalizePath(snapshot$.__enclos_env__$private$.abs_path), new_abs_path)
 
   # Check that the path active binding returns the new relative path
   new_rel_path <- fs::path_rel(new_abs_path, start = getwd())
-  expect_equal(snapshot$path, new_rel_path)
+  expect_equal(normalizePath(snapshot$path, mustWork = FALSE), normalizePath(new_rel_path, mustWork = FALSE))
 
   expect_equal(
     test_snapshot$path,

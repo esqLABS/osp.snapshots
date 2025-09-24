@@ -5,6 +5,8 @@
 #' This class provides methods to access different properties of an expression profile
 #' and display a summary of its information.
 #'
+#' @importFrom R6 R6Class
+#'
 #' @export
 ExpressionProfile <- R6::R6Class(
   classname = "ExpressionProfile",

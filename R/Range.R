@@ -5,6 +5,8 @@
 #' Used for age, weight, height, and BMI ranges in populations.
 #' Either min or max can be NULL to represent ranges with only an upper or lower bound.
 #'
+#' @importFrom R6 R6Class
+#'
 #' @export
 Range <- R6::R6Class(
   classname = "Range",
@@ -74,8 +76,8 @@ Range <- R6::R6Class(
     #' @return Invisibly returns the Range object for method chaining
     print = function(...) {
       output <- cli::cli_format_method({
-        min_text <- if (is.null(private$.min)) "-∞" else private$.min
-        max_text <- if (is.null(private$.max)) "∞" else private$.max
+        min_text <- if (is.null(private$.min)) "-\u221e" else private$.min
+        max_text <- if (is.null(private$.max)) "\u221e" else private$.max
 
         cli::cli_text("{min_text} - {max_text} {private$.unit}")
       })

@@ -5,6 +5,8 @@
 #' This class provides methods to access different properties of an event
 #' and display a summary of its information.
 #'
+#' @importFrom R6 R6Class
+#'
 #' @export
 Event <- R6::R6Class(
   classname = "Event",
