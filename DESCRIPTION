@@ -1,6 +1,6 @@
 Package: osp.snapshots
 Type: Package
-Title: An R interface to manage and create snapshots of OSP models and projects
+Title: Import and Manipulate Open Systems Pharmacology Project Snapshots
 Version: 0.1.0.9029
 Authors@R: c(
     person(
@@ -9,19 +9,26 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
+Description: Provides a convenient R interface for working with PKSIM project 
+    snapshots exported as JSON files. You provide the snapshot file, and 
+    'osp.snapshots' handles the complex nested structure, allowing you to 
+    easily import, navigate, modify, and export snapshot data. Building 
+    blocks can be converted to data frames for integration with the 
+    'ospsuite' R framework and broader R ecosystem.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://esqlabs.github.io/osp.snapshots/
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
+Depends: 
+    R (>= 4.1.0)
 Imports:
     R6,
     jsonlite,
     cli,
     fs,
     ospsuite (>= 12.2.0),
+    purrr,
     tibble,
     dplyr,
     glue,
@@ -29,8 +36,10 @@ Imports:
     stringr
 Suggests: 
     devtools,
+    knitr,
     quarto,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Config/testthat/edition: 3
 Remotes: 
     ospsuite=Open-Systems-Pharmacology/OSPSuite-R
