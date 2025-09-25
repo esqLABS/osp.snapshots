@@ -1,7 +1,7 @@
 Package: osp.snapshots
 Type: Package
 Title: Import and Manipulate Open Systems Pharmacology Project Snapshots
-Version: 0.2.0.9000
+Version: 0.2.0.9001
 Authors@R: c(
     person(
       "Felix", "MIL",
