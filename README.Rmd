@@ -16,8 +16,10 @@ knitr::opts_chunk$set(
 # osp.snapshots
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/esqLABS/osp.snapshots/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/esqLABS/osp.snapshots/graph/badge.svg)](https://app.codecov.io/gh/esqLABS/osp.snapshots)
+
+[![](https://img.shields.io/github/actions/workflow/status/esqlabs/osp.snapshots/main-workflow.yaml?branch=main&label=Build)](https://github.com/esqlabs/osp.snapshots/actions/workflows/main-workflow.yaml) 
+<!-- [![Codecov test coverage](https://codecov.io/gh/esqlabs/osp.snapshots/branch/main/graph/badge.svg)](https://app.codecov.io/gh/esqlabs/osp.snapshots?branch=main) -->
+
 <!-- badges: end -->
 
 osp.snapshots provides a convenient R interface for working with PKSIM project snapshots. Import, navigate, modify, and export snapshot data with ease, making complex nested JSON structures accessible for analysis within the R ecosystem.
@@ -26,7 +28,7 @@ osp.snapshots provides a convenient R interface for working with PKSIM project s
 
 You can install the development version of osp.snapshots from [GitHub](https://github.com/) with:
 
-```r
+``` r
 # install.packages("pak")
 pak::pak("esqLABS/osp.snapshots")
 ```
@@ -68,21 +70,33 @@ individual_dfs <- get_individuals_dfs(snapshot)
 
 ## Key Features
 
-- **Import/Export**: Load snapshots from JSON files, URLs, or templates; export back to JSON
-- **Navigate**: Access all building blocks (individuals, compounds, formulations, etc.) with intuitive R syntax
-- **Modify**: Change parameters, add/remove building blocks in place
-- **Convert**: Transform any building block collection to structured data frames
-- **Integrate**: Full compatibility with `ospsuite::DataSet` objects
+-   **Import/Export**: Load snapshots from JSON files, URLs, or templates; export back to JSON
+-   **Navigate**: Access all building blocks (individuals, compounds, formulations, etc.) with intuitive R syntax
+-   **Modify**: Change parameters, add/remove building blocks in place
+-   **Convert**: Transform any building block collection to structured data frames
+-   **Integrate**: Full compatibility with `ospsuite::DataSet` objects
 
 ## Learn More
 
 Get started with osp.snapshots:
 
-- `vignette("osp-snapshots")` - Getting started guide
-- `vignette("working-with-dataframes")` - Converting snapshots to data frames
-- `vignette("creating-building-blocks")` - Creating and managing building blocks
+-   `vignette("osp-snapshots")` - Getting started guide
+-   `vignette("working-with-dataframes")` - Converting snapshots to data frames
+-   `vignette("creating-building-blocks")` - Creating and managing building blocks
 
 ## Getting Help
 
-- [Function reference](https://esqlabs.github.io/osp.snapshots/reference/)
-- [Report bugs](https://github.com/esqLABS/osp.snapshots/issues)
+-   [Function reference](https://esqlabs.github.io/osp.snapshots/reference/)
+-   [Report bugs](https://github.com/esqLABS/osp.snapshots/issues)
+
+## Sponsors
+
+<!-- sponsors -->
+
+<p align="left">
+
+<a href="https://github.com/Boehringer-Ingelheim" style="display: inline-flex; align-items: center; gap: 20px;"> <img src="https://avatars.githubusercontent.com/u/62895628?s=200&amp;v=4" alt="Boehringer Ingelheim" width="100" style="vertical-align: middle;"/> <strong style="font-size: 20px;">Boehringer Ingelheim</strong> </a>
+
+</p>
+
+<!-- sponsors -->
