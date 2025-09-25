@@ -18,5 +18,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Felix MIL \email{felix.mil@esqlabs.com}
 
+Other contributors:
+\itemize{
+  \item ESQlabs, GmbH [copyright holder, funder]
+}
+
 }
 \keyword{internal}

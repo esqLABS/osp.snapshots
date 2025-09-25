@@ -1,13 +1,17 @@
 Package: osp.snapshots
 Type: Package
 Title: Import and Manipulate Open Systems Pharmacology Project Snapshots
-Version: 0.2.0
+Version: 0.2.0.9000
 Authors@R: c(
     person(
       "Felix", "MIL",
       email = "felix.mil@esqlabs.com",
       role = c("aut", "cre")
-    )
+    ),
+    person(
+        "ESQlabs, GmbH", 
+        role = c("cph", "fnd")
+        )
   )
 Description: Provides a convenient R interface for working with PKSIM project 
     snapshots exported as JSON files. You provide the snapshot file, and 

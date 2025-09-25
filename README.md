@@ -41,7 +41,7 @@ snapshot
 #> 
 #> ── PKSIM Snapshot ──────────────────────────────────────────────────────────────
 #> ℹ Version: 79 (PKSIM 11.2)
-#> ℹ Path: '../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/RtmpuV3iXW/temp_libpath2fd6082c8aa/osp.snapshots/extdata/test_snapshot.json'
+#> ℹ Path: '../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/RtmpuV3iXW/temp_libpath2fd2f670785/osp.snapshots/extdata/test_snapshot.json'
 #> • Compounds: 6
 #> • Events: 10
 #> • ExpressionProfiles: 14
@@ -118,9 +118,3 @@ Get started with osp.snapshots:
 - [Function
   reference](https://esqlabs.github.io/osp.snapshots/reference/)
 - [Report bugs](https://github.com/esqLABS/osp.snapshots/issues)
-
-<!-- ## Sponsors
-&#10;<p align="left">
-&#10;<a href="https://github.com/Boehringer-Ingelheim" style="display: inline-flex; align-items: center; gap: 20px;"> <img src="https://avatars.githubusercontent.com/u/62895628?s=200&amp;v=4" alt="Boehringer Ingelheim" width="100" style="vertical-align: middle;"/> <strong style="font-size: 20px;">Boehringer Ingelheim</strong> </a>
-&#10;</p>
--->

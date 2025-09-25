@@ -89,11 +89,3 @@ Get started with osp.snapshots:
 -   [Function reference](https://esqlabs.github.io/osp.snapshots/reference/)
 -   [Report bugs](https://github.com/esqLABS/osp.snapshots/issues)
 
-<!-- ## Sponsors
-
-<p align="left">
-
-<a href="https://github.com/Boehringer-Ingelheim" style="display: inline-flex; align-items: center; gap: 20px;"> <img src="https://avatars.githubusercontent.com/u/62895628?s=200&amp;v=4" alt="Boehringer Ingelheim" width="100" style="vertical-align: middle;"/> <strong style="font-size: 20px;">Boehringer Ingelheim</strong> </a>
-
-</p>
--->

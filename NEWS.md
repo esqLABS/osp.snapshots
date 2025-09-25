@@ -1,3 +1,5 @@
+# osp.snapshots (development version)
+
 # osp.snapshots 0.2.0
 
 * New `load_snapshot()` function to import PKSIM project snapshots from JSON 
