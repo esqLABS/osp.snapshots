@@ -9,7 +9,7 @@ All arguments are optional except for name and type."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9029</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,7 +17,13 @@ All arguments are optional except for name and type."></head><body>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/working-with-dataframes.html">Working with Data Frames</a></li>
+    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating Building Blocks</a></li>
+  </ul></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -98,19 +104,19 @@ depend on the formulation type. Invalid parameters will result in an error.</p><
 
 
 <p>* thickness - Thickness of unstirred water layer (numeric, default: 30)
-* thickness_unit - Unit for thickness (character, default: "µm")
+* thickness_unit - Unit for thickness (character, default: "\u00b5m")
 * distribution_type - Type of distribution, "mono" or "poly" (character, default: "mono")
 * radius - Particle radius (mean or geometric mean) (numeric, default: 10)
-* radius_unit - Unit for radius (character, default: "µm")</p>
+* radius_unit - Unit for radius (character, default: "\u00b5m")</p>
 <p>Parameters for polydisperse distribution (when distribution_type = "poly"):
 * particle_size_distribution - "normal" or "lognormal" (character, default: "normal")
 * radius_sd - Radius standard deviation, for normal distribution (numeric, default: 3)
-* radius_sd_unit - Unit for radius SD (character, default: "µm")
+* radius_sd_unit - Unit for radius SD (character, default: "\u00b5m")
 * radius_cv - Coefficient of variation, for lognormal distribution (numeric, default: 1.5)
 * radius_min - Minimum particle radius (numeric, default: 1)
-* radius_min_unit - Unit for minimum radius (character, default: "µm")
+* radius_min_unit - Unit for minimum radius (character, default: "\u00b5m")
 * radius_max - Maximum particle radius (numeric, default: 19)
-* radius_max_unit - Unit for maximum radius (character, default: "µm")
+* radius_max_unit - Unit for maximum radius (character, default: "\u00b5m")
 * n_bins - Number of bins (integer, default: 3)</p>
     </div>
     <div class="section level2">
@@ -161,9 +167,9 @@ depend on the formulation type. Invalid parameters will result in an error.</p><
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"Particle"</span>,</span></span>
 <span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    thickness <span class="op">=</span> <span class="fl">25</span>,</span></span>
-<span class="r-in"><span>    thickness_unit <span class="op">=</span> <span class="st">"µm"</span>,</span></span>
+<span class="r-in"><span>    thickness_unit <span class="op">=</span> <span class="st">"\\u00b5m"</span>,</span></span>
 <span class="r-in"><span>    radius <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>    radius_unit <span class="op">=</span> <span class="st">"µm"</span></span></span>
+<span class="r-in"><span>    radius_unit <span class="op">=</span> <span class="st">"\\u00b5m"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No distribution_type provided, using default of mono</span>
@@ -185,11 +191,11 @@ depend on the formulation type. Invalid parameters will result in an error.</p><
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL.</p>
+  <p>Developed by Felix MIL. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>osp.snapshots</p>
 </div>
 
     </footer></div>

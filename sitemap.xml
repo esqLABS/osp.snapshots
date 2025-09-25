@@ -1,6 +1,10 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://esqlabs.github.io/osp.snapshots/404.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/LICENSE-text.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/articles/creating-building-blocks.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/articles/index.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/articles/osp-snapshots.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/articles/working-with-dataframes.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/authors.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/index.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/news/index.html</loc></url>
@@ -35,6 +39,7 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/index.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/loadDataSetFromSnapshot.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/load_snapshot.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/osp.snapshots-package.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/print.biliary_clearance.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/print.compound_additional_parameters.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/print.compound_calculation_methods.html</loc></url>

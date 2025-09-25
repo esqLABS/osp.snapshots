@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9029</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,7 +15,13 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/working-with-dataframes.html">Working with Data Frames</a></li>
+    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating Building Blocks</a></li>
+  </ul></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -31,9 +37,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="import-and-export">Import and Export<a class="anchor" aria-label="anchor" href="#import-and-export"></a></h2>
 
-
+      <div class="section-desc"><p>Load snapshots and export modifications</p></div>
 
 
     </div><div class="section level2">
@@ -43,34 +49,33 @@
 
       <dl><dt>
 
-          <code><a href="AdvancedParameter.html">AdvancedParameter</a></code>
+          <code><a href="load_snapshot.html">load_snapshot()</a></code>
 
         </dt>
-        <dd>AdvancedParameter class for Population advanced parameters</dd>
+        <dd>Load a snapshot from various sources</dd>
       </dl><dl><dt>
 
-          <code><a href="Compound.html">Compound</a></code>
+          <code><a href="export_snapshot.html">export_snapshot()</a></code>
 
         </dt>
-        <dd>Compound class for OSP snapshot compounds</dd>
-      </dl><dl><dt>
+        <dd>Export a snapshot to a JSON file</dd>
+      </dl></div><div class="section level2">
+      <h2 id="core-classes">Core Classes<a class="anchor" aria-label="anchor" href="#core-classes"></a></h2>
 
-          <code><a href="Event.html">Event</a></code>
+      <div class="section-desc"><p>Main classes for working with snapshots and building blocks</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="Snapshot.html">Snapshot</a></code>
 
         </dt>
-        <dd>Event class for OSP snapshot events</dd>
-      </dl><dl><dt>
-
-          <code><a href="ExpressionProfile.html">ExpressionProfile</a></code>
-
-        </dt>
-        <dd>ExpressionProfile class for OSP snapshot expression profiles</dd>
-      </dl><dl><dt>
-
-          <code><a href="Formulation.html">Formulation</a></code>
-
-        </dt>
-        <dd>Formulation class for OSP snapshot formulations</dd>
+        <dd>Snapshot class for OSP snapshots</dd>
       </dl><dl><dt>
 
           <code><a href="Individual.html">Individual</a></code>
@@ -79,10 +84,16 @@
         <dd>Individual class for OSP snapshot individuals</dd>
       </dl><dl><dt>
 
-          <code><a href="Parameter.html">Parameter</a></code>
+          <code><a href="Compound.html">Compound</a></code>
 
         </dt>
-        <dd>Parameter class for OSP snapshot parameters</dd>
+        <dd>Compound class for OSP snapshot compounds</dd>
+      </dl><dl><dt>
+
+          <code><a href="Formulation.html">Formulation</a></code>
+
+        </dt>
+        <dd>Formulation class for OSP snapshot formulations</dd>
       </dl><dl><dt>
 
           <code><a href="Population.html">Population</a></code>
@@ -97,46 +108,51 @@
         <dd>Protocol class for OSP snapshot protocols</dd>
       </dl><dl><dt>
 
+          <code><a href="Event.html">Event</a></code>
+
+        </dt>
+        <dd>Event class for OSP snapshot events</dd>
+      </dl><dl><dt>
+
+          <code><a href="ExpressionProfile.html">ExpressionProfile</a></code>
+
+        </dt>
+        <dd>ExpressionProfile class for OSP snapshot expression profiles</dd>
+      </dl><dl><dt>
+
+          <code><a href="Parameter.html">Parameter</a></code>
+
+        </dt>
+        <dd>Parameter class for OSP snapshot parameters</dd>
+      </dl><dl><dt>
+
+          <code><a href="AdvancedParameter.html">AdvancedParameter</a></code>
+
+        </dt>
+        <dd>AdvancedParameter class for Population advanced parameters</dd>
+      </dl><dl><dt>
+
           <code><a href="Range.html">range()</a></code>
 
         </dt>
         <dd>Create a range object for physiological parameters</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      <h2 id="create-building-blocks">Create Building Blocks<a class="anchor" aria-label="anchor" href="#create-building-blocks"></a></h2>
 
-          <code><a href="Snapshot.html">Snapshot</a></code>
+      <div class="section-desc"><p>Functions to create new building blocks from scratch</p></div>
 
-        </dt>
-        <dd>Snapshot class for OSP snapshots</dd>
-      </dl><dl><dt>
 
-          <code><a href="add_expression_profile.html">add_expression_profile()</a></code>
+    </div><div class="section level2">
 
-        </dt>
-        <dd>Add an expression profile to a snapshot</dd>
-      </dl><dl><dt>
 
-          <code><a href="add_formulation.html">add_formulation()</a></code>
 
-        </dt>
-        <dd>Add a formulation to a snapshot</dd>
-      </dl><dl><dt>
 
-          <code><a href="add_individual.html">add_individual()</a></code>
+      <dl><dt>
+
+          <code><a href="create_individual.html">create_individual()</a></code>
 
         </dt>
-        <dd>Add an individual to a snapshot</dd>
-      </dl><dl><dt>
-
-          <code><a href="convert_ospsuite_time_to_duration.html">convert_ospsuite_time_to_duration()</a></code>
-
-        </dt>
-        <dd>Convert time value and unit to lubridate duration</dd>
-      </dl><dl><dt>
-
-          <code><a href="convert_ospsuite_time_unit_to_lubridate.html">convert_ospsuite_time_unit_to_lubridate()</a></code>
-
-        </dt>
-        <dd>Convert ospsuite time units to lubridate-compatible units</dd>
+        <dd>Create a new individual</dd>
       </dl><dl><dt>
 
           <code><a href="create_formulation.html">create_formulation()</a></code>
@@ -145,22 +161,80 @@
         <dd>Create a new formulation</dd>
       </dl><dl><dt>
 
-          <code><a href="create_individual.html">create_individual()</a></code>
-
-        </dt>
-        <dd>Create a new individual</dd>
-      </dl><dl><dt>
-
           <code><a href="create_parameter.html">create_parameter()</a></code>
 
         </dt>
         <dd>Create a new parameter</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      <h2 id="manage-building-blocks">Manage Building Blocks<a class="anchor" aria-label="anchor" href="#manage-building-blocks"></a></h2>
 
-          <code><a href="export_snapshot.html">export_snapshot()</a></code>
+      <div class="section-desc"><p>Add and remove building blocks from snapshots</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="add_individual.html">add_individual()</a></code>
 
         </dt>
-        <dd>Export a snapshot to a JSON file</dd>
+        <dd>Add an individual to a snapshot</dd>
+      </dl><dl><dt>
+
+          <code><a href="add_formulation.html">add_formulation()</a></code>
+
+        </dt>
+        <dd>Add a formulation to a snapshot</dd>
+      </dl><dl><dt>
+
+          <code><a href="add_expression_profile.html">add_expression_profile()</a></code>
+
+        </dt>
+        <dd>Add an expression profile to a snapshot</dd>
+      </dl><dl><dt>
+
+          <code><a href="remove_individual.html">remove_individual()</a></code>
+
+        </dt>
+        <dd>Remove individuals from a snapshot</dd>
+      </dl><dl><dt>
+
+          <code><a href="remove_formulation.html">remove_formulation()</a></code>
+
+        </dt>
+        <dd>Remove formulations from a snapshot</dd>
+      </dl><dl><dt>
+
+          <code><a href="remove_population.html">remove_population()</a></code>
+
+        </dt>
+        <dd>Remove populations from a snapshot</dd>
+      </dl><dl><dt>
+
+          <code><a href="remove_expression_profile.html">remove_expression_profile()</a></code>
+
+        </dt>
+        <dd>Remove expression profiles from a snapshot</dd>
+      </dl></div><div class="section level2">
+      <h2 id="data-frame-conversion">Data Frame Conversion<a class="anchor" aria-label="anchor" href="#data-frame-conversion"></a></h2>
+
+      <div class="section-desc"><p>Convert building blocks to data frames for analysis</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="get_individuals_dfs.html">get_individuals_dfs()</a></code>
+
+        </dt>
+        <dd>Get all individuals in a snapshot as data frames</dd>
       </dl><dl><dt>
 
           <code><a href="get_compounds_dfs.html">get_compounds_dfs()</a></code>
@@ -169,34 +243,10 @@
         <dd>Get all compounds in a snapshot as data frames</dd>
       </dl><dl><dt>
 
-          <code><a href="get_events_dfs.html">get_events_dfs()</a></code>
-
-        </dt>
-        <dd>Get all events in a snapshot as data frames</dd>
-      </dl><dl><dt>
-
-          <code><a href="get_expression_profiles_dfs.html">get_expression_profiles_dfs()</a></code>
-
-        </dt>
-        <dd>Get all expression profiles in a snapshot as data frames</dd>
-      </dl><dl><dt>
-
           <code><a href="get_formulations_dfs.html">get_formulations_dfs()</a></code>
 
         </dt>
         <dd>Get all formulations in a snapshot as data frames</dd>
-      </dl><dl><dt>
-
-          <code><a href="get_individuals_dfs.html">get_individuals_dfs()</a></code>
-
-        </dt>
-        <dd>Get all individuals in a snapshot as data frames</dd>
-      </dl><dl><dt>
-
-          <code><a href="get_observed_data_dfs.html">get_observed_data_dfs()</a></code>
-
-        </dt>
-        <dd>Get all observed data in a snapshot as data frames</dd>
       </dl><dl><dt>
 
           <code><a href="get_populations_dfs.html">get_populations_dfs()</a></code>
@@ -211,17 +261,104 @@
         <dd>Get all protocols in a snapshot as a single consolidated data frame</dd>
       </dl><dl><dt>
 
+          <code><a href="get_events_dfs.html">get_events_dfs()</a></code>
+
+        </dt>
+        <dd>Get all events in a snapshot as data frames</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_expression_profiles_dfs.html">get_expression_profiles_dfs()</a></code>
+
+        </dt>
+        <dd>Get all expression profiles in a snapshot as data frames</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_observed_data_dfs.html">get_observed_data_dfs()</a></code>
+
+        </dt>
+        <dd>Get all observed data in a snapshot as data frames</dd>
+      </dl></div><div class="section level2">
+      <h2 id="observed-data">Observed Data<a class="anchor" aria-label="anchor" href="#observed-data"></a></h2>
+
+      <div class="section-desc"><p>Work with clinical and experimental data</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="loadDataSetFromSnapshot.html">loadDataSetFromSnapshot()</a></code>
 
         </dt>
         <dd>Load DataSet from OSP snapshot observed data</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      <h2 id="validation-and-utilities">Validation and Utilities<a class="anchor" aria-label="anchor" href="#validation-and-utilities"></a></h2>
 
-          <code><a href="load_snapshot.html">load_snapshot()</a></code>
+      <div class="section-desc"><p>Helper functions for validation and data conversion</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="validate_snapshot.html">validate_snapshot()</a></code>
 
         </dt>
-        <dd>Load a snapshot from various sources</dd>
+        <dd>Validate that an object is a Snapshot</dd>
       </dl><dl><dt>
+
+          <code><a href="validate_species.html">validate_species()</a></code>
+
+        </dt>
+        <dd>Validate that a species is valid</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_population.html">validate_population()</a></code>
+
+        </dt>
+        <dd>Validate that a population is valid</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_gender.html">validate_gender()</a></code>
+
+        </dt>
+        <dd>Validate that a gender is valid</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_unit.html">validate_unit()</a></code>
+
+        </dt>
+        <dd>Validate that a unit is valid for a given dimension</dd>
+      </dl><dl><dt>
+
+          <code><a href="convert_ospsuite_time_unit_to_lubridate.html">convert_ospsuite_time_unit_to_lubridate()</a></code>
+
+        </dt>
+        <dd>Convert ospsuite time units to lubridate-compatible units</dd>
+      </dl><dl><dt>
+
+          <code><a href="convert_ospsuite_time_to_duration.html">convert_ospsuite_time_to_duration()</a></code>
+
+        </dt>
+        <dd>Convert time value and unit to lubridate duration</dd>
+      </dl></div><div class="section level2">
+      <h2 id="print-methods">Print Methods<a class="anchor" aria-label="anchor" href="#print-methods"></a></h2>
+
+      <div class="section-desc"><p>Formatted display methods for building block collections</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="print.biliary_clearance.html">print(<i>&lt;biliary_clearance&gt;</i>)</a></code>
 
@@ -347,70 +484,17 @@
 
         </dt>
         <dd>Print method for transporter proteins</dd>
-      </dl><dl><dt>
-
-          <code><a href="remove_expression_profile.html">remove_expression_profile()</a></code>
-
-        </dt>
-        <dd>Remove expression profiles from a snapshot</dd>
-      </dl><dl><dt>
-
-          <code><a href="remove_formulation.html">remove_formulation()</a></code>
-
-        </dt>
-        <dd>Remove formulations from a snapshot</dd>
-      </dl><dl><dt>
-
-          <code><a href="remove_individual.html">remove_individual()</a></code>
-
-        </dt>
-        <dd>Remove individuals from a snapshot</dd>
-      </dl><dl><dt>
-
-          <code><a href="remove_population.html">remove_population()</a></code>
-
-        </dt>
-        <dd>Remove populations from a snapshot</dd>
-      </dl><dl><dt>
-
-          <code><a href="validate_gender.html">validate_gender()</a></code>
-
-        </dt>
-        <dd>Validate that a gender is valid</dd>
-      </dl><dl><dt>
-
-          <code><a href="validate_population.html">validate_population()</a></code>
-
-        </dt>
-        <dd>Validate that a population is valid</dd>
-      </dl><dl><dt>
-
-          <code><a href="validate_snapshot.html">validate_snapshot()</a></code>
-
-        </dt>
-        <dd>Validate that an object is a Snapshot</dd>
-      </dl><dl><dt>
-
-          <code><a href="validate_species.html">validate_species()</a></code>
-
-        </dt>
-        <dd>Validate that a species is valid</dd>
-      </dl><dl><dt>
-
-          <code><a href="validate_unit.html">validate_unit()</a></code>
-
-        </dt>
-        <dd>Validate that a unit is valid for a given dimension</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL.</p>
+  <p>Developed by Felix MIL. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>osp.snapshots</p>
 </div>
 
     </footer></div>
