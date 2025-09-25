@@ -1,4 +1,4 @@
-# osp.snapshots 0.1.0
+# osp.snapshots 0.2.0
 
 * New `load_snapshot()` function to import PKSIM project snapshots from JSON 
   files, URLs, or predefined templates.
@@ -29,3 +29,8 @@
 * Time conversion utilities between OSPSuite and R `lubridate` formats.
 
 * Structured print methods for all building block classes.
+
+# osp.snapshots 0.1.0
+
+* Prototype release of the `osp.snapshots` package for managing PKSIM project 
+  snapshots in R.
