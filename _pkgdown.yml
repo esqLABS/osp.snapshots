@@ -43,6 +43,7 @@ reference:
   contents:
   - load_snapshot
   - export_snapshot
+  - osp_models
 
 - title: "Core Classes"
   desc: "Main classes for working with snapshots and building blocks"

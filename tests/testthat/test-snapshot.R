@@ -59,11 +59,17 @@ test_that("Snapshot path handling works correctly", {
 
   # Check that the new path is stored correctly
   new_abs_path <- normalizePath(new_temp_file)
-  expect_equal(normalizePath(snapshot$.__enclos_env__$private$.abs_path), new_abs_path)
+  expect_equal(
+    normalizePath(snapshot$.__enclos_env__$private$.abs_path),
+    new_abs_path
+  )
 
   # Check that the path active binding returns the new relative path
   new_rel_path <- fs::path_rel(new_abs_path, start = getwd())
-  expect_equal(normalizePath(snapshot$path, mustWork = FALSE), normalizePath(new_rel_path, mustWork = FALSE))
+  expect_equal(
+    normalizePath(snapshot$path, mustWork = FALSE),
+    normalizePath(new_rel_path, mustWork = FALSE)
+  )
 
   expect_equal(
     test_snapshot$path,
@@ -99,18 +105,11 @@ test_that("load_snapshot handles URL input", {
   testthat::skip_if_offline()
 
   # Test with a valid URL
-  tryCatch(
-    {
-      snapshot <- load_snapshot(test_url)
-      expect_s3_class(snapshot, "Snapshot")
-      expect_equal(snapshot$path, test_url) # path should be the URL for URL-based snapshots
-      expect_true("Compounds" %in% names(snapshot$data))
-      expect_true("Individuals" %in% names(snapshot$data))
-    },
-    error = function(e) {
-      skip(glue::glue("Could not access test URL: {e$message}"))
-    }
-  )
+
+  snapshot <- load_snapshot(test_url)
+  expect_s3_class(snapshot, "Snapshot")
+  expect_true("Compounds" %in% names(snapshot$data))
+  expect_true("Individuals" %in% names(snapshot$data))
 
   # Test with an invalid URL
   expect_error(
@@ -485,7 +484,7 @@ test_that("export_snapshot function works correctly", {
   )
 })
 
-test_that("browse_templates function works correctly", {
+test_that("osp_models function works correctly", {
   # Skip if offline since it requires internet connection
   testthat::skip_if_offline()
 
@@ -493,7 +492,7 @@ test_that("browse_templates function works correctly", {
   tryCatch(
     {
       # Test basic usage
-      result <- browse_templates()
+      result <- osp_models()
       expect_s3_class(result, "data.frame")
       expect_true(nrow(result) > 0)
       expect_true("Name" %in% names(result))
@@ -501,20 +500,26 @@ test_that("browse_templates function works correctly", {
 
       # Test pattern filtering
       # Look for a common pattern that should exist in templates
-      result_filtered <- browse_templates(pattern = "Midazolam")
+      result_filtered <- osp_models(pattern = "Midazolam")
       expect_s3_class(result_filtered, "data.frame")
       # Check that all results contain the pattern (case insensitive)
       if (nrow(result_filtered) > 0) {
-        expect_true(all(grepl("Midazolam", result_filtered$Name, ignore.case = TRUE)))
+        expect_true(all(grepl(
+          "Midazolam",
+          result_filtered$Name,
+          ignore.case = TRUE
+        )))
       }
 
       # Test with a pattern that shouldn't match anything
-      result_empty <- browse_templates(pattern = "ThisShouldNotMatchAnyTemplate12345")
+      result_empty <- osp_models(pattern = "ThisShouldNotMatchAnyTemplate12345")
       expect_s3_class(result_empty, "data.frame")
       expect_equal(nrow(result_empty), 0)
     },
     error = function(e) {
-      testthat::skip(glue::glue("Could not access templates repository: {e$message}"))
+      testthat::skip(glue::glue(
+        "Could not access templates repository: {e$message}"
+      ))
     }
   )
 })
@@ -544,14 +549,16 @@ test_that(".get_templates_data helper function works", {
       expect_true("Name" %in% names(templates_df))
       expect_true("Url" %in% names(templates_df))
 
-      # Test that it returns consistent data with browse_templates
-      browse_result <- browse_templates()
+      # Test that it returns consistent data with osp_models
+      browse_result <- osp_models()
       expect_equal(nrow(templates_df), nrow(browse_result))
       expect_equal(templates_df$Name, browse_result$Name)
       expect_equal(templates_df$Url, browse_result$Url)
     },
     error = function(e) {
-      testthat::skip(glue::glue("Could not access templates repository: {e$message}"))
+      testthat::skip(glue::glue(
+        "Could not access templates repository: {e$message}"
+      ))
     }
   )
 })

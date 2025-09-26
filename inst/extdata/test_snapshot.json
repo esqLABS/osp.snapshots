@@ -4176,7 +4176,7 @@
       ]
     },
     {
-      "Name": "BI 123456",
+      "Name": "123456",
       "IsSmallMolecule": false,
       "PlasmaProteinBindingPartner": "Glycoprotein",
       "Lipophilicity": [
@@ -5407,7 +5407,7 @@
       ]
     },
     {
-      "Name": "BI 100777- initial table parameters",
+      "Name": "100777- initial table parameters",
       "IsSmallMolecule": false,
       "Lipophilicity": [
         {
@@ -5806,7 +5806,7 @@
       ]
     },
     {
-      "Name": "BI 100777",
+      "Name": "100777",
       "IsSmallMolecule": false,
       "Lipophilicity": [
         {
@@ -7848,20 +7848,20 @@
         }
       ],
       "OutputSelections": [
-        "Organism|PeripheralVenousBlood|BI 123456|Plasma (Peripheral Venous Blood)",
+        "Organism|PeripheralVenousBlood|123456|Plasma (Peripheral Venous Blood)",
         "Organism|PeripheralVenousBlood|Rifampicin|Plasma (Peripheral Venous Blood)"
       ],
       "OutputMappings": [
         {
           "Scaling": "Log",
-          "Path": "simulation2|Organism|PeripheralVenousBlood|BI 123456|Plasma (Peripheral Venous Blood)",
+          "Path": "simulation2|Organism|PeripheralVenousBlood|123456|Plasma (Peripheral Venous Blood)",
           "ObservedData": "Backman 1998 - Phase I (Control (Perpetrator Placebo)) - Midazolam - PO - 15 mg - Plasma - agg. (n=9)"
         }
       ],
       "Individual": "European (P-gp modified, CYP3A4 36 h)",
       "Compounds": [
         {
-          "Name": "BI 123456",
+          "Name": "123456",
           "CalculationMethods": [
             "Cellular partition coefficient method - Rodgers and Rowland",
             "Cellular permeability - Charge dependent Schmitt"
@@ -8029,9 +8029,9 @@
           ],
           "Curves": [
             {
-              "Name": "BI 123456-Peripheral Venous Blood-Plasma-Concentration",
+              "Name": "123456-Peripheral Venous Blood-Plasma-Concentration",
               "X": "Time",
-              "Y": "simulation2|Organism|PeripheralVenousBlood|BI 123456|Plasma (Peripheral Venous Blood)",
+              "Y": "simulation2|Organism|PeripheralVenousBlood|123456|Plasma (Peripheral Venous Blood)",
               "CurveOptions": {
                 "Color": "#FF0000",
                 "LegendIndex": 1
@@ -8083,7 +8083,7 @@
         {
           "Name": "CYP3A4-comp_inh",
           "MoleculeName": "CYP3A4",
-          "CompoundName": "BI 123456"
+          "CompoundName": "123456"
         },
         {
           "Name": "CYP3A4-Kajosaari 2005",
@@ -8195,7 +8195,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -8369,7 +8369,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -8512,7 +8512,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -8690,7 +8690,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -8828,7 +8828,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -8997,7 +8997,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -9162,7 +9162,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -9321,7 +9321,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -9485,7 +9485,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -9652,7 +9652,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -9819,7 +9819,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -9980,7 +9980,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -10163,7 +10163,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -10349,7 +10349,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -10532,7 +10532,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -10718,7 +10718,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -10896,7 +10896,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -11074,7 +11074,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -11248,7 +11248,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -11422,7 +11422,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -11567,7 +11567,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -11724,7 +11724,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -11910,7 +11910,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -12102,7 +12102,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -12255,7 +12255,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -12459,7 +12459,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -12608,7 +12608,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -12775,7 +12775,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -12940,7 +12940,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -13105,7 +13105,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -13312,7 +13312,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -13483,7 +13483,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -13654,7 +13654,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -13825,7 +13825,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -13996,7 +13996,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -14179,7 +14179,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -14359,7 +14359,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -14542,7 +14542,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -14716,7 +14716,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -14917,7 +14917,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -15118,7 +15118,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -15251,7 +15251,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -15386,7 +15386,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -15523,7 +15523,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -15662,7 +15662,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -15830,7 +15830,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -15998,7 +15998,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -16147,7 +16147,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -16293,7 +16293,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -16443,7 +16443,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -16624,7 +16624,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -16802,7 +16802,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -16971,7 +16971,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -17140,7 +17140,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -17315,7 +17315,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -17493,7 +17493,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -17668,7 +17668,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -17814,7 +17814,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -17962,7 +17962,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -18106,7 +18106,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -18250,7 +18250,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -18394,7 +18394,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -18549,7 +18549,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {
@@ -18704,7 +18704,7 @@
         },
         {
           "Name": "Molecule",
-          "Value": "BI 123456",
+          "Value": "123456",
           "Type": "String"
         },
         {

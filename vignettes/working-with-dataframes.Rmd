@@ -32,12 +32,7 @@ One of the key features of osp.snapshots is the ability to convert complex neste
 Let's start by loading our test snapshot:
 
 ```{r}
-snapshot_path <- system.file(
-  "extdata",
-  "test_snapshot.json",
-  package = "osp.snapshots"
-)
-snapshot <- load_snapshot(snapshot_path)
+snapshot <- load_snapshot("Midazolam")
 ```
 
 ## Converting Building Blocks to Data Frames
@@ -60,10 +55,10 @@ Let's examine each data frame:
 head(individual_dfs$individuals)
 
 # Parameters
-head(individual_dfs$parameters)
+head(individual_dfs$individuals_parameters)
 
 # Expression profiles
-head(individual_dfs$expression_profiles)
+head(individual_dfs$individuals_expressions)
 ```
 
 ### Converting Single Individual
@@ -84,10 +79,6 @@ head(single_individual_df$individuals)
 ```{r}
 compounds_df <- get_compounds_dfs(snapshot)
 head(compounds_df)
-
-# Examine compound data structure
-table(compounds_df$category)
-table(compounds_df$type)
 ```
 
 ### Converting Formulations
@@ -119,9 +110,6 @@ Observed data conversion creates a flat data frame perfect for analysis:
 ```{r}
 obs_data_df <- get_observed_data_dfs(snapshot)
 head(obs_data_df)
-
-# Check the structure
-str(obs_data_df[1:5])
 ```
 
 ## Next Steps

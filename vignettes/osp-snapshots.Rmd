@@ -43,20 +43,18 @@ snapshot <- load_snapshot("path/to/your_snapshot.json")
 
 # Load from a URL
 snapshot <- load_snapshot("https://example.com/snapshot.json")
+
+# From an OSP model
+snapshot <- load_snapshot("Midazolam")
 ```
 
 ### Using the Package Example
 
 For this tutorial, we'll use the test snapshot included with the package:
 
-```{r}
+```{r, message=FALSE}
 # Load the test snapshot
-snapshot_path <- system.file(
-  "extdata",
-  "test_snapshot.json",
-  package = "osp.snapshots"
-)
-snapshot <- load_snapshot(snapshot_path)
+snapshot <- load_snapshot("Midazolam")
 
 # View snapshot overview
 snapshot
@@ -93,7 +91,7 @@ Compounds define drug properties and ADME parameters:
 snapshot$compounds
 
 # Examine a compound
-snapshot$compounds$Rifampicin
+snapshot$compounds$Midazolam
 ```
 
 ### Formulations
@@ -148,17 +146,18 @@ snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 Parameters have special behavior and validation:
 
 ```{r}
+
 # Access parameters collection
-params <- individual$parameters
+params <- snapshot$individuals$`Korean (Yu 2004 study)`$parameters
 params
 
 # Get a specific parameter
-param <- params$`Organism|Liver|EHC continuous fraction`
-param
+params$`Organism|Liver|EHC continuous fraction`
 
 # Modify parameter value
-param$value <- 0.8
-param
+params$`Organism|Liver|EHC continuous fraction`$value <- 0.4
+
+params
 ```
 
 ## Working with Observed Data
