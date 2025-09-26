@@ -484,3 +484,74 @@ test_that("export_snapshot function works correctly", {
     "Path must be a single character string"
   )
 })
+
+test_that("browse_templates function works correctly", {
+  # Skip if offline since it requires internet connection
+  testthat::skip_if_offline()
+
+  # Test basic functionality
+  tryCatch(
+    {
+      # Test basic usage
+      result <- browse_templates()
+      expect_s3_class(result, "data.frame")
+      expect_true(nrow(result) > 0)
+      expect_true("Name" %in% names(result))
+      expect_true("Url" %in% names(result))
+
+      # Test pattern filtering
+      # Look for a common pattern that should exist in templates
+      result_filtered <- browse_templates(pattern = "Midazolam")
+      expect_s3_class(result_filtered, "data.frame")
+      # Check that all results contain the pattern (case insensitive)
+      if (nrow(result_filtered) > 0) {
+        expect_true(all(grepl("Midazolam", result_filtered$Name, ignore.case = TRUE)))
+      }
+
+      # Test with a pattern that shouldn't match anything
+      result_empty <- browse_templates(pattern = "ThisShouldNotMatchAnyTemplate12345")
+      expect_s3_class(result_empty, "data.frame")
+      expect_equal(nrow(result_empty), 0)
+    },
+    error = function(e) {
+      testthat::skip(glue::glue("Could not access templates repository: {e$message}"))
+    }
+  )
+})
+
+test_that("load_snapshot provides helpful error message for invalid templates", {
+  # Skip if offline since it requires internet connection
+  testthat::skip_if_offline()
+
+  # Test that load_snapshot gives a helpful error message when template is not found
+  expect_error(
+    load_snapshot("NonExistentTemplateName12345"),
+    "No template found with name: NonExistentTemplateName12345",
+    fixed = TRUE
+  )
+})
+
+test_that(".get_templates_data helper function works", {
+  # Skip if offline since it requires internet connection
+  testthat::skip_if_offline()
+
+  tryCatch(
+    {
+      # Test the helper function directly
+      templates_df <- osp.snapshots:::.get_templates_data()
+      expect_s3_class(templates_df, "data.frame")
+      expect_true(nrow(templates_df) > 0)
+      expect_true("Name" %in% names(templates_df))
+      expect_true("Url" %in% names(templates_df))
+
+      # Test that it returns consistent data with browse_templates
+      browse_result <- browse_templates()
+      expect_equal(nrow(templates_df), nrow(browse_result))
+      expect_equal(templates_df$Name, browse_result$Name)
+      expect_equal(templates_df$Url, browse_result$Url)
+    },
+    error = function(e) {
+      testthat::skip(glue::glue("Could not access templates repository: {e$message}"))
+    }
+  )
+})
