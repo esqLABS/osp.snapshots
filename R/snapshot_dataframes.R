@@ -158,12 +158,26 @@ get_individuals_dfs <- function(snapshot) {
 
   # Combine all individuals data frames
   if (length(ind_dfs) > 0) {
+    # Combine individuals data
     individuals_dfs <- lapply(ind_dfs, function(df) df$individuals)
-    result$individuals <- dplyr::bind_rows(individuals_dfs)
+    individuals_dfs <- individuals_dfs[!sapply(individuals_dfs, is.null)]
+    if (length(individuals_dfs) > 0) {
+      result$individuals <- dplyr::bind_rows(individuals_dfs)
+    }
+    
+    # Combine parameters data
     param_dfs <- lapply(ind_dfs, function(df) df$individuals_parameters)
-    result$individuals_parameters <- dplyr::bind_rows(param_dfs)
+    param_dfs <- param_dfs[!sapply(param_dfs, is.null)]
+    if (length(param_dfs) > 0) {
+      result$individuals_parameters <- dplyr::bind_rows(param_dfs)
+    }
+    
+    # Combine expression profiles data
     expr_dfs <- lapply(ind_dfs, function(df) df$individuals_expressions)
-    result$individuals_expressions <- dplyr::bind_rows(expr_dfs)
+    expr_dfs <- expr_dfs[!sapply(expr_dfs, is.null)]
+    if (length(expr_dfs) > 0) {
+      result$individuals_expressions <- dplyr::bind_rows(expr_dfs)
+    }
   }
 
   return(result)
@@ -242,10 +256,19 @@ get_formulations_dfs <- function(snapshot) {
 
   # Combine all main data frames
   if (length(form_dfs) > 0) {
+    # Combine formulations data
     formulations_dfs <- lapply(form_dfs, function(df) df$formulations)
-    result$formulations <- dplyr::bind_rows(formulations_dfs)
+    formulations_dfs <- formulations_dfs[!sapply(formulations_dfs, is.null)]
+    if (length(formulations_dfs) > 0) {
+      result$formulations <- dplyr::bind_rows(formulations_dfs)
+    }
+    
+    # Combine parameters data
     param_dfs <- lapply(form_dfs, function(df) df$formulations_parameters)
-    result$formulations_parameters <- dplyr::bind_rows(param_dfs)
+    param_dfs <- param_dfs[!sapply(param_dfs, is.null)]
+    if (length(param_dfs) > 0) {
+      result$formulations_parameters <- dplyr::bind_rows(param_dfs)
+    }
   }
 
   return(result)
