@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,12 +86,7 @@ scratch and manage existing ones within snapshots. You’ll learn to:</p>
 </h2>
 <p>Let’s start with a test snapshot:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">snapshot_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata"</span>,</span>
-<span>  <span class="st">"test_snapshot.json"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"osp.snapshots"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="va">snapshot_path</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="st">"Midazolam"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="creating-new-individuals">Creating New Individuals<a class="anchor" aria-label="anchor" href="#creating-new-individuals"></a>
@@ -166,12 +161,9 @@ scratch and manage existing ones within snapshots. You’ll learn to:</p>
 <span><span class="co"># Verify it was added</span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Individuals (6)</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Individuals (3)</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; • European (P-gp modified, CYP3A4 36 h)</span></span>
 <span><span class="co">#&gt; • Korean (Yu 2004 study)</span></span>
-<span><span class="co">#&gt; • ind_modified</span></span>
-<span><span class="co">#&gt; • Asian</span></span>
-<span><span class="co">#&gt; • CKD</span></span>
 <span><span class="co">#&gt; • Patient_001</span></span></code></pre></div>
 </div>
 </div>
@@ -276,16 +268,9 @@ scratch and manage existing ones within snapshots. You’ll learn to:</p>
 <span><span class="co"># Check they were added</span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">formulations</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Formulations (11)</span> <span style="color: #00BBBB;">───────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; • Tablet (Dormicum) (Weibull)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Formulations (4)</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; • Oral solution (Dissolved)</span></span>
-<span><span class="co">#&gt; • form_dissolved (Dissolved)</span></span>
-<span><span class="co">#&gt; • form_Lint80 (Lint80)</span></span>
-<span><span class="co">#&gt; • form-particle-dissolution (Particle)</span></span>
-<span><span class="co">#&gt; • form-table (Table)</span></span>
-<span><span class="co">#&gt; • form-ZO (Zero Order)</span></span>
-<span><span class="co">#&gt; • form-FO (First Order)</span></span>
-<span><span class="co">#&gt; • form-particle-dissolution-2 (Particle)</span></span>
+<span><span class="co">#&gt; • Tablet (Dormicum) (Weibull)</span></span>
 <span><span class="co">#&gt; • Oral Solution 10mg/mL (Dissolved)</span></span>
 <span><span class="co">#&gt; • Immediate Release Tablet (Weibull)</span></span></code></pre></div>
 </div>
@@ -374,12 +359,9 @@ scratch and manage existing ones within snapshots. You’ll learn to:</p>
 <span><span class="co"># Verify</span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Individuals (8)</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Individuals (5)</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; • European (P-gp modified, CYP3A4 36 h)</span></span>
 <span><span class="co">#&gt; • Korean (Yu 2004 study)</span></span>
-<span><span class="co">#&gt; • ind_modified</span></span>
-<span><span class="co">#&gt; • Asian</span></span>
-<span><span class="co">#&gt; • CKD</span></span>
 <span><span class="co">#&gt; • Patient_A</span></span>
 <span><span class="co">#&gt; • Patient_B</span></span>
 <span><span class="co">#&gt; • Patient_C</span></span></code></pre></div>
@@ -608,7 +590,7 @@ reference</a>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
 <div class="pkgdown-footer-right">

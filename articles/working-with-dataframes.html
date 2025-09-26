@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,12 +84,7 @@ and analyze snapshot data using standard R data analysis tools.</p>
 </h2>
 <p>Let’s start by loading our test snapshot:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">snapshot_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata"</span>,</span>
-<span>  <span class="st">"test_snapshot.json"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"osp.snapshots"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="va">snapshot_path</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="st">"Midazolam"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="converting-building-blocks-to-data-frames">Converting Building Blocks to Data Frames<a class="anchor" aria-label="anchor" href="#converting-building-blocks-to-data-frames"></a>
@@ -109,26 +104,35 @@ function that converts the data to structured data frames.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Basic characteristics</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">individuals</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 17</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 17</span></span></span>
 <span><span class="co">#&gt;   individual_id            name    seed species population gender   age age_unit</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> European (P-gp modified… Euro… 1.72<span style="color: #949494;">e</span>7 Human   European_… MALE    30   year(s) </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Korean (Yu 2004 study)   Kore… 5.30<span style="color: #949494;">e</span>7 Human   Asian_Tan… MALE    23.3 year(s) </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> ind_modified             ind_… 4.88<span style="color: #949494;">e</span>8 Human   BlackAmer… MALE    56   year(s) </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Asian                    Asian 9.18<span style="color: #949494;">e</span>8 Human   Asian_Tan… MALE    26   year(s) </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> CKD                      CKD   1.52<span style="color: #949494;">e</span>9 Human   European_… MALE    50   year(s) </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 9 more variables: gestational_age &lt;dbl&gt;, gestational_age_unit &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   weight &lt;dbl&gt;, weight_unit &lt;chr&gt;, height &lt;dbl&gt;, height_unit &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   disease_state &lt;chr&gt;, calculation_methods &lt;glue&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   disease_state_parameters &lt;glue&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   disease_state_parameters &lt;chr&gt;</span></span></span>
 <span></span>
 <span><span class="co"># Parameters</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span></span>
-<span><span class="co">#&gt; NULL</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">individuals_parameters</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
+<span><span class="co">#&gt;   individual_id                   path  value unit  source description source_id</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> European (P-gp modified, CYP3A… Orga…     1 <span style="color: #BB0000;">NA</span>    Unkno… <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Korean (Yu 2004 study)          Orga…     1 <span style="color: #BB0000;">NA</span>    Unkno… <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span></span></span>
 <span></span>
 <span><span class="co"># Expression profiles</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">expression_profiles</span><span class="op">)</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">individuals_expressions</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
+<span><span class="co">#&gt;   individual_id                         profile                                 </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> European (P-gp modified, CYP3A4 36 h) CYP3A4|Human|European (P-gp modified, C…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> European (P-gp modified, CYP3A4 36 h) AADAC|Human|European (P-gp modified, CY…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> European (P-gp modified, CYP3A4 36 h) P-gp|Human|European (P-gp modified, CYP…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> European (P-gp modified, CYP3A4 36 h) OATP1B1|Human|European (P-gp modified, …</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> European (P-gp modified, CYP3A4 36 h) ATP1A2|Human|European (P-gp modified, C…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> European (P-gp modified, CYP3A4 36 h) UGT1A4|Human|European (P-gp modified, C…</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="converting-single-individual">Converting Single Individual<a class="anchor" aria-label="anchor" href="#converting-single-individual"></a>
@@ -161,96 +165,12 @@ function that converts the data to structured data frames.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
 <span><span class="co">#&gt;   compound  category              type  parameter value unit  data_source source</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> BI 100777 physicochemical_prop… lipo… Optimized 3.233 Log … <span style="color: #BB0000;">NA</span>          Param…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> BI 100777 physicochemical_prop… frac… Gertz et… 0.031 %     <span style="color: #BB0000;">NA</span>          n0026…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> BI 100777 physicochemical_prop… mole… <span style="color: #BB0000;">NA</span>        1500… g/mol <span style="color: #BB0000;">NA</span>          c2647…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> BI 100777 physicochemical_prop… halo… Cl        1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          c2647…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> BI 100777 physicochemical_prop… halo… F         1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          c2647…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> BI 100777 physicochemical_prop… pKa   base      6.2   <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          c2647…</span></span>
-<span></span>
-<span><span class="co"># Examine compound data structure</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">compounds_df</span><span class="op">$</span><span class="va">category</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;        biliary_clearance        hepatic_clearance                induction </span></span>
-<span><span class="co">#&gt;                       15                       15                       22 </span></span>
-<span><span class="co">#&gt;               inhibition     metabolizing_enzymes physicochemical_property </span></span>
-<span><span class="co">#&gt;                       25                       54                       53 </span></span>
-<span><span class="co">#&gt; protein_binding_partners          renal_clearance     transporter_proteins </span></span>
-<span><span class="co">#&gt;                        8                       12                       33</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">compounds_df</span><span class="op">$</span><span class="va">type</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ActiveTransport_InVitro_VesicularAssay_MM </span></span>
-<span><span class="co">#&gt;                                         3 </span></span>
-<span><span class="co">#&gt;               ActiveTransportIntrinsic_MM </span></span>
-<span><span class="co">#&gt;                                         3 </span></span>
-<span><span class="co">#&gt;              ActiveTransportSpecific_Hill </span></span>
-<span><span class="co">#&gt;                                        15 </span></span>
-<span><span class="co">#&gt;                ActiveTransportSpecific_MM </span></span>
-<span><span class="co">#&gt;                                        12 </span></span>
-<span><span class="co">#&gt;                          BiliaryClearance </span></span>
-<span><span class="co">#&gt;                                        15 </span></span>
-<span><span class="co">#&gt;                     CompetitiveInhibition </span></span>
-<span><span class="co">#&gt;                                        10 </span></span>
-<span><span class="co">#&gt;                          fraction_unbound </span></span>
-<span><span class="co">#&gt;                                         7 </span></span>
-<span><span class="co">#&gt;                      GlomerularFiltration </span></span>
-<span><span class="co">#&gt;                                         1 </span></span>
-<span><span class="co">#&gt;                                  halogens </span></span>
-<span><span class="co">#&gt;                                         8 </span></span>
-<span><span class="co">#&gt;                            HepatocytesRes </span></span>
-<span><span class="co">#&gt;                                         2 </span></span>
-<span><span class="co">#&gt;                                 Induction </span></span>
-<span><span class="co">#&gt;                                        22 </span></span>
-<span><span class="co">#&gt;                   intestinal_permeability </span></span>
-<span><span class="co">#&gt;                                         4 </span></span>
-<span><span class="co">#&gt;                    IrreversibleInhibition </span></span>
-<span><span class="co">#&gt;                                         9 </span></span>
-<span><span class="co">#&gt;                           KidneyClearance </span></span>
-<span><span class="co">#&gt;                                         3 </span></span>
-<span><span class="co">#&gt;                             lipophilicity </span></span>
-<span><span class="co">#&gt;                                         7 </span></span>
-<span><span class="co">#&gt;                            LiverClearance </span></span>
-<span><span class="co">#&gt;                                         4 </span></span>
-<span><span class="co">#&gt;                    LiverMicrosomeHalfTime </span></span>
-<span><span class="co">#&gt;                                         3 </span></span>
-<span><span class="co">#&gt;                         LiverMicrosomeRes </span></span>
-<span><span class="co">#&gt;                                         6 </span></span>
-<span><span class="co">#&gt;        MetabolizationIntrinsic_FirstOrder </span></span>
-<span><span class="co">#&gt;                                         8 </span></span>
-<span><span class="co">#&gt;                MetabolizationIntrinsic_MM </span></span>
-<span><span class="co">#&gt;                                         4 </span></span>
-<span><span class="co">#&gt;  MetabolizationLiverMicrosomes_FirstOrder </span></span>
-<span><span class="co">#&gt;                                         3 </span></span>
-<span><span class="co">#&gt;          MetabolizationLiverMicrosomes_MM </span></span>
-<span><span class="co">#&gt;                                        13 </span></span>
-<span><span class="co">#&gt;         MetabolizationSpecific_FirstOrder </span></span>
-<span><span class="co">#&gt;                                         3 </span></span>
-<span><span class="co">#&gt;               MetabolizationSpecific_Hill </span></span>
-<span><span class="co">#&gt;                                        10 </span></span>
-<span><span class="co">#&gt;                 MetabolizationSpecific_MM </span></span>
-<span><span class="co">#&gt;                                         8 </span></span>
-<span><span class="co">#&gt;                           MixedInhibition </span></span>
-<span><span class="co">#&gt;                                         4 </span></span>
-<span><span class="co">#&gt;                          molecular_weight </span></span>
-<span><span class="co">#&gt;                                         6 </span></span>
-<span><span class="co">#&gt;                  NoncompetitiveInhibition </span></span>
-<span><span class="co">#&gt;                                         1 </span></span>
-<span><span class="co">#&gt;                                       pKa </span></span>
-<span><span class="co">#&gt;                                        11 </span></span>
-<span><span class="co">#&gt;                        rCYP450_FirstOrder </span></span>
-<span><span class="co">#&gt;                                         2 </span></span>
-<span><span class="co">#&gt;                                rCYP450_MM </span></span>
-<span><span class="co">#&gt;                                         3 </span></span>
-<span><span class="co">#&gt;                                solubility </span></span>
-<span><span class="co">#&gt;                                        10 </span></span>
-<span><span class="co">#&gt;                           SpecificBinding </span></span>
-<span><span class="co">#&gt;                                         8 </span></span>
-<span><span class="co">#&gt;               TubularSecretion_FirstOrder </span></span>
-<span><span class="co">#&gt;                                         2 </span></span>
-<span><span class="co">#&gt;                       TubularSecretion_MM </span></span>
-<span><span class="co">#&gt;                                         6 </span></span>
-<span><span class="co">#&gt;                   UncompetitiveInhibition </span></span>
-<span><span class="co">#&gt;                                         1</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Midazolam physicochemical_prop… lipo… Optimized 2.89… Log … <span style="color: #BB0000;">NA</span>          Param…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Midazolam physicochemical_prop… frac… Gertz et… 0.031 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          Param…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Midazolam physicochemical_prop… mole… <span style="color: #BB0000;">NA</span>        325.… g/mol <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Midazolam physicochemical_prop… halo… Cl        1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Midazolam physicochemical_prop… halo… F         1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Midazolam physicochemical_prop… pKa   base      6.2   <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="converting-formulations">Converting Formulations<a class="anchor" aria-label="anchor" href="#converting-formulations"></a>
@@ -262,15 +182,11 @@ function that converts the data to structured data frames.</p>
 <span></span>
 <span><span class="co"># Basic formulation info</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">formulations_dfs</span><span class="op">$</span><span class="va">formulations</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
-<span><span class="co">#&gt;   formulation_id            name                    formulation formulation_type</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Tablet (Dormicum)         Tablet (Dormicum)       Formulatio… Weibull         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Oral solution             Oral solution           Formulatio… Dissolved       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> form_dissolved            form_dissolved          Formulatio… Dissolved       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> form_Lint80               form_Lint80             Formulatio… Lint80          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> form-particle-dissolution form-particle-dissolut… Formulatio… Particle        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> form-table                form-table              Formulatio… Table</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span></span>
+<span><span class="co">#&gt;   formulation_id    name              formulation               formulation_type</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Oral solution     Oral solution     Formulation_Dissolved     Dissolved       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Tablet (Dormicum) Tablet (Dormicum) Formulation_Tablet_Weibu… Weibull</span></span>
 <span></span>
 <span><span class="co"># Formulation parameters</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">formulations_dfs</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span></span>
@@ -285,20 +201,14 @@ function that converts the data to structured data frames.</p>
 <span><span class="co">#&gt; [1] "populations"            "populations_parameters"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">populations_dfs</span><span class="op">$</span><span class="va">populations</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 22</span></span></span>
-<span><span class="co">#&gt;   population_id name         seed number_of_individuals proportion_of_females</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> pop_1         pop_1   202<span style="text-decoration: underline;">395</span>203                   100                    50</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> pop2          pop2  -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">746</span><span style="color: #BB0000; text-decoration: underline;">093</span><span style="color: #BB0000;">953</span>                    10                    50</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> pop3          pop3   <span style="text-decoration: underline;">2</span>040<span style="text-decoration: underline;">342</span>218                    10                     2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> pop4          pop4    235<span style="text-decoration: underline;">227</span>359                    10                    50</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> pop6          pop6    324<span style="text-decoration: underline;">184</span>656                    15                    50</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pop7          pop7    486<span style="text-decoration: underline;">878</span>578                    12                    50</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 17 more variables: source_population &lt;chr&gt;, individual_name &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   age_min &lt;dbl&gt;, age_max &lt;dbl&gt;, age_unit &lt;chr&gt;, weight_min &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   weight_max &lt;dbl&gt;, weight_unit &lt;chr&gt;, height_min &lt;dbl&gt;, height_max &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   height_unit &lt;chr&gt;, bmi_min &lt;dbl&gt;, bmi_max &lt;dbl&gt;, bmi_unit &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   egfr_min &lt;dbl&gt;, egfr_max &lt;dbl&gt;, egfr_unit &lt;chr&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 22</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 variables: population_id &lt;chr&gt;, name &lt;chr&gt;, seed &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   number_of_individuals &lt;int&gt;, proportion_of_females &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   source_population &lt;chr&gt;, individual_name &lt;chr&gt;, age_min &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   age_max &lt;dbl&gt;, age_unit &lt;chr&gt;, weight_min &lt;dbl&gt;, weight_max &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   weight_unit &lt;chr&gt;, height_min &lt;dbl&gt;, height_max &lt;dbl&gt;, height_unit &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   bmi_min &lt;dbl&gt;, bmi_max &lt;dbl&gt;, bmi_unit &lt;chr&gt;, egfr_min &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   egfr_max &lt;dbl&gt;, egfr_unit &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="converting-observed-data">Converting Observed Data<a class="anchor" aria-label="anchor" href="#converting-observed-data"></a>
@@ -311,27 +221,18 @@ analysis:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 30</span></span></span>
 <span><span class="co">#&gt;   name            xValues yValues yErrorValues xDimension xUnit yDimension yUnit</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Backman 1996 -…     0.5 0.008<span style="text-decoration: underline;">59</span>           <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Backman 1996 -…     1   0.046<span style="text-decoration: underline;">6</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Backman 1996 -…     1.5 0.043<span style="text-decoration: underline;">5</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Backman 1996 -…     2   0.037<span style="text-decoration: underline;">4</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Backman 1996 -…     3   0.023<span style="text-decoration: underline;">7</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Backman 1996 -…     4   0.017<span style="text-decoration: underline;">1</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Ahonen 1995 - …     0.5 0.015<span style="text-decoration: underline;">6</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Ahonen 1995 - …     1   0.028<span style="text-decoration: underline;">0</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Ahonen 1995 - …     1.5 0.023<span style="text-decoration: underline;">5</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Ahonen 1995 - …     2   0.018<span style="text-decoration: underline;">5</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Ahonen 1995 - …     3   0.011<span style="text-decoration: underline;">8</span>            <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Ahonen 1995 - …     4   0.008<span style="text-decoration: underline;">48</span>           <span style="color: #BB0000;">NA</span> Time       h     Concentra… mg/l </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 more variables: yErrorType &lt;chr&gt;, yErrorUnit &lt;chr&gt;, molWeight &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   lloq &lt;dbl&gt;, `DB Version` &lt;chr&gt;, ID &lt;chr&gt;, `Study Id` &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   Reference &lt;chr&gt;, Source &lt;chr&gt;, Grouping &lt;chr&gt;, `Data type` &lt;chr&gt;, N &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   Molecule &lt;chr&gt;, Species &lt;chr&gt;, Organ &lt;chr&gt;, Compartment &lt;chr&gt;, Route &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   Dose &lt;chr&gt;, `Times of Administration [h]` &lt;chr&gt;, Formulation &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   `Food state` &lt;chr&gt;, Comment &lt;chr&gt;</span></span></span>
-<span></span>
-<span><span class="co"># Check the structure</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">obs_data_df</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; tibble [750 × 5] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ name        : chr [1:750] "Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)" "Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)" "Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)" "Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)" ...</span></span>
-<span><span class="co">#&gt;  $ xValues     : num [1:750] 0.5 1 1.5 2 3 4 5 6 8 10 ...</span></span>
-<span><span class="co">#&gt;  $ yValues     : num [1:750] 0.00859 0.04657 0.04349 0.03743 0.02367 ...</span></span>
-<span><span class="co">#&gt;  $ yErrorValues: num [1:750] NA NA NA NA NA NA NA NA NA NA ...</span></span>
-<span><span class="co">#&gt;  $ xDimension  : chr [1:750] "Time" "Time" "Time" "Time" ...</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;">#   `Food state` &lt;chr&gt;, Comment &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -353,7 +254,7 @@ reference</a>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
 <div class="pkgdown-footer-right">
