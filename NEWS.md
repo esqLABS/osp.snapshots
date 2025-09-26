@@ -1,5 +1,15 @@
 # osp.snapshots (development version)
 
+
+## Minor improvements and bug fixes
+
+* New `osp_models()` function to browse and discover available OSP building block 
+  templates from the OSPSuite Community repository.
+
+* Fixed bug in dataframe generation functions that caused errors when combining 
+  empty or NULL building block data using `bind_rows()`.
+
+
 # osp.snapshots 0.2.0
 
 * New `load_snapshot()` function to import PKSIM project snapshots from JSON 
