@@ -39,9 +39,11 @@ jobs:
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: rcmdcheck
-
+        cache-version: false
+        extra-packages: |
+          any::ggplot2
+          any::rcmdcheck
+          
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
