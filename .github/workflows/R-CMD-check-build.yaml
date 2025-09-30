@@ -42,7 +42,6 @@ jobs:
         with:
           cache-version: false
           extra-packages: |
-            any::ggplot2
             any::rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v2
