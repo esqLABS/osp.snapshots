@@ -44,7 +44,6 @@ Suggests:
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
-Config/Needs/website: quarto
-Config/Needs/check: rcmdcheck
 Remotes: 
-    ospsuite=github::Open-Systems-Pharmacology/OSPSuite-R
+    ospsuite=Open-Systems-Pharmacology/OSPSuite-R
+Config/Needs/website: quarto
