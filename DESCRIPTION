@@ -41,10 +41,9 @@ Imports:
 Suggests: 
     devtools,
     knitr,
-    quarto,
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
-Remotes: 
-    ospsuite=Open-Systems-Pharmacology/OSPSuite-R
 Config/Needs/website: quarto
+Remotes: 
+    ospsuite=github::Open-Systems-Pharmacology/OSPSuite-R
