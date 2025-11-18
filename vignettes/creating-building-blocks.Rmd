@@ -1,0 +1,432 @@
+---
+title: "Creating and Managing Building Blocks"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating and Managing Building Blocks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r setup}
+library(osp.snapshots)
+library(ospsuite)
+```
+
+## Overview
+
+This vignette demonstrates how to create new building blocks from scratch and manage existing ones within snapshots. You'll learn to:
+
+- Create individuals, formulations, and parameters
+- Add and remove building blocks from snapshots
+- Work with observed data
+- Manage collections efficiently
+
+## Setup
+
+Let's start with a test snapshot:
+
+```{r}
+snapshot <- load_snapshot("Midazolam")
+```
+
+## Creating New Individuals
+
+### Basic Individual Creation
+
+The most common building block to create is an individual:
+
+```{r}
+# Create a basic individual
+new_patient <- create_individual(
+  name = "Patient_001",
+  species = "Human",
+  population = "European_ICRP_2002",
+  gender = "FEMALE",
+  age = 35,
+  weight = 65,
+  height = 165
+)
+
+new_patient
+```
+
+### Advanced Individual Creation
+
+You can create individuals with additional parameters:
+
+```{r}
+# Create individual with more characteristics
+advanced_patient <- create_individual(
+  name = "Pregnant_Patient",
+  species = "Human",
+  population = "European_ICRP_2002",
+  gender = "FEMALE",
+  age = 28,
+  weight = 70,
+  height = 168,
+  gestational_age = 20 # weeks
+)
+
+advanced_patient
+```
+
+### Adding Individuals to Snapshots
+
+```{r}
+# Add the new individual to the snapshot
+add_individual(snapshot, new_patient)
+
+# Verify it was added
+snapshot$individuals
+```
+
+## Creating New Formulations
+
+### Dissolved Formulations
+
+```{r}
+# Create a simple dissolved formulation
+oral_solution <- create_formulation(
+  name = "Oral Solution 10mg/mL",
+  type = "Dissolved"
+)
+
+oral_solution
+```
+
+### Tablet Formulations
+
+```{r}
+# Create a tablet with Weibull dissolution
+tablet <- create_formulation(
+  name = "Immediate Release Tablet",
+  type = "Weibull",
+  parameters = list(
+    dissolution_time = 30, # 50% dissolved in 30 min
+    dissolution_time_unit = "min",
+    lag_time = 5, # 5 min lag time
+    lag_time_unit = "min",
+    dissolution_shape = 1.2, # shape parameter
+    suspension = TRUE # use as suspension
+  )
+)
+
+tablet
+```
+
+### Additional Formulation Types
+
+```{r}
+# Create a first-order formulation
+first_order_form <- create_formulation(
+  name = "First Order Release",
+  type = "First Order",
+  parameters = list(
+    thalf = 60,
+    thalf_unit = "min"
+  )
+)
+
+# Create a zero-order formulation
+zero_order_form <- create_formulation(
+  name = "Zero Order Release",
+  type = "Zero Order",
+  parameters = list(
+    end_time = 120,
+    end_time_unit = "min"
+  )
+)
+
+# Display the formulations
+first_order_form
+zero_order_form
+```
+
+### Adding Formulations to Snapshots
+
+```{r}
+# Add formulations to the snapshot
+add_formulation(snapshot, oral_solution)
+add_formulation(snapshot, tablet)
+
+# Check they were added
+snapshot$formulations
+```
+
+## Creating Parameters
+
+### Basic Parameter Creation
+
+```{r}
+# Create a parameter with basic properties
+liver_param <- create_parameter(
+  name = "Organism|Liver|Specific organ clearance",
+  value = 0.5,
+  unit = "1/min"
+)
+
+liver_param
+```
+
+### Parameter with Additional Properties
+
+```{r}
+# Create parameter with source information
+detailed_param <- create_parameter(
+  name = "Organism|Kidney|GFR",
+  value = 120,
+  unit = "ml/min",
+  source = "Literature",
+  description = "Normal adult GFR",
+  source_id = 123
+)
+
+detailed_param
+```
+
+## Managing Building Blocks
+
+### Removing Building Blocks
+
+```{r}
+# Remove individuals by name
+remove_individual(snapshot, "Patient_001")
+
+# Remove multiple individuals at once
+# remove_individual(snapshot, c("Patient_001", "Patient_002"))
+
+# Remove formulations
+remove_formulation(snapshot, "Oral Solution 10mg/mL")
+
+# Remove populations
+# remove_population(snapshot, "Population_Name")
+
+# Remove expression profiles by ID (molecule|species|category)
+# remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
+```
+
+### Batch Operations
+
+```{r}
+# Create multiple individuals at once
+patients <- list(
+  create_individual("Patient_A", age = 25, gender = "MALE"),
+  create_individual("Patient_B", age = 45, gender = "FEMALE"),
+  create_individual("Patient_C", age = 65, gender = "MALE")
+)
+
+# Add them all
+for (patient in patients) {
+  add_individual(snapshot, patient)
+}
+
+# Verify
+snapshot$individuals
+```
+
+## Working with Observed Data
+
+### Creating DataSet Objects
+
+Observed data must be provided as `ospsuite::DataSet` objects:
+
+```{r}
+# Create a new DataSet
+study_data <- DataSet$new(name = "Phase I Study - Subject 001")
+
+# Set the data values
+time_points <- c(0, 0.5, 1, 2, 4, 8, 12, 24)
+concentrations <- c(0, 12.5, 18.2, 15.8, 11.2, 6.8, 3.4, 1.1)
+
+study_data$setValues(xValues = time_points, yValues = concentrations)
+
+# Set dimensions and units
+study_data$xDimension <- "Time"
+study_data$xUnit <- "h"
+study_data$yDimension <- "Concentration (mass)"
+study_data$yUnit <- "mg/l"
+
+study_data
+```
+
+### Adding Observed Data
+
+```{r, eval=FALSE}
+# Add to snapshot (function needs to be implemented)
+# add_observed_data(snapshot, study_data)
+
+# Remove observed data by name
+# remove_observed_data(snapshot, "Phase I Study - Subject 001")
+```
+
+## Advanced Building Block Management
+
+### Modifying Existing Building Blocks
+
+```{r}
+# Get an individual and modify properties
+patient <- snapshot$individuals$`Patient_A`
+patient$age <- 30
+patient$weight <- 75
+
+# Add custom parameters
+custom_param <- create_parameter(
+  name = "Organism|Custom|Clearance",
+  value = 1.5,
+  unit = "L/h"
+)
+
+# Note: Adding parameters to existing individuals requires
+# working with the parameter collection directly
+```
+
+### Copying and Modifying Building Blocks
+
+```{r}
+# Create a copy of an existing individual with modifications
+original <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+
+# Create modified copy
+modified_individual <- create_individual(
+  name = "Modified European",
+  species = original$species,
+  population = original$population,
+  gender = original$gender,
+  age = 50, # Changed age
+  weight = 80 # Changed weight
+)
+
+add_individual(snapshot, modified_individual)
+```
+
+### Validation and Error Handling
+
+The package includes validation for common inputs:
+
+```{r, error=TRUE}
+# These will produce validation errors:
+tryCatch(
+  {
+    create_individual(
+      name = "Invalid Patient",
+      species = "InvalidSpecies", # Invalid species
+      gender = "OTHER" # Invalid gender
+    )
+  },
+  error = function(e) cat("Error:", e$message, "\n")
+)
+
+tryCatch(
+  {
+    create_formulation(
+      name = "Invalid Form",
+      type = "NonexistentType" # Invalid formulation type
+    )
+  },
+  error = function(e) cat("Error:", e$message, "\n")
+)
+```
+
+Valid options are available through validation functions:
+
+```{r}
+# Check valid species (this would show available options)
+# validate_species("Human")  # Returns TRUE
+
+# Check valid genders
+# validate_gender("MALE")    # Returns TRUE
+```
+
+## Working with Templates
+
+You can load predefined templates and modify them:
+
+```{r, eval=FALSE}
+# Load a template (if available)
+# template_snapshot <- load_snapshot("TemplateName")
+
+# Modify template building blocks
+# template_individual <- template_snapshot$individuals[[1]]
+# template_individual$age <- 40
+
+# Add to your snapshot
+# add_individual(snapshot, template_individual)
+```
+
+## Exporting Your Work
+
+After creating and managing building blocks, export your snapshot:
+
+```{r, eval=FALSE}
+# Export the modified snapshot
+export_snapshot(snapshot, "modified_snapshot_with_new_blocks.json")
+```
+
+## Best Practices
+
+### Naming Conventions
+
+Use descriptive names for building blocks:
+
+```{r, eval=FALSE}
+# Good naming
+create_individual(
+  "Elderly_Female_80kg",
+  age = 75,
+  gender = "FEMALE",
+  weight = 80
+)
+create_formulation("IR_Tablet_Fast_Release", type = "Weibull")
+
+# Less descriptive
+create_individual("Patient1", age = 75)
+create_formulation("Form1", type = "Weibull")
+```
+
+### Organization
+
+Keep related building blocks together:
+
+```{r, eval=FALSE}
+# Create a family of related individuals
+pediatric_patients <- list(
+  create_individual("Pediatric_5yr", age = 5, weight = 18),
+  create_individual("Pediatric_10yr", age = 10, weight = 32),
+  create_individual("Pediatric_15yr", age = 15, weight = 55)
+)
+
+# Create related formulations
+pediatric_formulations <- list(
+  create_formulation("Oral_Suspension_Pediatric", type = "Dissolved"),
+  create_formulation("Chewable_Tablet_Pediatric", type = "Weibull")
+)
+```
+
+### Documentation
+
+Document your building blocks with meaningful metadata:
+
+```{r, eval=FALSE}
+# Add comments or descriptions when creating parameters
+hepatic_clearance <- create_parameter(
+  name = "Organism|Liver|Hepatic clearance",
+  value = 2.5,
+  unit = "L/h",
+  description = "Estimated from in vitro data scaled with ISEF=0.5",
+  source = "Laboratory study 2023"
+)
+```
+
+## Next Steps
+
+- Explore data frame conversion in `vignette("working-with-dataframes")`
+- See the complete API reference at [function reference](https://esqlabs.github.io/osp.snapshots/reference/)

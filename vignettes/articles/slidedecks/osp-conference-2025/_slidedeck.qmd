@@ -8,6 +8,8 @@ execute:
 auto-stretch: false
 ---
 
+##  {footer="false" background-image="images/paste-5.png" background-size="contain" header="false"}
+
 {{< include _hide_logo.qmd >}}
 
 ```{=html}
@@ -18,11 +20,7 @@ auto-stretch: false
 </style>
 ```
 
-##  {footer="false" background-image="images/paste-5.png" background-size="contain" header="false"}
-
-
-## {footer="false" background-image="images/paste-7.png" background-size="contain" header="false"}
-
+<!-- ## {footer="false" background-image="images/paste-7.png" background-size="contain" header="false"} -->
 
 # What is available today?
 
@@ -175,16 +173,16 @@ purrr::map(
 ## The Problem {.center}
 
 ::: {.fragment .fade-in}
-PK-Sim Snapshots are **comprehensive** but **complex**
+PK-Sim Snapshots are **comprehensive** but **complex**.
 :::
 
 ::: {.fragment .fade-in}
-Standard R tools make data extraction **tedious** and **error-prone**
+Existing R tools work but require a lot of **time** and **expertise**.
 :::
 
 ## The Solution {.center}
 
-An **intuitive** and **powerful** interface: `{osp.snapshots}`.
+An **intuitive** and **powerful** interface **tailored** for snapshots.
 
 # `{osp.snapshots}`
 
@@ -202,7 +200,7 @@ devtools::load_all()
 
 ```{r}
 #| eval: false
-# Install from esqLABS GitHub
+# Install from GitHub
 pak::pak("esqLABS/osp.snapshots")
 
 library(osp.snapshots)
@@ -328,13 +326,13 @@ snapshot$individuals$`Demo Patient`
 snapshot$individuals$`Demo Patient`$height <- 165
 ```
 
+------------------------------------------------------------------------
+
 **After:**
 
 ```{r}
 snapshot$individuals$`Demo Patient`
 ```
-
-------------------------------------------------------------------------
 
 ## `{osp.snapshots}` Features
 
@@ -397,6 +395,10 @@ export_snapshot(snapshot, "Rifampicin_modified.json")
 ::: notes
 All these features makes reporting easier and less error-prone: The abilitity to load, interactively explore and programatically edit and extract all pbpk project details to tidy formats is the perfect toolbox to streamline report generation.
 :::
+
+------------------------------------------------------------------------
+
+![](images/paste-9.png){fig-align="center" height="400px"}
 
 # What's next?
 

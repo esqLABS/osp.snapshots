@@ -856,6 +856,90 @@ test_that("get_individuals_dfs handles individual with characteristics and expre
   expect_snapshot(dfs$individuals_expressions)
 })
 
-# ---- Individual snapshot interaction tests ----
-# Copied from test-snapshot-individuals.R
-# ... existing code ...
+test_that("get_individuals_dfs handles mixed individuals correctly - first without, second with parameters/expressions", {
+  # This test reproduces the bug where first individual has no parameters/expressions
+  # but second individual does - the bug would cause the results to be NULL instead of
+  # containing data from the second individual
+
+  # Create a snapshot with two individuals:
+  # 1. minimal_individual_data - has no parameters or expression profiles
+  # 2. complete_individual_data - has both parameters and expression profiles
+  snapshot <- local_snapshot(list(
+    Version = 80,
+    Individuals = list(minimal_individual_data, complete_individual_data)
+  ))
+
+  dfs <- get_individuals_dfs(snapshot)
+
+  # Check structure
+  expect_type(dfs, "list")
+  expect_named(
+    dfs,
+    c("individuals", "individuals_parameters", "individuals_expressions")
+  )
+  expect_s3_class(dfs$individuals, "tbl_df")
+  expect_s3_class(dfs$individuals_parameters, "tbl_df")
+  expect_s3_class(dfs$individuals_expressions, "tbl_df")
+
+  # Check that we have 2 individuals in the main dataframe
+  expect_equal(nrow(dfs$individuals), 2)
+  expect_equal(dfs$individuals$name, c("Minimal Individual", "Test Individual"))
+
+  # Check that we have parameters from the second individual (the first has none)
+  expect_true(nrow(dfs$individuals_parameters) > 0)
+  expect_equal(
+    unique(dfs$individuals_parameters$individual_id),
+    "Test Individual"
+  )
+
+  # Check that we have expression profiles from the second individual (the first has none)
+  expect_true(nrow(dfs$individuals_expressions) > 0)
+  expect_equal(
+    unique(dfs$individuals_expressions$individual_id),
+    "Test Individual"
+  )
+  expect_true(all(grepl("Human", dfs$individuals_expressions$profile)))
+})
+
+test_that("get_individuals_dfs handles mixed individuals correctly - first with, second without parameters/expressions", {
+  # This test checks the opposite scenario - first individual has data, second doesn't
+
+  # Create a snapshot with two individuals in reverse order:
+  # 1. complete_individual_data - has both parameters and expression profiles
+  # 2. minimal_individual_data - has no parameters or expression profiles
+  snapshot <- local_snapshot(list(
+    Version = 80,
+    Individuals = list(complete_individual_data, minimal_individual_data)
+  ))
+
+  dfs <- get_individuals_dfs(snapshot)
+
+  # Check structure
+  expect_type(dfs, "list")
+  expect_named(
+    dfs,
+    c("individuals", "individuals_parameters", "individuals_expressions")
+  )
+  expect_s3_class(dfs$individuals, "tbl_df")
+  expect_s3_class(dfs$individuals_parameters, "tbl_df")
+  expect_s3_class(dfs$individuals_expressions, "tbl_df")
+
+  # Check that we have 2 individuals in the main dataframe
+  expect_equal(nrow(dfs$individuals), 2)
+  expect_equal(dfs$individuals$name, c("Test Individual", "Minimal Individual"))
+
+  # Check that we have parameters from the first individual (the second has none)
+  expect_true(nrow(dfs$individuals_parameters) > 0)
+  expect_equal(
+    unique(dfs$individuals_parameters$individual_id),
+    "Test Individual"
+  )
+
+  # Check that we have expression profiles from the first individual (the second has none)
+  expect_true(nrow(dfs$individuals_expressions) > 0)
+  expect_equal(
+    unique(dfs$individuals_expressions$individual_id),
+    "Test Individual"
+  )
+  expect_true(all(grepl("Human", dfs$individuals_expressions$profile)))
+})

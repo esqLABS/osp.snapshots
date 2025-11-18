@@ -20,6 +20,7 @@ VALID_FORMULATION_TYPES <- names(FORMULATION_TYPE_MAP)
 #' and display a summary of its information.
 #'
 #' @importFrom tibble tibble as_tibble
+#' @importFrom R6 R6Class
 #' @export
 Formulation <- R6::R6Class(
   classname = "Formulation",
@@ -490,20 +491,20 @@ Formulation <- R6::R6Class(
 #'
 #' @section Particle formulation parameters:
 #' * thickness - Thickness of unstirred water layer (numeric, default: 30)
-#' * thickness_unit - Unit for thickness (character, default: "µm")
+#' * thickness_unit - Unit for thickness (character, default: "\\u00b5m")
 #' * distribution_type - Type of distribution, "mono" or "poly" (character, default: "mono")
 #' * radius - Particle radius (mean or geometric mean) (numeric, default: 10)
-#' * radius_unit - Unit for radius (character, default: "µm")
+#' * radius_unit - Unit for radius (character, default: "\\u00b5m")
 #'
 #' Parameters for polydisperse distribution (when distribution_type = "poly"):
 #' * particle_size_distribution - "normal" or "lognormal" (character, default: "normal")
 #' * radius_sd - Radius standard deviation, for normal distribution (numeric, default: 3)
-#' * radius_sd_unit - Unit for radius SD (character, default: "µm")
+#' * radius_sd_unit - Unit for radius SD (character, default: "\\u00b5m")
 #' * radius_cv - Coefficient of variation, for lognormal distribution (numeric, default: 1.5)
 #' * radius_min - Minimum particle radius (numeric, default: 1)
-#' * radius_min_unit - Unit for minimum radius (character, default: "µm")
+#' * radius_min_unit - Unit for minimum radius (character, default: "\\u00b5m")
 #' * radius_max - Maximum particle radius (numeric, default: 19)
-#' * radius_max_unit - Unit for maximum radius (character, default: "µm")
+#' * radius_max_unit - Unit for maximum radius (character, default: "\\u00b5m")
 #' * n_bins - Number of bins (integer, default: 3)
 #'
 #' @section Table formulation parameters:
@@ -546,9 +547,9 @@ Formulation <- R6::R6Class(
 #'   type = "Particle",
 #'   parameters = list(
 #'     thickness = 25,
-#'     thickness_unit = "µm",
+#'     thickness_unit = "\\u00b5m",
 #'     radius = 5,
-#'     radius_unit = "µm"
+#'     radius_unit = "\\u00b5m"
 #'   )
 #' )
 #'
@@ -748,18 +749,18 @@ create_formulation <- function(name, type, parameters = NULL) {
   } else if (pk_sim_type == "Formulation_Particles") {
     # Set default values for particle formulation
     thickness <- 30
-    thickness_unit <- "µm"
+    thickness_unit <- "\u00b5m"
     distribution_type <- "mono"
     radius <- 10
-    radius_unit <- "µm"
+    radius_unit <- "\u00b5m"
     particle_size_distribution <- "normal"
     radius_sd <- 3
-    radius_sd_unit <- "µm"
+    radius_sd_unit <- "\u00b5m"
     radius_cv <- 1.5
     radius_min <- 1
-    radius_min_unit <- "µm"
+    radius_min_unit <- "\u00b5m"
     radius_max <- 19
-    radius_max_unit <- "µm"
+    radius_max_unit <- "\u00b5m"
     n_bins <- 3
 
     # Override defaults with provided values

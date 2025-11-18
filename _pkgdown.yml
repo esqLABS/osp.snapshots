@@ -1,4 +1,119 @@
 url: https://esqlabs.github.io/osp.snapshots/
+
 template:
   bootstrap: 5
 
+development:
+  mode: auto
+
+navbar:
+  structure:
+    left:  [intro, articles, reference, news]
+    right: [search, github]
+  components:
+    reference:
+      text: "Reference"
+      href: reference/index.html
+    articles:
+      text: "Articles"
+      menu:
+      - text: "Working with Data Frames" 
+        href: articles/working-with-dataframes.html
+      - text: "Creating Building Blocks"
+        href: articles/creating-building-blocks.html
+
+home:
+  title: "osp.snapshots"
+  description: >
+    Import and manipulate Open Systems Pharmacology project snapshots in R.
+    Convert complex JSON structures to accessible R objects and data frames.
+  strip_header: true
+
+articles:
+- title: "Guides"
+  desc: "In-depth guides for specific tasks"
+  contents:
+  - working-with-dataframes
+  - creating-building-blocks
+
+reference:
+
+- title: "Import and Export"
+  desc: "Load snapshots and export modifications"
+  contents:
+  - load_snapshot
+  - export_snapshot
+  - osp_models
+
+- title: "Core Classes"
+  desc: "Main classes for working with snapshots and building blocks"
+  contents:
+  - Snapshot
+  - Individual
+  - Compound
+  - Formulation
+  - Population
+  - Protocol
+  - Event
+  - ExpressionProfile
+  - Parameter
+  - AdvancedParameter
+  - range
+
+- title: "Create Building Blocks"
+  desc: "Functions to create new building blocks from scratch"
+  contents:
+  - create_individual
+  - create_formulation
+  - create_parameter
+
+- title: "Manage Building Blocks"
+  desc: "Add and remove building blocks from snapshots"
+  contents:
+  - add_individual
+  - add_formulation
+  - add_expression_profile
+  - remove_individual
+  - remove_formulation
+  - remove_population
+  - remove_expression_profile
+
+- title: "Data Frame Conversion"
+  desc: "Convert building blocks to data frames for analysis"
+  contents:
+  - get_individuals_dfs
+  - get_compounds_dfs
+  - get_formulations_dfs
+  - get_populations_dfs
+  - get_protocols_dfs
+  - get_events_dfs
+  - get_expression_profiles_dfs
+  - get_observed_data_dfs
+
+- title: "Observed Data"
+  desc: "Work with clinical and experimental data"
+  contents:
+  - loadDataSetFromSnapshot
+
+- title: "Validation and Utilities"
+  desc: "Helper functions for validation and data conversion"
+  contents:
+  - validate_snapshot
+  - validate_species
+  - validate_population
+  - validate_gender
+  - validate_unit
+  - convert_ospsuite_time_unit_to_lubridate
+  - convert_ospsuite_time_to_duration
+
+- title: "Print Methods"
+  desc: "Formatted display methods for building block collections"
+  contents:
+  - starts_with("print.")
+
+footer:
+  structure:
+    left: [developed_by, built_with]
+    right: [package]
+  components:
+    package: "osp.snapshots"

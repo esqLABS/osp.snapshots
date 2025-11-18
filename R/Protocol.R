@@ -10,6 +10,8 @@
 #' @importFrom glue glue
 #' @importFrom lubridate duration
 #' @importFrom stringr str_replace
+#' @importFrom R6 R6Class
+#'
 #' @export
 Protocol <- R6::R6Class(
   classname = "Protocol",

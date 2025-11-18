@@ -6,6 +6,8 @@
 #' and display a summary of its information.
 #'
 #' @importFrom tibble tibble as_tibble
+#' @importFrom R6 R6Class
+#'
 #' @export
 Parameter <- R6::R6Class(
   classname = "Parameter",

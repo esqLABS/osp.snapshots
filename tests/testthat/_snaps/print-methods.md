@@ -6,10 +6,10 @@
       
       -- Compounds (6) ---------------------------------------------------------------
       * Rifampicin
-      * BI 123456
+      * 123456
       * Perpetrator_2
-      * BI 100777- initial table parameters
-      * BI 100777
+      * 100777- initial table parameters
+      * 100777
       * test
 
 # print.compound_collection works with empty collection

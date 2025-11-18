@@ -13,3 +13,6 @@
 ^vignettes/articles/\.quarto$
 ^vignettes/articles/*_files$
 ^vignettes/articles$
+^\.lintr$
+^\.vscode$
+^air\.toml$

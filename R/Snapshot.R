@@ -4,6 +4,9 @@
 #' An R6 class that represents an OSP snapshot file. This class provides
 #' methods to access different components of the snapshot and visualize its structure.
 #'
+#' @importFrom R6 R6Class
+#' @importFrom fs path_rel
+#'
 #' @export
 Snapshot <- R6::R6Class(
   classname = "Snapshot",
@@ -1212,9 +1215,14 @@ Snapshot <- R6::R6Class(
 #' Conveniently load an OSP snapshot from a local file, URL, or predefined template name.
 #'
 #' @param source Character string. Can be:
+#'
 #'   - Path to a local file (.json)
 #'   - URL to a remote snapshot file
 #'   - Name of a template from the OSPSuite.BuildingBlockTemplates repository
+#'
+#' @details
+#' Available templates can be listed with `osp_models()`.
+#'
 #' @return A Snapshot object
 #' @export
 #'
@@ -1258,23 +1266,26 @@ load_snapshot <- function(source) {
 
   # If not a file or URL, try to find it in the templates list
   cli::cli_alert_info("Looking for template: {source}")
-  templates_url <- "https://raw.githubusercontent.com/Open-Systems-Pharmacology/OSPSuite.BuildingBlockTemplates/refs/heads/develop/templates.json"
 
   tryCatch(
     {
-      # Download and parse templates JSON directly
-      templates <- jsonlite::fromJSON(templates_url)
+      # Use helper function to get templates data
+      templates_df <- .get_templates_data()
 
       # Find the template with matching name (case insensitive)
       template_idx <- which(
-        tolower(templates$Templates$Name) == tolower(source)
+        tolower(templates_df$Name) == tolower(source)
       )
 
       if (length(template_idx) == 0) {
-        cli::cli_abort("No template found with name: {source}")
+        # Provide helpful error message with available templates
+        cli::cli_abort(c(
+          "No template found with name: {source}",
+          "i" = "Use osp_models() to see all available templates"
+        ))
       }
 
-      template_url <- templates$Templates$Url[template_idx[1]]
+      template_url <- templates_df$Url[template_idx[1]]
       cli::cli_alert_info("Found template: {template_url}")
 
       # Download and parse template JSON directly
@@ -1287,6 +1298,21 @@ load_snapshot <- function(source) {
       )
     }
   )
+}
+
+# Helper function to get templates data
+# This is used by both load_snapshot and osp_models
+.get_templates_data <- function() {
+  templates_url <- "https://raw.githubusercontent.com/Open-Systems-Pharmacology/OSPSuite.BuildingBlockTemplates/refs/heads/develop/templates.json"
+
+  # Download and parse templates JSON directly
+  templates <- jsonlite::fromJSON(templates_url)
+
+  if (is.null(templates$Templates) || nrow(templates$Templates) == 0) {
+    cli::cli_abort("No templates found in the repository")
+  }
+
+  return(templates$Templates)
 }
 
 #' Add an individual to a snapshot
@@ -1534,6 +1560,74 @@ remove_expression_profile <- function(snapshot, profile_id) {
 
   # Return the updated snapshot
   invisible(snapshot)
+}
+
+#' Browse available OSPSuite building block templates
+#'
+#' @description
+#' Browse and display all available building block templates from the
+#' OSPSuite.BuildingBlockTemplates repository. This function helps users
+#' discover what templates are available for loading with `load_snapshot()`.
+#'
+#' @param pattern Character string. Optional pattern to filter template names
+#'   (case insensitive). Uses regular expression matching.
+#'
+#' @return A data.frame with template information (invisibly), while also
+#'   printing a formatted list to the console.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Browse all available templates
+#' osp_models()
+#'
+#' # Filter templates containing "midazolam"
+#' osp_models(pattern = "midazolam")
+#'
+#' # Get the data frame of templates for programmatic use
+#' templates_df <- osp_models()
+#' }
+osp_models <- function(pattern = NULL) {
+  cli::cli_alert_info("Fetching available templates...")
+
+  tryCatch(
+    {
+      # Use helper function to get templates data
+      templates_df <- .get_templates_data()
+
+      # Filter by pattern if provided
+      if (!is.null(pattern) && is.character(pattern) && length(pattern) == 1) {
+        matching_indices <- grep(pattern, templates_df$Name, ignore.case = TRUE)
+        if (length(matching_indices) == 0) {
+          cli::cli_warn("No templates found matching pattern: {pattern}")
+          return(invisible(data.frame()))
+        }
+        templates_df <- templates_df[matching_indices, , drop = FALSE]
+      }
+
+      # Display templates
+      output <- cli::cli_format_method({
+        cli::cli_h2("Available OSPSuite Building Block Templates")
+        cli::cli_alert_info("Found {nrow(templates_df)} template{?s}")
+        cli::cli_alert_info("Use any template name with load_snapshot()")
+        cli::cli_text("")
+
+        for (template_name in templates_df$Name) {
+          cli::cli_li("{template_name}")
+        }
+      })
+
+      cat(output, sep = "\n")
+
+      return(invisible(templates_df))
+    },
+    error = function(e) {
+      cli::cli_abort(
+        "Failed to fetch templates from repository\nError: {e$message}"
+      )
+    }
+  )
 }
 
 #' Export a snapshot to a JSON file

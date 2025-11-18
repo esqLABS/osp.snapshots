@@ -1,0 +1,195 @@
+---
+title: "Getting Started with osp.snapshots"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with osp.snapshots}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r setup}
+library(osp.snapshots)
+library(dplyr)
+```
+
+## Overview
+
+osp.snapshots provides a convenient R interface for working with PKSIM project snapshots. This package allows you to:
+
+- Import PKSIM snapshots from JSON files, URLs, or predefined templates
+- Navigate and explore complex nested snapshot structures
+- Modify building blocks and parameters in place
+- Export modified snapshots back to JSON for use in PKSIM
+- Convert snapshot data to data frames for analysis in R
+
+## Loading a Snapshot
+
+### From a File
+
+The most common way to start is by loading a snapshot from a JSON file:
+
+```{r, eval=FALSE}
+# Load from a local file
+snapshot <- load_snapshot("path/to/your_snapshot.json")
+
+# Load from a URL
+snapshot <- load_snapshot("https://example.com/snapshot.json")
+
+# From an OSP model
+snapshot <- load_snapshot("Midazolam")
+```
+
+### Using the Package Example
+
+For this tutorial, we'll use the test snapshot included with the package:
+
+```{r, message=FALSE}
+# Load the test snapshot
+snapshot <- load_snapshot("Midazolam")
+
+# View snapshot overview
+snapshot
+```
+
+## Exploring Building Blocks
+
+The snapshot contains various building blocks used in PKSIM simulations. Let's explore each type:
+
+### Individuals
+
+Individuals represent patient profiles with demographics and physiological parameters:
+
+```{r}
+# List all individuals
+snapshot$individuals
+
+# Examine a specific individual
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+
+# Access individual properties
+individual <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+individual$age
+individual$gender
+individual$species
+```
+
+### Compounds
+
+Compounds define drug properties and ADME parameters:
+
+```{r}
+# View available compounds
+snapshot$compounds
+
+# Examine a compound
+snapshot$compounds$Midazolam
+```
+
+### Formulations
+
+Formulations describe how drugs are formulated and released:
+
+```{r}
+# View formulations
+snapshot$formulations
+
+# Examine a tablet formulation
+snapshot$formulations$`Tablet (Dormicum)`
+```
+
+### Other Building Blocks
+
+The snapshot includes several other building block types:
+
+```{r}
+# Populations - groups of virtual individuals
+snapshot$populations
+
+# Events - simulation events like meals
+snapshot$events
+
+# Protocols - dosing regimens
+snapshot$protocols
+
+# Expression profiles - protein expression data
+snapshot$expression_profiles
+```
+
+## Modifying Building Blocks
+
+All building blocks are mutable and can be modified directly:
+
+### Changing Individual Properties
+
+```{r}
+# Modify age
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age <- 45
+
+# Modify parameter values
+individual$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`$value <- 0.7
+
+# Verify changes
+snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+```
+
+### Working with Parameters
+
+Parameters have special behavior and validation:
+
+```{r}
+
+# Access parameters collection
+params <- snapshot$individuals$`Korean (Yu 2004 study)`$parameters
+params
+
+# Get a specific parameter
+params$`Organism|Liver|EHC continuous fraction`
+
+# Modify parameter value
+params$`Organism|Liver|EHC continuous fraction`$value <- 0.4
+
+params
+```
+
+## Working with Observed Data
+
+Snapshots often contain observed data from clinical studies:
+
+```{r}
+# View observed data collection
+snapshot$observed_data
+
+# Access a specific dataset
+obs_data <- snapshot$observed_data[[1]]
+obs_data
+
+# These are ospsuite DataSet objects
+class(obs_data)
+```
+
+## Exporting Snapshots
+
+After making modifications, you can export the snapshot back to a JSON file:
+
+```{r, eval=FALSE}
+# Export to a new file
+export_snapshot(snapshot, "modified_snapshot.json")
+```
+
+The exported file can be imported back into PKSIM, preserving all your modifications.
+
+## Next Steps
+
+Now that you understand the basics, explore these advanced topics:
+
+- **Working with Data Frames**: Learn how to convert building blocks to data frames for analysis with `vignette("working-with-dataframes")`
+- **Creating Building Blocks**: Create new individuals, formulations, and other building blocks from scratch with `vignette("creating-building-blocks")`

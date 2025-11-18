@@ -7,6 +7,7 @@
 #'
 #' @importFrom tibble tibble as_tibble
 #' @importFrom glue glue
+#' @importFrom R6 R6Class
 #' @export
 Compound <- R6::R6Class(
   classname = "Compound",
@@ -636,7 +637,7 @@ Compound <- R6::R6Class(
 
     # Extract parameters utility function
     .extract_parameters = function(parameters_list, property_name) {
-      source <- purrr::keep(parameters_list, ~ .x$Name == property_name) %>%
+      source <- purrr::keep(parameters_list, ~ .x$Name == property_name) |>
         purrr::list_c()
       if (!is.null(source)) {
         data <- list()
@@ -724,12 +725,12 @@ Compound <- R6::R6Class(
                 data_source = datasource_name,
                 source = param$Source
               )
-            }) %>%
+            }) |>
               dplyr::bind_rows()
-          }) %>%
+          }) |>
             dplyr::bind_rows()
         }
-      ) %>%
+      ) |>
         dplyr::bind_rows()
     },
 
@@ -837,12 +838,12 @@ Compound <- R6::R6Class(
                 data_source = datasource_name,
                 source = param$Source
               )
-            }) %>%
+            }) |>
               dplyr::bind_rows()
-          }) %>%
+          }) |>
             dplyr::bind_rows()
         }
-      ) %>%
+      ) |>
         dplyr::bind_rows()
     },
 
@@ -949,12 +950,12 @@ Compound <- R6::R6Class(
                 data_source = datasource_name,
                 source = param$Source
               )
-            }) %>%
+            }) |>
               dplyr::bind_rows()
-          }) %>%
+          }) |>
             dplyr::bind_rows()
         }
-      ) %>%
+      ) |>
         dplyr::bind_rows()
     },
 
@@ -1069,12 +1070,12 @@ Compound <- R6::R6Class(
                 data_source = datasource_name,
                 source = param$Source
               )
-            }) %>%
+            }) |>
               dplyr::bind_rows()
-          }) %>%
+          }) |>
             dplyr::bind_rows()
         }
-      ) %>%
+      ) |>
         dplyr::bind_rows()
     },
 
@@ -1178,12 +1179,12 @@ Compound <- R6::R6Class(
                 data_source = datasource_name,
                 source = param$Source
               )
-            }) %>%
+            }) |>
               dplyr::bind_rows()
-          }) %>%
+          }) |>
             dplyr::bind_rows()
         }
-      ) %>%
+      ) |>
         dplyr::bind_rows()
     },
 
@@ -1287,12 +1288,12 @@ Compound <- R6::R6Class(
                 data_source = datasource_name,
                 source = param$Source
               )
-            }) %>%
+            }) |>
               dplyr::bind_rows()
-          }) %>%
+          }) |>
             dplyr::bind_rows()
         }
-      ) %>%
+      ) |>
         dplyr::bind_rows()
     },
 
@@ -1411,12 +1412,12 @@ Compound <- R6::R6Class(
                 data_source = datasource_name,
                 source = param$Source
               )
-            }) %>%
+            }) |>
               dplyr::bind_rows()
-          }) %>%
+          }) |>
             dplyr::bind_rows()
         }
-      ) %>%
+      ) |>
         dplyr::bind_rows()
     },
 
@@ -1519,12 +1520,12 @@ Compound <- R6::R6Class(
                 data_source = datasource_name,
                 source = param$Source
               )
-            }) %>%
+            }) |>
               dplyr::bind_rows()
-          }) %>%
+          }) |>
             dplyr::bind_rows()
         }
-      ) %>%
+      ) |>
         dplyr::bind_rows()
     }
   ),
@@ -1655,12 +1656,12 @@ Compound <- R6::R6Class(
       result <- list(
         partition_coef = purrr::keep(calc_methods, function(x) {
           grepl("partition coefficient", x)
-        }) %>%
-          sub(".*- ", "", .),
+        }) |>
+          (\(x) sub(".*- ", "", x))(),
         permeability = purrr::keep(calc_methods, function(x) {
           grepl("permeability ", x)
-        }) %>%
-          sub(".*- ", "", .)
+        }) |>
+          (\(x) sub(".*- ", "", x))()
       )
 
       # Add class for custom printing

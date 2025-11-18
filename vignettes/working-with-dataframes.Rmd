@@ -1,0 +1,118 @@
+---
+title: "Working with Data Frames"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Working with Data Frames}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r setup}
+library(osp.snapshots)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+```
+
+## Overview
+
+One of the key features of osp.snapshots is the ability to convert complex nested snapshot data into structured data frames that are easy to work with in R. This vignette demonstrates how to extract, convert, and analyze snapshot data using standard R data analysis tools.
+
+## Setup
+
+Let's start by loading our test snapshot:
+
+```{r}
+snapshot <- load_snapshot("Midazolam")
+```
+
+## Converting Building Blocks to Data Frames
+
+Each building block type has a corresponding `get_*_dfs()` function that converts the data to structured data frames.
+
+### Converting Individuals
+
+Individual data is converted into multiple related data frames:
+
+```{r}
+individual_dfs <- get_individuals_dfs(snapshot)
+names(individual_dfs)
+```
+
+Let's examine each data frame:
+
+```{r}
+# Basic characteristics
+head(individual_dfs$individuals)
+
+# Parameters
+head(individual_dfs$individuals_parameters)
+
+# Expression profiles
+head(individual_dfs$individuals_expressions)
+```
+
+### Converting Single Individual
+
+You can also convert a single individual to data frames:
+
+```{r}
+# Get the first individual
+individual <- snapshot$individuals[[1]]
+single_individual_df <- individual$to_df()
+
+names(single_individual_df)
+head(single_individual_df$individuals)
+```
+
+### Converting Compounds
+
+```{r}
+compounds_df <- get_compounds_dfs(snapshot)
+head(compounds_df)
+```
+
+### Converting Formulations
+
+```{r}
+formulations_dfs <- get_formulations_dfs(snapshot)
+names(formulations_dfs)
+
+# Basic formulation info
+head(formulations_dfs$formulations)
+
+# Formulation parameters
+head(formulations_dfs$parameters)
+```
+
+### Converting Populations
+
+```{r}
+populations_dfs <- get_populations_dfs(snapshot)
+names(populations_dfs)
+
+head(populations_dfs$populations)
+```
+
+### Converting Observed Data
+
+Observed data conversion creates a flat data frame perfect for analysis:
+
+```{r}
+obs_data_df <- get_observed_data_dfs(snapshot)
+head(obs_data_df)
+```
+
+## Next Steps
+
+- Learn how to create new building blocks in `vignette("creating-building-blocks")`
+- Explore the full API in the [function reference](https://esqlabs.github.io/osp.snapshots/reference/)
