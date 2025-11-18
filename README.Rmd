@@ -46,8 +46,6 @@ file.copy(
 
 ```{r example, message=FALSE}
 library(osp.snapshots)
-library(dplyr)
-library(magrittr)
 
 # Load a snapshot
 snapshot_path <- system.file(

@@ -27,8 +27,6 @@ pak::pak("esqLABS/osp.snapshots")
 
 ``` r
 library(osp.snapshots)
-library(dplyr)
-library(magrittr)
 
 # Load a snapshot
 snapshot_path <- system.file(
@@ -43,7 +41,7 @@ snapshot
 #> 
 #> ── PKSIM Snapshot ──────────────────────────────────────────────────────────────
 #> ℹ Version: 79 (PKSIM 11.2)
-#> ℹ Path: '../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/RtmpxzUpSR/temp_libpath44105eb24bce/osp.snapshots/extdata/test_snapshot.json'
+#> ℹ Path: '../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/RtmpxzUpSR/temp_libpath44103c33cc80/osp.snapshots/extdata/test_snapshot.json'
 #> • Compounds: 6
 #> • Events: 10
 #> • ExpressionProfiles: 14
