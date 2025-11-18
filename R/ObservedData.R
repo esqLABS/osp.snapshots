@@ -121,7 +121,6 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
       }
     }
   }
-  browser()
   return(dataset)
 }
 
