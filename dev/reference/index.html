@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,8 +41,7 @@
 
       <div class="section-desc"><p>Load snapshots and export modifications</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -53,19 +52,26 @@
 
         </dt>
         <dd>Load a snapshot from various sources</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="export_snapshot.html">export_snapshot()</a></code>
 
         </dt>
         <dd>Export a snapshot to a JSON file</dd>
+
+        <dt>
+
+          <code><a href="osp_models.html">osp_models()</a></code>
+
+        </dt>
+        <dd>Browse available OSPSuite building block templates</dd>
       </dl></div><div class="section level2">
       <h2 id="core-classes">Core Classes<a class="anchor" aria-label="anchor" href="#core-classes"></a></h2>
 
       <div class="section-desc"><p>Main classes for working with snapshots and building blocks</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -76,61 +82,71 @@
 
         </dt>
         <dd>Snapshot class for OSP snapshots</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="Individual.html">Individual</a></code>
 
         </dt>
         <dd>Individual class for OSP snapshot individuals</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="Compound.html">Compound</a></code>
 
         </dt>
         <dd>Compound class for OSP snapshot compounds</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="Formulation.html">Formulation</a></code>
 
         </dt>
         <dd>Formulation class for OSP snapshot formulations</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="Population.html">Population</a></code>
 
         </dt>
         <dd>Population class for OSP snapshot populations</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="Protocol.html">Protocol</a></code>
 
         </dt>
         <dd>Protocol class for OSP snapshot protocols</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="Event.html">Event</a></code>
 
         </dt>
         <dd>Event class for OSP snapshot events</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="ExpressionProfile.html">ExpressionProfile</a></code>
 
         </dt>
         <dd>ExpressionProfile class for OSP snapshot expression profiles</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="Parameter.html">Parameter</a></code>
 
         </dt>
         <dd>Parameter class for OSP snapshot parameters</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="AdvancedParameter.html">AdvancedParameter</a></code>
 
         </dt>
         <dd>AdvancedParameter class for Population advanced parameters</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="Range.html">range()</a></code>
 
@@ -141,8 +157,7 @@
 
       <div class="section-desc"><p>Functions to create new building blocks from scratch</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -153,13 +168,15 @@
 
         </dt>
         <dd>Create a new individual</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="create_formulation.html">create_formulation()</a></code>
 
         </dt>
         <dd>Create a new formulation</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="create_parameter.html">create_parameter()</a></code>
 
@@ -170,8 +187,7 @@
 
       <div class="section-desc"><p>Add and remove building blocks from snapshots</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -182,37 +198,43 @@
 
         </dt>
         <dd>Add an individual to a snapshot</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="add_formulation.html">add_formulation()</a></code>
 
         </dt>
         <dd>Add a formulation to a snapshot</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="add_expression_profile.html">add_expression_profile()</a></code>
 
         </dt>
         <dd>Add an expression profile to a snapshot</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="remove_individual.html">remove_individual()</a></code>
 
         </dt>
         <dd>Remove individuals from a snapshot</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="remove_formulation.html">remove_formulation()</a></code>
 
         </dt>
         <dd>Remove formulations from a snapshot</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="remove_population.html">remove_population()</a></code>
 
         </dt>
         <dd>Remove populations from a snapshot</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="remove_expression_profile.html">remove_expression_profile()</a></code>
 
@@ -223,8 +245,7 @@
 
       <div class="section-desc"><p>Convert building blocks to data frames for analysis</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -235,43 +256,50 @@
 
         </dt>
         <dd>Get all individuals in a snapshot as data frames</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_compounds_dfs.html">get_compounds_dfs()</a></code>
 
         </dt>
         <dd>Get all compounds in a snapshot as data frames</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_formulations_dfs.html">get_formulations_dfs()</a></code>
 
         </dt>
         <dd>Get all formulations in a snapshot as data frames</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_populations_dfs.html">get_populations_dfs()</a></code>
 
         </dt>
         <dd>Get all populations in a snapshot as data frames</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_protocols_dfs.html">get_protocols_dfs()</a></code>
 
         </dt>
         <dd>Get all protocols in a snapshot as a single consolidated data frame</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_events_dfs.html">get_events_dfs()</a></code>
 
         </dt>
         <dd>Get all events in a snapshot as data frames</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_expression_profiles_dfs.html">get_expression_profiles_dfs()</a></code>
 
         </dt>
         <dd>Get all expression profiles in a snapshot as data frames</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_observed_data_dfs.html">get_observed_data_dfs()</a></code>
 
@@ -282,8 +310,7 @@
 
       <div class="section-desc"><p>Work with clinical and experimental data</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -299,8 +326,7 @@
 
       <div class="section-desc"><p>Helper functions for validation and data conversion</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -311,37 +337,43 @@
 
         </dt>
         <dd>Validate that an object is a Snapshot</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="validate_species.html">validate_species()</a></code>
 
         </dt>
         <dd>Validate that a species is valid</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="validate_population.html">validate_population()</a></code>
 
         </dt>
         <dd>Validate that a population is valid</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="validate_gender.html">validate_gender()</a></code>
 
         </dt>
         <dd>Validate that a gender is valid</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="validate_unit.html">validate_unit()</a></code>
 
         </dt>
         <dd>Validate that a unit is valid for a given dimension</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="convert_ospsuite_time_unit_to_lubridate.html">convert_ospsuite_time_unit_to_lubridate()</a></code>
 
         </dt>
         <dd>Convert ospsuite time units to lubridate-compatible units</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="convert_ospsuite_time_to_duration.html">convert_ospsuite_time_to_duration()</a></code>
 
@@ -352,8 +384,7 @@
 
       <div class="section-desc"><p>Formatted display methods for building block collections</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -364,121 +395,141 @@
 
         </dt>
         <dd>Print method for biliary clearance processes</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.compound_additional_parameters.html">print(<i>&lt;compound_additional_parameters&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for compound additional parameters</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.compound_calculation_methods.html">print(<i>&lt;compound_calculation_methods&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for compound calculation methods</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.compound_collection.html">print(<i>&lt;compound_collection&gt;</i>)</a></code>
 
         </dt>
         <dd>S3 print method for compound collections</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.compound_processes.html">print(<i>&lt;compound_processes&gt;</i>)</a></code>
 
         </dt>
         <dd>S3 print method for compound processes</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.event_collection.html">print(<i>&lt;event_collection&gt;</i>)</a></code>
 
         </dt>
         <dd>S3 print method for event collections</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.expression_profile_collection.html">print(<i>&lt;expression_profile_collection&gt;</i>)</a></code>
 
         </dt>
         <dd>S3 print method for expression profile collections</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.formulation_collection.html">print(<i>&lt;formulation_collection&gt;</i>)</a></code>
 
         </dt>
         <dd>S3 print method for formulation collections</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.hepatic_clearance.html">print(<i>&lt;hepatic_clearance&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for hepatic clearance processes</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.individual_collection.html">print(<i>&lt;individual_collection&gt;</i>)</a></code>
 
         </dt>
         <dd>S3 print method for individual collections</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.induction.html">print(<i>&lt;induction&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for induction processes</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.inhibition.html">print(<i>&lt;inhibition&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for inhibition processes</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.metabolizing_enzymes.html">print(<i>&lt;metabolizing_enzymes&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for metabolizing enzymes</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.observed_data_collection.html">print(<i>&lt;observed_data_collection&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for observed data collection</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.parameter_collection.html">print(<i>&lt;parameter_collection&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for parameter collections</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.physicochemical_property.html">print(<i>&lt;physicochemical_property&gt;</i>)</a></code>
 
         </dt>
         <dd>S3 print method for physicochemical properties</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.population_collection.html">print(<i>&lt;population_collection&gt;</i>)</a></code>
 
         </dt>
         <dd>S3 print method for population collections</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.protein_binding_partners.html">print(<i>&lt;protein_binding_partners&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for protein binding partners</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.protocol_collection.html">print(<i>&lt;protocol_collection&gt;</i>)</a></code>
 
         </dt>
         <dd>S3 print method for protocol collections</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.renal_clearance.html">print(<i>&lt;renal_clearance&gt;</i>)</a></code>
 
         </dt>
         <dd>Print method for renal clearance processes</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="print.transporter_proteins.html">print(<i>&lt;transporter_proteins&gt;</i>)</a></code>
 
@@ -490,7 +541,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
 <div class="pkgdown-footer-right">
