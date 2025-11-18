@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 
-[![](https://img.shields.io/github/actions/workflow/status/esqlabs/osp.snapshots/main-workflow.yaml?branch=main&label=Build)](https://github.com/esqlabs/osp.snapshots/actions/workflows/main-workflow.yaml) 
+[![](https://img.shields.io/github/actions/workflow/status/esqlabs/osp.snapshots/main-workflow.yaml?branch=main&label=Build)](https://github.com/esqlabs/osp.snapshots/actions/workflows/main-workflow.yaml)
 <!-- [![Codecov test coverage](https://codecov.io/gh/esqlabs/osp.snapshots/branch/main/graph/badge.svg)](https://app.codecov.io/gh/esqlabs/osp.snapshots?branch=main) -->
 
 <!-- badges: end -->
@@ -88,4 +88,3 @@ Get started with osp.snapshots:
 
 -   [Function reference](https://esqlabs.github.io/osp.snapshots/reference/)
 -   [Report bugs](https://github.com/esqLABS/osp.snapshots/issues)
-
