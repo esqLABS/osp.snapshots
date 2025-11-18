@@ -81,6 +81,11 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
           dataset$yUnit <- first_col$DataInfo$Unit
         }
 
+        # set molecular weight if available
+        if (!is.null(first_col$DataInfo$MolWeight)) {
+          dataset$molWeight <- first_col$DataInfo$MolWeight
+        }
+
         # Set the values
         dataset$setValues(
           xValues = time_values,
@@ -116,7 +121,7 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
       }
     }
   }
-
+  browser()
   return(dataset)
 }
 
