@@ -73,23 +73,73 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
 
       if (!is.null(first_col$Values)) {
         y_values <- first_col$Values
+        y_error_values <- NULL
 
-        # Set y unit if available
-        if (!is.null(first_col$DataInfo$Unit)) {
-          # For now, use the unit as-is - ospsuite will handle conversion
-          # In a full implementation, we'd need proper unit mapping
-          dataset$yUnit <- first_col$DataInfo$Unit
-        }
+        dataset$yDimension <- first_col$Dimension
+        dataset$yUnit <- first_col$Unit
 
         # set molecular weight if available
         if (!is.null(first_col$DataInfo$MolWeight)) {
           dataset$molWeight <- first_col$DataInfo$MolWeight
         }
 
-        # Set the values
+        # Set LLOQ if available
+        if (!is.null(first_col$DataInfo$LLOQ)) {
+          dataset$LLOQ <- first_col$DataInfo$LLOQ
+        }
+
+        # Process RelatedColumns for error data
+        if (
+          !is.null(first_col$RelatedColumns) &&
+            length(first_col$RelatedColumns) > 0
+        ) {
+          # Look for error columns (typically ArithmeticStdDev, GeometricStdDev, etc.)
+          for (related_col in first_col$RelatedColumns) {
+            # Check if this is an error column based on AuxiliaryType
+            if (
+              !is.null(related_col$DataInfo$AuxiliaryType) &&
+                related_col$DataInfo$AuxiliaryType != "Undefined"
+            ) {
+              # Get error values (to be passed to setValues)
+              if (!is.null(related_col$Values)) {
+                y_error_values <- related_col$Values
+              }
+
+              # Set error dimension and unit
+              if (!is.null(related_col$Unit)) {
+                dataset$yErrorUnit <- related_col$Unit
+              }
+
+              # Map AuxiliaryType to yErrorType
+              # Common types: ArithmeticStdDev, GeometricStdDev, ArithmeticStdErr
+              if (!is.null(related_col$DataInfo$AuxiliaryType)) {
+                auxiliary_type <- related_col$DataInfo$AuxiliaryType
+                # Map to ospsuite error types
+                error_type_mapping <- list(
+                  "ArithmeticStdDev" = "ArithmeticStdDev",
+                  "GeometricStdDev" = "GeometricStdDev",
+                  "ArithmeticStdErr" = "ArithmeticStdErr"
+                )
+
+                if (auxiliary_type %in% names(error_type_mapping)) {
+                  dataset$yErrorType <- error_type_mapping[[auxiliary_type]]
+                } else {
+                  # Use the auxiliary type as-is if not in mapping
+                  dataset$yErrorType <- auxiliary_type
+                }
+              }
+
+              # Only process the first error column
+              break
+            }
+          }
+        }
+
+        # Set the values (including error values if available)
         dataset$setValues(
           xValues = time_values,
-          yValues = y_values
+          yValues = y_values,
+          yErrorValues = y_error_values
         )
       }
     }
