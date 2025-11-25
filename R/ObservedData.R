@@ -76,7 +76,11 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
         y_error_values <- NULL
 
         dataset$yDimension <- first_col$Dimension
-        dataset$yUnit <- first_col$Unit
+
+        # set y unit if available (not available for unitless dimensions like fractions)
+        if (!is.null(first_col$Unit)) {
+          dataset$yUnit <- first_col$Unit
+        }
 
         # set molecular weight if available
         if (!is.null(first_col$DataInfo$MolWeight)) {

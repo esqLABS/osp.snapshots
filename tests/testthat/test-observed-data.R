@@ -57,6 +57,17 @@ test_that("loadDataSetFromSnapshot handles empty data", {
   expect_snapshot(df)
 })
 
+test_that("works with unitless dimensions", {
+  snapshot <- testthat::test_path(
+    "data",
+    "obsdata_no_unit.json"
+  )
+
+  expect_no_error({
+    load_snapshot(snapshot)
+  })
+})
+
 test_that("Snapshot handles observed data correctly", {
   # Use pre-loaded test snapshot
   expect_true(length(test_snapshot$observed_data) > 0)
