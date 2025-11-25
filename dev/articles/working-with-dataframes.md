@@ -161,12 +161,12 @@ head(obs_data_df)
 #> # A tibble: 6 × 30
 #>   name            xValues yValues yErrorValues xDimension xUnit yDimension yUnit
 #>   <chr>             <dbl>   <dbl>        <dbl> <chr>      <chr> <chr>      <chr>
-#> 1 Ahonen 1995 - …     0.5 0.0156            NA Time       h     Concentra… mg/l 
-#> 2 Ahonen 1995 - …     1   0.0280            NA Time       h     Concentra… mg/l 
-#> 3 Ahonen 1995 - …     1.5 0.0235            NA Time       h     Concentra… mg/l 
-#> 4 Ahonen 1995 - …     2   0.0185            NA Time       h     Concentra… mg/l 
-#> 5 Ahonen 1995 - …     3   0.0118            NA Time       h     Concentra… mg/l 
-#> 6 Ahonen 1995 - …     4   0.00848           NA Time       h     Concentra… mg/l 
+#> 1 Ahonen 1995 - …     0.5 0.0156        0.0231 Time       h     Concentra… mg/l 
+#> 2 Ahonen 1995 - …     1   0.0280        0.0160 Time       h     Concentra… mg/l 
+#> 3 Ahonen 1995 - …     1.5 0.0235        0.0108 Time       h     Concentra… mg/l 
+#> 4 Ahonen 1995 - …     2   0.0185      NaN      Time       h     Concentra… mg/l 
+#> 5 Ahonen 1995 - …     3   0.0118      NaN      Time       h     Concentra… mg/l 
+#> 6 Ahonen 1995 - …     4   0.00848     NaN      Time       h     Concentra… mg/l 
 #> # ℹ 22 more variables: yErrorType <chr>, yErrorUnit <chr>, molWeight <dbl>,
 #> #   lloq <dbl>, `DB Version` <chr>, ID <chr>, `Study Id` <chr>,
 #> #   Reference <chr>, Source <chr>, Grouping <chr>, `Data type` <chr>, N <chr>,
