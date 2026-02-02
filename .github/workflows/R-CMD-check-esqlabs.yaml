@@ -128,11 +128,16 @@ jobs:
           # Load pak and install dependencies
           library(pak)
 
-          # Install rcmdcheck first
+          # Configure pak to fall back to source if binary fails (for macOS ARM64 R 4.5)
           pak::pkg_install("any::rcmdcheck", ask = FALSE)
 
-          # Install local package dependencies
-          pak::local_install_dev_deps(dependencies = TRUE, ask = FALSE, upgrade = FALSE)
+          # Install local package dependencies with source fallback
+          pak::local_install_dev_deps(
+            dependencies = TRUE,
+            ask = FALSE,
+            upgrade = FALSE,
+            pkg_type = "both"  # Try binary first, fall back to source
+          )
         shell: Rscript {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
