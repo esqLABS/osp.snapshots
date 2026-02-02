@@ -77,43 +77,18 @@ jobs:
         if: steps.check-renv.outputs.renv_detected == 'true' && inputs.ignore-renv != 'true'
         uses: r-lib/actions/setup-renv@v2
 
-      # Use standard r-lib action for macOS and Linux (handles binary/source fallback well)
-      - name: Setup R dependencies (Unix)
-        if: (steps.check-renv.outputs.renv_detected == 'false' || inputs.ignore-renv == 'true') && runner.os != 'Windows'
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck, any::devtools, any::pkgload, any::desc
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-
-      # Custom pak installation for Windows (needed for GitHub auth)
-      - name: Query GitHub API Test (Windows)
-        if: (steps.check-renv.outputs.renv_detected == 'false' || inputs.ignore-renv == 'true') && runner.os == 'Windows'
-        run: |
-          # Test if we can reach GitHub API
-          Sys.setenv(GITHUB_PAT = "${{ secrets.GITHUB_TOKEN }}")
-          tryCatch({
-            gh_api <- jsonlite::fromJSON("https://api.github.com/rate_limit",
-                                          simplifyVector = FALSE)
-            cat("GitHub API accessible\n")
-            cat("Rate limit remaining:", gh_api$rate$remaining, "\n")
-          }, error = function(e) {
-            cat("GitHub API test failed:", conditionMessage(e), "\n")
-          })
-        shell: Rscript {0}
-        continue-on-error: true
-
-      - name: Install pak (Windows)
-        if: (steps.check-renv.outputs.renv_detected == 'false' || inputs.ignore-renv == 'true') && runner.os == 'Windows'
+      # Install pak for all platforms
+      - name: Install pak
+        if: steps.check-renv.outputs.renv_detected == 'false' || inputs.ignore-renv == 'true'
         run: |
           install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
         shell: Rscript {0}
 
-      - name: Install dependencies (Windows)
-        if: (steps.check-renv.outputs.renv_detected == 'false' || inputs.ignore-renv == 'true') && runner.os == 'Windows'
+      # Unified dependency installation for all platforms
+      - name: Install dependencies
+        if: steps.check-renv.outputs.renv_detected == 'false' || inputs.ignore-renv == 'true'
         run: |
-          # Explicitly set credentials in multiple ways
+          # Set credentials
           Sys.setenv(
             GITHUB_PAT = "${{ secrets.GITHUB_TOKEN }}",
             GITHUB_TOKEN = "${{ secrets.GITHUB_TOKEN }}",
@@ -121,24 +96,29 @@ jobs:
           )
 
           # Write to .Renviron to persist across pak subprocess
-          renviron_path <- file.path(Sys.getenv("USERPROFILE"), ".Renviron")
+          renviron_path <- if (.Platform$OS.type == "windows") {
+            file.path(Sys.getenv("USERPROFILE"), ".Renviron")
+          } else {
+            "~/.Renviron"
+          }
 
           cat(sprintf('GITHUB_PAT="%s"\n', "${{ secrets.GITHUB_TOKEN }}"),
               file = renviron_path, append = TRUE)
           cat(sprintf('GITHUB_TOKEN="%s"\n', "${{ secrets.GITHUB_TOKEN }}"),
               file = renviron_path, append = TRUE)
+
           cat("Wrote credentials to", renviron_path, "\n")
+          cat("Platform:", R.version$platform, "\n")
 
-          # Verify credentials
-          cat("GITHUB_PAT is set:", nzchar(Sys.getenv("GITHUB_PAT")), "\n")
-
-          # Load pak and install dependencies
+          # Load pak
           library(pak)
 
-          # Install extra packages and dependencies
+          # Install extra packages first
+          cat("Installing extra packages...\n")
           pak::pkg_install(c("any::rcmdcheck", "any::devtools", "any::pkgload", "any::desc"), ask = FALSE)
 
           # Install local package dependencies
+          cat("Installing local package dependencies...\n")
           pak::local_install_dev_deps(
             dependencies = TRUE,
             ask = FALSE,
