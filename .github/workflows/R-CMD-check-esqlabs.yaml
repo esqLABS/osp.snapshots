@@ -113,17 +113,51 @@ jobs:
           # Load pak
           library(pak)
 
+          # Helper function to install with source fallback
+          install_with_fallback <- function(pkgs) {
+            tryCatch({
+              pak::pkg_install(pkgs, ask = FALSE)
+            }, error = function(e) {
+              if (grepl("Failed to download", conditionMessage(e))) {
+                cat("Binary download failed, retrying with source installation...\n")
+                # Force source installation on macOS when binaries fail
+                old_type <- getOption("pkgType")
+                options(pkgType = "source")
+                on.exit(options(pkgType = old_type))
+                pak::pkg_install(pkgs, ask = FALSE)
+              } else {
+                stop(e)
+              }
+            })
+          }
+
           # Install extra packages first
           cat("Installing extra packages...\n")
-          pak::pkg_install(c("any::rcmdcheck", "any::devtools", "any::pkgload", "any::desc"), ask = FALSE)
+          install_with_fallback(c("any::rcmdcheck", "any::devtools", "any::pkgload", "any::desc"))
 
           # Install local package dependencies
           cat("Installing local package dependencies...\n")
-          pak::local_install_dev_deps(
-            dependencies = TRUE,
-            ask = FALSE,
-            upgrade = FALSE
-          )
+          tryCatch({
+            pak::local_install_dev_deps(
+              dependencies = TRUE,
+              ask = FALSE,
+              upgrade = FALSE
+            )
+          }, error = function(e) {
+            if (grepl("Failed to download", conditionMessage(e))) {
+              cat("Binary download failed for dependencies, retrying with source installation...\n")
+              old_type <- getOption("pkgType")
+              options(pkgType = "source")
+              on.exit(options(pkgType = old_type))
+              pak::local_install_dev_deps(
+                dependencies = TRUE,
+                ask = FALSE,
+                upgrade = FALSE
+              )
+            } else {
+              stop(e)
+            }
+          })
         shell: Rscript {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
