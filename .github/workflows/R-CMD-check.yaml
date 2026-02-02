@@ -44,24 +44,24 @@ jobs:
 
       - name: Configure Git for GitHub Dependencies (Windows)
         if: runner.os == 'Windows'
-        shell: bash
+        run: |
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        shell: pwsh
+
+      - name: Configure Git for GitHub Dependencies (Unix)
+        if: runner.os != 'Windows'
         run: |
           git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
-      - name: Install pak
-        run: |
-          install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
-        shell: Rscript {0}
-
-      - name: Setup pak environment (Windows)
+      - name: Create .Renviron with GITHUB_PAT (Windows)
         if: runner.os == 'Windows'
         run: |
-          # Ensure GITHUB_PAT is available to pak
-          Sys.setenv(GITHUB_PAT = Sys.getenv("GITHUB_TOKEN"))
-          cat("GITHUB_PAT configured for pak\n")
-        shell: Rscript {0}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          $renviron = "$env:USERPROFILE\.Renviron"
+          "GITHUB_PAT=${{ secrets.GITHUB_TOKEN }}" | Out-File -FilePath $renviron -Encoding ascii -Append
+          "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" | Out-File -FilePath $renviron -Encoding ascii -Append
+          Write-Host "Created .Renviron at $renviron"
+        shell: pwsh
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -69,6 +69,7 @@ jobs:
           needs: check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: r-lib/actions/check-r-package@v2
         with:
