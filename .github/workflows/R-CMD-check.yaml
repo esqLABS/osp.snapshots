@@ -116,4 +116,4 @@ jobs:
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
-          error-on: 'error'  # Only fail on errors, allow warnings and notes
+          error-on: error  # Only fail on errors, allow warnings and notes
