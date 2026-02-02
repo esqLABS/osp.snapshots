@@ -54,19 +54,60 @@ jobs:
         run: |
           git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
-      - name: Create .Renviron with GITHUB_PAT (Windows)
-        if: runner.os == 'Windows'
+      - name: Install pak
         run: |
-          $renviron = "$env:USERPROFILE\.Renviron"
-          "GITHUB_PAT=${{ secrets.GITHUB_TOKEN }}" | Out-File -FilePath $renviron -Encoding ascii -Append
-          "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" | Out-File -FilePath $renviron -Encoding ascii -Append
-          Write-Host "Created .Renviron at $renviron"
-        shell: pwsh
+          install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+        shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck
-          needs: check
+      - name: Query GitHub API Test
+        run: |
+          # Test if we can reach GitHub API
+          Sys.setenv(GITHUB_PAT = "${{ secrets.GITHUB_TOKEN }}")
+          tryCatch({
+            gh_api <- jsonlite::fromJSON("https://api.github.com/rate_limit",
+                                          simplifyVector = FALSE)
+            cat("GitHub API accessible\n")
+            cat("Rate limit remaining:", gh_api$rate$remaining, "\n")
+          }, error = function(e) {
+            cat("GitHub API test failed:", conditionMessage(e), "\n")
+          })
+        shell: Rscript {0}
+        continue-on-error: true
+
+      - name: Install dependencies
+        run: |
+          # Explicitly set credentials in multiple ways
+          Sys.setenv(
+            GITHUB_PAT = "${{ secrets.GITHUB_TOKEN }}",
+            GITHUB_TOKEN = "${{ secrets.GITHUB_TOKEN }}",
+            GITHUB_API_TOKEN = "${{ secrets.GITHUB_TOKEN }}"
+          )
+
+          # Write to .Renviron to persist across pak subprocess
+          renviron_path <- if (.Platform$OS.type == "windows") {
+            file.path(Sys.getenv("USERPROFILE"), ".Renviron")
+          } else {
+            "~/.Renviron"
+          }
+
+          cat(sprintf('GITHUB_PAT="%s"\n', "${{ secrets.GITHUB_TOKEN }}"),
+              file = renviron_path, append = TRUE)
+          cat(sprintf('GITHUB_TOKEN="%s"\n', "${{ secrets.GITHUB_TOKEN }}"),
+              file = renviron_path, append = TRUE)
+          cat("Wrote credentials to", renviron_path, "\n")
+
+          # Verify credentials
+          cat("GITHUB_PAT is set:", nzchar(Sys.getenv("GITHUB_PAT")), "\n")
+
+          # Load pak and install dependencies
+          library(pak)
+
+          # Install rcmdcheck first
+          pak::pkg_install("any::rcmdcheck", ask = FALSE)
+
+          # Install local package dependencies
+          pak::local_install_dev_deps(dependencies = TRUE, ask = FALSE, upgrade = FALSE)
+        shell: Rscript {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
