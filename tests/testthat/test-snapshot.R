@@ -66,10 +66,10 @@ test_that("Snapshot path handling works correctly", {
 
   # Check that the path active binding returns the new relative path
   new_rel_path <- fs::path_rel(new_abs_path, start = getwd())
-  # Use fs::path_real() to resolve short paths on Windows
+  # Convert both to absolute paths for comparison to avoid Windows short path issues
   expect_equal(
-    fs::path_real(snapshot$path),
-    fs::path_real(new_rel_path)
+    as.character(fs::path_abs(snapshot$path)),
+    as.character(fs::path_abs(new_rel_path))
   )
 
   expect_equal(
