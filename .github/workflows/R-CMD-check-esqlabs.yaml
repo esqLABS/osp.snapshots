@@ -128,15 +128,18 @@ jobs:
           # Load pak and install dependencies
           library(pak)
 
-          # Configure pak to fall back to source if binary fails (for macOS ARM64 R 4.5)
+          # Configure pak to use source packages when binaries fail (for macOS ARM64 R 4.5)
+          options(repos = c(CRAN = "https://cloud.r-project.org"))
+          options(pkgType = "both")  # Try binary first, fall back to source
+
+          # Install rcmdcheck first
           pak::pkg_install("any::rcmdcheck", ask = FALSE)
 
-          # Install local package dependencies with source fallback
+          # Install local package dependencies
           pak::local_install_dev_deps(
             dependencies = TRUE,
             ask = FALSE,
-            upgrade = FALSE,
-            pkg_type = "both"  # Try binary first, fall back to source
+            upgrade = FALSE
           )
         shell: Rscript {0}
         env:
