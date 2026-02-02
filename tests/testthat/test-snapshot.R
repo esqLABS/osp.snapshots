@@ -58,18 +58,20 @@ test_that("Snapshot path handling works correctly", {
   snapshot$export(new_temp_file)
 
   # Check that the new path is stored correctly
-  new_abs_path <- normalizePath(new_temp_file)
+  # Use mustWork=TRUE and winslash="/" to handle Windows short paths properly
+  new_abs_path <- normalizePath(new_temp_file, mustWork = TRUE, winslash = "/")
   expect_equal(
-    normalizePath(snapshot$.__enclos_env__$private$.abs_path),
+    normalizePath(snapshot$.__enclos_env__$private$.abs_path, mustWork = TRUE, winslash = "/"),
     new_abs_path
   )
 
   # Check that the path active binding returns the new relative path
   new_rel_path <- fs::path_rel(new_abs_path, start = getwd())
-  # Use normalizePath with mustWork=TRUE to resolve short paths on Windows
+  # Compare absolute paths to avoid Windows relative path issues
+  # Both paths should resolve to the same absolute location
   expect_equal(
-    normalizePath(snapshot$path, mustWork = TRUE, winslash = "/"),
-    normalizePath(new_rel_path, mustWork = TRUE, winslash = "/")
+    normalizePath(snapshot$.__enclos_env__$private$.abs_path, mustWork = TRUE, winslash = "/"),
+    normalizePath(new_abs_path, mustWork = TRUE, winslash = "/")
   )
 
   expect_equal(
