@@ -102,7 +102,10 @@ test_that("load_snapshot handles OSP Models", {
 
 test_that("load_snapshot handles URL input", {
   # Define a real URL to use for testing
-  test_url <- "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Efavirenz-Model/refs/heads/master/Efavirenz-Model.json"
+  test_url <- paste0(
+    "https://raw.githubusercontent.com/Open-Systems-Pharmacology/",
+    "Efavirenz-Model/refs/heads/master/Efavirenz-Model.json"
+  )
 
   # Skip this test if there's no internet connection
   testthat::skip_if_offline()
