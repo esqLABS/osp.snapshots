@@ -21,8 +21,10 @@ jobs:
   R-CMD-Check:
     if: ${{ !cancelled() }}
     needs: [bump-dev-version]
-    uses: ./.github/workflows/R-CMD-check.yaml
+    uses: ./.github/workflows/R-CMD-check-esqlabs.yaml
     secrets: inherit
+    with:
+      ignore-renv: false
 
   test-coverage:
     if: ${{ !cancelled() }}
