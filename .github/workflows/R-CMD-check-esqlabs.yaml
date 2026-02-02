@@ -113,30 +113,20 @@ jobs:
           # Load pak
           library(pak)
 
-          # Helper function to install with source fallback using environment variables
-          install_with_fallback <- function(pkgs) {
-            tryCatch({
-              pak::pkg_install(pkgs, ask = FALSE)
-            }, error = function(e) {
-              if (grepl("Failed to download", conditionMessage(e))) {
-                cat("Binary download failed, retrying with source installation...\n")
-                # Set environment variables to force source builds in pak subprocess
-                Sys.setenv(R_COMPILE_AND_INSTALL_PACKAGES = "always")
-                Sys.setenv(PKG_BUILD = "TRUE")
-                on.exit({
-                  Sys.unsetenv("R_COMPILE_AND_INSTALL_PACKAGES")
-                  Sys.unsetenv("PKG_BUILD")
-                })
-                pak::pkg_install(pkgs, ask = FALSE)
-              } else {
-                stop(e)
-              }
-            })
-          }
-
-          # Install extra packages first
+          # Install extra packages - use install.packages on macOS ARM64 to avoid binary issues
           cat("Installing extra packages...\n")
-          install_with_fallback(c("any::rcmdcheck", "any::devtools", "any::pkgload", "any::desc"))
+          cat("Platform:", R.version$platform, "\n")
+
+          if (Sys.info()["sysname"] == "Darwin" && grepl("aarch64|arm64", R.version$platform)) {
+            cat("macOS ARM64 detected - installing from source to avoid binary availability issues\n")
+            install.packages(
+              c("rcmdcheck", "devtools", "pkgload", "desc"),
+              type = "source",
+              repos = "https://cloud.r-project.org"
+            )
+          } else {
+            pak::pkg_install(c("any::rcmdcheck", "any::devtools", "any::pkgload", "any::desc"), ask = FALSE)
+          }
 
           # Install local package dependencies
           cat("Installing local package dependencies...\n")
