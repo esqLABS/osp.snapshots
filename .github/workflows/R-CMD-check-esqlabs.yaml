@@ -113,17 +113,20 @@ jobs:
           # Load pak
           library(pak)
 
-          # Helper function to install with source fallback
+          # Helper function to install with source fallback using environment variables
           install_with_fallback <- function(pkgs) {
             tryCatch({
               pak::pkg_install(pkgs, ask = FALSE)
             }, error = function(e) {
               if (grepl("Failed to download", conditionMessage(e))) {
                 cat("Binary download failed, retrying with source installation...\n")
-                # Force source installation on macOS when binaries fail
-                old_type <- getOption("pkgType")
-                options(pkgType = "source")
-                on.exit(options(pkgType = old_type))
+                # Set environment variables to force source builds in pak subprocess
+                Sys.setenv(R_COMPILE_AND_INSTALL_PACKAGES = "always")
+                Sys.setenv(PKG_BUILD = "TRUE")
+                on.exit({
+                  Sys.unsetenv("R_COMPILE_AND_INSTALL_PACKAGES")
+                  Sys.unsetenv("PKG_BUILD")
+                })
                 pak::pkg_install(pkgs, ask = FALSE)
               } else {
                 stop(e)
@@ -146,9 +149,12 @@ jobs:
           }, error = function(e) {
             if (grepl("Failed to download", conditionMessage(e))) {
               cat("Binary download failed for dependencies, retrying with source installation...\n")
-              old_type <- getOption("pkgType")
-              options(pkgType = "source")
-              on.exit(options(pkgType = old_type))
+              Sys.setenv(R_COMPILE_AND_INSTALL_PACKAGES = "always")
+              Sys.setenv(PKG_BUILD = "TRUE")
+              on.exit({
+                Sys.unsetenv("R_COMPILE_AND_INSTALL_PACKAGES")
+                Sys.unsetenv("PKG_BUILD")
+              })
               pak::local_install_dev_deps(
                 dependencies = TRUE,
                 ask = FALSE,
