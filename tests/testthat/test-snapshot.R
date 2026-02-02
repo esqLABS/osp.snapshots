@@ -67,8 +67,8 @@ test_that("Snapshot path handling works correctly", {
   # Check that the path active binding returns the new relative path
   new_rel_path <- fs::path_rel(new_abs_path, start = getwd())
   expect_equal(
-    normalizePath(snapshot$path, mustWork = FALSE),
-    normalizePath(new_rel_path, mustWork = FALSE)
+    normalizePath(snapshot$path, mustWork = FALSE, winslash = "/"),
+    normalizePath(new_rel_path, mustWork = FALSE, winslash = "/")
   )
 
   expect_equal(
