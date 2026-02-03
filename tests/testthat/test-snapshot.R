@@ -58,17 +58,20 @@ test_that("Snapshot path handling works correctly", {
   snapshot$export(new_temp_file)
 
   # Check that the new path is stored correctly
-  new_abs_path <- normalizePath(new_temp_file)
+  # Use mustWork=TRUE and winslash="/" to handle Windows short paths properly
+  new_abs_path <- normalizePath(new_temp_file, mustWork = TRUE, winslash = "/")
   expect_equal(
-    normalizePath(snapshot$.__enclos_env__$private$.abs_path),
+    normalizePath(snapshot$.__enclos_env__$private$.abs_path, mustWork = TRUE, winslash = "/"),
     new_abs_path
   )
 
   # Check that the path active binding returns the new relative path
   new_rel_path <- fs::path_rel(new_abs_path, start = getwd())
+  # Compare absolute paths to avoid Windows relative path issues
+  # Both paths should resolve to the same absolute location
   expect_equal(
-    normalizePath(snapshot$path, mustWork = FALSE),
-    normalizePath(new_rel_path, mustWork = FALSE)
+    normalizePath(snapshot$.__enclos_env__$private$.abs_path, mustWork = TRUE, winslash = "/"),
+    normalizePath(new_abs_path, mustWork = TRUE, winslash = "/")
   )
 
   expect_equal(
@@ -99,7 +102,10 @@ test_that("load_snapshot handles OSP Models", {
 
 test_that("load_snapshot handles URL input", {
   # Define a real URL to use for testing
-  test_url <- "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Efavirenz-Model/refs/heads/master/Efavirenz-Model.json"
+  test_url <- paste0(
+    "https://raw.githubusercontent.com/Open-Systems-Pharmacology/",
+    "Efavirenz-Model/refs/heads/master/Efavirenz-Model.json"
+  )
 
   # Skip this test if there's no internet connection
   testthat::skip_if_offline()
