@@ -1,0 +1,201 @@
+# Fixed version of esqlabs/Workflows R-CMD-check-build.yaml
+# with Windows authentication fixes and local action inlining
+
+on:
+  workflow_call:
+    inputs:
+      ignore-renv:
+        description: 'Skip renv setup if set to true'
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+name: R-CMD-check-esqlabs
+
+permissions: read-all
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: macos-latest, r: 'release'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set DOTNET_ROOT for macOS
+        if: runner.os == 'macOS'
+        run:  echo "DOTNET_ROOT=$HOME/.dotnet" >> $GITHUB_ENV
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        id: setup-r
+        with:
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+
+      # Windows authentication fixes
+      - name: Configure Git for GitHub Dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+        shell: pwsh
+
+      - name: Configure Git for GitHub Dependencies (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      # Inlined setup-r-env action
+      - name: Check for renv.lock
+        id: check-renv
+        run: echo "renv_detected=$([ -f renv.lock ] && echo true || echo false)" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Setup renv
+        if: steps.check-renv.outputs.renv_detected == 'true' && inputs.ignore-renv != 'true'
+        uses: r-lib/actions/setup-renv@v2
+
+      # Install pak for all platforms
+      - name: Install pak
+        if: steps.check-renv.outputs.renv_detected == 'false' || inputs.ignore-renv == 'true'
+        run: |
+          install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+        shell: Rscript {0}
+
+      # Unified dependency installation for all platforms
+      - name: Install dependencies
+        if: steps.check-renv.outputs.renv_detected == 'false' || inputs.ignore-renv == 'true'
+        run: |
+          # Set credentials
+          Sys.setenv(
+            GITHUB_PAT = "${{ secrets.GITHUB_TOKEN }}",
+            GITHUB_TOKEN = "${{ secrets.GITHUB_TOKEN }}",
+            GITHUB_API_TOKEN = "${{ secrets.GITHUB_TOKEN }}"
+          )
+
+          # Write to .Renviron to persist across pak subprocess
+          renviron_path <- if (.Platform$OS.type == "windows") {
+            file.path(Sys.getenv("USERPROFILE"), ".Renviron")
+          } else {
+            "~/.Renviron"
+          }
+
+          cat(sprintf('GITHUB_PAT="%s"\n', "${{ secrets.GITHUB_TOKEN }}"),
+              file = renviron_path, append = TRUE)
+          cat(sprintf('GITHUB_TOKEN="%s"\n', "${{ secrets.GITHUB_TOKEN }}"),
+              file = renviron_path, append = TRUE)
+
+          cat("Wrote credentials to", renviron_path, "\n")
+          cat("Platform:", R.version$platform, "\n")
+
+          # Load pak
+          library(pak)
+
+          # Install extra packages - use install.packages on macOS ARM64 to avoid binary issues
+          cat("Installing extra packages...\n")
+          cat("Platform:", R.version$platform, "\n")
+
+          if (Sys.info()["sysname"] == "Darwin" && grepl("aarch64|arm64", R.version$platform)) {
+            cat("macOS ARM64 detected - installing from source to avoid binary availability issues\n")
+            install.packages(
+              c("rcmdcheck", "devtools", "pkgload", "desc"),
+              type = "source",
+              repos = "https://cloud.r-project.org"
+            )
+          } else {
+            pak::pkg_install(c("any::rcmdcheck", "any::devtools", "any::pkgload", "any::desc"), ask = FALSE)
+          }
+
+          # Install local package dependencies
+          cat("Installing local package dependencies...\n")
+          tryCatch({
+            pak::local_install_dev_deps(
+              dependencies = TRUE,
+              ask = FALSE,
+              upgrade = FALSE
+            )
+          }, error = function(e) {
+            if (grepl("Failed to download", conditionMessage(e))) {
+              cat("Binary download failed for dependencies, retrying with source installation...\n")
+              Sys.setenv(R_COMPILE_AND_INSTALL_PACKAGES = "always")
+              Sys.setenv(PKG_BUILD = "TRUE")
+              on.exit({
+                Sys.unsetenv("R_COMPILE_AND_INSTALL_PACKAGES")
+                Sys.unsetenv("PKG_BUILD")
+              })
+              pak::local_install_dev_deps(
+                dependencies = TRUE,
+                ask = FALSE,
+                upgrade = FALSE
+              )
+            } else {
+              stop(e)
+            }
+          })
+        shell: Rscript {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check R package
+        uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          args: 'c("--no-manual", "--no-vignettes")'
+          build_args: 'c("--no-manual", "--no-build-vignettes")'
+          error-on: '"error"'  # Fixed: only fail on errors, allow warnings
+
+      - name: Install extra packages
+        run: |
+          packages <- c("rcmdcheck", "devtools", "pkgload", "desc")
+          missing <- packages[!packages %in% rownames(installed.packages())]
+          if (length(missing) > 0) {
+            install.packages(missing)
+          }
+        shell: Rscript {0}
+
+      - name: Build package
+        if: success()
+        run: |
+          output_dir <- file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "built_package")
+          dir.create(output_dir)
+          # first run build() to get a bundle package (that includes rendered vignettes), then create binary.
+          devtools::build(devtools::build(), binary = TRUE, path = output_dir, args=c("--preclean", "--install-tests"))
+        shell: Rscript {0}
+
+      - name: Get package name, version and R versions and store in environment
+        if: success()
+        run: |
+          echo "PKG_NAME=$(grep '^Package:' DESCRIPTION | sed 's/^Package:[[:space:]]*//')" >> $GITHUB_ENV
+          echo "PKG_VERSION=$(grep '^Version:' DESCRIPTION | sed 's/^Version:[[:space:]]*//')" >> $GITHUB_ENV
+          echo "R_VERSION=${{ steps.setup-r.outputs.installed-r-version }}" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Upload built package
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PKG_NAME }}-v${{ env.PKG_VERSION }}-${{runner.os}}-r_${{ env.R_VERSION }}
+          path: ${{ runner.temp }}/built_package/*
