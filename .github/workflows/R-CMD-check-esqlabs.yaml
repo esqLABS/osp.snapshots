@@ -10,10 +10,9 @@ on:
         type: boolean
         default: false
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
-  workflow_dispatch:
+    branches: [main]
 
 name: R-CMD-check-esqlabs
 

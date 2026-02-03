@@ -1,50 +1,64 @@
 # osp.snapshots (development version)
 
-# osp.snapshots 0.2.1
+# osp.snapshots 0.2.2
 
+## New features
+
+- Extract Molecular Weight from Snapshot and include it in datasets (#18).
+
+- Add support for importing y error values and related metadata from snapshot
+  observed data.
+
+## Bug fixes
+
+- Fixed yValues units not being captured correctly from snapshot observed data.
+
+- Fixed Snapshot failing to load when observed data contains unitless dimensions
+  (#19).
+
+# osp.snapshots 0.2.1
 
 ## Minor improvements and bug fixes
 
-* New `osp_models()` function to browse and discover available OSP building block 
+- New `osp_models()` function to browse and discover available OSP building block
   templates from the OSPSuite Community repository.
 
-* Fixed bug in dataframe generation functions that caused errors when combining 
+- Fixed bug in dataframe generation functions that caused errors when combining
   empty or NULL building block data using `bind_rows()`.
-
 
 # osp.snapshots 0.2.0
 
-* New `load_snapshot()` function to import PKSIM project snapshots from JSON 
+- New `load_snapshot()` function to import PKSIM project snapshots from JSON
   files, URLs, or predefined templates.
 
-* New `export_snapshot()` function to save modified snapshots back to JSON files
+- New `export_snapshot()` function to save modified snapshots back to JSON files
   for import into PKSIM.
 
-* Complete R6 class implementations for all major PKSIM building blocks:
-  `Individual`, `Compound`, `Formulation`, `Population`, `Protocol`, `Event`, 
+- Complete R6 class implementations for all major PKSIM building blocks:
+  `Individual`, `Compound`, `Formulation`, `Population`, `Protocol`, `Event`,
   `ExpressionProfile`, and `Parameter`.
 
-* New data frame conversion functions for all building block types:
-  `get_individuals_dfs()`, `get_compounds_dfs()`, `get_formulations_dfs()`, 
-  `get_populations_dfs()`, `get_protocols_dfs()`, `get_events_dfs()`, 
+- New data frame conversion functions for all building block types:
+  `get_individuals_dfs()`, `get_compounds_dfs()`, `get_formulations_dfs()`,
+  `get_populations_dfs()`, `get_protocols_dfs()`, `get_events_dfs()`,
   `get_expression_profiles_dfs()`, and `get_observed_data_dfs()`.
 
-* New creation functions: `create_individual()`, `create_formulation()`, and 
+- New creation functions: `create_individual()`, `create_formulation()`, and
   `create_parameter()` for building new building blocks.
 
-* New management functions: `add_individual()`, `add_formulation()`, 
-  `add_expression_profile()`, `remove_individual()`, `remove_formulation()`, 
+- New management functions: `add_individual()`, `add_formulation()`,
+  `add_expression_profile()`, `remove_individual()`, `remove_formulation()`,
   `remove_population()`, and `remove_expression_profile()`.
 
-* Full integration with `ospsuite::DataSet` objects for observed data.
+- Full integration with `ospsuite::DataSet` objects for observed data.
 
-* Comprehensive input validation for species, populations, genders, and units.
+- Comprehensive input validation for species, populations, genders, and units.
 
-* Time conversion utilities between OSPSuite and R `lubridate` formats.
+- Time conversion utilities between OSPSuite and R `lubridate` formats.
 
-* Structured print methods for all building block classes.
+- Structured print methods for all building block classes.
 
 # osp.snapshots 0.1.0
 
-* Prototype release of the `osp.snapshots` package for managing PKSIM project 
+- Prototype release of the `osp.snapshots` package for managing PKSIM project
   snapshots in R.
