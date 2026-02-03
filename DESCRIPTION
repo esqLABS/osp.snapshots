@@ -46,5 +46,5 @@ Suggests:
     withr
 Config/testthat/edition: 3
 Remotes:  
-    ospsuite=Open-Systems-Pharmacology/OSPSuite-R
+    ospsuite=Open-Systems-Pharmacology/OSPSuite-R@*release
 Config/Needs/website: quarto
