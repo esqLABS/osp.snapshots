@@ -1,7 +1,7 @@
 Package: osp.snapshots
 Type: Package
 Title: Import and Manipulate Open Systems Pharmacology Project Snapshots
-Version: 0.2.2
+Version: 0.2.2.9000
 Authors@R: c(
     person(
       "Felix", "MIL",
@@ -46,5 +46,5 @@ Suggests:
     withr
 Config/testthat/edition: 3
 Remotes:  
-    ospsuite=Open-Systems-Pharmacology/OSPSuite-R@*release
+    ospsuite=Open-Systems-Pharmacology/OSPSuite-R
 Config/Needs/website: quarto
