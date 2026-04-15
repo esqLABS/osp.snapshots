@@ -16,3 +16,4 @@
 ^\.lintr$
 ^\.vscode$
 ^air\.toml$
+snapshot-spec.md
