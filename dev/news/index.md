@@ -2,6 +2,24 @@
 
 ## osp.snapshots (development version)
 
+## osp.snapshots 0.2.2
+
+### New features
+
+- Extract Molecular Weight from Snapshot and include it in datasets
+  (#18).
+
+- Add support for importing y error values and related metadata from
+  snapshot observed data.
+
+### Bug fixes
+
+- Fixed yValues units not being captured correctly from snapshot
+  observed data.
+
+- Fixed Snapshot failing to load when observed data contains unitless
+  dimensions (#19).
+
 ## osp.snapshots 0.2.1
 
 ### Minor improvements and bug fixes

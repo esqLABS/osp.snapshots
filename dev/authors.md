@@ -8,14 +8,14 @@
 
 ## Citation
 
-MIL F (2025). *osp.snapshots: Import and Manipulate Open Systems
-Pharmacology Project Snapshots*. R package version 0.2.1.9003,
+MIL F (2026). *osp.snapshots: Import and Manipulate Open Systems
+Pharmacology Project Snapshots*. R package version 0.2.2.9001,
 <https://esqlabs.github.io/osp.snapshots/>.
 
     @Manual{,
       title = {osp.snapshots: Import and Manipulate Open Systems Pharmacology Project Snapshots},
       author = {Felix MIL},
-      year = {2025},
-      note = {R package version 0.2.1.9003},
+      year = {2026},
+      note = {R package version 0.2.2.9001},
       url = {https://esqlabs.github.io/osp.snapshots/},
     }
