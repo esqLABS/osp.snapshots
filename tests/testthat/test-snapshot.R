@@ -139,7 +139,7 @@ test_that("Snapshot data can be exported and reimported", {
   expect_true(file.exists(temp_file))
 
   # Import the file as a list rather than creating another temporary Snapshot
-  exported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE)
+  exported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE, simplifyVector = FALSE)
 
   # Create a new snapshot directly from the parsed data
   snapshot2 <- Snapshot$new(exported_data)
@@ -370,7 +370,7 @@ test_that("Snapshot$export creates a valid JSON file", {
   expect_true(file.exists(temp_file))
 
   # Read the JSON file to verify structure
-  json_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE)
+  json_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE, simplifyVector = FALSE)
   expect_equal(json_data$Version, 80)
 
   # Test that Compounds and Individuals are lists (may be named or unnamed)
@@ -453,7 +453,7 @@ test_that("export_snapshot function works correctly", {
   expect_true(file.exists(temp_file))
 
   # Verify the exported data is valid JSON
-  exported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE)
+  exported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE, simplifyVector = FALSE)
   expect_equal(exported_data$Version, snapshot$data$Version)
 
   # Test error handling for invalid snapshot input
@@ -568,3 +568,4 @@ test_that(".get_templates_data helper function works", {
     }
   )
 })
+

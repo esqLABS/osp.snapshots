@@ -257,7 +257,7 @@ Individual <- R6::R6Class(
         } else {
           result$individuals_expressions <- tibble::tibble(
             individual_id = individual_id,
-            profile = self$expression_profiles
+            profile = as.character(unlist(self$expression_profiles))
           )
         }
       }
