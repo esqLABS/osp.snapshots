@@ -141,6 +141,12 @@ test_that("Snapshot data can be exported and reimported", {
   # Import the file as a list rather than creating another temporary Snapshot
   exported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE, simplifyVector = FALSE)
 
+  # Verify singleton arrays are preserved as lists (not simplified to atomic vectors)
+  # simulation1$ObservedData has exactly 1 string element in test_snapshot
+  sim1_exported <- exported_data$Simulations[[1]]
+  sim1_original <- snapshot$data$Simulations[[1]]
+  expect_identical(sim1_exported$ObservedData, sim1_original$ObservedData)
+
   # Create a new snapshot directly from the parsed data
   snapshot2 <- Snapshot$new(exported_data)
 
@@ -455,6 +461,11 @@ test_that("export_snapshot function works correctly", {
   # Verify the exported data is valid JSON
   exported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE, simplifyVector = FALSE)
   expect_equal(exported_data$Version, snapshot$data$Version)
+
+  # Verify singleton arrays are preserved as lists (not simplified to atomic vectors)
+  sim1_exported <- exported_data$Simulations[[1]]
+  sim1_original <- snapshot$data$Simulations[[1]]
+  expect_identical(sim1_exported$ObservedData, sim1_original$ObservedData)
 
   # Test error handling for invalid snapshot input
   expect_error(
