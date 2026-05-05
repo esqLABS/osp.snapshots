@@ -45,7 +45,7 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
     !is.null(observedDataStructure$BaseGrid) &&
       !is.null(observedDataStructure$BaseGrid$Values)
   ) {
-    time_values <- observedDataStructure$BaseGrid$Values
+    time_values <- as.numeric(unlist(observedDataStructure$BaseGrid$Values))
 
     # Set time unit if available
     if (!is.null(observedDataStructure$BaseGrid$Unit)) {
@@ -72,7 +72,7 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
       first_col <- observedDataStructure$Columns[[1]]
 
       if (!is.null(first_col$Values)) {
-        y_values <- first_col$Values
+        y_values <- as.numeric(unlist(first_col$Values))
         y_error_values <- NULL
 
         dataset$yDimension <- first_col$Dimension
@@ -106,7 +106,7 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
             ) {
               # Get error values (to be passed to setValues)
               if (!is.null(related_col$Values)) {
-                y_error_values <- related_col$Values
+                y_error_values <- as.numeric(unlist(related_col$Values))
               }
 
               # Set error dimension and unit
@@ -156,10 +156,11 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
       first_col <- observedDataStructure$Columns[[1]]
       if (!is.null(first_col$Values)) {
         # Create dummy time values if none exist
-        n_points <- length(first_col$Values)
+        y_vals <- as.numeric(unlist(first_col$Values))
+        n_points <- length(y_vals)
         dataset$setValues(
           xValues = seq_len(n_points),
-          yValues = first_col$Values
+          yValues = y_vals
         )
       }
     }

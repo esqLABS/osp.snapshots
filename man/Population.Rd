@@ -9,117 +9,125 @@ This class provides methods to access different properties of a population
 and display a summary of its information.
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{data}}{The raw data of the population (read-only)}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{data}}{The raw data of the population (read-only)}
 
-\item{\code{name}}{The name of the population}
+    \item{\code{name}}{The name of the population}
 
-\item{\code{source_population}}{The source population name (read-only)}
+    \item{\code{source_population}}{The source population name (read-only)}
 
-\item{\code{individual_name}}{The individual name (read-only)}
+    \item{\code{individual_name}}{The individual name (read-only)}
 
-\item{\code{seed}}{The seed used for population generation}
+    \item{\code{seed}}{The seed used for population generation}
 
-\item{\code{number_of_individuals}}{The number of individuals in the population}
+    \item{\code{number_of_individuals}}{The number of individuals in the population}
 
-\item{\code{proportion_of_females}}{The percentage of females in the population}
+    \item{\code{proportion_of_females}}{The percentage of females in the population}
 
-\item{\code{age_range}}{The age range for the population}
+    \item{\code{age_range}}{The age range for the population}
 
-\item{\code{weight_range}}{The weight range for the population}
+    \item{\code{weight_range}}{The weight range for the population}
 
-\item{\code{height_range}}{The height range for the population}
+    \item{\code{height_range}}{The height range for the population}
 
-\item{\code{bmi_range}}{The BMI range for the population}
+    \item{\code{bmi_range}}{The BMI range for the population}
 
-\item{\code{egfr_range}}{The eGFR range for the population (if available)}
+    \item{\code{egfr_range}}{The eGFR range for the population (if available)}
 
-\item{\code{advanced_parameters}}{Advanced parameters for the population}
-}
-\if{html}{\out{</div>}}
+    \item{\code{advanced_parameters}}{Advanced parameters for the population}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Population-new}{\code{Population$new()}}
-\item \href{#method-Population-print}{\code{Population$print()}}
-\item \href{#method-Population-to_df}{\code{Population$to_df()}}
-\item \href{#method-Population-clone}{\code{Population$clone()}}
-}
+  \itemize{
+    \item \href{#method-Population-initialize}{\code{Population$new()}}
+    \item \href{#method-Population-print}{\code{Population$print()}}
+    \item \href{#method-Population-to_df}{\code{Population$to_df()}}
+    \item \href{#method-Population-clone}{\code{Population$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Population-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Population-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Population object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Population$new(data)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Population-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Population-initialize}{}}}
+\subsection{\code{Population$new()}}{
+  Create a new Population object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Population$new(data)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{Raw population data from a snapshot}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new Population object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{Raw population data from a snapshot}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new Population object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Population-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Population-print}{}}}
-\subsection{Method \code{print()}}{
-Print a summary of the population including its properties and settings.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Population$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{Population$print()}}{
+  Print a summary of the population including its properties and settings.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Population$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Additional arguments passed to print methods}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the Population object for method chaining
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Additional arguments passed to print methods}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the Population object for method chaining
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Population-to_df"></a>}}
 \if{latex}{\out{\hypertarget{method-Population-to_df}{}}}
-\subsection{Method \code{to_df()}}{
-Convert the population to a list of data frames for easier analysis
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Population$to_df()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-A list containing data frames with population information:
+\subsection{\code{Population$to_df()}}{
+  Convert the population to a list of data frames for easier analysis
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Population$to_df()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list containing data frames with population information:
 \itemize{
   \item characteristics: Population characteristics including basic information and physiological parameters
   \item parameters: Advanced parameters information
 }
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Population-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Population-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Population$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Population$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Population$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

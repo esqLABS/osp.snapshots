@@ -10,7 +10,7 @@ methods to access different components of the snapshot and visualize its structu
 \examples{
 
 ## ------------------------------------------------
-## Method `Snapshot$add_individual`
+## Method `Snapshot$add_individual()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -22,7 +22,7 @@ snapshot$add_individual(ind)
 }
 
 ## ------------------------------------------------
-## Method `Snapshot$remove_individual`
+## Method `Snapshot$remove_individual()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -31,7 +31,7 @@ snapshot$remove_individual("Subject_001")
 }
 
 ## ------------------------------------------------
-## Method `Snapshot$add_formulation`
+## Method `Snapshot$add_formulation()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -43,7 +43,7 @@ snapshot$add_formulation(form)
 }
 
 ## ------------------------------------------------
-## Method `Snapshot$remove_formulation`
+## Method `Snapshot$remove_formulation()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -52,7 +52,7 @@ snapshot$remove_formulation("Tablet")
 }
 
 ## ------------------------------------------------
-## Method `Snapshot$remove_population`
+## Method `Snapshot$remove_population()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -61,7 +61,7 @@ snapshot$remove_population("pop_1")
 }
 
 ## ------------------------------------------------
-## Method `Snapshot$add_expression_profile`
+## Method `Snapshot$add_expression_profile()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -80,7 +80,7 @@ snapshot$add_expression_profile(profile)
 }
 
 ## ------------------------------------------------
-## Method `Snapshot$remove_expression_profile`
+## Method `Snapshot$remove_expression_profile()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -89,294 +89,290 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 }
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{data}}{The aggregated data of the snapshot from all components}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{data}}{The aggregated data of the snapshot from all components}
 
-\item{\code{pksim_version}}{The human-readable PKSIM version corresponding to the snapshot version}
+    \item{\code{pksim_version}}{The human-readable PKSIM version corresponding to the snapshot version}
 
-\item{\code{path}}{The path to the snapshot file relative to the working directory}
+    \item{\code{path}}{The path to the snapshot file relative to the working directory}
 
-\item{\code{compounds}}{List of Compound objects in the snapshot}
+    \item{\code{compounds}}{List of Compound objects in the snapshot}
 
-\item{\code{expression_profiles}}{List of ExpressionProfile objects in the snapshot}
+    \item{\code{expression_profiles}}{List of ExpressionProfile objects in the snapshot}
 
-\item{\code{individuals}}{List of Individual objects in the snapshot}
+    \item{\code{individuals}}{List of Individual objects in the snapshot}
 
-\item{\code{formulations}}{List of Formulation objects in the snapshot}
+    \item{\code{formulations}}{List of Formulation objects in the snapshot}
 
-\item{\code{populations}}{List of Population objects in the snapshot}
+    \item{\code{populations}}{List of Population objects in the snapshot}
 
-\item{\code{events}}{List of Event objects in the snapshot}
+    \item{\code{events}}{List of Event objects in the snapshot}
 
-\item{\code{protocols}}{List of Protocol objects in the snapshot}
+    \item{\code{protocols}}{List of Protocol objects in the snapshot}
 
-\item{\code{observed_data}}{List of DataSet objects (observed data) in the snapshot}
-}
-\if{html}{\out{</div>}}
+    \item{\code{observed_data}}{List of DataSet objects (observed data) in the snapshot}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Snapshot-new}{\code{Snapshot$new()}}
-\item \href{#method-Snapshot-print}{\code{Snapshot$print()}}
-\item \href{#method-Snapshot-export}{\code{Snapshot$export()}}
-\item \href{#method-Snapshot-add_individual}{\code{Snapshot$add_individual()}}
-\item \href{#method-Snapshot-remove_individual}{\code{Snapshot$remove_individual()}}
-\item \href{#method-Snapshot-add_formulation}{\code{Snapshot$add_formulation()}}
-\item \href{#method-Snapshot-remove_formulation}{\code{Snapshot$remove_formulation()}}
-\item \href{#method-Snapshot-remove_population}{\code{Snapshot$remove_population()}}
-\item \href{#method-Snapshot-add_expression_profile}{\code{Snapshot$add_expression_profile()}}
-\item \href{#method-Snapshot-remove_expression_profile}{\code{Snapshot$remove_expression_profile()}}
-\item \href{#method-Snapshot-add_observed_data}{\code{Snapshot$add_observed_data()}}
-\item \href{#method-Snapshot-remove_observed_data}{\code{Snapshot$remove_observed_data()}}
-\item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
-}
+  \itemize{
+    \item \href{#method-Snapshot-initialize}{\code{Snapshot$new()}}
+    \item \href{#method-Snapshot-print}{\code{Snapshot$print()}}
+    \item \href{#method-Snapshot-export}{\code{Snapshot$export()}}
+    \item \href{#method-Snapshot-add_individual}{\code{Snapshot$add_individual()}}
+    \item \href{#method-Snapshot-remove_individual}{\code{Snapshot$remove_individual()}}
+    \item \href{#method-Snapshot-add_formulation}{\code{Snapshot$add_formulation()}}
+    \item \href{#method-Snapshot-remove_formulation}{\code{Snapshot$remove_formulation()}}
+    \item \href{#method-Snapshot-remove_population}{\code{Snapshot$remove_population()}}
+    \item \href{#method-Snapshot-add_expression_profile}{\code{Snapshot$add_expression_profile()}}
+    \item \href{#method-Snapshot-remove_expression_profile}{\code{Snapshot$remove_expression_profile()}}
+    \item \href{#method-Snapshot-add_observed_data}{\code{Snapshot$add_observed_data()}}
+    \item \href{#method-Snapshot-remove_observed_data}{\code{Snapshot$remove_observed_data()}}
+    \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Snapshot-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Snapshot-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Snapshot object from a JSON file or a list
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$new(input)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Snapshot-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-initialize}{}}}
+\subsection{\code{Snapshot$new()}}{
+  Create a new Snapshot object from a JSON file or a list
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$new(input)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{input}}{Path to the snapshot JSON file, URL, template name, or a list containing snapshot data}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new Snapshot object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{input}}{Path to the snapshot JSON file, URL, template name, or a list containing snapshot data}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new Snapshot object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-print}{}}}
-\subsection{Method \code{print()}}{
-Print a summary of the snapshot
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{Snapshot$print()}}{
+  Print a summary of the snapshot
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Additional arguments passed to print methods}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the snapshot object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Additional arguments passed to print methods}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the snapshot object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-export"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-export}{}}}
-\subsection{Method \code{export()}}{
-Export the snapshot to a JSON file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$export(path)}\if{html}{\out{</div>}}
+\subsection{\code{Snapshot$export()}}{
+  Export the snapshot to a JSON file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$export(path)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Path to save the JSON file}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Path to save the JSON file}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-add_individual"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_individual}{}}}
-\subsection{Method \code{add_individual()}}{
-Add an Individual object to the snapshot
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$add_individual(individual)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{individual}}{An Individual object created with create_individual()}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Create a new individual
+\subsection{\code{Snapshot$add_individual()}}{
+  Add an Individual object to the snapshot
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_individual(individual)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{individual}}{An Individual object created with create_individual()}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# Create a new individual
 ind <- create_individual(name = "New Patient", age = 35, weight = 70)
 
 # Add the individual to a snapshot
 snapshot$add_individual(ind)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-remove_individual"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-remove_individual}{}}}
-\subsection{Method \code{remove_individual()}}{
-Remove an individual from the snapshot by name
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_individual(individual_name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{individual_name}}{Character vector of individual name(s) to remove}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Remove an individual from the snapshot
+\subsection{\code{Snapshot$remove_individual()}}{
+  Remove an individual from the snapshot by name
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_individual(individual_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{individual_name}}{Character vector of individual name(s) to remove}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# Remove an individual from the snapshot
 snapshot$remove_individual("Subject_001")
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-add_formulation"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_formulation}{}}}
-\subsection{Method \code{add_formulation()}}{
-Add a Formulation object to the snapshot
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$add_formulation(formulation)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{formulation}}{A Formulation object created with create_formulation()}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Create a new formulation
+\subsection{\code{Snapshot$add_formulation()}}{
+  Add a Formulation object to the snapshot
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_formulation(formulation)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{formulation}}{A Formulation object created with create_formulation()}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# Create a new formulation
 form <- create_formulation(name = "Tablet", type = "Weibull")
 
 # Add the formulation to a snapshot
 snapshot$add_formulation(form)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-remove_formulation"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-remove_formulation}{}}}
-\subsection{Method \code{remove_formulation()}}{
-Remove a formulation from the snapshot by name
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_formulation(formulation_name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{formulation_name}}{Character vector of formulation name(s) to remove}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Remove a formulation from the snapshot
+\subsection{\code{Snapshot$remove_formulation()}}{
+  Remove a formulation from the snapshot by name
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_formulation(formulation_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{formulation_name}}{Character vector of formulation name(s) to remove}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# Remove a formulation from the snapshot
 snapshot$remove_formulation("Tablet")
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-remove_population"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-remove_population}{}}}
-\subsection{Method \code{remove_population()}}{
-Remove a population from the snapshot by name
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_population(population_name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{population_name}}{Character vector of population name(s) to remove}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Remove a population from the snapshot
+\subsection{\code{Snapshot$remove_population()}}{
+  Remove a population from the snapshot by name
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_population(population_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{population_name}}{Character vector of population name(s) to remove}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# Remove a population from the snapshot
 snapshot$remove_population("pop_1")
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-add_expression_profile"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_expression_profile}{}}}
-\subsection{Method \code{add_expression_profile()}}{
-Add an ExpressionProfile object to the snapshot
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$add_expression_profile(expression_profile)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{expression_profile}}{An ExpressionProfile object}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Create a new expression profile
+\subsection{\code{Snapshot$add_expression_profile()}}{
+  Add an ExpressionProfile object to the snapshot
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_expression_profile(expression_profile)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{expression_profile}}{An ExpressionProfile object}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# Create a new expression profile
 profile_data <- list(
   Type = "Enzyme",
   Species = "Human",
@@ -389,98 +385,100 @@ profile <- ExpressionProfile$new(profile_data)
 # Add the expression profile to a snapshot
 snapshot$add_expression_profile(profile)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-remove_expression_profile"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-remove_expression_profile}{}}}
-\subsection{Method \code{remove_expression_profile()}}{
-Remove expression profiles from the snapshot by ID
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_expression_profile(profile_id)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{profile_id}}{Character vector of expression profile IDs to remove}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Remove an expression profile from the snapshot
+\subsection{\code{Snapshot$remove_expression_profile()}}{
+  Remove expression profiles from the snapshot by ID
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_expression_profile(profile_id)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{profile_id}}{Character vector of expression profile IDs to remove}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# Remove an expression profile from the snapshot
 snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-add_observed_data"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_observed_data}{}}}
-\subsection{Method \code{add_observed_data()}}{
-Add a DataSet object (observed data) to the snapshot
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$add_observed_data(observed_data)}\if{html}{\out{</div>}}
+\subsection{\code{Snapshot$add_observed_data()}}{
+  Add a DataSet object (observed data) to the snapshot
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_observed_data(observed_data)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{observed_data}}{A DataSet object created from snapshot observed data}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{observed_data}}{A DataSet object created from snapshot observed data}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-remove_observed_data"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-remove_observed_data}{}}}
-\subsection{Method \code{remove_observed_data()}}{
-Remove observed data from the snapshot by name
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$remove_observed_data(observed_data_name)}\if{html}{\out{</div>}}
+\subsection{\code{Snapshot$remove_observed_data()}}{
+  Remove observed data from the snapshot by name
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_observed_data(observed_data_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{observed_data_name}}{Character vector of observed data names to remove}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{observed_data_name}}{Character vector of observed data names to remove}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Snapshot-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Snapshot$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Snapshot$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

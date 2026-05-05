@@ -9,131 +9,139 @@ This class provides methods to access different properties of a compound
 and display a summary of its information.
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{data}}{The raw data of the compound (read-only)}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{data}}{The raw data of the compound (read-only)}
 
-\item{\code{name}}{The name of the compound}
+    \item{\code{name}}{The name of the compound}
 
-\item{\code{is_small_molecule}}{Whether the compound is a small molecule}
+    \item{\code{is_small_molecule}}{Whether the compound is a small molecule}
 
-\item{\code{plasma_protein_binding_partner}}{The plasma protein binding partner of the compound}
+    \item{\code{plasma_protein_binding_partner}}{The plasma protein binding partner of the compound}
 
-\item{\code{molecular_weight}}{The molecular weight of the compound}
+    \item{\code{molecular_weight}}{The molecular weight of the compound}
 
-\item{\code{molecular_weight_unit}}{The unit of the molecular weight}
+    \item{\code{molecular_weight_unit}}{The unit of the molecular weight}
 
-\item{\code{lipophilicity}}{The lipophilicity data of the compound}
+    \item{\code{lipophilicity}}{The lipophilicity data of the compound}
 
-\item{\code{fraction_unbound}}{The fraction unbound data of the compound}
+    \item{\code{fraction_unbound}}{The fraction unbound data of the compound}
 
-\item{\code{solubility}}{The solubility data of the compound}
+    \item{\code{solubility}}{The solubility data of the compound}
 
-\item{\code{intestinal_permeability}}{The intestinal permeability data of the compound}
+    \item{\code{intestinal_permeability}}{The intestinal permeability data of the compound}
 
-\item{\code{pka_types}}{The pKa types of the compound}
+    \item{\code{pka_types}}{The pKa types of the compound}
 
-\item{\code{processes}}{The processes of the compound}
+    \item{\code{processes}}{The processes of the compound}
 
-\item{\code{calculation_methods}}{The calculation methods of the compound}
+    \item{\code{calculation_methods}}{The calculation methods of the compound}
 
-\item{\code{parameters}}{The additional parameters of the compound (excluding molecular weight)}
+    \item{\code{parameters}}{The additional parameters of the compound (excluding molecular weight)}
 
-\item{\code{protein_binding_partners}}{The protein binding partners data of the compound}
+    \item{\code{protein_binding_partners}}{The protein binding partners data of the compound}
 
-\item{\code{metabolizing_enzymes}}{The metabolizing enzymes data of the compound}
+    \item{\code{metabolizing_enzymes}}{The metabolizing enzymes data of the compound}
 
-\item{\code{hepatic_clearance}}{The hepatic clearance data of the compound}
+    \item{\code{hepatic_clearance}}{The hepatic clearance data of the compound}
 
-\item{\code{transporter_proteins}}{The transporter proteins data of the compound}
+    \item{\code{transporter_proteins}}{The transporter proteins data of the compound}
 
-\item{\code{renal_clearance}}{The renal clearance data of the compound}
+    \item{\code{renal_clearance}}{The renal clearance data of the compound}
 
-\item{\code{biliary_clearance}}{The biliary clearance data of the compound}
+    \item{\code{biliary_clearance}}{The biliary clearance data of the compound}
 
-\item{\code{inhibition}}{The inhibition data of the compound}
+    \item{\code{inhibition}}{The inhibition data of the compound}
 
-\item{\code{induction}}{The induction data of the compound}
-}
-\if{html}{\out{</div>}}
+    \item{\code{induction}}{The induction data of the compound}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Compound-new}{\code{Compound$new()}}
-\item \href{#method-Compound-print}{\code{Compound$print()}}
-\item \href{#method-Compound-to_df}{\code{Compound$to_df()}}
-\item \href{#method-Compound-clone}{\code{Compound$clone()}}
-}
+  \itemize{
+    \item \href{#method-Compound-initialize}{\code{Compound$new()}}
+    \item \href{#method-Compound-print}{\code{Compound$print()}}
+    \item \href{#method-Compound-to_df}{\code{Compound$to_df()}}
+    \item \href{#method-Compound-clone}{\code{Compound$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Compound-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Compound-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Compound object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Compound$new(data)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Compound-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Compound-initialize}{}}}
+\subsection{\code{Compound$new()}}{
+  Create a new Compound object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Compound$new(data)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{Raw compound data from a snapshot}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new Compound object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{Raw compound data from a snapshot}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new Compound object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Compound-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Compound-print}{}}}
-\subsection{Method \code{print()}}{
-Print a summary of the compound including its properties and parameters.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Compound$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{Compound$print()}}{
+  Print a summary of the compound including its properties and parameters.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Compound$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Additional arguments passed to print methods}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the Compound object for method chaining
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Additional arguments passed to print methods}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the Compound object for method chaining
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Compound-to_df"></a>}}
 \if{latex}{\out{\hypertarget{method-Compound-to_df}{}}}
-\subsection{Method \code{to_df()}}{
-Convert compound data to tibbles for analysis
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Compound$to_df()}\if{html}{\out{</div>}}
+\subsection{\code{Compound$to_df()}}{
+  Convert compound data to tibbles for analysis
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Compound$to_df()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble containing compound parameter data in the same format as legacy code
+  }
 }
 
-\subsection{Returns}{
-A tibble containing compound parameter data in the same format as legacy code
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Compound-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Compound-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Compound$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Compound$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Compound$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

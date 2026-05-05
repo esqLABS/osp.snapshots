@@ -26,7 +26,8 @@ Snapshot <- R6::R6Class(
         }
         private$.original_data <- jsonlite::fromJSON(
           txt = input,
-          simplifyDataFrame = FALSE
+          simplifyDataFrame = FALSE,
+          simplifyVector = FALSE
         )
       } else if (is.list(input)) {
         cli::cli_alert_info("Creating snapshot from list data")
@@ -1253,7 +1254,7 @@ load_snapshot <- function(source) {
     tryCatch(
       {
         # Download and parse JSON directly without saving to file
-        json_data <- jsonlite::fromJSON(source, simplifyDataFrame = FALSE)
+        json_data <- jsonlite::fromJSON(source, simplifyDataFrame = FALSE, simplifyVector = FALSE)
         return(Snapshot$new(json_data))
       },
       error = function(e) {
@@ -1289,7 +1290,7 @@ load_snapshot <- function(source) {
       cli::cli_alert_info("Found template: {template_url}")
 
       # Download and parse template JSON directly
-      json_data <- jsonlite::fromJSON(template_url, simplifyDataFrame = FALSE)
+      json_data <- jsonlite::fromJSON(template_url, simplifyDataFrame = FALSE, simplifyVector = FALSE)
       return(Snapshot$new(json_data))
     },
     error = function(e) {

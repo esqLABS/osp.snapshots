@@ -2,7 +2,8 @@
 load_test_protocols <- function() {
   test_snapshot <- jsonlite::fromJSON(
     test_path("data", "test_snapshot.json"),
-    simplifyDataFrame = FALSE
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
   )
   return(test_snapshot$Protocols)
 }

@@ -21,10 +21,7 @@ jobs:
   R-CMD-Check:
     if: ${{ !cancelled() }}
     needs: [bump-dev-version]
-    uses: ./.github/workflows/R-CMD-check-esqlabs.yaml
-    secrets: inherit
-    with:
-      ignore-renv: false
+    uses: Open-Systems-Pharmacology/Workflows/.github/workflows/R-CMD-check-build.yaml@main
 
   test-coverage:
     if: ${{ !cancelled() }}

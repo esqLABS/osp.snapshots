@@ -9,86 +9,91 @@ This class provides methods to access different properties of a formulation
 and display a summary of its information.
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{data}}{The raw data of the formulation (read-only)}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{data}}{The raw data of the formulation (read-only)}
 
-\item{\code{name}}{The name of the formulation}
+    \item{\code{name}}{The name of the formulation}
 
-\item{\code{formulation_type}}{The formulation type identifier}
+    \item{\code{formulation_type}}{The formulation type identifier}
 
-\item{\code{parameters}}{The list of parameter objects}
-}
-\if{html}{\out{</div>}}
+    \item{\code{parameters}}{The list of parameter objects}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Formulation-new}{\code{Formulation$new()}}
-\item \href{#method-Formulation-print}{\code{Formulation$print()}}
-\item \href{#method-Formulation-to_df}{\code{Formulation$to_df()}}
-\item \href{#method-Formulation-get_human_formulation_type}{\code{Formulation$get_human_formulation_type()}}
-\item \href{#method-Formulation-clone}{\code{Formulation$clone()}}
-}
+  \itemize{
+    \item \href{#method-Formulation-initialize}{\code{Formulation$new()}}
+    \item \href{#method-Formulation-print}{\code{Formulation$print()}}
+    \item \href{#method-Formulation-to_df}{\code{Formulation$to_df()}}
+    \item \href{#method-Formulation-get_human_formulation_type}{\code{Formulation$get_human_formulation_type()}}
+    \item \href{#method-Formulation-clone}{\code{Formulation$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Formulation-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Formulation-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Formulation object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Formulation$new(data)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Formulation-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Formulation-initialize}{}}}
+\subsection{\code{Formulation$new()}}{
+  Create a new Formulation object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Formulation$new(data)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{Raw formulation data from a snapshot}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new Formulation object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{Raw formulation data from a snapshot}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new Formulation object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Formulation-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Formulation-print}{}}}
-\subsection{Method \code{print()}}{
-Print a summary of the formulation including its properties and parameters.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Formulation$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{Formulation$print()}}{
+  Print a summary of the formulation including its properties and parameters.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Formulation$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Additional arguments passed to print methods}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the Formulation object for method chaining
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Additional arguments passed to print methods}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the Formulation object for method chaining
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Formulation-to_df"></a>}}
 \if{latex}{\out{\hypertarget{method-Formulation-to_df}{}}}
-\subsection{Method \code{to_df()}}{
-Convert formulation data to tibbles
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Formulation$to_df(type = "all")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{type}}{Character. Type of data to convert: "all" (default) or "parameters"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A list of tibbles containing the requested data:
+\subsection{\code{Formulation$to_df()}}{
+  Convert formulation data to tibbles
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Formulation$to_df(type = "all")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{type}}{Character. Type of data to convert: "all" (default) or "parameters"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of tibbles containing the requested data:
   * formulations: Basic formulation information (ID, name, type)
   * formulations_parameters: All parameters including table parameter points
 
@@ -104,36 +109,41 @@ The formulations_parameters tibble includes the following columns:
   * source: Source of the parameter (NA if not available)
   * description: Description of the parameter (NA if not available)
   * source_id: ID of the source (NA if not available)
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Formulation-get_human_formulation_type"></a>}}
 \if{latex}{\out{\hypertarget{method-Formulation-get_human_formulation_type}{}}}
-\subsection{Method \code{get_human_formulation_type()}}{
-Get human-readable formulation type
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Formulation$get_human_formulation_type()}\if{html}{\out{</div>}}
+\subsection{\code{Formulation$get_human_formulation_type()}}{
+  Get human-readable formulation type
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Formulation$get_human_formulation_type()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string with human-readable formulation type
+  }
 }
 
-\subsection{Returns}{
-Character string with human-readable formulation type
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Formulation-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Formulation-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Formulation$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Formulation$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Formulation$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
