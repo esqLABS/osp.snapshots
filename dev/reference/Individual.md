@@ -86,7 +86,7 @@ display a summary of its information.
 
 ### Public methods
 
-- [`Individual$new()`](#method-Individual-new)
+- [`Individual$new()`](#method-Individual-initialize)
 
 - [`Individual$print()`](#method-Individual-print)
 
@@ -96,7 +96,7 @@ display a summary of its information.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Individual$new()`
 
 Create a new Individual object
 
@@ -116,7 +116,7 @@ A new Individual object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Individual$print()`
 
 Print a summary of the individual including its properties and
 parameters.
@@ -137,7 +137,7 @@ Invisibly returns the Individual object for method chaining
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `Individual$to_df()`
 
 Convert individual data to tibbles
 
@@ -158,7 +158,7 @@ A list of tibbles containing the requested data
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Individual$clone()`
 
 The objects of this class are cloneable with this method.
 

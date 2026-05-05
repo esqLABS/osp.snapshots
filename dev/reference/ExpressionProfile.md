@@ -52,7 +52,7 @@ expression profile and display a summary of its information.
 
 ### Public methods
 
-- [`ExpressionProfile$new()`](#method-ExpressionProfile-new)
+- [`ExpressionProfile$new()`](#method-ExpressionProfile-initialize)
 
 - [`ExpressionProfile$print()`](#method-ExpressionProfile-print)
 
@@ -62,7 +62,7 @@ expression profile and display a summary of its information.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `ExpressionProfile$new()`
 
 Create a new ExpressionProfile object
 
@@ -82,7 +82,7 @@ A new ExpressionProfile object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `ExpressionProfile$print()`
 
 Print a summary of the expression profile
 
@@ -102,7 +102,7 @@ Invisibly returns the object
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `ExpressionProfile$to_df()`
 
 Convert the expression profile to data frames for easier manipulation
 
@@ -116,7 +116,7 @@ A list with basic information and parameters as tibbles
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `ExpressionProfile$clone()`
 
 The objects of this class are cloneable with this method.
 

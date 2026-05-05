@@ -9,6 +9,7 @@ You can install the development version of osp.snapshots from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("esqLABS/osp.snapshots")
 ```
@@ -16,6 +17,7 @@ pak::pak("esqLABS/osp.snapshots")
 ## Quick Start
 
 ``` r
+
 library(osp.snapshots)
 
 # Load a snapshot

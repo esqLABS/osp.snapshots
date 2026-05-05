@@ -1,6 +1,7 @@
 # Getting Started with osp.snapshots
 
 ``` r
+
 library(osp.snapshots)
 library(dplyr)
 ```
@@ -23,6 +24,7 @@ project snapshots. This package allows you to:
 The most common way to start is by loading a snapshot from a JSON file:
 
 ``` r
+
 # Load from a local file
 snapshot <- load_snapshot("path/to/your_snapshot.json")
 
@@ -39,6 +41,7 @@ For this tutorial, we’ll use the test snapshot included with the
 package:
 
 ``` r
+
 # Load the test snapshot
 snapshot <- load_snapshot("Midazolam")
 
@@ -71,6 +74,7 @@ Individuals represent patient profiles with demographics and
 physiological parameters:
 
 ``` r
+
 # List all individuals
 snapshot$individuals
 #> 
@@ -122,6 +126,7 @@ individual$species
 Compounds define drug properties and ADME parameters:
 
 ``` r
+
 # View available compounds
 snapshot$compounds
 #> 
@@ -194,6 +199,7 @@ snapshot$compounds$Midazolam
 Formulations describe how drugs are formulated and released:
 
 ``` r
+
 # View formulations
 snapshot$formulations
 #> 
@@ -220,6 +226,7 @@ snapshot$formulations$`Tablet (Dormicum)`
 The snapshot includes several other building block types:
 
 ``` r
+
 # Populations - groups of virtual individuals
 snapshot$populations
 #> 
@@ -291,6 +298,7 @@ All building blocks are mutable and can be modified directly:
 ### Changing Individual Properties
 
 ``` r
+
 # Modify age
 snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age <- 45
 
@@ -334,6 +342,7 @@ Parameters have special behavior and validation:
 
 ``` r
 
+
 # Access parameters collection
 params <- snapshot$individuals$`Korean (Yu 2004 study)`$parameters
 params
@@ -364,6 +373,7 @@ params
 Snapshots often contain observed data from clinical studies:
 
 ``` r
+
 # View observed data collection
 snapshot$observed_data
 #> 
@@ -423,6 +433,7 @@ After making modifications, you can export the snapshot back to a JSON
 file:
 
 ``` r
+
 # Export to a new file
 export_snapshot(snapshot, "modified_snapshot.json")
 ```

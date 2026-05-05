@@ -28,7 +28,7 @@ An R6 class that represents an advanced parameter in a population.
 
 ### Public methods
 
-- [`AdvancedParameter$new()`](#method-AdvancedParameter-new)
+- [`AdvancedParameter$new()`](#method-AdvancedParameter-initialize)
 
 - [`AdvancedParameter$print()`](#method-AdvancedParameter-print)
 
@@ -36,7 +36,7 @@ An R6 class that represents an advanced parameter in a population.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `AdvancedParameter$new()`
 
 Create a new AdvancedParameter object
 
@@ -56,7 +56,7 @@ A new AdvancedParameter object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `AdvancedParameter$print()`
 
 Print a summary of the advanced parameter
 
@@ -76,7 +76,7 @@ Invisibly returns the AdvancedParameter object for method chaining
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `AdvancedParameter$clone()`
 
 The objects of this class are cloneable with this method.
 

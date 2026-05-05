@@ -1,6 +1,7 @@
 # Creating and Managing Building Blocks
 
 ``` r
+
 library(osp.snapshots)
 library(ospsuite)
 ```
@@ -20,6 +21,7 @@ scratch and manage existing ones within snapshots. You’ll learn to:
 Let’s start with a test snapshot:
 
 ``` r
+
 snapshot <- load_snapshot("Midazolam")
 ```
 
@@ -30,6 +32,7 @@ snapshot <- load_snapshot("Midazolam")
 The most common building block to create is an individual:
 
 ``` r
+
 # Create a basic individual
 new_patient <- create_individual(
   name = "Patient_001",
@@ -60,6 +63,7 @@ new_patient
 You can create individuals with additional parameters:
 
 ``` r
+
 # Create individual with more characteristics
 advanced_patient <- create_individual(
   name = "Pregnant_Patient",
@@ -90,6 +94,7 @@ advanced_patient
 ### Adding Individuals to Snapshots
 
 ``` r
+
 # Add the new individual to the snapshot
 add_individual(snapshot, new_patient)
 
@@ -107,6 +112,7 @@ snapshot$individuals
 ### Dissolved Formulations
 
 ``` r
+
 # Create a simple dissolved formulation
 oral_solution <- create_formulation(
   name = "Oral Solution 10mg/mL",
@@ -122,6 +128,7 @@ oral_solution
 ### Tablet Formulations
 
 ``` r
+
 # Create a tablet with Weibull dissolution
 tablet <- create_formulation(
   name = "Immediate Release Tablet",
@@ -152,6 +159,7 @@ tablet
 ### Additional Formulation Types
 
 ``` r
+
 # Create a first-order formulation
 first_order_form <- create_formulation(
   name = "First Order Release",
@@ -194,6 +202,7 @@ zero_order_form
 ### Adding Formulations to Snapshots
 
 ``` r
+
 # Add formulations to the snapshot
 add_formulation(snapshot, oral_solution)
 add_formulation(snapshot, tablet)
@@ -213,6 +222,7 @@ snapshot$formulations
 ### Basic Parameter Creation
 
 ``` r
+
 # Create a parameter with basic properties
 liver_param <- create_parameter(
   name = "Organism|Liver|Specific organ clearance",
@@ -230,6 +240,7 @@ liver_param
 ### Parameter with Additional Properties
 
 ``` r
+
 # Create parameter with source information
 detailed_param <- create_parameter(
   name = "Organism|Kidney|GFR",
@@ -254,6 +265,7 @@ detailed_param
 ### Removing Building Blocks
 
 ``` r
+
 # Remove individuals by name
 remove_individual(snapshot, "Patient_001")
 
@@ -273,6 +285,7 @@ remove_formulation(snapshot, "Oral Solution 10mg/mL")
 ### Batch Operations
 
 ``` r
+
 # Create multiple individuals at once
 patients <- list(
   create_individual("Patient_A", age = 25, gender = "MALE"),
@@ -305,6 +318,7 @@ Observed data must be provided as
 objects:
 
 ``` r
+
 # Create a new DataSet
 study_data <- DataSet$new(name = "Phase I Study - Subject 001")
 
@@ -337,6 +351,7 @@ study_data
 ### Adding Observed Data
 
 ``` r
+
 # Add to snapshot (function needs to be implemented)
 # add_observed_data(snapshot, study_data)
 
@@ -349,6 +364,7 @@ study_data
 ### Modifying Existing Building Blocks
 
 ``` r
+
 # Get an individual and modify properties
 patient <- snapshot$individuals$`Patient_A`
 patient$age <- 30
@@ -368,6 +384,7 @@ custom_param <- create_parameter(
 ### Copying and Modifying Building Blocks
 
 ``` r
+
 # Create a copy of an existing individual with modifications
 original <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 
@@ -389,6 +406,7 @@ add_individual(snapshot, modified_individual)
 The package includes validation for common inputs:
 
 ``` r
+
 # These will produce validation errors:
 tryCatch(
   {
@@ -417,6 +435,7 @@ tryCatch(
 Valid options are available through validation functions:
 
 ``` r
+
 # Check valid species (this would show available options)
 # validate_species("Human")  # Returns TRUE
 
@@ -429,6 +448,7 @@ Valid options are available through validation functions:
 You can load predefined templates and modify them:
 
 ``` r
+
 # Load a template (if available)
 # template_snapshot <- load_snapshot("TemplateName")
 
@@ -445,6 +465,7 @@ You can load predefined templates and modify them:
 After creating and managing building blocks, export your snapshot:
 
 ``` r
+
 # Export the modified snapshot
 export_snapshot(snapshot, "modified_snapshot_with_new_blocks.json")
 ```
@@ -456,6 +477,7 @@ export_snapshot(snapshot, "modified_snapshot_with_new_blocks.json")
 Use descriptive names for building blocks:
 
 ``` r
+
 # Good naming
 create_individual(
   "Elderly_Female_80kg",
@@ -475,6 +497,7 @@ create_formulation("Form1", type = "Weibull")
 Keep related building blocks together:
 
 ``` r
+
 # Create a family of related individuals
 pediatric_patients <- list(
   create_individual("Pediatric_5yr", age = 5, weight = 18),
@@ -494,6 +517,7 @@ pediatric_formulations <- list(
 Document your building blocks with meaningful metadata:
 
 ``` r
+
 # Add comments or descriptions when creating parameters
 hepatic_clearance <- create_parameter(
   name = "Organism|Liver|Hepatic clearance",

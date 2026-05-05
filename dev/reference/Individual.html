@@ -11,7 +11,7 @@ and display a summary of its information."><meta name="robots" content="noindex"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,75 +55,75 @@ and display a summary of its information.</p>
 <dd><p>The raw data of the individual (read-only)</p></dd>
 
 
-<dt><code>name</code></dt>
+    <dt><code>name</code></dt>
 <dd><p>The name of the individual</p></dd>
 
 
-<dt><code>seed</code></dt>
+    <dt><code>seed</code></dt>
 <dd><p>The simulation seed for the individual</p></dd>
 
 
-<dt><code>species</code></dt>
+    <dt><code>species</code></dt>
 <dd><p>The species of the individual</p></dd>
 
 
-<dt><code>population</code></dt>
+    <dt><code>population</code></dt>
 <dd><p>The population of the individual</p></dd>
 
 
-<dt><code>gender</code></dt>
+    <dt><code>gender</code></dt>
 <dd><p>The gender of the individual</p></dd>
 
 
-<dt><code>age</code></dt>
+    <dt><code>age</code></dt>
 <dd><p>The age value of the individual</p></dd>
 
 
-<dt><code>age_unit</code></dt>
+    <dt><code>age_unit</code></dt>
 <dd><p>The age unit of the individual</p></dd>
 
 
-<dt><code>weight</code></dt>
+    <dt><code>weight</code></dt>
 <dd><p>The weight value of the individual</p></dd>
 
 
-<dt><code>weight_unit</code></dt>
+    <dt><code>weight_unit</code></dt>
 <dd><p>The weight unit of the individual</p></dd>
 
 
-<dt><code>height</code></dt>
+    <dt><code>height</code></dt>
 <dd><p>The height value of the individual</p></dd>
 
 
-<dt><code>height_unit</code></dt>
+    <dt><code>height_unit</code></dt>
 <dd><p>The height unit of the individual</p></dd>
 
 
-<dt><code>gestational_age</code></dt>
+    <dt><code>gestational_age</code></dt>
 <dd><p>The gestational age value of the individual</p></dd>
 
 
-<dt><code>gestational_age_unit</code></dt>
+    <dt><code>gestational_age_unit</code></dt>
 <dd><p>The gestational age unit of the individual</p></dd>
 
 
-<dt><code>disease_state</code></dt>
+    <dt><code>disease_state</code></dt>
 <dd><p>The disease state of the individual</p></dd>
 
 
-<dt><code>disease_state_parameters</code></dt>
+    <dt><code>disease_state_parameters</code></dt>
 <dd><p>The disease state parameters of the individual</p></dd>
 
 
-<dt><code>parameters</code></dt>
+    <dt><code>parameters</code></dt>
 <dd><p>The list of parameter objects with a custom print method</p></dd>
 
 
-<dt><code>calculation_methods</code></dt>
+    <dt><code>calculation_methods</code></dt>
 <dd><p>The calculation methods of the individual</p></dd>
 
 
-<dt><code>expression_profiles</code></dt>
+    <dt><code>expression_profiles</code></dt>
 <dd><p>The expression profiles of the individual (read-only)</p></dd>
 
 
@@ -134,79 +134,73 @@ and display a summary of its information.</p>
 
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
-
-<ul><li><p><a href="#method-Individual-new"><code>Individual$new()</code></a></p></li>
+<p></p><ul><li><p><a href="#method-Individual-initialize"><code>Individual$new()</code></a></p></li>
 <li><p><a href="#method-Individual-print"><code>Individual$print()</code></a></p></li>
 <li><p><a href="#method-Individual-to_df"><code>Individual$to_df()</code></a></p></li>
 <li><p><a href="#method-Individual-clone"><code>Individual$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-Individual-new"></a><div class="section">
-<h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
+</ul></div><p></p><hr><a id="method-Individual-initialize"></a><div class="section">
+<h3 id="individual-new-"><code>Individual$new()</code><a class="anchor" aria-label="anchor" href="#individual-new-"></a></h3>
 <p>Create a new Individual object</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Individual.html">Individual</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>data</code></dt>
 <dd><p>Raw individual data from a snapshot</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
 <p>A new Individual object</p>
 </div>
 
-</div><p></p><hr><a id="method-Individual-print"></a><div class="section">
-<h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Individual-print"></a><div class="section">
+<h3 id="individual-print-"><code>Individual$print()</code><a class="anchor" aria-label="anchor" href="#individual-print-"></a></h3>
 <p>Print a summary of the individual including its properties and parameters.</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Individual</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>...</code></dt>
 <dd><p>Additional arguments passed to print methods</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
 <p>Invisibly returns the Individual object for method chaining</p>
 </div>
 
-</div><p></p><hr><a id="method-Individual-to_df"></a><div class="section">
-<h3 id="method-to-df-">Method <code>to_df()</code><a class="anchor" aria-label="anchor" href="#method-to-df-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Individual-to_df"></a><div class="section">
+<h3 id="individual-to-df-"><code>Individual$to_df()</code><a class="anchor" aria-label="anchor" href="#individual-to-df-"></a></h3>
 <p>Convert individual data to tibbles</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Individual</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span>type <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>type</code></dt>
 <dd><p>Character. Type of data to convert: "all" (default), "individuals", "individuals_parameters", or "individuals_expressions"</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
 <p>A list of tibbles containing the requested data</p>
 </div>
 
-</div><p></p><hr><a id="method-Individual-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Individual-clone"></a><div class="section">
+<h3 id="individual-clone-"><code>Individual$clone()</code><a class="anchor" aria-label="anchor" href="#individual-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Individual</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
@@ -217,6 +211,7 @@ and display a summary of its information.</p>
 
 </div>
 
+
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -224,7 +219,7 @@ and display a summary of its information.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
 <div class="pkgdown-footer-right">

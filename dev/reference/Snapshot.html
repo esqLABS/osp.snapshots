@@ -9,7 +9,7 @@ methods to access different components of the snapshot and visualize its structu
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,43 +52,43 @@ methods to access different components of the snapshot and visualize its structu
 <dd><p>The aggregated data of the snapshot from all components</p></dd>
 
 
-<dt><code>pksim_version</code></dt>
+    <dt><code>pksim_version</code></dt>
 <dd><p>The human-readable PKSIM version corresponding to the snapshot version</p></dd>
 
 
-<dt><code>path</code></dt>
+    <dt><code>path</code></dt>
 <dd><p>The path to the snapshot file relative to the working directory</p></dd>
 
 
-<dt><code>compounds</code></dt>
+    <dt><code>compounds</code></dt>
 <dd><p>List of Compound objects in the snapshot</p></dd>
 
 
-<dt><code>expression_profiles</code></dt>
+    <dt><code>expression_profiles</code></dt>
 <dd><p>List of ExpressionProfile objects in the snapshot</p></dd>
 
 
-<dt><code>individuals</code></dt>
+    <dt><code>individuals</code></dt>
 <dd><p>List of Individual objects in the snapshot</p></dd>
 
 
-<dt><code>formulations</code></dt>
+    <dt><code>formulations</code></dt>
 <dd><p>List of Formulation objects in the snapshot</p></dd>
 
 
-<dt><code>populations</code></dt>
+    <dt><code>populations</code></dt>
 <dd><p>List of Population objects in the snapshot</p></dd>
 
 
-<dt><code>events</code></dt>
+    <dt><code>events</code></dt>
 <dd><p>List of Event objects in the snapshot</p></dd>
 
 
-<dt><code>protocols</code></dt>
+    <dt><code>protocols</code></dt>
 <dd><p>List of Protocol objects in the snapshot</p></dd>
 
 
-<dt><code>observed_data</code></dt>
+    <dt><code>observed_data</code></dt>
 <dd><p>List of DataSet objects (observed data) in the snapshot</p></dd>
 
 
@@ -99,8 +99,7 @@ methods to access different components of the snapshot and visualize its structu
 
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
-
-<ul><li><p><a href="#method-Snapshot-new"><code>Snapshot$new()</code></a></p></li>
+<p></p><ul><li><p><a href="#method-Snapshot-initialize"><code>Snapshot$new()</code></a></p></li>
 <li><p><a href="#method-Snapshot-print"><code>Snapshot$print()</code></a></p></li>
 <li><p><a href="#method-Snapshot-export"><code>Snapshot$export()</code></a></p></li>
 <li><p><a href="#method-Snapshot-add_individual"><code>Snapshot$add_individual()</code></a></p></li>
@@ -113,333 +112,284 @@ methods to access different components of the snapshot and visualize its structu
 <li><p><a href="#method-Snapshot-add_observed_data"><code>Snapshot$add_observed_data()</code></a></p></li>
 <li><p><a href="#method-Snapshot-remove_observed_data"><code>Snapshot$remove_observed_data()</code></a></p></li>
 <li><p><a href="#method-Snapshot-clone"><code>Snapshot$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-Snapshot-new"></a><div class="section">
-<h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
+</ul></div><p></p><hr><a id="method-Snapshot-initialize"></a><div class="section">
+<h3 id="snapshot-new-"><code>Snapshot$new()</code><a class="anchor" aria-label="anchor" href="#snapshot-new-"></a></h3>
 <p>Create a new Snapshot object from a JSON file or a list</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Snapshot.html">Snapshot</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">input</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>input</code></dt>
 <dd><p>Path to the snapshot JSON file, URL, template name, or a list containing snapshot data</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
 <p>A new Snapshot object</p>
 </div>
 
-</div><p></p><hr><a id="method-Snapshot-print"></a><div class="section">
-<h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Snapshot-print"></a><div class="section">
+<h3 id="snapshot-print-"><code>Snapshot$print()</code><a class="anchor" aria-label="anchor" href="#snapshot-print-"></a></h3>
 <p>Print a summary of the snapshot</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>...</code></dt>
 <dd><p>Additional arguments passed to print methods</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
 <p>Invisibly returns the snapshot object</p>
 </div>
 
-</div><p></p><hr><a id="method-Snapshot-export"></a><div class="section">
-<h3 id="method-export-">Method <code>export()</code><a class="anchor" aria-label="anchor" href="#method-export-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Snapshot-export"></a><div class="section">
+<h3 id="snapshot-export-"><code>Snapshot$export()</code><a class="anchor" aria-label="anchor" href="#snapshot-export-"></a></h3>
 <p>Export the snapshot to a JSON file</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">export</span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>path</code></dt>
 <dd><p>Path to save the JSON file</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
 <p>Invisibly returns the object</p>
 </div>
 
-</div><p></p><hr><a id="method-Snapshot-add_individual"></a><div class="section">
-<h3 id="method-add-individual-">Method <code><a href="add_individual.html">add_individual()</a></code><a class="anchor" aria-label="anchor" href="#method-add-individual-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Snapshot-add_individual"></a><div class="section">
+<h3 id="snapshot-add-individual-"><code>Snapshot$add_individual()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-individual-"></a></h3>
 <p>Add an Individual object to the snapshot</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">individual</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>individual</code></dt>
 <dd><p>An Individual object created with create_individual()</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
 <p>Invisibly returns the object</p>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-# Create a new individual
-ind &lt;- create_individual(name = "New Patient", age = 35, weight = 70)
-
-# Add the individual to a snapshot
-snapshot$add_individual(ind)
-}
-</code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="co"># Create a new individual</span></span>
+<span><span class="va">ind</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"New Patient"</span>, age <span class="op">=</span> <span class="fl">35</span>, weight <span class="op">=</span> <span class="fl">70</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add the individual to a snapshot</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">ind</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-Snapshot-remove_individual"></a><div class="section">
-<h3 id="method-remove-individual-">Method <code><a href="remove_individual.html">remove_individual()</a></code><a class="anchor" aria-label="anchor" href="#method-remove-individual-"></a></h3>
+<p></p><hr><a id="method-Snapshot-remove_individual"></a><div class="section">
+<h3 id="snapshot-remove-individual-"><code>Snapshot$remove_individual()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-individual-"></a></h3>
 <p>Remove an individual from the snapshot by name</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_individual</span><span class="op">(</span><span class="va">individual_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>individual_name</code></dt>
 <dd><p>Character vector of individual name(s) to remove</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
 <p>Invisibly returns the object</p>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="examples-1">Examples<a class="anchor" aria-label="anchor" href="#examples-1"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-# Remove an individual from the snapshot
-snapshot$remove_individual("Subject_001")
-}
-</code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="co"># Remove an individual from the snapshot</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">remove_individual</span><span class="op">(</span><span class="st">"Subject_001"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-Snapshot-add_formulation"></a><div class="section">
-<h3 id="method-add-formulation-">Method <code><a href="add_formulation.html">add_formulation()</a></code><a class="anchor" aria-label="anchor" href="#method-add-formulation-"></a></h3>
+<p></p><hr><a id="method-Snapshot-add_formulation"></a><div class="section">
+<h3 id="snapshot-add-formulation-"><code>Snapshot$add_formulation()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-formulation-"></a></h3>
 <p>Add a Formulation object to the snapshot</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_formulation</span><span class="op">(</span><span class="va">formulation</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>formulation</code></dt>
 <dd><p>A Formulation object created with create_formulation()</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
 <p>Invisibly returns the object</p>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="examples-2">Examples<a class="anchor" aria-label="anchor" href="#examples-2"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-# Create a new formulation
-form &lt;- create_formulation(name = "Tablet", type = "Weibull")
-
-# Add the formulation to a snapshot
-snapshot$add_formulation(form)
-}
-</code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="co"># Create a new formulation</span></span>
+<span><span class="va">form</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_formulation.html">create_formulation</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Tablet"</span>, type <span class="op">=</span> <span class="st">"Weibull"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add the formulation to a snapshot</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_formulation</span><span class="op">(</span><span class="va">form</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-Snapshot-remove_formulation"></a><div class="section">
-<h3 id="method-remove-formulation-">Method <code><a href="remove_formulation.html">remove_formulation()</a></code><a class="anchor" aria-label="anchor" href="#method-remove-formulation-"></a></h3>
+<p></p><hr><a id="method-Snapshot-remove_formulation"></a><div class="section">
+<h3 id="snapshot-remove-formulation-"><code>Snapshot$remove_formulation()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-formulation-"></a></h3>
 <p>Remove a formulation from the snapshot by name</p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_formulation</span><span class="op">(</span><span class="va">formulation_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>formulation_name</code></dt>
 <dd><p>Character vector of formulation name(s) to remove</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
 <p>Invisibly returns the object</p>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="examples-3">Examples<a class="anchor" aria-label="anchor" href="#examples-3"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-# Remove a formulation from the snapshot
-snapshot$remove_formulation("Tablet")
-}
-</code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="co"># Remove a formulation from the snapshot</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">remove_formulation</span><span class="op">(</span><span class="st">"Tablet"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-Snapshot-remove_population"></a><div class="section">
-<h3 id="method-remove-population-">Method <code><a href="remove_population.html">remove_population()</a></code><a class="anchor" aria-label="anchor" href="#method-remove-population-"></a></h3>
+<p></p><hr><a id="method-Snapshot-remove_population"></a><div class="section">
+<h3 id="snapshot-remove-population-"><code>Snapshot$remove_population()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-population-"></a></h3>
 <p>Remove a population from the snapshot by name</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_population</span><span class="op">(</span><span class="va">population_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>population_name</code></dt>
 <dd><p>Character vector of population name(s) to remove</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
 <p>Invisibly returns the object</p>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-# Remove a population from the snapshot
-snapshot$remove_population("pop_1")
-}
-</code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="co"># Remove a population from the snapshot</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">remove_population</span><span class="op">(</span><span class="st">"pop_1"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-Snapshot-add_expression_profile"></a><div class="section">
-<h3 id="method-add-expression-profile-">Method <code><a href="add_expression_profile.html">add_expression_profile()</a></code><a class="anchor" aria-label="anchor" href="#method-add-expression-profile-"></a></h3>
+<p></p><hr><a id="method-Snapshot-add_expression_profile"></a><div class="section">
+<h3 id="snapshot-add-expression-profile-"><code>Snapshot$add_expression_profile()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-expression-profile-"></a></h3>
 <p>Add an ExpressionProfile object to the snapshot</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_expression_profile</span><span class="op">(</span><span class="va">expression_profile</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>expression_profile</code></dt>
 <dd><p>An ExpressionProfile object</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
 <p>Invisibly returns the object</p>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-# Create a new expression profile
-profile_data &lt;- list(
-  Type = "Enzyme",
-  Species = "Human",
-  Molecule = "CYP3A4",
-  Category = "Healthy",
-  Parameters = list()
-)
-profile &lt;- ExpressionProfile$new(profile_data)
-
-# Add the expression profile to a snapshot
-snapshot$add_expression_profile(profile)
-}
-</code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="co"># Create a new expression profile</span></span>
+<span><span class="va">profile_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  Type <span class="op">=</span> <span class="st">"Enzyme"</span>,</span>
+<span>  Species <span class="op">=</span> <span class="st">"Human"</span>,</span>
+<span>  Molecule <span class="op">=</span> <span class="st">"CYP3A4"</span>,</span>
+<span>  Category <span class="op">=</span> <span class="st">"Healthy"</span>,</span>
+<span>  Parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/ExpressionProfile.html">ExpressionProfile</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">profile_data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add the expression profile to a snapshot</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_expression_profile</span><span class="op">(</span><span class="va">profile</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-Snapshot-remove_expression_profile"></a><div class="section">
-<h3 id="method-remove-expression-profile-">Method <code><a href="remove_expression_profile.html">remove_expression_profile()</a></code><a class="anchor" aria-label="anchor" href="#method-remove-expression-profile-"></a></h3>
+<p></p><hr><a id="method-Snapshot-remove_expression_profile"></a><div class="section">
+<h3 id="snapshot-remove-expression-profile-"><code>Snapshot$remove_expression_profile()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-expression-profile-"></a></h3>
 <p>Remove expression profiles from the snapshot by ID</p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_expression_profile</span><span class="op">(</span><span class="va">profile_id</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>profile_id</code></dt>
 <dd><p>Character vector of expression profile IDs to remove</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
 <p>Invisibly returns the object</p>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="examples-6">Examples<a class="anchor" aria-label="anchor" href="#examples-6"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-# Remove an expression profile from the snapshot
-snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
-}
-</code></pre></div><p></p></div>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="co"># Remove an expression profile from the snapshot</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">remove_expression_profile</span><span class="op">(</span><span class="st">"CYP3A4|Human|Healthy"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-Snapshot-add_observed_data"></a><div class="section">
-<h3 id="method-add-observed-data-">Method <code>add_observed_data()</code><a class="anchor" aria-label="anchor" href="#method-add-observed-data-"></a></h3>
+<p></p><hr><a id="method-Snapshot-add_observed_data"></a><div class="section">
+<h3 id="snapshot-add-observed-data-"><code>Snapshot$add_observed_data()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-observed-data-"></a></h3>
 <p>Add a DataSet object (observed data) to the snapshot</p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_observed_data</span><span class="op">(</span><span class="va">observed_data</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>observed_data</code></dt>
 <dd><p>A DataSet object created from snapshot observed data</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
 <p>Invisibly returns the object</p>
 </div>
 
-</div><p></p><hr><a id="method-Snapshot-remove_observed_data"></a><div class="section">
-<h3 id="method-remove-observed-data-">Method <code>remove_observed_data()</code><a class="anchor" aria-label="anchor" href="#method-remove-observed-data-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Snapshot-remove_observed_data"></a><div class="section">
+<h3 id="snapshot-remove-observed-data-"><code>Snapshot$remove_observed_data()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-observed-data-"></a></h3>
 <p>Remove observed data from the snapshot by name</p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_observed_data</span><span class="op">(</span><span class="va">observed_data_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>observed_data_name</code></dt>
 <dd><p>Character vector of observed data names to remove</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
 <p>Invisibly returns the object</p>
 </div>
 
-</div><p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
+<h3 id="snapshot-clone-"><code>Snapshot$clone()</code><a class="anchor" aria-label="anchor" href="#snapshot-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
@@ -450,13 +400,14 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 
 </div>
 
+
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
-<span class="r-in"><span><span class="co">## Method `Snapshot$add_individual`</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Snapshot$add_individual()`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
@@ -468,7 +419,7 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
-<span class="r-in"><span><span class="co">## Method `Snapshot$remove_individual`</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Snapshot$remove_individual()`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
@@ -477,7 +428,7 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
-<span class="r-in"><span><span class="co">## Method `Snapshot$add_formulation`</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Snapshot$add_formulation()`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
@@ -489,7 +440,7 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
-<span class="r-in"><span><span class="co">## Method `Snapshot$remove_formulation`</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Snapshot$remove_formulation()`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
@@ -498,7 +449,7 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
-<span class="r-in"><span><span class="co">## Method `Snapshot$remove_population`</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Snapshot$remove_population()`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
@@ -507,7 +458,7 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
-<span class="r-in"><span><span class="co">## Method `Snapshot$add_expression_profile`</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Snapshot$add_expression_profile()`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
@@ -526,7 +477,7 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
-<span class="r-in"><span><span class="co">## Method `Snapshot$remove_expression_profile`</span></span></span>
+<span class="r-in"><span><span class="co">## Method `Snapshot$remove_expression_profile()`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
@@ -540,7 +491,7 @@ snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
 <div class="pkgdown-footer-right">

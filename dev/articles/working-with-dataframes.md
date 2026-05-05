@@ -1,6 +1,7 @@
 # Working with Data Frames
 
 ``` r
+
 library(osp.snapshots)
 library(dplyr)
 library(ggplot2)
@@ -19,6 +20,7 @@ and analyze snapshot data using standard R data analysis tools.
 Let’s start by loading our test snapshot:
 
 ``` r
+
 snapshot <- load_snapshot("Midazolam")
 ```
 
@@ -32,6 +34,7 @@ converts the data to structured data frames.
 Individual data is converted into multiple related data frames:
 
 ``` r
+
 individual_dfs <- get_individuals_dfs(snapshot)
 names(individual_dfs)
 #> [1] "individuals"             "individuals_parameters" 
@@ -41,6 +44,7 @@ names(individual_dfs)
 Let’s examine each data frame:
 
 ``` r
+
 # Basic characteristics
 head(individual_dfs$individuals)
 #> # A tibble: 2 × 17
@@ -79,6 +83,7 @@ head(individual_dfs$individuals_expressions)
 You can also convert a single individual to data frames:
 
 ``` r
+
 # Get the first individual
 individual <- snapshot$individuals[[1]]
 single_individual_df <- individual$to_df()
@@ -100,6 +105,7 @@ head(single_individual_df$individuals)
 ### Converting Compounds
 
 ``` r
+
 compounds_df <- get_compounds_dfs(snapshot)
 head(compounds_df)
 #> # A tibble: 6 × 8
@@ -116,6 +122,7 @@ head(compounds_df)
 ### Converting Formulations
 
 ``` r
+
 formulations_dfs <- get_formulations_dfs(snapshot)
 names(formulations_dfs)
 #> [1] "formulations"            "formulations_parameters"
@@ -136,6 +143,7 @@ head(formulations_dfs$parameters)
 ### Converting Populations
 
 ``` r
+
 populations_dfs <- get_populations_dfs(snapshot)
 names(populations_dfs)
 #> [1] "populations"            "populations_parameters"
@@ -156,6 +164,7 @@ head(populations_dfs$populations)
 Observed data conversion creates a flat data frame perfect for analysis:
 
 ``` r
+
 obs_data_df <- get_observed_data_dfs(snapshot)
 head(obs_data_df)
 #> # A tibble: 6 × 30

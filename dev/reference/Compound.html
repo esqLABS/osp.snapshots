@@ -11,7 +11,7 @@ and display a summary of its information."><meta name="robots" content="noindex"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,87 +55,87 @@ and display a summary of its information.</p>
 <dd><p>The raw data of the compound (read-only)</p></dd>
 
 
-<dt><code>name</code></dt>
+    <dt><code>name</code></dt>
 <dd><p>The name of the compound</p></dd>
 
 
-<dt><code>is_small_molecule</code></dt>
+    <dt><code>is_small_molecule</code></dt>
 <dd><p>Whether the compound is a small molecule</p></dd>
 
 
-<dt><code>plasma_protein_binding_partner</code></dt>
+    <dt><code>plasma_protein_binding_partner</code></dt>
 <dd><p>The plasma protein binding partner of the compound</p></dd>
 
 
-<dt><code>molecular_weight</code></dt>
+    <dt><code>molecular_weight</code></dt>
 <dd><p>The molecular weight of the compound</p></dd>
 
 
-<dt><code>molecular_weight_unit</code></dt>
+    <dt><code>molecular_weight_unit</code></dt>
 <dd><p>The unit of the molecular weight</p></dd>
 
 
-<dt><code>lipophilicity</code></dt>
+    <dt><code>lipophilicity</code></dt>
 <dd><p>The lipophilicity data of the compound</p></dd>
 
 
-<dt><code>fraction_unbound</code></dt>
+    <dt><code>fraction_unbound</code></dt>
 <dd><p>The fraction unbound data of the compound</p></dd>
 
 
-<dt><code>solubility</code></dt>
+    <dt><code>solubility</code></dt>
 <dd><p>The solubility data of the compound</p></dd>
 
 
-<dt><code>intestinal_permeability</code></dt>
+    <dt><code>intestinal_permeability</code></dt>
 <dd><p>The intestinal permeability data of the compound</p></dd>
 
 
-<dt><code>pka_types</code></dt>
+    <dt><code>pka_types</code></dt>
 <dd><p>The pKa types of the compound</p></dd>
 
 
-<dt><code>processes</code></dt>
+    <dt><code>processes</code></dt>
 <dd><p>The processes of the compound</p></dd>
 
 
-<dt><code>calculation_methods</code></dt>
+    <dt><code>calculation_methods</code></dt>
 <dd><p>The calculation methods of the compound</p></dd>
 
 
-<dt><code>parameters</code></dt>
+    <dt><code>parameters</code></dt>
 <dd><p>The additional parameters of the compound (excluding molecular weight)</p></dd>
 
 
-<dt><code>protein_binding_partners</code></dt>
+    <dt><code>protein_binding_partners</code></dt>
 <dd><p>The protein binding partners data of the compound</p></dd>
 
 
-<dt><code>metabolizing_enzymes</code></dt>
+    <dt><code>metabolizing_enzymes</code></dt>
 <dd><p>The metabolizing enzymes data of the compound</p></dd>
 
 
-<dt><code>hepatic_clearance</code></dt>
+    <dt><code>hepatic_clearance</code></dt>
 <dd><p>The hepatic clearance data of the compound</p></dd>
 
 
-<dt><code>transporter_proteins</code></dt>
+    <dt><code>transporter_proteins</code></dt>
 <dd><p>The transporter proteins data of the compound</p></dd>
 
 
-<dt><code>renal_clearance</code></dt>
+    <dt><code>renal_clearance</code></dt>
 <dd><p>The renal clearance data of the compound</p></dd>
 
 
-<dt><code>biliary_clearance</code></dt>
+    <dt><code>biliary_clearance</code></dt>
 <dd><p>The biliary clearance data of the compound</p></dd>
 
 
-<dt><code>inhibition</code></dt>
+    <dt><code>inhibition</code></dt>
 <dd><p>The inhibition data of the compound</p></dd>
 
 
-<dt><code>induction</code></dt>
+    <dt><code>induction</code></dt>
 <dd><p>The induction data of the compound</p></dd>
 
 
@@ -146,71 +146,66 @@ and display a summary of its information.</p>
 
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
-
-<ul><li><p><a href="#method-Compound-new"><code>Compound$new()</code></a></p></li>
+<p></p><ul><li><p><a href="#method-Compound-initialize"><code>Compound$new()</code></a></p></li>
 <li><p><a href="#method-Compound-print"><code>Compound$print()</code></a></p></li>
 <li><p><a href="#method-Compound-to_df"><code>Compound$to_df()</code></a></p></li>
 <li><p><a href="#method-Compound-clone"><code>Compound$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-Compound-new"></a><div class="section">
-<h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
+</ul></div><p></p><hr><a id="method-Compound-initialize"></a><div class="section">
+<h3 id="compound-new-"><code>Compound$new()</code><a class="anchor" aria-label="anchor" href="#compound-new-"></a></h3>
 <p>Create a new Compound object</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Compound.html">Compound</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>data</code></dt>
 <dd><p>Raw compound data from a snapshot</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
 <p>A new Compound object</p>
 </div>
 
-</div><p></p><hr><a id="method-Compound-print"></a><div class="section">
-<h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Compound-print"></a><div class="section">
+<h3 id="compound-print-"><code>Compound$print()</code><a class="anchor" aria-label="anchor" href="#compound-print-"></a></h3>
 <p>Print a summary of the compound including its properties and parameters.</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Compound</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>...</code></dt>
 <dd><p>Additional arguments passed to print methods</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
 <p>Invisibly returns the Compound object for method chaining</p>
 </div>
 
-</div><p></p><hr><a id="method-Compound-to_df"></a><div class="section">
-<h3 id="method-to-df-">Method <code>to_df()</code><a class="anchor" aria-label="anchor" href="#method-to-df-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Compound-to_df"></a><div class="section">
+<h3 id="compound-to-df-"><code>Compound$to_df()</code><a class="anchor" aria-label="anchor" href="#compound-to-df-"></a></h3>
 <p>Convert compound data to tibbles for analysis</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Compound</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
 <p>A tibble containing compound parameter data in the same format as legacy code</p>
 </div>
 
-</div><p></p><hr><a id="method-Compound-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Compound-clone"></a><div class="section">
+<h3 id="compound-clone-"><code>Compound$clone()</code><a class="anchor" aria-label="anchor" href="#compound-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Compound</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
@@ -221,6 +216,7 @@ and display a summary of its information.</p>
 
 </div>
 
+
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -228,7 +224,7 @@ and display a summary of its information.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
 <div class="pkgdown-footer-right">

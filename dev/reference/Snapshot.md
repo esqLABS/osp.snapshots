@@ -54,7 +54,7 @@ structure.
 
 ### Public methods
 
-- [`Snapshot$new()`](#method-Snapshot-new)
+- [`Snapshot$new()`](#method-Snapshot-initialize)
 
 - [`Snapshot$print()`](#method-Snapshot-print)
 
@@ -82,7 +82,7 @@ structure.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Snapshot$new()`
 
 Create a new Snapshot object from a JSON file or a list
 
@@ -103,7 +103,7 @@ A new Snapshot object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Snapshot$print()`
 
 Print a summary of the snapshot
 
@@ -123,7 +123,7 @@ Invisibly returns the snapshot object
 
 ------------------------------------------------------------------------
 
-### Method `export()`
+### `Snapshot$export()`
 
 Export the snapshot to a JSON file
 
@@ -143,7 +143,7 @@ Invisibly returns the object
 
 ------------------------------------------------------------------------
 
-### Method [`add_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_individual.md)
+### `Snapshot$add_individual()`
 
 Add an Individual object to the snapshot
 
@@ -163,17 +163,15 @@ Invisibly returns the object
 
 #### Examples
 
-    \dontrun{
     # Create a new individual
     ind <- create_individual(name = "New Patient", age = 35, weight = 70)
 
     # Add the individual to a snapshot
     snapshot$add_individual(ind)
-    }
 
 ------------------------------------------------------------------------
 
-### Method [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md)
+### `Snapshot$remove_individual()`
 
 Remove an individual from the snapshot by name
 
@@ -193,14 +191,12 @@ Invisibly returns the object
 
 #### Examples
 
-    \dontrun{
     # Remove an individual from the snapshot
     snapshot$remove_individual("Subject_001")
-    }
 
 ------------------------------------------------------------------------
 
-### Method [`add_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_formulation.md)
+### `Snapshot$add_formulation()`
 
 Add a Formulation object to the snapshot
 
@@ -220,17 +216,15 @@ Invisibly returns the object
 
 #### Examples
 
-    \dontrun{
     # Create a new formulation
     form <- create_formulation(name = "Tablet", type = "Weibull")
 
     # Add the formulation to a snapshot
     snapshot$add_formulation(form)
-    }
 
 ------------------------------------------------------------------------
 
-### Method [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md)
+### `Snapshot$remove_formulation()`
 
 Remove a formulation from the snapshot by name
 
@@ -250,14 +244,12 @@ Invisibly returns the object
 
 #### Examples
 
-    \dontrun{
     # Remove a formulation from the snapshot
     snapshot$remove_formulation("Tablet")
-    }
 
 ------------------------------------------------------------------------
 
-### Method [`remove_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_population.md)
+### `Snapshot$remove_population()`
 
 Remove a population from the snapshot by name
 
@@ -277,14 +269,12 @@ Invisibly returns the object
 
 #### Examples
 
-    \dontrun{
     # Remove a population from the snapshot
     snapshot$remove_population("pop_1")
-    }
 
 ------------------------------------------------------------------------
 
-### Method [`add_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_expression_profile.md)
+### `Snapshot$add_expression_profile()`
 
 Add an ExpressionProfile object to the snapshot
 
@@ -304,7 +294,6 @@ Invisibly returns the object
 
 #### Examples
 
-    \dontrun{
     # Create a new expression profile
     profile_data <- list(
       Type = "Enzyme",
@@ -317,11 +306,10 @@ Invisibly returns the object
 
     # Add the expression profile to a snapshot
     snapshot$add_expression_profile(profile)
-    }
 
 ------------------------------------------------------------------------
 
-### Method [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md)
+### `Snapshot$remove_expression_profile()`
 
 Remove expression profiles from the snapshot by ID
 
@@ -341,14 +329,12 @@ Invisibly returns the object
 
 #### Examples
 
-    \dontrun{
     # Remove an expression profile from the snapshot
     snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_observed_data()`
+### `Snapshot$add_observed_data()`
 
 Add a DataSet object (observed data) to the snapshot
 
@@ -368,7 +354,7 @@ Invisibly returns the object
 
 ------------------------------------------------------------------------
 
-### Method `remove_observed_data()`
+### `Snapshot$remove_observed_data()`
 
 Remove observed data from the snapshot by name
 
@@ -388,7 +374,7 @@ Invisibly returns the object
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Snapshot$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -405,8 +391,9 @@ The objects of this class are cloneable with this method.
 ## Examples
 
 ``` r
+
 ## ------------------------------------------------
-## Method `Snapshot$add_individual`
+## Method `Snapshot$add_individual()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -418,7 +405,7 @@ snapshot$add_individual(ind)
 } # }
 
 ## ------------------------------------------------
-## Method `Snapshot$remove_individual`
+## Method `Snapshot$remove_individual()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -427,7 +414,7 @@ snapshot$remove_individual("Subject_001")
 } # }
 
 ## ------------------------------------------------
-## Method `Snapshot$add_formulation`
+## Method `Snapshot$add_formulation()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -439,7 +426,7 @@ snapshot$add_formulation(form)
 } # }
 
 ## ------------------------------------------------
-## Method `Snapshot$remove_formulation`
+## Method `Snapshot$remove_formulation()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -448,7 +435,7 @@ snapshot$remove_formulation("Tablet")
 } # }
 
 ## ------------------------------------------------
-## Method `Snapshot$remove_population`
+## Method `Snapshot$remove_population()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -457,7 +444,7 @@ snapshot$remove_population("pop_1")
 } # }
 
 ## ------------------------------------------------
-## Method `Snapshot$add_expression_profile`
+## Method `Snapshot$add_expression_profile()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -476,7 +463,7 @@ snapshot$add_expression_profile(profile)
 } # }
 
 ## ------------------------------------------------
-## Method `Snapshot$remove_expression_profile`
+## Method `Snapshot$remove_expression_profile()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

@@ -62,7 +62,7 @@ display a summary of its information.
 
 ### Public methods
 
-- [`Population$new()`](#method-Population-new)
+- [`Population$new()`](#method-Population-initialize)
 
 - [`Population$print()`](#method-Population-print)
 
@@ -72,7 +72,7 @@ display a summary of its information.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Population$new()`
 
 Create a new Population object
 
@@ -92,7 +92,7 @@ A new Population object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Population$print()`
 
 Print a summary of the population including its properties and settings.
 
@@ -112,7 +112,7 @@ Invisibly returns the Population object for method chaining
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `Population$to_df()`
 
 Convert the population to a list of data frames for easier analysis
 
@@ -131,7 +131,7 @@ A list containing data frames with population information:
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Population$clone()`
 
 The objects of this class are cloneable with this method.
 

@@ -43,7 +43,7 @@ display a summary of its information. Protocols can be either simple
 
 ### Public methods
 
-- [`Protocol$new()`](#method-Protocol-new)
+- [`Protocol$new()`](#method-Protocol-initialize)
 
 - [`Protocol$print()`](#method-Protocol-print)
 
@@ -57,7 +57,7 @@ display a summary of its information. Protocols can be either simple
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Protocol$new()`
 
 Create a new Protocol object
 
@@ -77,7 +77,7 @@ A new Protocol object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Protocol$print()`
 
 Print a summary of the protocol including its properties and parameters.
 
@@ -97,7 +97,7 @@ Invisibly returns the Protocol object for method chaining
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `Protocol$to_df()`
 
 Convert protocol data to a single consolidated tibble
 
@@ -111,7 +111,7 @@ A tibble containing all protocol data in a single data frame
 
 ------------------------------------------------------------------------
 
-### Method `get_human_application_type()`
+### `Protocol$get_human_application_type()`
 
 Get human-readable application type
 
@@ -125,7 +125,7 @@ Character string with human-readable application type
 
 ------------------------------------------------------------------------
 
-### Method `get_human_dosing_interval()`
+### `Protocol$get_human_dosing_interval()`
 
 Get human-readable dosing interval
 
@@ -139,7 +139,7 @@ Character string with human-readable dosing interval
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Protocol$clone()`
 
 The objects of this class are cloneable with this method.
 

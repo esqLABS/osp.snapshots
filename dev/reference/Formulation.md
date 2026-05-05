@@ -26,7 +26,7 @@ display a summary of its information.
 
 ### Public methods
 
-- [`Formulation$new()`](#method-Formulation-new)
+- [`Formulation$new()`](#method-Formulation-initialize)
 
 - [`Formulation$print()`](#method-Formulation-print)
 
@@ -38,7 +38,7 @@ display a summary of its information.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Formulation$new()`
 
 Create a new Formulation object
 
@@ -58,7 +58,7 @@ A new Formulation object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Formulation$print()`
 
 Print a summary of the formulation including its properties and
 parameters.
@@ -79,7 +79,7 @@ Invisibly returns the Formulation object for method chaining
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `Formulation$to_df()`
 
 Convert formulation data to tibbles
 
@@ -113,7 +113,7 @@ not available)
 
 ------------------------------------------------------------------------
 
-### Method `get_human_formulation_type()`
+### `Formulation$get_human_formulation_type()`
 
 Get human-readable formulation type
 
@@ -127,7 +127,7 @@ Character string with human-readable formulation type
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Formulation$clone()`
 
 The objects of this class are cloneable with this method.
 

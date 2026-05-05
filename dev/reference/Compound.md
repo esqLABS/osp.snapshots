@@ -98,7 +98,7 @@ display a summary of its information.
 
 ### Public methods
 
-- [`Compound$new()`](#method-Compound-new)
+- [`Compound$new()`](#method-Compound-initialize)
 
 - [`Compound$print()`](#method-Compound-print)
 
@@ -108,7 +108,7 @@ display a summary of its information.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Compound$new()`
 
 Create a new Compound object
 
@@ -128,7 +128,7 @@ A new Compound object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Compound$print()`
 
 Print a summary of the compound including its properties and parameters.
 
@@ -148,7 +148,7 @@ Invisibly returns the Compound object for method chaining
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `Compound$to_df()`
 
 Convert compound data to tibbles for analysis
 
@@ -163,7 +163,7 @@ code
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Compound$clone()`
 
 The objects of this class are cloneable with this method.
 

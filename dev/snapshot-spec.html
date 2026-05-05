@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,100 +43,100 @@
 <hr><div class="section level2">
 <h2 id="project">Project<a class="anchor" aria-label="anchor" href="#project"></a></h2>
 <p>The top-level snapshot object. All other snapshots are nested arrays within it.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Version</code></td>
+</tr></thead><tbody><tr><td><code>Version</code></td>
 <td><code>int</code></td>
 <td>Yes</td>
 <td>Sets <code>PKSimProject.Creation.InternalVersion</code>. Used to create a <code>SnapshotContext</code> that controls version-specific mapping behavior throughout the entire conversion. Current version: <code>80</code> (v12).</td>
-</tr><tr class="even"><td><code>Name</code></td>
+</tr><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>PKSimProject.Name</code> (also overridden by the input filename).</td>
-</tr><tr class="odd"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>PKSimProject.Description</code>.</td>
-</tr><tr class="even"><td><code>ExpressionProfiles</code></td>
+</tr><tr><td><code>ExpressionProfiles</code></td>
 <td>
 <a href="#expressionprofile">ExpressionProfile</a>[]</td>
 <td>No</td>
 <td>Mapped first and added to the project before any other building blocks, because Individuals reference them by name.</td>
-</tr><tr class="odd"><td><code>Individuals</code></td>
+</tr><tr><td><code>Individuals</code></td>
 <td>
 <a href="#individual">Individual</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>IndividualMapper</code>, added to project as building blocks.</td>
-</tr><tr class="even"><td><code>Populations</code></td>
+</tr><tr><td><code>Populations</code></td>
 <td>
 <a href="#population">Population</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>PopulationMapper</code>, added to project as building blocks.</td>
-</tr><tr class="odd"><td><code>Compounds</code></td>
+</tr><tr><td><code>Compounds</code></td>
 <td>
 <a href="#compound">Compound</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>CompoundMapper</code>, added to project as building blocks.</td>
-</tr><tr class="even"><td><code>Formulations</code></td>
+</tr><tr><td><code>Formulations</code></td>
 <td>
 <a href="#formulation">Formulation</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>FormulationMapper</code>, added to project as building blocks.</td>
-</tr><tr class="odd"><td><code>Protocols</code></td>
+</tr><tr><td><code>Protocols</code></td>
 <td>
 <a href="#protocol">Protocol</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>ProtocolMapper</code>, added to project as building blocks.</td>
-</tr><tr class="even"><td><code>ObserverSets</code></td>
+</tr><tr><td><code>ObserverSets</code></td>
 <td>
 <a href="#observerset">ObserverSet</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>ObserverSetMapper</code>, added to project as building blocks.</td>
-</tr><tr class="odd"><td><code>Events</code></td>
+</tr><tr><td><code>Events</code></td>
 <td>
 <a href="#event">Event</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>EventMapper</code>, added to project as building blocks.</td>
-</tr><tr class="even"><td><code>Simulations</code></td>
+</tr><tr><td><code>Simulations</code></td>
 <td>
 <a href="#simulation">Simulation</a>[]</td>
 <td>No</td>
 <td>Mapped sequentially via <code>SimulationMapper</code>. Each simulation references building blocks by name from the project.</td>
-</tr><tr class="odd"><td><code>ObservedData</code></td>
+</tr><tr><td><code>ObservedData</code></td>
 <td>
 <a href="#datarepository-observed-data">DataRepository</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>DataRepositoryMapper</code>, added to project as observed data.</td>
-</tr><tr class="even"><td><code>ParameterIdentifications</code></td>
+</tr><tr><td><code>ParameterIdentifications</code></td>
 <td>
 <a href="#parameteridentification">ParameterIdentification</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>ParameterIdentificationMapper</code>. References simulations by name.</td>
-</tr><tr class="odd"><td><code>SimulationComparisons</code></td>
+</tr><tr><td><code>SimulationComparisons</code></td>
 <td>
 <a href="#simulationcomparison">SimulationComparison</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>SimulationComparisonMapper</code>. References simulations by name.</td>
-</tr><tr class="even"><td><code>ObservedDataClassifications</code></td>
+</tr><tr><td><code>ObservedDataClassifications</code></td>
 <td>
 <a href="#classification">Classification</a>[]</td>
 <td>No</td>
 <td>Folder hierarchy for observed data. Applied after all data is loaded.</td>
-</tr><tr class="odd"><td><code>SimulationClassifications</code></td>
+</tr><tr><td><code>SimulationClassifications</code></td>
 <td>
 <a href="#classification">Classification</a>[]</td>
 <td>No</td>
 <td>Folder hierarchy for simulations.</td>
-</tr><tr class="even"><td><code>SimulationComparisonClassifications</code></td>
+</tr><tr><td><code>SimulationComparisonClassifications</code></td>
 <td>
 <a href="#classification">Classification</a>[]</td>
 <td>No</td>
 <td>Folder hierarchy for simulation comparisons.</td>
-</tr><tr class="odd"><td><code>ParameterIdentificationClassifications</code></td>
+</tr><tr><td><code>ParameterIdentificationClassifications</code></td>
 <td>
 <a href="#classification">Classification</a>[]</td>
 <td>No</td>
@@ -147,69 +147,69 @@
 <div class="section level2">
 <h2 id="compound">Compound<a class="anchor" aria-label="anchor" href="#compound"></a></h2>
 <p>Created via <code>ICompoundFactory.Create()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Compound.Name</code></td>
-</tr><tr class="even"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Compound.Description</code></td>
-</tr><tr class="odd"><td><code>IsSmallMolecule</code></td>
+</tr><tr><td><code>IsSmallMolecule</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
 <code>Compound.IsSmallMolecule</code>. Defaults to <code>true</code>.</td>
-</tr><tr class="even"><td><code>PlasmaProteinBindingPartner</code></td>
+</tr><tr><td><code>PlasmaProteinBindingPartner</code></td>
 <td>
 <a href="#plasmaproteinbindingpartner">PlasmaProteinBindingPartner</a>?</td>
 <td>No</td>
 <td>
 <code>Compound.PlasmaProteinBindingPartner</code>. Defaults to <code>Unknown</code>.</td>
-</tr><tr class="odd"><td><code>CalculationMethods</code></td>
+</tr><tr><td><code>CalculationMethods</code></td>
 <td><a href="#calculationmethodcache">CalculationMethodCache</a></td>
 <td>No</td>
 <td>Updates <code>Compound.CalculationMethodCache</code>. Each string name is looked up in the calculation method repository and added.</td>
-</tr><tr class="even"><td><code>Lipophilicity</code></td>
+</tr><tr><td><code>Lipophilicity</code></td>
 <td>
 <a href="#alternative">Alternative</a>[]</td>
 <td>No</td>
 <td>Mapped to the <code>COMPOUND_LIPOPHILICITY</code> alternative group. Existing non-calculated alternatives are removed and replaced.</td>
-</tr><tr class="odd"><td><code>FractionUnbound</code></td>
+</tr><tr><td><code>FractionUnbound</code></td>
 <td>
 <a href="#alternative">Alternative</a>[]</td>
 <td>No</td>
 <td>Mapped to the <code>COMPOUND_FRACTION_UNBOUND</code> alternative group.</td>
-</tr><tr class="even"><td><code>Solubility</code></td>
+</tr><tr><td><code>Solubility</code></td>
 <td>
 <a href="#alternative">Alternative</a>[]</td>
 <td>No</td>
 <td>Mapped to the <code>COMPOUND_SOLUBILITY</code> alternative group. Has special handling for table-based solubility formulas.</td>
-</tr><tr class="odd"><td><code>IntestinalPermeability</code></td>
+</tr><tr><td><code>IntestinalPermeability</code></td>
 <td>
 <a href="#alternative">Alternative</a>[]</td>
 <td>No</td>
 <td>Mapped to the <code>COMPOUND_INTESTINAL_PERMEABILITY</code> alternative group.</td>
-</tr><tr class="even"><td><code>Permeability</code></td>
+</tr><tr><td><code>Permeability</code></td>
 <td>
 <a href="#alternative">Alternative</a>[]</td>
 <td>No</td>
 <td>Mapped to the <code>COMPOUND_PERMEABILITY</code> alternative group.</td>
-</tr><tr class="odd"><td><code>PkaTypes</code></td>
+</tr><tr><td><code>PkaTypes</code></td>
 <td>
 <a href="#pkatype">PkaType</a>[]</td>
 <td>No</td>
 <td>Each entry sets the compound type parameter (<code>ParameterCompoundType(index)</code>) and pKa value parameter (<code>ParameterPKa(index)</code>) on the compound. Value origins are synchronized across all pKa parameters.</td>
-</tr><tr class="even"><td><code>Processes</code></td>
+</tr><tr><td><code>Processes</code></td>
 <td>
 <a href="#compoundprocess">CompoundProcess</a>[]</td>
 <td>No</td>
 <td>Each process is mapped via <code>CompoundProcessMapper</code> and added to the compound via <code>Compound.AddProcess()</code>.</td>
-</tr><tr class="odd"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -218,37 +218,37 @@
 <div class="section level2">
 <h2 id="individual">Individual<a class="anchor" aria-label="anchor" href="#individual"></a></h2>
 <p>Created via <code>IIndividualFactory.CreateAndOptimizeFor(originData, seed)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Individual.Name</code></td>
-</tr><tr class="even"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Individual.Description</code></td>
-</tr><tr class="odd"><td><code>Seed</code></td>
+</tr><tr><td><code>Seed</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>Passed to the factory as the random seed for individual creation.</td>
-</tr><tr class="even"><td><code>OriginData</code></td>
+</tr><tr><td><code>OriginData</code></td>
 <td><a href="#origindata">OriginData</a></td>
 <td>No</td>
 <td>Mapped via <code>OriginDataMapper</code> first. The resulting domain <code>OriginData</code> is passed to the factory to create the individual.</td>
-</tr><tr class="odd"><td><code>ExpressionProfiles</code></td>
+</tr><tr><td><code>ExpressionProfiles</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td>Array of <a href="#expressionprofile">ExpressionProfile</a> names. Each name is resolved from the project’s building blocks and added to the individual via <code>IMoleculeExpressionTask.AddExpressionProfile()</code>. Only used in v11+ snapshots.</td>
-</tr><tr class="even"><td><code>Molecules</code></td>
+</tr><tr><td><code>Molecules</code></td>
 <td>
 <a href="#expressionprofile">ExpressionProfile</a>[]</td>
 <td>No</td>
 <td>
 <strong>Legacy (v10 and below)</strong>. Embedded expression profile snapshots. Converted to standalone <code>ExpressionProfile</code> building blocks during loading and added to the project. The individual then references them by name.</td>
-</tr><tr class="odd"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#localizedparameter">LocalizedParameter</a>[]</td>
 <td>No</td>
@@ -257,27 +257,27 @@
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a></h2>
 <p>Created via <code>IRandomPopulationFactory.CreateFor(settings, cancellationToken, seed)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Population.Name</code></td>
-</tr><tr class="even"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Population.Description</code></td>
-</tr><tr class="odd"><td><code>Seed</code></td>
+</tr><tr><td><code>Seed</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>Passed to the factory as the random seed for population generation.</td>
-</tr><tr class="even"><td><code>Settings</code></td>
+</tr><tr><td><code>Settings</code></td>
 <td><a href="#populationsettings">PopulationSettings</a></td>
 <td>Yes</td>
 <td>Mapped via <code>RandomPopulationSettingsMapper</code>. Defines the number of individuals and parameter ranges.</td>
-</tr><tr class="odd"><td><code>AdvancedParameters</code></td>
+</tr><tr><td><code>AdvancedParameters</code></td>
 <td>
 <a href="#advancedparameter">AdvancedParameter</a>[]</td>
 <td>No</td>
@@ -287,74 +287,74 @@
 <div class="section level2">
 <h2 id="expressionprofile">ExpressionProfile<a class="anchor" aria-label="anchor" href="#expressionprofile"></a></h2>
 <p>Created via <code>IExpressionProfileFactory.Create(type, species, molecule)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Type</code></td>
+</tr></thead><tbody><tr><td><code>Type</code></td>
 <td><a href="#quantitytype">QuantityType</a></td>
 <td>Yes</td>
 <td>Molecule type (Enzyme, Transporter, or other protein type). Passed to the factory.</td>
-</tr><tr class="even"><td><code>Species</code></td>
+</tr><tr><td><code>Species</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Species name. Resolved to a <code>Species</code> object and passed to the factory.</td>
-</tr><tr class="odd"><td><code>Molecule</code></td>
+</tr><tr><td><code>Molecule</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Molecule name. Passed to the factory.</td>
-</tr><tr class="even"><td><code>Category</code></td>
+</tr><tr><td><code>Category</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>
 <code>ExpressionProfile.Category</code>. The expression profile name is a composite: <code>Molecule|Species|Category</code>.</td>
-</tr><tr class="odd"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ExpressionProfile.Description</code></td>
-</tr><tr class="even"><td><code>Localization</code></td>
+</tr><tr><td><code>Localization</code></td>
 <td>
 <a href="#localization">Localization</a>?</td>
 <td>No</td>
 <td>For proteins: sets expression localization via <code>IMoleculeExpressionTask.SetExpressionLocalizationFor()</code>. Used in v10+ snapshots.</td>
-</tr><tr class="odd"><td><code>MembraneLocation</code></td>
+</tr><tr><td><code>MembraneLocation</code></td>
 <td>
 <a href="#membranelocation">MembraneLocation</a>?</td>
 <td>No</td>
 <td>
 <strong>Legacy (v9 and below)</strong>. Combined with <code>TissueLocation</code> and <code>IntracellularVascularEndoLocation</code> and converted to a <a href="#localization">Localization</a> value via <code>LocalizationConverter</code>.</td>
-</tr><tr class="even"><td><code>TissueLocation</code></td>
+</tr><tr><td><code>TissueLocation</code></td>
 <td>
 <a href="#tissuelocation">TissueLocation</a>?</td>
 <td>No</td>
 <td>
 <strong>Legacy (v9 and below)</strong>. See <code>MembraneLocation</code>.</td>
-</tr><tr class="odd"><td><code>IntracellularVascularEndoLocation</code></td>
+</tr><tr><td><code>IntracellularVascularEndoLocation</code></td>
 <td>
 <a href="#intracellularvascularendolocation">IntracellularVascularEndoLocation</a>?</td>
 <td>No</td>
 <td>
 <strong>Legacy (v9 and below)</strong>. See <code>MembraneLocation</code>.</td>
-</tr><tr class="even"><td><code>TransportType</code></td>
+</tr><tr><td><code>TransportType</code></td>
 <td>
 <a href="#transporttype">TransportType</a>?</td>
 <td>No</td>
 <td>For transporters: sets transporter type via <code>IMoleculeExpressionTask.SetTransporterTypeFor()</code>.</td>
-</tr><tr class="odd"><td><code>Ontogeny</code></td>
+</tr><tr><td><code>Ontogeny</code></td>
 <td><a href="#ontogeny">Ontogeny</a></td>
 <td>No</td>
 <td>Mapped via <code>OntogenyMapper</code>. Sets ontogeny data for the molecule.</td>
-</tr><tr class="even"><td><code>Expression</code></td>
+</tr><tr><td><code>Expression</code></td>
 <td>
 <a href="#expressioncontainer">ExpressionContainer</a>[]</td>
 <td>No</td>
 <td>Array of expression containers mapped via <code>ExpressionContainerMapper</code>. Each entry defines relative expression values per organ/compartment.</td>
-</tr><tr class="odd"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#localizedparameter">LocalizedParameter</a>[]</td>
 <td>No</td>
 <td>Mapped onto the expression profile’s individual parameters.</td>
-</tr><tr class="even"><td><code>Disease</code></td>
+</tr><tr><td><code>Disease</code></td>
 <td><a href="#diseasestate">DiseaseState</a></td>
 <td>No</td>
 <td>Mapped via <code>DiseaseStateMapper</code>. Applied to the expression profile’s origin data.</td>
@@ -363,102 +363,102 @@
 <div class="section level2">
 <h2 id="simulation">Simulation<a class="anchor" aria-label="anchor" href="#simulation"></a></h2>
 <p>Created via <code>ISimulationFactory.CreateFrom(simulationSubject, compounds, modelProperties)</code>, then <code>ISimulationModelCreator.CreateModelFor(simulation)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Simulation.Name</code></td>
-</tr><tr class="even"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Simulation.Description</code></td>
-</tr><tr class="odd"><td><code>Model</code></td>
+</tr><tr><td><code>Model</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Model name (e.g. <code>"4Comp"</code>). Passed to <code>IModelPropertiesTask.DefaultFor()</code> to build <code>ModelProperties</code>, which is then passed to the simulation factory.</td>
-</tr><tr class="even"><td><code>AllowAging</code></td>
+</tr><tr><td><code>AllowAging</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
 <code>Simulation.AllowAging</code>. Defaults to <code>false</code>.</td>
-</tr><tr class="odd"><td><code>Individual</code></td>
+</tr><tr><td><code>Individual</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Name of the Individual building block. Resolved from the project by name. Used as the simulation subject for individual simulations.</td>
-</tr><tr class="even"><td><code>Population</code></td>
+</tr><tr><td><code>Population</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Name of the Population building block. Resolved from the project by name. Used as the simulation subject for population simulations. Presence of this field determines that a <code>PopulationSimulation</code> is created.</td>
-</tr><tr class="odd"><td><code>Compounds</code></td>
+</tr><tr><td><code>Compounds</code></td>
 <td>
 <a href="#compoundproperties">CompoundProperties</a>[]</td>
 <td>No</td>
 <td>Each entry configures one compound in the simulation. The compound is resolved by <code>Name</code> from the project.</td>
-</tr><tr class="even"><td><code>Events</code></td>
+</tr><tr><td><code>Events</code></td>
 <td>
 <a href="#eventselection">EventSelection</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>EventMappingMapper</code>. Each event is resolved by name from the project and added to the simulation’s <code>EventProperties</code>.</td>
-</tr><tr class="odd"><td><code>ObserverSets</code></td>
+</tr><tr><td><code>ObserverSets</code></td>
 <td>
 <a href="#observersetselection">ObserverSetSelection</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>ObserverSetMappingMapper</code>. Each observer set is resolved by name.</td>
-</tr><tr class="even"><td><code>ObservedData</code></td>
+</tr><tr><td><code>ObservedData</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td>Array of observed data names. Each is resolved from <code>project.AllObservedData</code> by name and added to the simulation’s <code>UsedObservedData</code>.</td>
-</tr><tr class="odd"><td><code>Solver</code></td>
+</tr><tr><td><code>Solver</code></td>
 <td><a href="#solversettings">SolverSettings</a></td>
 <td>No</td>
 <td>Mapped via <code>SolverSettingsMapper</code>.</td>
-</tr><tr class="even"><td><code>OutputSchema</code></td>
+</tr><tr><td><code>OutputSchema</code></td>
 <td><a href="#outputschema">OutputSchema</a></td>
 <td>No</td>
 <td>Mapped via <code>OutputSchemaMapper</code>.</td>
-</tr><tr class="odd"><td><code>OutputSelections</code></td>
+</tr><tr><td><code>OutputSelections</code></td>
 <td><a href="#outputselections">OutputSelections</a></td>
 <td>No</td>
 <td>Mapped via <code>OutputSelectionsMapper</code>. Each string path is resolved against the simulation’s quantity tree.</td>
-</tr><tr class="even"><td><code>OutputMappings</code></td>
+</tr><tr><td><code>OutputMappings</code></td>
 <td>
 <a href="#outputmapping">OutputMapping</a>[]</td>
 <td>No</td>
 <td>Mapped via <code>OutputMappingMapper</code>. Each mapping links a simulation output path to observed data.</td>
-</tr><tr class="odd"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#localizedparameter">LocalizedParameter</a>[]</td>
 <td>No</td>
 <td>Overridden simulation parameters. Mapped via <code>ParameterMapper.MapLocalizedParameters()</code> onto the simulation model root. After mapping, changes are synced back to the simulation’s used building blocks.</td>
-</tr><tr class="even"><td><code>AdvancedParameters</code></td>
+</tr><tr><td><code>AdvancedParameters</code></td>
 <td>
 <a href="#advancedparameter">AdvancedParameter</a>[]</td>
 <td>No</td>
 <td>Only for population simulations. Mapped via <code>AdvancedParameterMapper</code>.</td>
-</tr><tr class="odd"><td><code>Interactions</code></td>
+</tr><tr><td><code>Interactions</code></td>
 <td>
 <a href="#compoundproperties">CompoundProcessSelection</a>[]</td>
 <td>No</td>
 <td>Interaction selections. Each process is resolved by name from the compound. Unselected interactions create <code>NoInteractionProcess</code> placeholders.</td>
-</tr><tr class="even"><td><code>AlteredBuildingBlocks</code></td>
+</tr><tr><td><code>AlteredBuildingBlocks</code></td>
 <td>
 <a href="#alteredbuildingblock">AlteredBuildingBlock</a>[]</td>
 <td>No</td>
 <td>Marks which building blocks have been modified within this simulation. Sets <code>UsedBuildingBlock.Altered = true</code>.</td>
-</tr><tr class="odd"><td><code>IndividualAnalyses</code></td>
+</tr><tr><td><code>IndividualAnalyses</code></td>
 <td>
 <a href="#curvechart">CurveChart</a>[]</td>
 <td>No</td>
 <td>Chart analyses for individual simulations. Mapped via <code>SimulationTimeProfileChartMapper</code>.</td>
-</tr><tr class="even"><td><code>PopulationAnalyses</code></td>
+</tr><tr><td><code>PopulationAnalyses</code></td>
 <td>
 <a href="#populationanalysischart">PopulationAnalysisChart</a>[]</td>
 <td>No</td>
 <td>Chart analyses for population simulations. Mapped via <code>PopulationAnalysisChartMapper</code>.</td>
-</tr><tr class="odd"><td><code>HasResults</code></td>
+</tr><tr><td><code>HasResults</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>If <code>true</code> and the context’s <code>RunSimulations</code> is <code>true</code>, the simulation is executed via <code>ISimulationRunner.RunSimulation()</code> after mapping.</td>
@@ -468,31 +468,31 @@
 <p>Created via <code>IProtocolFactory.Create(mode, applicationType)</code>. Protocol type is determined by the snapshot: if <code>ApplicationType</code> is present, a <code>SimpleProtocol</code> is created; otherwise an <code>AdvancedProtocol</code> is created from <code>Schemas</code>.</p>
 <div class="section level3">
 <h3 id="simple-protocol">Simple Protocol<a class="anchor" aria-label="anchor" href="#simple-protocol"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>SimpleProtocol.Name</code></td>
-</tr><tr class="even"><td><code>ApplicationType</code></td>
+</tr><tr><td><code>ApplicationType</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>ApplicationTypes.ByName()</code>. Determines the application type (e.g. IV, Oral).</td>
-</tr><tr class="odd"><td><code>DosingInterval</code></td>
+</tr><tr><td><code>DosingInterval</code></td>
 <td><a href="#dosingintervalid">DosingIntervalId</a></td>
 <td>No</td>
 <td>Resolved via <code>DosingIntervals.ById()</code>.</td>
-</tr><tr class="even"><td><code>TargetOrgan</code></td>
+</tr><tr><td><code>TargetOrgan</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>SimpleProtocol.TargetOrgan</code></td>
-</tr><tr class="odd"><td><code>TargetCompartment</code></td>
+</tr><tr><td><code>TargetCompartment</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>SimpleProtocol.TargetCompartment</code></td>
-</tr><tr class="even"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -500,19 +500,19 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="advanced-protocol">Advanced Protocol<a class="anchor" aria-label="anchor" href="#advanced-protocol"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>AdvancedProtocol.Name</code></td>
-</tr><tr class="even"><td><code>TimeUnit</code></td>
+</tr><tr><td><code>TimeUnit</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>IDimensionRepository.Time.UnitOrDefault()</code>. Sets the protocol’s time display unit.</td>
-</tr><tr class="odd"><td><code>Schemas</code></td>
+</tr><tr><td><code>Schemas</code></td>
 <td>
 <a href="#schema-advanced-protocol">Schema</a>[]</td>
 <td>No</td>
@@ -522,19 +522,19 @@
 <div class="section level2">
 <h2 id="formulation">Formulation<a class="anchor" aria-label="anchor" href="#formulation"></a></h2>
 <p>Created by cloning a template: <code>IFormulationRepository.FormulationBy(formulationType)</code> then <code>ICloner.Clone(template)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Formulation.Name</code></td>
-</tr><tr class="even"><td><code>FormulationType</code></td>
+</tr><tr><td><code>FormulationType</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Key used to look up the template formulation from the repository. The template is cloned to create the domain instance.</td>
-</tr><tr class="odd"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -543,19 +543,19 @@
 <div class="section level2">
 <h2 id="event">Event<a class="anchor" aria-label="anchor" href="#event"></a></h2>
 <p>Created via <code>IEventFactory.Create(templateName)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>PKSimEvent.Name</code></td>
-</tr><tr class="even"><td><code>Template</code></td>
+</tr><tr><td><code>Template</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Event template name passed to the factory. Determines which event type is created.</td>
-</tr><tr class="odd"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -564,15 +564,15 @@
 <div class="section level2">
 <h2 id="observerset">ObserverSet<a class="anchor" aria-label="anchor" href="#observerset"></a></h2>
 <p>Created via <code>IObserverSetFactory.Create()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ObserverSet.Name</code></td>
-</tr><tr class="even"><td><code>Observers</code></td>
+</tr><tr><td><code>Observers</code></td>
 <td>
 <a href="#observer">Observer</a>[]</td>
 <td>No</td>
@@ -583,56 +583,56 @@
 <div class="section level3">
 <h3 id="origindata">OriginData<a class="anchor" aria-label="anchor" href="#origindata"></a></h3>
 <p>Created directly as <code>new OriginData { Species = ... }</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Species</code></td>
+</tr></thead><tbody><tr><td><code>Species</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Resolved via <code>ISpeciesRepository.FindByName()</code>. Throws if not found.</td>
-</tr><tr class="even"><td><code>Population</code></td>
+</tr><tr><td><code>Population</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved from the species’ available populations. Uses the species default if not specified. Throws if not found.</td>
-</tr><tr class="odd"><td><code>Gender</code></td>
+</tr><tr><td><code>Gender</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved from the population’s available genders. Uses the first gender if not specified. Throws if not found.</td>
-</tr><tr class="even"><td><code>Age</code></td>
+</tr><tr><td><code>Age</code></td>
 <td><a href="#parameter">Parameter</a></td>
 <td>No</td>
 <td>Set only if the population <code>IsAgeDependent</code>. Value converted from display unit to base unit.</td>
-</tr><tr class="odd"><td><code>GestationalAge</code></td>
+</tr><tr><td><code>GestationalAge</code></td>
 <td><a href="#parameter">Parameter</a></td>
 <td>No</td>
 <td>Set only if the population <code>IsAgeDependent</code>.</td>
-</tr><tr class="even"><td><code>Weight</code></td>
+</tr><tr><td><code>Weight</code></td>
 <td><a href="#parameter">Parameter</a></td>
 <td>No</td>
 <td>Value compared with mean weight (from <code>IIndividualModelTask.MeanWeightFor()</code>). Converted from display unit to base unit.</td>
-</tr><tr class="odd"><td><code>Height</code></td>
+</tr><tr><td><code>Height</code></td>
 <td><a href="#parameter">Parameter</a></td>
 <td>No</td>
 <td>Set only if the population <code>IsHeightDependent</code>. Compared with mean height.</td>
-</tr><tr class="even"><td><code>CalculationMethods</code></td>
+</tr><tr><td><code>CalculationMethods</code></td>
 <td><a href="#calculationmethodcache">CalculationMethodCache</a></td>
 <td>No</td>
 <td>Each method name resolved from the calculation method repository and added to the cache.</td>
-</tr><tr class="odd"><td><code>ValueOrigin</code></td>
+</tr><tr><td><code>ValueOrigin</code></td>
 <td><a href="#valueorigin">ValueOrigin</a></td>
 <td>No</td>
 <td>Updates the origin data’s value origin.</td>
-</tr><tr class="even"><td><code>Disease</code></td>
+</tr><tr><td><code>Disease</code></td>
 <td><a href="#diseasestate">DiseaseState</a></td>
 <td>No</td>
 <td>Mapped via <code>DiseaseStateMapper</code>.</td>
-</tr><tr class="odd"><td><code>DiseaseState</code></td>
+</tr><tr><td><code>DiseaseState</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <strong>Legacy format</strong>. Old-style disease state name, converted to the new <code>Disease</code> format.</td>
-</tr><tr class="even"><td><code>DiseaseStateParameters</code></td>
+</tr><tr><td><code>DiseaseStateParameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -642,29 +642,29 @@
 <div class="section level3">
 <h3 id="compoundproperties">CompoundProperties<a class="anchor" aria-label="anchor" href="#compoundproperties"></a></h3>
 <p>Not created – retrieves the existing <code>CompoundProperties</code> from the simulation via <code>simulation.CompoundPropertiesFor(name)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Compound name. Used to look up the compound from the project and the corresponding <code>CompoundProperties</code> from the simulation.</td>
-</tr><tr class="even"><td><code>CalculationMethods</code></td>
+</tr><tr><td><code>CalculationMethods</code></td>
 <td><a href="#calculationmethodcache">CalculationMethodCache</a></td>
 <td>No</td>
 <td>Updates the compound properties’ calculation method cache.</td>
-</tr><tr class="odd"><td><code>Alternatives</code></td>
+</tr><tr><td><code>Alternatives</code></td>
 <td>
 <a href="#compoundgroupselection">CompoundGroupSelection</a>[]</td>
 <td>No</td>
 <td>Each entry sets the <code>AlternativeName</code> on the matching <code>CompoundGroupSelection</code> in the compound properties. The group is resolved by name.</td>
-</tr><tr class="even"><td><code>Processes</code></td>
+</tr><tr><td><code>Processes</code></td>
 <td>
 <a href="#compoundprocessselection">CompoundProcessSelection</a>[]</td>
 <td>No</td>
 <td>Each process is resolved by name from the compound. Missing or deselected processes create placeholder objects (<code>NotSelectedSystemicProcess</code>, <code>NoInteractionProcess</code>, etc.) depending on molecule type.</td>
-</tr><tr class="odd"><td><code>Protocol</code></td>
+</tr><tr><td><code>Protocol</code></td>
 <td><a href="#protocolselection">ProtocolSelection</a></td>
 <td>No</td>
 <td>Protocol resolved by name from the project. Formulation mappings resolved by formulation name and mapped to template IDs.</td>
@@ -672,41 +672,41 @@
 <div class="section level3">
 <h3 id="compoundprocess">CompoundProcess<a class="anchor" aria-label="anchor" href="#compoundprocess"></a></h3>
 <p>Created by cloning a template: <code>ICompoundProcessRepository.ProcessByName(internalName)</code> then <code>ICloner.Clone(template)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Not used during import (name is calculated programmatically via <code>process.RefreshName()</code>).</td>
-</tr><tr class="even"><td><code>InternalName</code></td>
+</tr><tr><td><code>InternalName</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Key used to look up the process template from the compound process repository. The template is cloned.</td>
-</tr><tr class="odd"><td><code>DataSource</code></td>
+</tr><tr><td><code>DataSource</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>
 <code>CompoundProcess.DataSource</code>. Set directly on the cloned process.</td>
-</tr><tr class="even"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>CompoundProcess.Description</code>. Only set if non-empty.</td>
-</tr><tr class="odd"><td><code>Molecule</code></td>
+</tr><tr><td><code>Molecule</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For partial processes: <code>PartialProcess.MoleculeName</code>.</td>
-</tr><tr class="even"><td><code>Metabolite</code></td>
+</tr><tr><td><code>Metabolite</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For enzymatic processes: <code>EnzymaticProcess.MetaboliteName</code>.</td>
-</tr><tr class="odd"><td><code>Species</code></td>
+</tr><tr><td><code>Species</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For species-dependent processes: resolved via <code>ISpeciesRepository.FindByName()</code> and set via <code>ICompoundProcessTask.SetSpeciesForProcess()</code>.</td>
-</tr><tr class="even"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -715,24 +715,24 @@
 <div class="section level3">
 <h3 id="alternative">Alternative<a class="anchor" aria-label="anchor" href="#alternative"></a></h3>
 <p>Created via <code>IParameterAlternativeFactory.CreateAlternativeFor(group)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ParameterAlternative.Name</code></td>
-</tr><tr class="even"><td><code>IsDefault</code></td>
+</tr><tr><td><code>IsDefault</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
 <code>ParameterAlternative.IsDefault</code>. Defaults to <code>true</code>.</td>
-</tr><tr class="odd"><td><code>Species</code></td>
+</tr><tr><td><code>Species</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For species-specific alternatives (<code>ParameterAlternativeWithSpecies</code>): resolved via <code>ISpeciesRepository.FindByName()</code>. Throws <code>SnapshotOutdatedException</code> if not found.</td>
-</tr><tr class="even"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -742,19 +742,19 @@
 <div class="section level3">
 <h3 id="pkatype">PkaType<a class="anchor" aria-label="anchor" href="#pkatype"></a></h3>
 <p>Not a standalone mapped object. Each entry directly modifies compound parameters.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Type</code></td>
+</tr></thead><tbody><tr><td><code>Type</code></td>
 <td><a href="#compoundtype">CompoundType</a></td>
 <td>Yes</td>
 <td>Sets <code>ParameterCompoundType(index)</code> parameter value on the compound.</td>
-</tr><tr class="even"><td><code>Pka</code></td>
+</tr><tr><td><code>Pka</code></td>
 <td><code>double</code></td>
 <td>Yes</td>
 <td>Sets <code>ParameterPKa(index)</code> parameter value on the compound.</td>
-</tr><tr class="odd"><td><code>ValueOrigin</code></td>
+</tr><tr><td><code>ValueOrigin</code></td>
 <td><a href="#valueorigin">ValueOrigin</a></td>
 <td>No</td>
 <td>Applied to both the compound type and pKa parameters. All pKa value origins are then synchronized.</td>
@@ -762,27 +762,27 @@
 <div class="section level3">
 <h3 id="parameter">Parameter<a class="anchor" aria-label="anchor" href="#parameter"></a></h3>
 <p>Not created – updates an existing <code>IParameter</code> found in the domain model’s parameter tree.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Used to find the parameter by name within its container.</td>
-</tr><tr class="even"><td><code>Value</code></td>
+</tr><tr><td><code>Value</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>Converted from display unit to base unit via <code>parameter.ConvertToBaseUnit()</code>. Only applied if it differs from the current value. Sets <code>parameter.IsDefault = false</code>.</td>
-</tr><tr class="odd"><td><code>Unit</code></td>
+</tr><tr><td><code>Unit</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>parameter.Dimension.UnitOrDefault()</code>. Sets <code>parameter.DisplayUnit</code>. A warning is logged if the unit is not found in the dimension.</td>
-</tr><tr class="even"><td><code>ValueOrigin</code></td>
+</tr><tr><td><code>ValueOrigin</code></td>
 <td><a href="#valueorigin">ValueOrigin</a></td>
 <td>No</td>
 <td>Updates the parameter’s value origin.</td>
-</tr><tr class="odd"><td><code>TableFormula</code></td>
+</tr><tr><td><code>TableFormula</code></td>
 <td><a href="#tableformula">TableFormula</a></td>
 <td>No</td>
 <td>If present, mapped via <code>TableFormulaMapper</code> and set as the parameter’s formula. Must be mapped before the value is set.</td>
@@ -790,15 +790,15 @@
 <div class="section level3">
 <h3 id="localizedparameter">LocalizedParameter<a class="anchor" aria-label="anchor" href="#localizedparameter"></a></h3>
 <p>Extends <code>Parameter</code> with a path for simulation-level parameter overrides.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Path</code></td>
+</tr></thead><tbody><tr><td><code>Path</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Full container path used to locate the parameter in the simulation’s parameter tree. All children are cached for performance. In v11 or earlier, <code>"Applications"</code> in the path is converted to <code>"Events"</code>.</td>
-</tr><tr class="even"><td><em>(all <a href="#parameter">Parameter</a> properties)</em></td>
+</tr><tr><td><em>(all <a href="#parameter">Parameter</a> properties)</em></td>
 <td></td>
 <td></td>
 <td>Same as Parameter above.</td>
@@ -806,25 +806,25 @@
 <div class="section level3">
 <h3 id="valueorigin">ValueOrigin<a class="anchor" aria-label="anchor" href="#valueorigin"></a></h3>
 <p>Not created as a new object. Updates an existing <code>ValueOrigin</code> via <code>valueOrigin.UpdateAllFrom()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Id</code></td>
+</tr></thead><tbody><tr><td><code>Id</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td><code>ValueOrigin.Id</code></td>
-</tr><tr class="even"><td><code>Source</code></td>
+</tr><tr><td><code>Source</code></td>
 <td>
 <a href="#valueoriginsourceid">ValueOriginSourceId</a>?</td>
 <td>No</td>
 <td>Resolved via <code>ValueOriginSources.ById()</code>. Defaults to <code>Undefined</code>.</td>
-</tr><tr class="odd"><td><code>Method</code></td>
+</tr><tr><td><code>Method</code></td>
 <td>
 <a href="#valueorigindeterminationmethodid">ValueOriginDeterminationMethodId</a>?</td>
 <td>No</td>
 <td>Resolved via <code>ValueOriginDeterminationMethods.ById()</code>. Defaults to <code>Undefined</code>.</td>
-</tr><tr class="even"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ValueOrigin.Description</code></td>
@@ -832,11 +832,11 @@
 <div class="section level3">
 <h3 id="calculationmethodcache">CalculationMethodCache<a class="anchor" aria-label="anchor" href="#calculationmethodcache"></a></h3>
 <p>An array of calculation method name strings. Not created – updates an existing cache.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><em>(each string)</em></td>
+</tr></thead><tbody><tr><td><em>(each string)</em></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Each name is resolved via <code>ICalculationMethodRepository.FindByName()</code>. The matching <code>CalculationMethod</code> replaces any existing method of the same category in the cache. A warning is logged if the name is not found.</td>
@@ -844,41 +844,41 @@
 <div class="section level3">
 <h3 id="solversettings">SolverSettings<a class="anchor" aria-label="anchor" href="#solversettings"></a></h3>
 <p>Created via <code>ISolverSettingsFactory.CreateDefault()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>AbsTol</code></td>
+</tr></thead><tbody><tr><td><code>AbsTol</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>
 <code>SolverSettings.AbsTol</code>. Uses default if null.</td>
-</tr><tr class="even"><td><code>RelTol</code></td>
+</tr><tr><td><code>RelTol</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>
 <code>SolverSettings.RelTol</code>. Uses default if null.</td>
-</tr><tr class="odd"><td><code>UseJacobian</code></td>
+</tr><tr><td><code>UseJacobian</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
 <code>SolverSettings.UseJacobian</code>. Uses default if null.</td>
-</tr><tr class="even"><td><code>H0</code></td>
+</tr><tr><td><code>H0</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>
 <code>SolverSettings.H0</code>. Uses default if null.</td>
-</tr><tr class="odd"><td><code>HMin</code></td>
+</tr><tr><td><code>HMin</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>
 <code>SolverSettings.HMin</code>. Uses default if null.</td>
-</tr><tr class="even"><td><code>HMax</code></td>
+</tr><tr><td><code>HMax</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>
 <code>SolverSettings.HMax</code>. Uses default if null.</td>
-</tr><tr class="odd"><td><code>MxStep</code></td>
+</tr><tr><td><code>MxStep</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>
@@ -888,11 +888,11 @@
 <div class="section level3">
 <h3 id="outputschema">OutputSchema<a class="anchor" aria-label="anchor" href="#outputschema"></a></h3>
 <p>Created via <code>IOutputSchemaFactory.CreateEmpty()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><em>(collection of OutputInterval)</em></td>
+</tr></thead><tbody><tr><td><em>(collection of OutputInterval)</em></td>
 <td>
 <a href="#outputinterval">OutputInterval</a>[]</td>
 <td>No</td>
@@ -901,15 +901,15 @@
 <div class="section level3">
 <h3 id="outputinterval">OutputInterval<a class="anchor" aria-label="anchor" href="#outputinterval"></a></h3>
 <p>Extends <code>ParameterContainerSnapshotBase</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>OutputInterval.Name</code></td>
-</tr><tr class="even"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -918,53 +918,53 @@
 <div class="section level3">
 <h3 id="outputselections">OutputSelections<a class="anchor" aria-label="anchor" href="#outputselections"></a></h3>
 <p>An array of output path strings.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><em>(each string)</em></td>
+</tr></thead><tbody><tr><td><em>(each string)</em></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Each path is resolved against the simulation’s quantity tree via <code>IEntitiesInContainerRetriever.QuantitiesFrom(simulation)</code>. If found, a <code>QuantitySelection(path, quantityType)</code> is created and added. Missing paths are logged as warnings.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="outputmapping">OutputMapping<a class="anchor" aria-label="anchor" href="#outputmapping"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Path</code></td>
+</tr></thead><tbody><tr><td><code>Path</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Simulation output quantity path.</td>
-</tr><tr class="even"><td><code>ObservedData</code></td>
+</tr><tr><td><code>ObservedData</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Observed data repository name. Resolved from the project.</td>
-</tr><tr class="odd"><td><code>Scaling</code></td>
+</tr><tr><td><code>Scaling</code></td>
 <td><a href="#scalings">Scalings</a></td>
 <td>No</td>
 <td>Scaling type for the mapping.</td>
-</tr><tr class="even"><td><code>Weight</code></td>
+</tr><tr><td><code>Weight</code></td>
 <td><code>float?</code></td>
 <td>No</td>
 <td>Weight for the mapping.</td>
-</tr><tr class="odd"><td><code>Weights</code></td>
+</tr><tr><td><code>Weights</code></td>
 <td><code>float[]</code></td>
 <td>No</td>
 <td>Per-point weights.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="protocolselection">ProtocolSelection<a class="anchor" aria-label="anchor" href="#protocolselection"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Protocol name. Resolved from the project’s building blocks by name.</td>
-</tr><tr class="even"><td><code>Formulations</code></td>
+</tr><tr><td><code>Formulations</code></td>
 <td>
 <a href="#formulationselection">FormulationSelection</a>[]</td>
 <td>No</td>
@@ -972,35 +972,35 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="formulationselection">FormulationSelection<a class="anchor" aria-label="anchor" href="#formulationselection"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Formulation name. Resolved from the project’s building blocks by name. The formulation’s template ID is stored.</td>
-</tr><tr class="even"><td><code>Key</code></td>
+</tr><tr><td><code>Key</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Formulation key identifying which application in the protocol uses this formulation.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="schema-advanced-protocol">Schema (Advanced Protocol)<a class="anchor" aria-label="anchor" href="#schema-advanced-protocol"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Schema.Name</code></td>
-</tr><tr class="even"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
 <td>Schema-level parameters (number of repetitions, time between repetitions, etc.).</td>
-</tr><tr class="odd"><td><code>SchemaItems</code></td>
+</tr><tr><td><code>SchemaItems</code></td>
 <td>
 <a href="#schemaitem">SchemaItem</a>[]</td>
 <td>No</td>
@@ -1008,32 +1008,32 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="schemaitem">SchemaItem<a class="anchor" aria-label="anchor" href="#schemaitem"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>SchemaItem.Name</code></td>
-</tr><tr class="even"><td><code>ApplicationType</code></td>
+</tr><tr><td><code>ApplicationType</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Resolved via <code>ApplicationTypes.ByName()</code>.</td>
-</tr><tr class="odd"><td><code>FormulationKey</code></td>
+</tr><tr><td><code>FormulationKey</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>SchemaItem.FormulationKey</code>. Links to a formulation in the simulation.</td>
-</tr><tr class="even"><td><code>TargetOrgan</code></td>
+</tr><tr><td><code>TargetOrgan</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>SchemaItem.TargetOrgan</code></td>
-</tr><tr class="odd"><td><code>TargetCompartment</code></td>
+</tr><tr><td><code>TargetCompartment</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>SchemaItem.TargetCompartment</code></td>
-</tr><tr class="even"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -1041,43 +1041,43 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="populationsettings">PopulationSettings<a class="anchor" aria-label="anchor" href="#populationsettings"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>NumberOfIndividuals</code></td>
+</tr></thead><tbody><tr><td><code>NumberOfIndividuals</code></td>
 <td><code>int</code></td>
 <td>Yes</td>
 <td>Number of individuals to generate in the population.</td>
-</tr><tr class="even"><td><code>ProportionOfFemales</code></td>
+</tr><tr><td><code>ProportionOfFemales</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>Percentage of females in the population.</td>
-</tr><tr class="odd"><td><code>Individual</code></td>
+</tr><tr><td><code>Individual</code></td>
 <td><a href="#individual">Individual</a></td>
 <td>Yes</td>
 <td>The base individual for the population. Mapped via <code>IndividualMapper</code>.</td>
-</tr><tr class="even"><td><code>Age</code></td>
+</tr><tr><td><code>Age</code></td>
 <td><a href="#parameterrange">ParameterRange</a></td>
 <td>No</td>
 <td>Age range constraint for population generation.</td>
-</tr><tr class="odd"><td><code>Weight</code></td>
+</tr><tr><td><code>Weight</code></td>
 <td><a href="#parameterrange">ParameterRange</a></td>
 <td>No</td>
 <td>Weight range constraint.</td>
-</tr><tr class="even"><td><code>Height</code></td>
+</tr><tr><td><code>Height</code></td>
 <td><a href="#parameterrange">ParameterRange</a></td>
 <td>No</td>
 <td>Height range constraint.</td>
-</tr><tr class="odd"><td><code>GestationalAge</code></td>
+</tr><tr><td><code>GestationalAge</code></td>
 <td><a href="#parameterrange">ParameterRange</a></td>
 <td>No</td>
 <td>Gestational age range constraint.</td>
-</tr><tr class="even"><td><code>BMI</code></td>
+</tr><tr><td><code>BMI</code></td>
 <td><a href="#parameterrange">ParameterRange</a></td>
 <td>No</td>
 <td>BMI range constraint.</td>
-</tr><tr class="odd"><td><code>DiseaseStateParameters</code></td>
+</tr><tr><td><code>DiseaseStateParameters</code></td>
 <td>
 <a href="#parameterrange">ParameterRange</a>[]</td>
 <td>No</td>
@@ -1085,23 +1085,23 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="parameterrange">ParameterRange<a class="anchor" aria-label="anchor" href="#parameterrange"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Parameter name (used for dynamic/disease-state parameters).</td>
-</tr><tr class="even"><td><code>Min</code></td>
+</tr><tr><td><code>Min</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>Minimum value for the range.</td>
-</tr><tr class="odd"><td><code>Max</code></td>
+</tr><tr><td><code>Max</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>Maximum value for the range.</td>
-</tr><tr class="even"><td><code>Unit</code></td>
+</tr><tr><td><code>Unit</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Display unit for the range values.</td>
@@ -1109,23 +1109,23 @@
 <div class="section level3">
 <h3 id="advancedparameter">AdvancedParameter<a class="anchor" aria-label="anchor" href="#advancedparameter"></a></h3>
 <p>Extends <code>ParameterContainerSnapshotBase</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Parameter name used to locate the advanced parameter.</td>
-</tr><tr class="even"><td><code>Seed</code></td>
+</tr><tr><td><code>Seed</code></td>
 <td><code>int</code></td>
 <td>No</td>
 <td>Random seed for the distribution.</td>
-</tr><tr class="odd"><td><code>DistributionType</code></td>
+</tr><tr><td><code>DistributionType</code></td>
 <td><a href="#distributiontype">DistributionType</a></td>
 <td>No</td>
 <td>Distribution type (Normal, LogNormal, Uniform, etc.).</td>
-</tr><tr class="even"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -1133,41 +1133,41 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="eventselection">EventSelection<a class="anchor" aria-label="anchor" href="#eventselection"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Event building block name. Resolved from the project by name.</td>
-</tr><tr class="even"><td><code>StartTime</code></td>
+</tr><tr><td><code>StartTime</code></td>
 <td><a href="#parameter">Parameter</a></td>
 <td>Yes</td>
 <td>Start time parameter for when the event fires in the simulation.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="observersetselection">ObserverSetSelection<a class="anchor" aria-label="anchor" href="#observersetselection"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Observer set building block name. Resolved from the project by name.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="alteredbuildingblock">AlteredBuildingBlock<a class="anchor" aria-label="anchor" href="#alteredbuildingblock"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Building block name.</td>
-</tr><tr class="even"><td><code>Type</code></td>
+</tr><tr><td><code>Type</code></td>
 <td><a href="#pksimbuildingblocktype">PKSimBuildingBlockType</a></td>
 <td>No</td>
 <td>Building block type. The matching <code>UsedBuildingBlock</code> in the simulation is found and its <code>Altered</code> flag is set to <code>true</code>.</td>
@@ -1175,46 +1175,46 @@
 <div class="section level3">
 <h3 id="tableformula">TableFormula<a class="anchor" aria-label="anchor" href="#tableformula"></a></h3>
 <p>Created via <code>IFormulaFactory.CreateTableFormula()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>TableFormula.Name</code></td>
-</tr><tr class="even"><td><code>XDimension</code></td>
+</tr><tr><td><code>XDimension</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>IDimensionRepository.DimensionByName()</code>. Sets X-axis dimension.</td>
-</tr><tr class="odd"><td><code>XUnit</code></td>
+</tr><tr><td><code>XUnit</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved from the X dimension. Sets <code>TableFormula.XDisplayUnit</code>.</td>
-</tr><tr class="even"><td><code>XName</code></td>
+</tr><tr><td><code>XName</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>TableFormula.XName</code>. Display name for X-axis.</td>
-</tr><tr class="odd"><td><code>YDimension</code></td>
+</tr><tr><td><code>YDimension</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>IDimensionRepository.DimensionByName()</code>. Sets Y-axis dimension.</td>
-</tr><tr class="even"><td><code>YUnit</code></td>
+</tr><tr><td><code>YUnit</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved from the Y dimension. Sets <code>TableFormula.YDisplayUnit</code>.</td>
-</tr><tr class="odd"><td><code>YName</code></td>
+</tr><tr><td><code>YName</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>TableFormula.YName</code>. Display name for Y-axis.</td>
-</tr><tr class="even"><td><code>UseDerivedValues</code></td>
+</tr><tr><td><code>UseDerivedValues</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>
 <code>TableFormula.UseDerivedValues</code>.</td>
-</tr><tr class="odd"><td><code>Points</code></td>
+</tr><tr><td><code>Points</code></td>
 <td>
 <a href="#point">Point</a>[]</td>
 <td>No</td>
@@ -1222,19 +1222,19 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="point">Point<a class="anchor" aria-label="anchor" href="#point"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>X</code></td>
+</tr></thead><tbody><tr><td><code>X</code></td>
 <td><code>double</code></td>
 <td>Yes</td>
 <td>X value in display units. Converted to base units.</td>
-</tr><tr class="even"><td><code>Y</code></td>
+</tr><tr><td><code>Y</code></td>
 <td><code>double</code></td>
 <td>Yes</td>
 <td>Y value in display units. Converted to base units.</td>
-</tr><tr class="odd"><td><code>RestartSolver</code></td>
+</tr><tr><td><code>RestartSolver</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>
@@ -1243,48 +1243,48 @@
 <div class="section level3">
 <h3 id="observer">Observer<a class="anchor" aria-label="anchor" href="#observer"></a></h3>
 <p>Created via <code>IObjectBaseFactory.Create&lt;AmountObserverBuilder&gt;()</code> or <code>Create&lt;ContainerObserverBuilder&gt;()</code> based on the <code>Type</code> property.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Observer.Name</code></td>
-</tr><tr class="even"><td><code>Type</code></td>
+</tr><tr><td><code>Type</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>"Amount"</code> creates an <code>AmountObserverBuilder</code>; <code>"Container"</code> creates a <code>ContainerObserverBuilder</code>. Returns null with error if unrecognized.</td>
-</tr><tr class="odd"><td><code>Dimension</code></td>
+</tr><tr><td><code>Dimension</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>IDimensionRepository.DimensionByName()</code>. Sets <code>Observer.Dimension</code>.</td>
-</tr><tr class="even"><td><code>ContainerCriteria</code></td>
+</tr><tr><td><code>ContainerCriteria</code></td>
 <td>
 <a href="#descriptorcondition">DescriptorCondition</a>[]</td>
 <td>No</td>
 <td>Each mapped via <code>DescriptorConditionMapper</code>, wrapped in a <code>DescriptorCriteria</code> container.</td>
-</tr><tr class="odd"><td><code>Formula</code></td>
+</tr><tr><td><code>Formula</code></td>
 <td><a href="#explicitformula">ExplicitFormula</a></td>
 <td>No</td>
 <td>Mapped via <code>ExplicitFormulaMapper</code>. Sets the observer’s calculation formula.</td>
-</tr><tr class="even"><td><code>MoleculeList</code></td>
+</tr><tr><td><code>MoleculeList</code></td>
 <td><a href="#moleculelist">MoleculeList</a></td>
 <td>No</td>
 <td>Mapped via <code>MoleculeListMapper</code>, then applied via <code>observer.MoleculeList.Update()</code>.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="diseasestate">DiseaseState<a class="anchor" aria-label="anchor" href="#diseasestate"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Disease state name. Resolved from the available disease states for the population.</td>
-</tr><tr class="even"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -1292,15 +1292,15 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="ontogeny">Ontogeny<a class="anchor" aria-label="anchor" href="#ontogeny"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Ontogeny name. If it matches a known database ontogeny, that ontogeny is used. Otherwise treated as user-defined.</td>
-</tr><tr class="even"><td><code>Table</code></td>
+</tr><tr><td><code>Table</code></td>
 <td><a href="#tableformula">DistributedTableFormula</a></td>
 <td>No</td>
 <td>Custom ontogeny table data. Mapped via <code>DistributedTableFormulaMapper</code>. Extends <a href="#tableformula">TableFormula</a> with <code>Percentile</code> and <code>DistributionMetaData[]</code>.</td>
@@ -1308,28 +1308,28 @@
 <div class="section level3">
 <h3 id="expressioncontainer">ExpressionContainer<a class="anchor" aria-label="anchor" href="#expressioncontainer"></a></h3>
 <p>Extends <code>Parameter</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Container/organ name. Used to locate the expression container in the individual.</td>
-</tr><tr class="even"><td><code>Value</code></td>
+</tr><tr><td><code>Value</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>Relative expression value.</td>
-</tr><tr class="odd"><td><code>CompartmentName</code></td>
+</tr><tr><td><code>CompartmentName</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Compartment within the organ.</td>
-</tr><tr class="even"><td><code>TransportDirection</code></td>
+</tr><tr><td><code>TransportDirection</code></td>
 <td>
 <a href="#transportdirectionid">TransportDirectionId</a>?</td>
 <td>No</td>
 <td>For transporters: the transport direction in this container.</td>
-</tr><tr class="odd"><td><code>MembraneLocation</code></td>
+</tr><tr><td><code>MembraneLocation</code></td>
 <td>
 <a href="#membranelocation">MembraneLocation</a>?</td>
 <td>No</td>
@@ -1339,24 +1339,24 @@
 <div class="section level3">
 <h3 id="explicitformula">ExplicitFormula<a class="anchor" aria-label="anchor" href="#explicitformula"></a></h3>
 <p>Created via <code>IObjectBaseFactory.Create&lt;ExplicitFormula&gt;()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ExplicitFormula.Name</code></td>
-</tr><tr class="even"><td><code>Formula</code></td>
+</tr><tr><td><code>Formula</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>ExplicitFormula.FormulaString</code>. The mathematical expression as a string.</td>
-</tr><tr class="odd"><td><code>Dimension</code></td>
+</tr><tr><td><code>Dimension</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>IDimensionRepository.DimensionByName()</code>. Sets the formula’s output dimension.</td>
-</tr><tr class="even"><td><code>References</code></td>
+</tr><tr><td><code>References</code></td>
 <td>
 <a href="#formulausablepath">FormulaUsablePath</a>[]</td>
 <td>No</td>
@@ -1364,53 +1364,53 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="formulausablepath">FormulaUsablePath<a class="anchor" aria-label="anchor" href="#formulausablepath"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Alias</code></td>
+</tr></thead><tbody><tr><td><code>Alias</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>The variable alias used in the formula string (e.g. <code>"Volume"</code>).</td>
-</tr><tr class="even"><td><code>Path</code></td>
+</tr><tr><td><code>Path</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>The object path to the referenced quantity in the model tree.</td>
-</tr><tr class="odd"><td><code>Dimension</code></td>
+</tr><tr><td><code>Dimension</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>The dimension of the referenced quantity.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="descriptorcondition">DescriptorCondition<a class="anchor" aria-label="anchor" href="#descriptorcondition"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Tag</code></td>
+</tr></thead><tbody><tr><td><code>Tag</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>The tag value to match against container descriptors.</td>
-</tr><tr class="even"><td><code>Type</code></td>
+</tr><tr><td><code>Type</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>The condition type (e.g. <code>"InContainer"</code>, <code>"NotInContainer"</code>, <code>"InParent"</code>).</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="moleculelist">MoleculeList<a class="anchor" aria-label="anchor" href="#moleculelist"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>ForAll</code></td>
+</tr></thead><tbody><tr><td><code>ForAll</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>If <code>true</code>, the observer applies to all molecules. If <code>false</code>, the include/exclude lists are used.</td>
-</tr><tr class="even"><td><code>MoleculeNamesToInclude</code></td>
+</tr><tr><td><code>MoleculeNamesToInclude</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td>Molecules the observer explicitly applies to.</td>
-</tr><tr class="odd"><td><code>MoleculeNamesToExclude</code></td>
+</tr><tr><td><code>MoleculeNamesToExclude</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td>Molecules explicitly excluded from the observer.</td>
@@ -1418,20 +1418,20 @@
 <div class="section level3">
 <h3 id="distributedtableformula">DistributedTableFormula<a class="anchor" aria-label="anchor" href="#distributedtableformula"></a></h3>
 <p>Created via <code>IFormulaFactory.CreateDistributedTableFormula()</code>. Extends <a href="#tableformula">TableFormula</a>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><em>(all <a href="#tableformula">TableFormula</a> properties)</em></td>
+</tr></thead><tbody><tr><td><em>(all <a href="#tableformula">TableFormula</a> properties)</em></td>
 <td></td>
 <td></td>
 <td>Mapped via <code>TableFormulaMapper.UpdateModelProperties()</code>.</td>
-</tr><tr class="even"><td><code>Percentile</code></td>
+</tr><tr><td><code>Percentile</code></td>
 <td><code>double</code></td>
 <td>No</td>
 <td>
 <code>DistributedTableFormula.Percentile</code>. The percentile value for the distribution.</td>
-</tr><tr class="odd"><td><code>DistributionMetaData</code></td>
+</tr><tr><td><code>DistributionMetaData</code></td>
 <td>
 <a href="#distributionmetadata">DistributionMetaData</a>[]</td>
 <td>No</td>
@@ -1439,21 +1439,21 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="distributionmetadata">DistributionMetaData<a class="anchor" aria-label="anchor" href="#distributionmetadata"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Mean</code></td>
+</tr></thead><tbody><tr><td><code>Mean</code></td>
 <td><code>double</code></td>
 <td>No</td>
 <td>
 <code>DistributionMetaData.Mean</code>. Mean value of the distribution at this point.</td>
-</tr><tr class="even"><td><code>Deviation</code></td>
+</tr><tr><td><code>Deviation</code></td>
 <td><code>double</code></td>
 <td>No</td>
 <td>
 <code>DistributionMetaData.Deviation</code>. Standard deviation.</td>
-</tr><tr class="odd"><td><code>Distribution</code></td>
+</tr><tr><td><code>Distribution</code></td>
 <td><a href="#distributiontype">DistributionType</a></td>
 <td>No</td>
 <td>
@@ -1461,42 +1461,42 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="compoundprocessselection">CompoundProcessSelection<a class="anchor" aria-label="anchor" href="#compoundprocessselection"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Process name. Resolved from the compound’s processes.</td>
-</tr><tr class="even"><td><code>MoleculeName</code></td>
+</tr><tr><td><code>MoleculeName</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Name of the molecule involved in the process (for partial processes).</td>
-</tr><tr class="odd"><td><code>MetaboliteName</code></td>
+</tr><tr><td><code>MetaboliteName</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Name of the metabolite produced (for enzymatic processes).</td>
-</tr><tr class="even"><td><code>CompoundName</code></td>
+</tr><tr><td><code>CompoundName</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Compound name (for interaction processes involving multiple compounds).</td>
-</tr><tr class="odd"><td><code>SystemicProcessType</code></td>
+</tr><tr><td><code>SystemicProcessType</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Type of systemic process (e.g. <code>"Hepatic"</code>, <code>"Renal"</code>, <code>"Biliary"</code>). Used when no specific process is selected.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="compoundgroupselection">CompoundGroupSelection<a class="anchor" aria-label="anchor" href="#compoundgroupselection"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>GroupName</code></td>
+</tr></thead><tbody><tr><td><code>GroupName</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Alternative group name (e.g. <code>"Lipophilicity"</code>, <code>"Solubility"</code>). Resolved from the compound properties.</td>
-</tr><tr class="even"><td><code>AlternativeName</code></td>
+</tr><tr><td><code>AlternativeName</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Selected alternative name within the group.</td>
@@ -1507,28 +1507,28 @@
 <div class="section level3">
 <h3 id="datarepository-observed-data">DataRepository (Observed Data)<a class="anchor" aria-label="anchor" href="#datarepository-observed-data"></a></h3>
 <p>Created directly as <code>new DataRepository()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>DataRepository.Name</code></td>
-</tr><tr class="even"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>DataRepository.Description</code></td>
-</tr><tr class="odd"><td><code>BaseGrid</code></td>
+</tr><tr><td><code>BaseGrid</code></td>
 <td><a href="#datacolumn">DataColumn</a></td>
 <td>No</td>
 <td>The time/independent variable column. Mapped via <code>DataColumnMapper</code> and added first.</td>
-</tr><tr class="even"><td><code>Columns</code></td>
+</tr><tr><td><code>Columns</code></td>
 <td>
 <a href="#datacolumn">DataColumn</a>[]</td>
 <td>No</td>
 <td>Dependent data columns. Each mapped via <code>DataColumnMapper</code> and added to the repository.</td>
-</tr><tr class="odd"><td><code>ExtendedProperties</code></td>
+</tr><tr><td><code>ExtendedProperties</code></td>
 <td>
 <a href="#extendedproperty">ExtendedProperty</a>[]</td>
 <td>No</td>
@@ -1537,35 +1537,35 @@
 <div class="section level3">
 <h3 id="datacolumn">DataColumn<a class="anchor" aria-label="anchor" href="#datacolumn"></a></h3>
 <p>Created as <code>BaseGrid</code> or <code>DataColumn</code> depending on the <code>DataInfo.Origin</code> value. If <code>Origin == BaseGrid</code>, creates a <code>BaseGrid</code>; otherwise creates a <code>DataColumn</code> linked to the repository’s base grid.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Constructor parameter for the column.</td>
-</tr><tr class="even"><td><code>Dimension</code></td>
+</tr><tr><td><code>Dimension</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>IDimensionRepository.DimensionByName()</code>. Passed to the constructor.</td>
-</tr><tr class="odd"><td><code>Unit</code></td>
+</tr><tr><td><code>Unit</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved from the dimension via <code>UnitOrDefault()</code>. Sets <code>DataColumn.DisplayUnit</code>. Values are converted from display units to base units.</td>
-</tr><tr class="even"><td><code>Values</code></td>
+</tr><tr><td><code>Values</code></td>
 <td><code>float[]</code></td>
 <td>No</td>
 <td>Column data values in display units. Converted to base units via <code>ConvertToBaseValues()</code> during mapping.</td>
-</tr><tr class="odd"><td><code>QuantityInfo</code></td>
+</tr><tr><td><code>QuantityInfo</code></td>
 <td><a href="#quantityinfo">QuantityInfo</a></td>
 <td>No</td>
 <td>Mapped via <code>QuantityInfoMapper</code>. Sets quantity type and path.</td>
-</tr><tr class="even"><td><code>DataInfo</code></td>
+</tr><tr><td><code>DataInfo</code></td>
 <td><a href="#datainfo">DataInfo</a></td>
 <td>No</td>
 <td>Mapped via <code>DataInfoMapper</code>. Determines column type (base grid vs data) and sets metadata.</td>
-</tr><tr class="odd"><td><code>RelatedColumns</code></td>
+</tr><tr><td><code>RelatedColumns</code></td>
 <td>
 <a href="#datacolumn">DataColumn</a>[]</td>
 <td>No</td>
@@ -1573,42 +1573,42 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="datainfo">DataInfo<a class="anchor" aria-label="anchor" href="#datainfo"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Origin</code></td>
+</tr></thead><tbody><tr><td><code>Origin</code></td>
 <td>
 <a href="#columnorigins">ColumnOrigins</a>?</td>
 <td>No</td>
 <td>
 <code>DataInfo.Origin</code>. Determines the column type during DataColumn creation.</td>
-</tr><tr class="even"><td><code>AuxiliaryType</code></td>
+</tr><tr><td><code>AuxiliaryType</code></td>
 <td><a href="#auxiliarytype">AuxiliaryType</a></td>
 <td>No</td>
 <td>
 <code>DataInfo.AuxiliaryType</code>. Classifies auxiliary columns (e.g. standard deviation).</td>
-</tr><tr class="odd"><td><code>Category</code></td>
+</tr><tr><td><code>Category</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>DataInfo.Category</code>. Grouping category for the data.</td>
-</tr><tr class="even"><td><code>MolWeight</code></td>
+</tr><tr><td><code>MolWeight</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>
 <code>DataInfo.MolWeight</code>. Molecular weight for unit conversions.</td>
-</tr><tr class="odd"><td><code>LLOQ</code></td>
+</tr><tr><td><code>LLOQ</code></td>
 <td><code>float?</code></td>
 <td>No</td>
 <td>
 <code>DataInfo.LLOQ</code>. Lower limit of quantification.</td>
-</tr><tr class="even"><td><code>ComparisonThreshold</code></td>
+</tr><tr><td><code>ComparisonThreshold</code></td>
 <td><code>float?</code></td>
 <td>No</td>
 <td>
 <code>DataInfo.ComparisonThreshold</code>.</td>
-</tr><tr class="odd"><td><code>ExtendedProperties</code></td>
+</tr><tr><td><code>ExtendedProperties</code></td>
 <td>
 <a href="#extendedproperty">ExtendedProperty</a>[]</td>
 <td>No</td>
@@ -1616,22 +1616,22 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="quantityinfo">QuantityInfo<a class="anchor" aria-label="anchor" href="#quantityinfo"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Path</code></td>
+</tr></thead><tbody><tr><td><code>Path</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>QuantityInfo.Path</code>. The path identifying the quantity in the model.</td>
-</tr><tr class="even"><td><code>Type</code></td>
+</tr><tr><td><code>Type</code></td>
 <td>
 <a href="#quantitytype">QuantityType</a>?</td>
 <td>No</td>
 <td>
 <code>QuantityInfo.Type</code>. The type of quantity.</td>
-</tr><tr class="odd"><td><code>OrderIndex</code></td>
+</tr><tr><td><code>OrderIndex</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>
@@ -1640,37 +1640,37 @@
 <div class="section level3">
 <h3 id="extendedproperty">ExtendedProperty<a class="anchor" aria-label="anchor" href="#extendedproperty"></a></h3>
 <p>Created as <code>ExtendedProperty&lt;T&gt;</code> where T is determined by the <code>Type</code> property or inferred from the value.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ExtendedProperty.Name</code></td>
-</tr><tr class="even"><td><code>FullName</code></td>
+</tr><tr><td><code>FullName</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>ExtendedProperty.FullName</code>. Full display name.</td>
-</tr><tr class="odd"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ExtendedProperty.Description</code></td>
-</tr><tr class="even"><td><code>Value</code></td>
+</tr><tr><td><code>Value</code></td>
 <td><code>object</code></td>
 <td>No</td>
 <td>Parsed to the appropriate type (string, int, double, or bool) and set as <code>ExtendedProperty.Value</code>. Returns null if absent.</td>
-</tr><tr class="odd"><td><code>Type</code></td>
+</tr><tr><td><code>Type</code></td>
 <td>
 <a href="#extendedpropertytype">ExtendedPropertyType</a>?</td>
 <td>No</td>
 <td>Determines the .NET type for value parsing. If absent, type is inferred: tries double, then bool, then falls back to string.</td>
-</tr><tr class="even"><td><code>ListOfValues</code></td>
+</tr><tr><td><code>ListOfValues</code></td>
 <td><code>object[]</code></td>
 <td>No</td>
 <td>Each value parsed with the same type conversion, added via <code>AddToListOfValues()</code>. Defines allowed values.</td>
-</tr><tr class="odd"><td><code>ReadOnly</code></td>
+</tr><tr><td><code>ReadOnly</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
@@ -1679,37 +1679,37 @@
 <div class="section level3">
 <h3 id="parameteridentification">ParameterIdentification<a class="anchor" aria-label="anchor" href="#parameteridentification"></a></h3>
 <p>Created via <code>IObjectBaseFactory.Create&lt;ParameterIdentification&gt;()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ParameterIdentification.Name</code></td>
-</tr><tr class="even"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ParameterIdentification.Description</code></td>
-</tr><tr class="odd"><td><code>Simulations</code></td>
+</tr><tr><td><code>Simulations</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td>Array of simulation names. Each resolved from the project via <code>FindByName()</code>. Added via <code>AddSimulation()</code>. Missing simulations are logged as warnings.</td>
-</tr><tr class="even"><td><code>Configuration</code></td>
+</tr><tr><td><code>Configuration</code></td>
 <td><a href="#parameteridentificationconfiguration">ParameterIdentificationConfiguration</a></td>
 <td>No</td>
 <td>Mapped via <code>ParameterIdentificationConfigurationMapper</code>. Updates the existing configuration on the domain object.</td>
-</tr><tr class="odd"><td><code>OutputMappings</code></td>
+</tr><tr><td><code>OutputMappings</code></td>
 <td>
 <a href="#outputmapping">OutputMapping</a>[]</td>
 <td>No</td>
 <td>Each mapped and added via <code>AddOutputMapping()</code>.</td>
-</tr><tr class="even"><td><code>IdentificationParameters</code></td>
+</tr><tr><td><code>IdentificationParameters</code></td>
 <td>
 <a href="#identificationparameter">IdentificationParameter</a>[]</td>
 <td>No</td>
 <td>Each mapped and added via <code>AddIdentificationParameter()</code>.</td>
-</tr><tr class="odd"><td><code>Analyses</code></td>
+</tr><tr><td><code>Analyses</code></td>
 <td>
 <a href="#parameteridentificationanalysis">ParameterIdentificationAnalysis</a>[]</td>
 <td>No</td>
@@ -1718,32 +1718,32 @@
 <div class="section level3">
 <h3 id="simulationcomparison">SimulationComparison<a class="anchor" aria-label="anchor" href="#simulationcomparison"></a></h3>
 <p>Type is polymorphic: if <code>IndividualComparison</code> is present, creates <code>IndividualSimulationComparison</code>; otherwise creates <code>PopulationSimulationComparison</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>SimulationComparison.Name</code></td>
-</tr><tr class="even"><td><code>Simulations</code></td>
+</tr><tr><td><code>Simulations</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td>Simulation names. Each resolved from the project by name and added via <code>AddSimulation()</code>.</td>
-</tr><tr class="odd"><td><code>IndividualComparison</code></td>
+</tr><tr><td><code>IndividualComparison</code></td>
 <td><a href="#curvechart">CurveChart</a></td>
 <td>No</td>
 <td>If present, creates an <code>IndividualSimulationComparison</code> and maps the chart via <code>IndividualSimulationComparisonMapper</code>.</td>
-</tr><tr class="even"><td><code>PopulationComparisons</code></td>
+</tr><tr><td><code>PopulationComparisons</code></td>
 <td>
 <a href="#populationanalysischart">PopulationAnalysisChart</a>[]</td>
 <td>No</td>
 <td>For population comparisons. Each chart mapped and added via <code>AddAnalysis()</code>.</td>
-</tr><tr class="odd"><td><code>ReferenceGroupingItem</code></td>
+</tr><tr><td><code>ReferenceGroupingItem</code></td>
 <td><a href="#groupingitem">GroupingItem</a></td>
 <td>No</td>
 <td>For population comparisons: <code>PopulationSimulationComparison.ReferenceGroupingItem</code>.</td>
-</tr><tr class="even"><td><code>ReferenceSimulation</code></td>
+</tr><tr><td><code>ReferenceSimulation</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For population comparisons: resolved from project by name.</td>
@@ -1751,21 +1751,21 @@
 <div class="section level3">
 <h3 id="classification">Classification<a class="anchor" aria-label="anchor" href="#classification"></a></h3>
 <p>Created directly as <code>new Classification()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>Classification.Name</code>. Represents a folder in the project tree.</td>
-</tr><tr class="even"><td><code>Classifications</code></td>
+</tr><tr><td><code>Classifications</code></td>
 <td>
 <a href="#classification">Classification</a>[]</td>
 <td>No</td>
 <td>Nested child classifications (sub-folders).</td>
-</tr><tr class="odd"><td><code>Classifiables</code></td>
+</tr><tr><td><code>Classifiables</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td>Names of items (simulations, observed data, etc.) that belong in this folder.</td>
@@ -1774,43 +1774,43 @@
 <div class="section level3">
 <h3 id="parameteridentificationconfiguration">ParameterIdentificationConfiguration<a class="anchor" aria-label="anchor" href="#parameteridentificationconfiguration"></a></h3>
 <p>Not created – updates the existing <code>Configuration</code> on the <code>ParameterIdentification</code> domain object.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>LLOQMode</code></td>
+</tr></thead><tbody><tr><td><code>LLOQMode</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>LLOQModes.ByName()</code>. Sets <code>Configuration.LLOQMode</code>.</td>
-</tr><tr class="even"><td><code>RemoveLLOQMode</code></td>
+</tr><tr><td><code>RemoveLLOQMode</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>RemoveLLOQModes.ByName()</code>. Sets <code>Configuration.RemoveLLOQMode</code>.</td>
-</tr><tr class="odd"><td><code>CalculateJacobian</code></td>
+</tr><tr><td><code>CalculateJacobian</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>
 <code>Configuration.CalculateJacobian</code>.</td>
-</tr><tr class="even"><td><code>Algorithm</code></td>
+</tr><tr><td><code>Algorithm</code></td>
 <td><a href="#optimizationalgorithm">OptimizationAlgorithm</a></td>
 <td>No</td>
 <td>Mapped via dedicated mapper. Sets <code>Configuration.AlgorithmProperties</code>.</td>
-</tr><tr class="odd"><td><code>RunMode</code></td>
+</tr><tr><td><code>RunMode</code></td>
 <td><a href="#parameteridentificationrunmode">ParameterIdentificationRunMode</a></td>
 <td>No</td>
 <td>Mapped via dedicated mapper. Sets <code>Configuration.RunMode</code>.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="optimizationalgorithm">OptimizationAlgorithm<a class="anchor" aria-label="anchor" href="#optimizationalgorithm"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Algorithm name. Used to identify the optimization algorithm.</td>
-</tr><tr class="even"><td><code>Properties</code></td>
+</tr><tr><td><code>Properties</code></td>
 <td>
 <a href="#extendedproperty">ExtendedProperty</a>[]</td>
 <td>No</td>
@@ -1818,19 +1818,19 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="parameteridentificationrunmode">ParameterIdentificationRunMode<a class="anchor" aria-label="anchor" href="#parameteridentificationrunmode"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>NumberOfRuns</code></td>
+</tr></thead><tbody><tr><td><code>NumberOfRuns</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>Number of optimization runs for multi-start mode.</td>
-</tr><tr class="even"><td><code>AllTheSameSelection</code></td>
+</tr><tr><td><code>AllTheSameSelection</code></td>
 <td><a href="#calculationmethodcache">CalculationMethodCache</a></td>
 <td>No</td>
 <td>Calculation methods applied uniformly across all runs.</td>
-</tr><tr class="odd"><td><code>CalculationMethods</code></td>
+</tr><tr><td><code>CalculationMethods</code></td>
 <td><code>Dictionary&lt;string, CalculationMethodCache&gt;</code></td>
 <td>No</td>
 <td>Per-category calculation method selections for categorial optimization. Keys are category names.</td>
@@ -1838,34 +1838,34 @@
 <div class="section level3">
 <h3 id="identificationparameter">IdentificationParameter<a class="anchor" aria-label="anchor" href="#identificationparameter"></a></h3>
 <p>Created via <code>IIdentificationParameterFactory.CreateFor(parameterSelections, parameterIdentification)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>IdentificationParameter.Name</code></td>
-</tr><tr class="even"><td><code>LinkedParameters</code></td>
+</tr><tr><td><code>LinkedParameters</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td>Array of full parameter paths (format: <code>SimulationName|Container|...|ParameterName</code>). Each resolved to a <code>ParameterSelection</code> by parsing the simulation name and looking it up in the project. Passed to the factory.</td>
-</tr><tr class="odd"><td><code>Scaling</code></td>
+</tr><tr><td><code>Scaling</code></td>
 <td><a href="#scalings">Scalings</a></td>
 <td>No</td>
 <td>
 <code>IdentificationParameter.Scaling</code>.</td>
-</tr><tr class="even"><td><code>UseAsFactor</code></td>
+</tr><tr><td><code>UseAsFactor</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
 <code>IdentificationParameter.UseAsFactor</code>. If true, parameter range is updated via <code>IIdentificationParameterTask</code>.</td>
-</tr><tr class="odd"><td><code>IsFixed</code></td>
+</tr><tr><td><code>IsFixed</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
 <code>IdentificationParameter.IsFixed</code>. Whether this parameter is fixed during identification.</td>
-</tr><tr class="even"><td><code>Parameters</code></td>
+</tr><tr><td><code>Parameters</code></td>
 <td>
 <a href="#parameter">Parameter</a>[]</td>
 <td>No</td>
@@ -1873,23 +1873,23 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="parameteridentificationanalysis">ParameterIdentificationAnalysis<a class="anchor" aria-label="anchor" href="#parameteridentificationanalysis"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>ParameterIdentificationAnalysis.Name</code></td>
-</tr><tr class="even"><td><code>Type</code></td>
+</tr><tr><td><code>Type</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Analysis type name. Determines the concrete analysis class created.</td>
-</tr><tr class="odd"><td><code>Chart</code></td>
+</tr><tr><td><code>Chart</code></td>
 <td><a href="#curvechart">CurveChart</a></td>
 <td>No</td>
 <td>For chart-based analyses. Mapped via <code>CurveChartMapper</code>.</td>
-</tr><tr class="even"><td><code>DataRepositories</code></td>
+</tr><tr><td><code>DataRepositories</code></td>
 <td>
 <a href="#datarepository-observed-data">DataRepository</a>[]</td>
 <td>No</td>
@@ -1898,19 +1898,19 @@
 <div class="section level3">
 <h3 id="groupingitem">GroupingItem<a class="anchor" aria-label="anchor" href="#groupingitem"></a></h3>
 <p>A domain model object used directly in JSON (not a snapshot class).</p>
-<table class="table"><thead><tr class="header"><th>Property</th>
+<table class="table"><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Label</code></td>
+</tr></thead><tbody><tr><td><code>Label</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Display label for this group.</td>
-</tr><tr class="even"><td><code>Color</code></td>
+</tr><tr><td><code>Color</code></td>
 <td><code>Color</code></td>
 <td>No</td>
 <td>Color assigned to this group.</td>
-</tr><tr class="odd"><td><code>Symbol</code></td>
+</tr><tr><td><code>Symbol</code></td>
 <td><a href="#symbols">Symbols</a></td>
 <td>No</td>
 <td>Symbol assigned to this group.</td>
@@ -1921,48 +1921,48 @@
 <div class="section level3">
 <h3 id="curvechart">CurveChart<a class="anchor" aria-label="anchor" href="#curvechart"></a></h3>
 <p>Created via a chart factory function (typically <code>new SimulationTimeProfileChart()</code> or <code>new IndividualSimulationComparison()</code>). The chart object is created first, then chart-level properties are updated in-place via <code>ChartMapper</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>CurveChart.Name</code></td>
-</tr><tr class="even"><td><code>Description</code></td>
+</tr><tr><td><code>Description</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>CurveChart.Description</code></td>
-</tr><tr class="odd"><td><code>Title</code></td>
+</tr><tr><td><code>Title</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>CurveChart.Title</code></td>
-</tr><tr class="even"><td><code>OriginText</code></td>
+</tr><tr><td><code>OriginText</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>CurveChart.OriginText</code></td>
-</tr><tr class="odd"><td><code>IncludeOriginData</code></td>
+</tr><tr><td><code>IncludeOriginData</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td><code>CurveChart.IncludeOriginData</code></td>
-</tr><tr class="even"><td><code>PreviewSettings</code></td>
+</tr><tr><td><code>PreviewSettings</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td><code>CurveChart.PreviewSettings</code></td>
-</tr><tr class="odd"><td><code>FontAndSize</code></td>
+</tr><tr><td><code>FontAndSize</code></td>
 <td><a href="#chartfontandsizesettings">ChartFontAndSizeSettings</a></td>
 <td>No</td>
 <td>Updated via <code>chart.FontAndSize.UpdatePropertiesFrom()</code>.</td>
-</tr><tr class="even"><td><code>Settings</code></td>
+</tr><tr><td><code>Settings</code></td>
 <td><a href="#chartsettings">ChartSettings</a></td>
 <td>No</td>
 <td>Updated via <code>chart.ChartSettings.UpdatePropertiesFrom()</code>.</td>
-</tr><tr class="odd"><td><code>Axes</code></td>
+</tr><tr><td><code>Axes</code></td>
 <td>
 <a href="#axis">Axis</a>[]</td>
 <td>No</td>
 <td>Each mapped via <code>AxisMapper</code> and added to the chart.</td>
-</tr><tr class="even"><td><code>Curves</code></td>
+</tr><tr><td><code>Curves</code></td>
 <td>
 <a href="#curve">Curve</a>[]</td>
 <td>No</td>
@@ -1971,64 +1971,64 @@
 <div class="section level3">
 <h3 id="axis">Axis<a class="anchor" aria-label="anchor" href="#axis"></a></h3>
 <p>Created as <code>new Axis(snapshot.Type)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Type</code></td>
+</tr></thead><tbody><tr><td><code>Type</code></td>
 <td><a href="#axistypes">AxisTypes</a></td>
 <td>No</td>
 <td>Constructor parameter. Determines which axis this is (X, Y, Y2, Y3).</td>
-</tr><tr class="even"><td><code>Dimension</code></td>
+</tr><tr><td><code>Dimension</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>IDimensionRepository.DimensionByName()</code>, then optimized via <code>OptimalDimensionFor()</code>.</td>
-</tr><tr class="odd"><td><code>Unit</code></td>
+</tr><tr><td><code>Unit</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>Axis.UnitName</code>.</td>
-</tr><tr class="even"><td><code>Caption</code></td>
+</tr><tr><td><code>Caption</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>
 <code>Axis.Caption</code>. Display label for the axis.</td>
-</tr><tr class="odd"><td><code>GridLines</code></td>
+</tr><tr><td><code>GridLines</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>
 <code>Axis.GridLines</code>. Whether grid lines are shown.</td>
-</tr><tr class="even"><td><code>Visible</code></td>
+</tr><tr><td><code>Visible</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>
 <code>Axis.Visible</code>. Whether the axis is visible.</td>
-</tr><tr class="odd"><td><code>Min</code></td>
+</tr><tr><td><code>Min</code></td>
 <td><code>float?</code></td>
 <td>No</td>
 <td>
 <code>Axis.Min</code>. Minimum axis value.</td>
-</tr><tr class="even"><td><code>Max</code></td>
+</tr><tr><td><code>Max</code></td>
 <td><code>float?</code></td>
 <td>No</td>
 <td>
 <code>Axis.Max</code>. Maximum axis value.</td>
-</tr><tr class="odd"><td><code>DefaultColor</code></td>
+</tr><tr><td><code>DefaultColor</code></td>
 <td><code>Color</code></td>
 <td>No</td>
 <td>
 <code>Axis.DefaultColor</code>. Default color for curves on this axis.</td>
-</tr><tr class="even"><td><code>DefaultLineStyle</code></td>
+</tr><tr><td><code>DefaultLineStyle</code></td>
 <td><a href="#linestyles">LineStyles</a></td>
 <td>No</td>
 <td>
 <code>Axis.DefaultLineStyle</code>. Default line style for curves on this axis.</td>
-</tr><tr class="odd"><td><code>Scaling</code></td>
+</tr><tr><td><code>Scaling</code></td>
 <td><a href="#scalings">Scalings</a></td>
 <td>No</td>
 <td>
 <code>Axis.Scaling</code>. Linear or logarithmic scale.</td>
-</tr><tr class="even"><td><code>NumberMode</code></td>
+</tr><tr><td><code>NumberMode</code></td>
 <td><a href="#numbermodes">NumberModes</a></td>
 <td>No</td>
 <td>
@@ -2037,82 +2037,82 @@
 <div class="section level3">
 <h3 id="curve">Curve<a class="anchor" aria-label="anchor" href="#curve"></a></h3>
 <p>Created as <code>new Curve()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>Curve.Name</code></td>
-</tr><tr class="even"><td><code>X</code></td>
+</tr><tr><td><code>X</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Path to the X data column. Resolved by searching all data repositories in the analysis context. If not specified, defaults to the Y column’s base grid. Returns null if not found.</td>
-</tr><tr class="odd"><td><code>Y</code></td>
+</tr><tr><td><code>Y</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Path to the Y data column. Resolved by searching all data repositories in the analysis context. Returns null with warning if not found.</td>
-</tr><tr class="even"><td><code>CurveOptions</code></td>
+</tr><tr><td><code>CurveOptions</code></td>
 <td><a href="#curveoptions">CurveOptions</a></td>
 <td>No</td>
 <td>Mapped via <code>CurveOptionsMapper</code>, then applied via <code>curve.CurveOptions.UpdateFrom()</code>.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="curveoptions">CurveOptions<a class="anchor" aria-label="anchor" href="#curveoptions"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>yAxisType</code></td>
+</tr></thead><tbody><tr><td><code>yAxisType</code></td>
 <td>
 <a href="#axistypes">AxisTypes</a>?</td>
 <td>No</td>
 <td>
 <code>CurveOptions.yAxisType</code>. Which Y axis this curve is plotted on.</td>
-</tr><tr class="even"><td><code>Visible</code></td>
+</tr><tr><td><code>Visible</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
 <code>CurveOptions.Visible</code>. Whether the curve is displayed.</td>
-</tr><tr class="odd"><td><code>VisibleInLegend</code></td>
+</tr><tr><td><code>VisibleInLegend</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
 <code>CurveOptions.VisibleInLegend</code>. Whether the curve appears in the legend.</td>
-</tr><tr class="even"><td><code>ShouldShowLLOQ</code></td>
+</tr><tr><td><code>ShouldShowLLOQ</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>
 <code>CurveOptions.ShouldShowLLOQ</code>. Whether to show the LLOQ line.</td>
-</tr><tr class="odd"><td><code>InterpolationMode</code></td>
+</tr><tr><td><code>InterpolationMode</code></td>
 <td>
 <a href="#interpolationmodes">InterpolationModes</a>?</td>
 <td>No</td>
 <td>
 <code>CurveOptions.InterpolationMode</code>. How data points are connected.</td>
-</tr><tr class="even"><td><code>Color</code></td>
+</tr><tr><td><code>Color</code></td>
 <td><code>Color?</code></td>
 <td>No</td>
 <td>
 <code>CurveOptions.Color</code>. Curve color.</td>
-</tr><tr class="odd"><td><code>LegendIndex</code></td>
+</tr><tr><td><code>LegendIndex</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>
 <code>CurveOptions.LegendIndex</code>. Position in the legend.</td>
-</tr><tr class="even"><td><code>LineThickness</code></td>
+</tr><tr><td><code>LineThickness</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>
 <code>CurveOptions.LineThickness</code>. Line width in pixels.</td>
-</tr><tr class="odd"><td><code>LineStyle</code></td>
+</tr><tr><td><code>LineStyle</code></td>
 <td>
 <a href="#linestyles">LineStyles</a>?</td>
 <td>No</td>
 <td>
 <code>CurveOptions.LineStyle</code>.</td>
-</tr><tr class="even"><td><code>Symbol</code></td>
+</tr><tr><td><code>Symbol</code></td>
 <td>
 <a href="#symbols">Symbols</a>?</td>
 <td>No</td>
@@ -2122,21 +2122,21 @@
 <div class="section level3">
 <h3 id="chartfontandsizesettings">ChartFontAndSizeSettings<a class="anchor" aria-label="anchor" href="#chartfontandsizesettings"></a></h3>
 <p>A domain model object used directly in JSON. Updated via <code>UpdatePropertiesFrom()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>ChartWidth</code></td>
+</tr></thead><tbody><tr><td><code>ChartWidth</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>
 <code>ChartFontAndSizeSettings.ChartWidth</code>. Export width in pixels (200-2000).</td>
-</tr><tr class="even"><td><code>ChartHeight</code></td>
+</tr><tr><td><code>ChartHeight</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>
 <code>ChartFontAndSizeSettings.ChartHeight</code>. Export height in pixels (200-2000).</td>
-</tr><tr class="odd"><td><code>Fonts</code></td>
+</tr><tr><td><code>Fonts</code></td>
 <td><code>ChartFonts</code></td>
 <td>No</td>
 <td>
@@ -2145,26 +2145,26 @@
 <div class="section level3">
 <h3 id="chartsettings">ChartSettings<a class="anchor" aria-label="anchor" href="#chartsettings"></a></h3>
 <p>A domain model object used directly in JSON. Updated via <code>UpdatePropertiesFrom()</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>SideMarginsEnabled</code></td>
+</tr></thead><tbody><tr><td><code>SideMarginsEnabled</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>
 <code>ChartSettings.SideMarginsEnabled</code>. Whether side margins are shown. Defaults to <code>true</code>.</td>
-</tr><tr class="even"><td><code>LegendPosition</code></td>
+</tr><tr><td><code>LegendPosition</code></td>
 <td><a href="#legendpositions">LegendPositions</a></td>
 <td>No</td>
 <td>
 <code>ChartSettings.LegendPosition</code>. Where the legend is placed. Defaults to <code>RightInside</code>.</td>
-</tr><tr class="odd"><td><code>BackColor</code></td>
+</tr><tr><td><code>BackColor</code></td>
 <td><code>Color</code></td>
 <td>No</td>
 <td>
 <code>ChartSettings.BackColor</code>. Chart background color. Defaults to <code>Transparent</code>.</td>
-</tr><tr class="even"><td><code>DiagramBackColor</code></td>
+</tr><tr><td><code>DiagramBackColor</code></td>
 <td><code>Color</code></td>
 <td>No</td>
 <td>
@@ -2173,42 +2173,42 @@
 <div class="section level3">
 <h3 id="populationanalysischart">PopulationAnalysisChart<a class="anchor" aria-label="anchor" href="#populationanalysischart"></a></h3>
 <p>Created via <code>IPopulationAnalysisChartFactory.Create(type)</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>PopulationAnalysisChart.Name</code></td>
-</tr><tr class="even"><td><code>Type</code></td>
+</tr><tr><td><code>Type</code></td>
 <td><a href="#populationanalysistype">PopulationAnalysisType</a></td>
 <td>No</td>
 <td>Determines the concrete chart type created by the factory.</td>
-</tr><tr class="odd"><td><code>XAxisSettings</code></td>
+</tr><tr><td><code>XAxisSettings</code></td>
 <td><a href="#axissettings">AxisSettings</a></td>
 <td>No</td>
 <td>
 <code>PopulationAnalysisChart.PrimaryXAxisSettings</code>.</td>
-</tr><tr class="even"><td><code>YAxisSettings</code></td>
+</tr><tr><td><code>YAxisSettings</code></td>
 <td><a href="#axissettings">AxisSettings</a></td>
 <td>No</td>
 <td>
 <code>PopulationAnalysisChart.PrimaryYAxisSettings</code>.</td>
-</tr><tr class="odd"><td><code>SecondaryYAxisSettings</code></td>
+</tr><tr><td><code>SecondaryYAxisSettings</code></td>
 <td>
 <a href="#axissettings">AxisSettings</a>[]</td>
 <td>No</td>
 <td>Each added via <code>AddSecondaryAxis()</code>.</td>
-</tr><tr class="even"><td><code>Analysis</code></td>
+</tr><tr><td><code>Analysis</code></td>
 <td><a href="#populationanalysis">PopulationAnalysis</a></td>
 <td>No</td>
 <td>Mapped via <code>PopulationAnalysisMapper</code>. Updates the chart’s <code>BasePopulationAnalysis</code>.</td>
-</tr><tr class="odd"><td><code>ObservedDataCollection</code></td>
+</tr><tr><td><code>ObservedDataCollection</code></td>
 <td><a href="#observeddatacollection">ObservedDataCollection</a></td>
 <td>No</td>
 <td>Mapped and applied via <code>UpdateFrom()</code> on the chart’s existing collection.</td>
-</tr><tr class="even"><td><em>(chart properties)</em></td>
+</tr><tr><td><em>(chart properties)</em></td>
 <td></td>
 <td></td>
 <td>Title, FontAndSize, Settings, etc. — same as <a href="#curvechart">CurveChart</a> base.</td>
@@ -2216,21 +2216,21 @@
 <div class="section level3">
 <h3 id="axissettings">AxisSettings<a class="anchor" aria-label="anchor" href="#axissettings"></a></h3>
 <p>A domain model object used directly in JSON.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Min</code></td>
+</tr></thead><tbody><tr><td><code>Min</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>
 <code>AxisSettings.Min</code>. Minimum axis value.</td>
-</tr><tr class="even"><td><code>Max</code></td>
+</tr><tr><td><code>Max</code></td>
 <td><code>double?</code></td>
 <td>No</td>
 <td>
 <code>AxisSettings.Max</code>. Maximum axis value.</td>
-</tr><tr class="odd"><td><code>AutoRange</code></td>
+</tr><tr><td><code>AutoRange</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>
@@ -2239,21 +2239,21 @@
 <div class="section level3">
 <h3 id="populationanalysis">PopulationAnalysis<a class="anchor" aria-label="anchor" href="#populationanalysis"></a></h3>
 <p>Not created – updates the existing <code>BasePopulationAnalysis</code> on the chart via context.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Fields</code></td>
+</tr></thead><tbody><tr><td><code>Fields</code></td>
 <td>
 <a href="#populationanalysisfield">PopulationAnalysisField</a>[]</td>
 <td>No</td>
 <td>Each mapped via <code>PopulationAnalysisFieldMapper</code> and added to the analysis.</td>
-</tr><tr class="even"><td><code>Statistics</code></td>
+</tr><tr><td><code>Statistics</code></td>
 <td>
 <a href="#statisticalaggregation">StatisticalAggregation</a>[]</td>
 <td>No</td>
 <td>For <code>PopulationStatisticalAnalysis</code>: each statistic is matched by ID, marked as selected, and its line style is updated.</td>
-</tr><tr class="odd"><td><code>ShowOutliers</code></td>
+</tr><tr><td><code>ShowOutliers</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
 <td>For <code>PopulationBoxWhiskerAnalysis</code>: <code>analysis.ShowOutliers</code>.</td>
@@ -2262,68 +2262,68 @@
 <div class="section level3">
 <h3 id="populationanalysisfield">PopulationAnalysisField<a class="anchor" aria-label="anchor" href="#populationanalysisfield"></a></h3>
 <p>Created as one of several field types depending on which snapshot properties are present: <code>PopulationAnalysisOutputField</code> (default), <code>PopulationAnalysisParameterField</code>, <code>PopulationAnalysisPKParameterField</code>, <code>PopulationAnalysisCovariateField</code>, or <code>PopulationAnalysisGroupingField</code>.</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Name</code></td>
+</tr></thead><tbody><tr><td><code>Name</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td><code>PopulationAnalysisField.Name</code></td>
-</tr><tr class="even"><td><code>Dimension</code></td>
+</tr><tr><td><code>Dimension</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved via <code>IDimensionRepository.DimensionByName()</code>. Sets the field’s dimension for numeric fields.</td>
-</tr><tr class="odd"><td><code>Unit</code></td>
+</tr><tr><td><code>Unit</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Resolved from the dimension. Sets <code>DisplayUnit</code>.</td>
-</tr><tr class="even"><td><code>Scaling</code></td>
+</tr><tr><td><code>Scaling</code></td>
 <td>
 <a href="#scalings">Scalings</a>?</td>
 <td>No</td>
 <td>
 <code>PopulationAnalysisField.Scaling</code>.</td>
-</tr><tr class="odd"><td><code>Color</code></td>
+</tr><tr><td><code>Color</code></td>
 <td><code>Color?</code></td>
 <td>No</td>
 <td>For output fields: <code>PopulationAnalysisOutputField.Color</code>.</td>
-</tr><tr class="even"><td><code>QuantityPath</code></td>
+</tr><tr><td><code>QuantityPath</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For output and PK parameter fields: path to the simulation quantity.</td>
-</tr><tr class="odd"><td><code>QuantityType</code></td>
+</tr><tr><td><code>QuantityType</code></td>
 <td>
 <a href="#quantitytype">QuantityType</a>?</td>
 <td>No</td>
 <td>For PK parameter fields: <code>PopulationAnalysisPKParameterField.QuantityType</code>.</td>
-</tr><tr class="even"><td><code>ParameterPath</code></td>
+</tr><tr><td><code>ParameterPath</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For parameter fields: <code>PopulationAnalysisParameterField.ParameterPath</code>. Presence of this property triggers creation of a parameter field.</td>
-</tr><tr class="odd"><td><code>PKParameter</code></td>
+</tr><tr><td><code>PKParameter</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For PK parameter fields: <code>PopulationAnalysisPKParameterField.PKParameter</code>. Presence triggers PK parameter field creation.</td>
-</tr><tr class="even"><td><code>Covariate</code></td>
+</tr><tr><td><code>Covariate</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For covariate fields: <code>PopulationAnalysisCovariateField.Covariate</code>. Presence triggers covariate field creation.</td>
-</tr><tr class="odd"><td><code>GroupingItems</code></td>
+</tr><tr><td><code>GroupingItems</code></td>
 <td>
 <a href="#groupingitem">GroupingItem</a>[]</td>
 <td>No</td>
 <td>For covariate fields: each item added via <code>AddGroupingItem()</code>.</td>
-</tr><tr class="even"><td><code>GroupingDefinition</code></td>
+</tr><tr><td><code>GroupingDefinition</code></td>
 <td><a href="#groupingdefinition">GroupingDefinition</a></td>
 <td>No</td>
 <td>For grouping fields: mapped via <code>GroupingDefinitionMapper</code>. Presence triggers grouping field creation.</td>
-</tr><tr class="odd"><td><code>Area</code></td>
+</tr><tr><td><code>Area</code></td>
 <td>
 <a href="#pivotarea">PivotArea</a>?</td>
 <td>No</td>
 <td>Pivot area position (used after field is added to analysis).</td>
-</tr><tr class="even"><td><code>Index</code></td>
+</tr><tr><td><code>Index</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>Position index within the pivot area.</td>
@@ -2331,52 +2331,52 @@
 <div class="section level3">
 <h3 id="groupingdefinition">GroupingDefinition<a class="anchor" aria-label="anchor" href="#groupingdefinition"></a></h3>
 <p>Created as one of: <code>ValueMappingGroupingDefinition</code> (if <code>Mapping</code> present), <code>FixedLimitsGroupingDefinition</code> (if <code>Limits</code> present), or <code>NumberOfBinsGroupingDefinition</code> (default).</p>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>FieldName</code></td>
+</tr></thead><tbody><tr><td><code>FieldName</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Constructor parameter. The name of the field this grouping applies to.</td>
-</tr><tr class="even"><td><code>Mapping</code></td>
+</tr><tr><td><code>Mapping</code></td>
 <td><code>Dictionary&lt;string, GroupingItem&gt;</code></td>
 <td>No</td>
 <td>For value-mapping groupings: each key-value pair added via <code>AddValueLabel()</code>. Presence triggers value-mapping creation.</td>
-</tr><tr class="odd"><td><code>Limits</code></td>
+</tr><tr><td><code>Limits</code></td>
 <td><code>double[]</code></td>
 <td>No</td>
 <td>For fixed-limits groupings: converted from display to base units, sorted, then set via <code>SetLimits()</code>. Presence triggers fixed-limits creation.</td>
-</tr><tr class="even"><td><code>Dimension</code></td>
+</tr><tr><td><code>Dimension</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For interval groupings (fixed-limits and number-of-bins): resolved via dimension repository.</td>
-</tr><tr class="odd"><td><code>Unit</code></td>
+</tr><tr><td><code>Unit</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For interval groupings: resolved from the dimension. Sets display unit.</td>
-</tr><tr class="even"><td><code>Items</code></td>
+</tr><tr><td><code>Items</code></td>
 <td>
 <a href="#groupingitem">GroupingItem</a>[]</td>
 <td>No</td>
 <td>For interval groupings: added via <code>AddItems()</code>.</td>
-</tr><tr class="odd"><td><code>NumberOfBins</code></td>
+</tr><tr><td><code>NumberOfBins</code></td>
 <td><code>int?</code></td>
 <td>No</td>
 <td>For number-of-bins groupings: <code>NumberOfBinsGroupingDefinition.NumberOfBins</code>.</td>
-</tr><tr class="even"><td><code>StartColor</code></td>
+</tr><tr><td><code>StartColor</code></td>
 <td><code>Color?</code></td>
 <td>No</td>
 <td>For number-of-bins groupings: start of the color gradient.</td>
-</tr><tr class="odd"><td><code>EndColor</code></td>
+</tr><tr><td><code>EndColor</code></td>
 <td><code>Color?</code></td>
 <td>No</td>
 <td>For number-of-bins groupings: end of the color gradient.</td>
-</tr><tr class="even"><td><code>NamingPattern</code></td>
+</tr><tr><td><code>NamingPattern</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>For number-of-bins groupings: pattern for generating bin labels.</td>
-</tr><tr class="odd"><td><code>Strategy</code></td>
+</tr><tr><td><code>Strategy</code></td>
 <td>
 <a href="#labelgenerationstrategyid">LabelGenerationStrategyId</a>?</td>
 <td>No</td>
@@ -2384,15 +2384,15 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="statisticalaggregation">StatisticalAggregation<a class="anchor" aria-label="anchor" href="#statisticalaggregation"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Id</code></td>
+</tr></thead><tbody><tr><td><code>Id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
 <td>Statistic identifier. Matched against the analysis’s predefined statistics by ID. The matching statistic is marked as selected.</td>
-</tr><tr class="even"><td><code>LineStyle</code></td>
+</tr><tr><td><code>LineStyle</code></td>
 <td><a href="#linestyles">LineStyles</a></td>
 <td>No</td>
 <td>
@@ -2400,20 +2400,20 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="observeddatacollection">ObservedDataCollection<a class="anchor" aria-label="anchor" href="#observeddatacollection"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>ObservedData</code></td>
+</tr></thead><tbody><tr><td><code>ObservedData</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td>Array of observed data repository names. Each resolved from the project.</td>
-</tr><tr class="even"><td><code>ApplyGrouping</code></td>
+</tr><tr><td><code>ApplyGrouping</code></td>
 <td><code>bool</code></td>
 <td>No</td>
 <td>
 <code>ObservedDataCollection.ApplyGrouping</code>. Whether grouping is applied to observed data display.</td>
-</tr><tr class="odd"><td><code>CurveOptions</code></td>
+</tr><tr><td><code>CurveOptions</code></td>
 <td>
 <a href="#observeddatacurveoptions">ObservedDataCurveOptions</a>[]</td>
 <td>No</td>
@@ -2421,19 +2421,19 @@
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="observeddatacurveoptions">ObservedDataCurveOptions<a class="anchor" aria-label="anchor" href="#observeddatacurveoptions"></a></h3>
-<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr class="header"><th>Property</th>
+<table class="table"><colgroup><col width="23%"><col width="14%"><col width="23%"><col width="38%"></colgroup><thead><tr><th>Property</th>
 <th>Type</th>
 <th>Required</th>
 <th>Domain Mapping</th>
-</tr></thead><tbody><tr class="odd"><td><code>Caption</code></td>
+</tr></thead><tbody><tr><td><code>Caption</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Display caption for this observed data curve.</td>
-</tr><tr class="even"><td><code>Path</code></td>
+</tr><tr><td><code>Path</code></td>
 <td><code>string</code></td>
 <td>No</td>
 <td>Path identifying the observed data column.</td>
-</tr><tr class="odd"><td><code>CurveOptions</code></td>
+</tr><tr><td><code>CurveOptions</code></td>
 <td><a href="#curveoptions">CurveOptions</a></td>
 <td>No</td>
 <td>Display options for this observed data curve.</td>
@@ -2441,22 +2441,22 @@
 </div>
 <div class="section level2">
 <h2 id="version-compatibility-summary">Version Compatibility Summary<a class="anchor" aria-label="anchor" href="#version-compatibility-summary"></a></h2>
-<table class="table"><colgroup><col width="33%"><col width="18%"><col width="48%"></colgroup><thead><tr class="header"><th>Version</th>
+<table class="table"><colgroup><col width="33%"><col width="18%"><col width="48%"></colgroup><thead><tr><th>Version</th>
 <th>Int</th>
 <th>Key Changes</th>
-</tr></thead><tbody><tr class="odd"><td>v7.3.0+</td>
+</tr></thead><tbody><tr><td>v7.3.0+</td>
 <td>74+</td>
 <td>Minimum version for snapshot support.</td>
-</tr><tr class="even"><td>v9</td>
+</tr><tr><td>v9</td>
 <td>77</td>
 <td>ExpressionProfile uses <code>MembraneLocation</code>/<code>TissueLocation</code>/<code>IntracellularVascularEndoLocation</code> (converted to <code>Localization</code>). Expression values are normalized after loading.</td>
-</tr><tr class="odd"><td>v10</td>
+</tr><tr><td>v10</td>
 <td>78</td>
 <td>Individual uses <code>Molecules[]</code> (embedded expression profiles).</td>
-</tr><tr class="even"><td>v11</td>
+</tr><tr><td>v11</td>
 <td>79</td>
 <td>Individual switches to <code>ExpressionProfiles[]</code> (string references). <code>LocalizedParameter</code> paths convert <code>"Applications"</code> to <code>"Events"</code>.</td>
-</tr><tr class="odd"><td>v12</td>
+</tr><tr><td>v12</td>
 <td>80</td>
 <td>Current version.</td>
 </tr></tbody></table><hr></div>
@@ -2470,492 +2470,492 @@
 <div class="section level3">
 <h3 id="compoundtype">CompoundType<a class="anchor" aria-label="anchor" href="#compoundtype"></a></h3>
 <p>Used in <a href="#pkatype">PkaType</a> to classify ionization behavior.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Neutral</code></td>
+</tr></thead><tbody><tr><td><code>Neutral</code></td>
 <td>Uncharged compound, no ionization.</td>
-</tr><tr class="even"><td><code>Acid</code></td>
+</tr><tr><td><code>Acid</code></td>
 <td>Donates a proton at physiological pH.</td>
-</tr><tr class="odd"><td><code>Base</code></td>
+</tr><tr><td><code>Base</code></td>
 <td>Accepts a proton at physiological pH.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="plasmaproteinbindingpartner">PlasmaProteinBindingPartner<a class="anchor" aria-label="anchor" href="#plasmaproteinbindingpartner"></a></h3>
 <p>Used in <a href="#compound">Compound</a> to specify the primary binding protein in plasma.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Unknown</code></td>
+</tr></thead><tbody><tr><td><code>Unknown</code></td>
 <td>Binding partner not specified (default).</td>
-</tr><tr class="even"><td><code>Albumin</code></td>
+</tr><tr><td><code>Albumin</code></td>
 <td>Binds primarily to albumin.</td>
-</tr><tr class="odd"><td><code>Glycoprotein</code></td>
+</tr><tr><td><code>Glycoprotein</code></td>
 <td>Binds primarily to alpha-1-acid glycoprotein (AGP).</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="quantitytype">QuantityType<a class="anchor" aria-label="anchor" href="#quantitytype"></a></h3>
 <p>Flags enum. Used in <a href="#expressionprofile">ExpressionProfile</a> to define the molecule type.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Undefined</code></td>
+</tr></thead><tbody><tr><td><code>Undefined</code></td>
 <td>No type assigned.</td>
-</tr><tr class="even"><td><code>Drug</code></td>
+</tr><tr><td><code>Drug</code></td>
 <td>Parent drug molecule.</td>
-</tr><tr class="odd"><td><code>Metabolite</code></td>
+</tr><tr><td><code>Metabolite</code></td>
 <td>Metabolic product of a drug.</td>
-</tr><tr class="even"><td><code>Enzyme</code></td>
+</tr><tr><td><code>Enzyme</code></td>
 <td>Metabolizing enzyme.</td>
-</tr><tr class="odd"><td><code>Transporter</code></td>
+</tr><tr><td><code>Transporter</code></td>
 <td>Membrane transporter protein.</td>
-</tr><tr class="even"><td><code>Complex</code></td>
+</tr><tr><td><code>Complex</code></td>
 <td>Drug-protein complex.</td>
-</tr><tr class="odd"><td><code>OtherProtein</code></td>
+</tr><tr><td><code>OtherProtein</code></td>
 <td>Protein that is not an enzyme or transporter.</td>
-</tr><tr class="even"><td><code>Observer</code></td>
+</tr><tr><td><code>Observer</code></td>
 <td>Calculated observer quantity.</td>
-</tr><tr class="odd"><td><code>Parameter</code></td>
+</tr><tr><td><code>Parameter</code></td>
 <td>Model parameter.</td>
-</tr><tr class="even"><td><code>BaseGrid</code></td>
+</tr><tr><td><code>BaseGrid</code></td>
 <td>Independent variable (time axis).</td>
 </tr></tbody></table><p>Composite values: <code>Protein</code> = OtherProtein, Enzyme, Transporter. <code>Molecule</code> = Drug, Metabolite, Protein, Complex.</p>
 </div>
 <div class="section level3">
 <h3 id="localization">Localization<a class="anchor" aria-label="anchor" href="#localization"></a></h3>
 <p>Flags enum. Used in <a href="#expressionprofile">ExpressionProfile</a> to specify where a protein is expressed in tissue.</p>
-<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr class="header"><th>Value</th>
+<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>None</code></td>
+</tr></thead><tbody><tr><td><code>None</code></td>
 <td>No localization.</td>
-</tr><tr class="even"><td><code>Intracellular</code></td>
+</tr><tr><td><code>Intracellular</code></td>
 <td>Inside the cell cytoplasm.</td>
-</tr><tr class="odd"><td><code>Interstitial</code></td>
+</tr><tr><td><code>Interstitial</code></td>
 <td>In the interstitial space surrounding cells.</td>
-</tr><tr class="even"><td><code>BloodCellsMembrane</code></td>
+</tr><tr><td><code>BloodCellsMembrane</code></td>
 <td>On the membrane of blood cells (e.g. red blood cells).</td>
-</tr><tr class="odd"><td><code>BloodCellsIntracellular</code></td>
+</tr><tr><td><code>BloodCellsIntracellular</code></td>
 <td>Inside blood cells.</td>
-</tr><tr class="even"><td><code>VascEndosome</code></td>
+</tr><tr><td><code>VascEndosome</code></td>
 <td>In endosomes of vascular endothelial cells.</td>
-</tr><tr class="odd"><td><code>VascMembranePlasmaSide</code></td>
+</tr><tr><td><code>VascMembranePlasmaSide</code></td>
 <td>On the plasma-facing side of the vascular endothelium membrane.</td>
-</tr><tr class="even"><td><code>VascMembraneTissueSide</code></td>
+</tr><tr><td><code>VascMembraneTissueSide</code></td>
 <td>On the tissue-facing side of the vascular endothelium membrane.</td>
 </tr></tbody></table><p>Composite values: <code>InTissue</code> = Intracellular, Interstitial. <code>InBloodCells</code> = BloodCellsMembrane, BloodCellsIntracellular. <code>InVascularEndothelium</code> = VascEndosome, VascMembranePlasmaSide, VascMembraneTissueSide.</p>
 </div>
 <div class="section level3">
 <h3 id="membranelocation">MembraneLocation<a class="anchor" aria-label="anchor" href="#membranelocation"></a></h3>
 <p><strong>Legacy (v9 and below)</strong>. Used in <a href="#expressionprofile">ExpressionProfile</a> and <a href="#expressioncontainer">ExpressionContainer</a>. Converted to <a href="#localization">Localization</a> during import.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Apical</code></td>
+</tr></thead><tbody><tr><td><code>Apical</code></td>
 <td>Apical (luminal) side of polarized cells.</td>
-</tr><tr class="even"><td><code>Basolateral</code></td>
+</tr><tr><td><code>Basolateral</code></td>
 <td>Basolateral side of polarized cells.</td>
-</tr><tr class="odd"><td><code>BloodBrainBarrier</code></td>
+</tr><tr><td><code>BloodBrainBarrier</code></td>
 <td>Blood-brain barrier membrane.</td>
-</tr><tr class="even"><td><code>Tissue</code></td>
+</tr><tr><td><code>Tissue</code></td>
 <td>General tissue membrane.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="tissuelocation">TissueLocation<a class="anchor" aria-label="anchor" href="#tissuelocation"></a></h3>
 <p><strong>Legacy (v9 and below)</strong>. Used in <a href="#expressionprofile">ExpressionProfile</a>. Converted to <a href="#localization">Localization</a> during import.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>ExtracellularMembrane</code></td>
+</tr></thead><tbody><tr><td><code>ExtracellularMembrane</code></td>
 <td>On the extracellular membrane surface.</td>
-</tr><tr class="even"><td><code>Intracellular</code></td>
+</tr><tr><td><code>Intracellular</code></td>
 <td>Inside the cell.</td>
-</tr><tr class="odd"><td><code>Interstitial</code></td>
+</tr><tr><td><code>Interstitial</code></td>
 <td>In the interstitial space.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="intracellularvascularendolocation">IntracellularVascularEndoLocation<a class="anchor" aria-label="anchor" href="#intracellularvascularendolocation"></a></h3>
 <p><strong>Legacy (v9 and below)</strong>. Used in <a href="#expressionprofile">ExpressionProfile</a>. Converted to <a href="#localization">Localization</a> during import.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Endosomal</code></td>
+</tr></thead><tbody><tr><td><code>Endosomal</code></td>
 <td>In vascular endothelial endosomes.</td>
-</tr><tr class="even"><td><code>Interstitial</code></td>
+</tr><tr><td><code>Interstitial</code></td>
 <td>In the interstitial space of vascular endothelium.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="transporttype">TransportType<a class="anchor" aria-label="anchor" href="#transporttype"></a></h3>
 <p>Flags enum. Used in <a href="#expressionprofile">ExpressionProfile</a> to classify the transporter mechanism.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Efflux</code></td>
+</tr></thead><tbody><tr><td><code>Efflux</code></td>
 <td>Pumps substrate out of the cell.</td>
-</tr><tr class="even"><td><code>Influx</code></td>
+</tr><tr><td><code>Influx</code></td>
 <td>Pumps substrate into the cell.</td>
-</tr><tr class="odd"><td><code>PgpLike</code></td>
+</tr><tr><td><code>PgpLike</code></td>
 <td>P-glycoprotein-like bidirectional efflux.</td>
-</tr><tr class="even"><td><code>BiDirectional</code></td>
+</tr><tr><td><code>BiDirectional</code></td>
 <td>Transports in both directions.</td>
-</tr><tr class="odd"><td><code>Secretion</code></td>
+</tr><tr><td><code>Secretion</code></td>
 <td>Passive secretion.</td>
-</tr><tr class="even"><td><code>Elimination</code></td>
+</tr><tr><td><code>Elimination</code></td>
 <td>Passive elimination.</td>
-</tr><tr class="odd"><td><code>Diffusion</code></td>
+</tr><tr><td><code>Diffusion</code></td>
 <td>Passive diffusion across membranes.</td>
-</tr><tr class="even"><td><code>Convection</code></td>
+</tr><tr><td><code>Convection</code></td>
 <td>Passive convective transport.</td>
 </tr></tbody></table><p>Composite values: <code>Active</code> = Influx, Efflux, PgpLike, BiDirectional. <code>Passive</code> = Secretion, Elimination, Diffusion, Convection.</p>
 </div>
 <div class="section level3">
 <h3 id="transportdirectionid">TransportDirectionId<a class="anchor" aria-label="anchor" href="#transportdirectionid"></a></h3>
 <p>Used in <a href="#expressioncontainer">ExpressionContainer</a> to specify the direction of transport in a specific organ/compartment.</p>
-<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr class="header"><th>Value</th>
+<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>None</code></td>
+</tr></thead><tbody><tr><td><code>None</code></td>
 <td>No transport.</td>
-</tr><tr class="even"><td><code>InfluxPlasmaToInterstitial</code></td>
+</tr><tr><td><code>InfluxPlasmaToInterstitial</code></td>
 <td>Influx from plasma to interstitial space.</td>
-</tr><tr class="odd"><td><code>EffluxInterstitialToPlasma</code></td>
+</tr><tr><td><code>EffluxInterstitialToPlasma</code></td>
 <td>Efflux from interstitial space to plasma.</td>
-</tr><tr class="even"><td><code>BiDirectionalPlasmaInterstitial</code></td>
+</tr><tr><td><code>BiDirectionalPlasmaInterstitial</code></td>
 <td>Bidirectional between plasma and interstitial.</td>
-</tr><tr class="odd"><td><code>InfluxPlasmaToBloodCells</code></td>
+</tr><tr><td><code>InfluxPlasmaToBloodCells</code></td>
 <td>Influx from plasma into blood cells.</td>
-</tr><tr class="even"><td><code>EffluxBloodCellsToPlasma</code></td>
+</tr><tr><td><code>EffluxBloodCellsToPlasma</code></td>
 <td>Efflux from blood cells to plasma.</td>
-</tr><tr class="odd"><td><code>BiDirectionalBloodCellsPlasma</code></td>
+</tr><tr><td><code>BiDirectionalBloodCellsPlasma</code></td>
 <td>Bidirectional between blood cells and plasma.</td>
-</tr><tr class="even"><td><code>InfluxInterstitialToIntracellular</code></td>
+</tr><tr><td><code>InfluxInterstitialToIntracellular</code></td>
 <td>Influx from interstitial to intracellular space.</td>
-</tr><tr class="odd"><td><code>EffluxIntracellularToInterstitial</code></td>
+</tr><tr><td><code>EffluxIntracellularToInterstitial</code></td>
 <td>Efflux from intracellular to interstitial space.</td>
-</tr><tr class="even"><td><code>BiDirectionalInterstitialIntracellular</code></td>
+</tr><tr><td><code>BiDirectionalInterstitialIntracellular</code></td>
 <td>Bidirectional between interstitial and intracellular.</td>
-</tr><tr class="odd"><td><code>PgpIntracellularToInterstitial</code></td>
+</tr><tr><td><code>PgpIntracellularToInterstitial</code></td>
 <td>P-gp-like efflux from intracellular to interstitial.</td>
-</tr><tr class="even"><td><code>InfluxLumenToMucosaIntracellular</code></td>
+</tr><tr><td><code>InfluxLumenToMucosaIntracellular</code></td>
 <td>Influx from gut lumen into mucosa intracellular.</td>
-</tr><tr class="odd"><td><code>EffluxMucosaIntracellularToLumen</code></td>
+</tr><tr><td><code>EffluxMucosaIntracellularToLumen</code></td>
 <td>Efflux from mucosa intracellular to gut lumen.</td>
-</tr><tr class="even"><td><code>BiDirectionalLumenMucosaIntracellular</code></td>
+</tr><tr><td><code>BiDirectionalLumenMucosaIntracellular</code></td>
 <td>Bidirectional between lumen and mucosa intracellular.</td>
-</tr><tr class="odd"><td><code>PgpMucosaIntracellularToLumen</code></td>
+</tr><tr><td><code>PgpMucosaIntracellularToLumen</code></td>
 <td>P-gp-like efflux from mucosa intracellular to lumen.</td>
-</tr><tr class="even"><td><code>ExcretionKidney</code></td>
+</tr><tr><td><code>ExcretionKidney</code></td>
 <td>Renal excretion (kidney).</td>
-</tr><tr class="odd"><td><code>ExcretionLiver</code></td>
+</tr><tr><td><code>ExcretionLiver</code></td>
 <td>Hepatic excretion (liver/bile).</td>
-</tr><tr class="even"><td><code>InfluxBrainInterstitialToTissue</code></td>
+</tr><tr><td><code>InfluxBrainInterstitialToTissue</code></td>
 <td>Influx from brain interstitial to brain tissue.</td>
-</tr><tr class="odd"><td><code>EffluxBrainTissueToInterstitial</code></td>
+</tr><tr><td><code>EffluxBrainTissueToInterstitial</code></td>
 <td>Efflux from brain tissue to brain interstitial.</td>
-</tr><tr class="even"><td><code>BiDirectionalBrainInterstitialTissue</code></td>
+</tr><tr><td><code>BiDirectionalBrainInterstitialTissue</code></td>
 <td>Bidirectional between brain interstitial and tissue.</td>
-</tr><tr class="odd"><td><code>PgpBrainTissueToInterstitial</code></td>
+</tr><tr><td><code>PgpBrainTissueToInterstitial</code></td>
 <td>P-gp-like efflux from brain tissue to interstitial.</td>
-</tr><tr class="even"><td><code>InfluxBrainPlasmaToInterstitial</code></td>
+</tr><tr><td><code>InfluxBrainPlasmaToInterstitial</code></td>
 <td>Influx from brain plasma to brain interstitial (BBB).</td>
-</tr><tr class="odd"><td><code>EffluxBrainInterstitialToPlasma</code></td>
+</tr><tr><td><code>EffluxBrainInterstitialToPlasma</code></td>
 <td>Efflux from brain interstitial to brain plasma (BBB).</td>
-</tr><tr class="even"><td><code>BiDirectionalBrainPlasmaInterstitial</code></td>
+</tr><tr><td><code>BiDirectionalBrainPlasmaInterstitial</code></td>
 <td>Bidirectional across blood-brain barrier.</td>
-</tr><tr class="odd"><td><code>PgpBrainInterstitialToPlasma</code></td>
+</tr><tr><td><code>PgpBrainInterstitialToPlasma</code></td>
 <td>P-gp-like efflux from brain interstitial to plasma (BBB).</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="dosingintervalid">DosingIntervalId<a class="anchor" aria-label="anchor" href="#dosingintervalid"></a></h3>
 <p>Used in <a href="#simple-protocol">Protocol (Simple)</a> to define the dosing schedule.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Single</code></td>
+</tr></thead><tbody><tr><td><code>Single</code></td>
 <td>Single dose administration.</td>
-</tr><tr class="even"><td><code>DI_6_6_6_6</code></td>
+</tr><tr><td><code>DI_6_6_6_6</code></td>
 <td>Every 6 hours (4 times daily).</td>
-</tr><tr class="odd"><td><code>DI_6_6_12</code></td>
+</tr><tr><td><code>DI_6_6_12</code></td>
 <td>6h, 6h, then 12h intervals.</td>
-</tr><tr class="even"><td><code>DI_8_8_8</code></td>
+</tr><tr><td><code>DI_8_8_8</code></td>
 <td>Every 8 hours (3 times daily).</td>
-</tr><tr class="odd"><td><code>DI_12_12</code></td>
+</tr><tr><td><code>DI_12_12</code></td>
 <td>Every 12 hours (twice daily).</td>
-</tr><tr class="even"><td><code>DI_24</code></td>
+</tr><tr><td><code>DI_24</code></td>
 <td>Every 24 hours (once daily).</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="distributiontype">DistributionType<a class="anchor" aria-label="anchor" href="#distributiontype"></a></h3>
 <p>Used in <a href="#advancedparameter">AdvancedParameter</a> to define the statistical distribution for population variability.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Normal</code></td>
+</tr></thead><tbody><tr><td><code>Normal</code></td>
 <td>Normal (Gaussian) distribution.</td>
-</tr><tr class="even"><td><code>LogNormal</code></td>
+</tr><tr><td><code>LogNormal</code></td>
 <td>Log-normal distribution.</td>
-</tr><tr class="odd"><td><code>Uniform</code></td>
+</tr><tr><td><code>Uniform</code></td>
 <td>Uniform distribution between min and max.</td>
-</tr><tr class="even"><td><code>Discrete</code></td>
+</tr><tr><td><code>Discrete</code></td>
 <td>Discrete distribution with fixed values.</td>
-</tr><tr class="odd"><td><code>Unknown</code></td>
+</tr><tr><td><code>Unknown</code></td>
 <td>Distribution type not specified.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="scalings">Scalings<a class="anchor" aria-label="anchor" href="#scalings"></a></h3>
 <p>Used in <a href="#outputmapping">OutputMapping</a>, <a href="#simulation">Simulation</a> axes, and <a href="#populationanalysischart">PopulationAnalysisField</a> for axis scaling.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Linear</code></td>
+</tr></thead><tbody><tr><td><code>Linear</code></td>
 <td>Linear scale.</td>
-</tr><tr class="even"><td><code>Log</code></td>
+</tr><tr><td><code>Log</code></td>
 <td>Logarithmic scale.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="pksimbuildingblocktype">PKSimBuildingBlockType<a class="anchor" aria-label="anchor" href="#pksimbuildingblocktype"></a></h3>
 <p>Flags enum. Used in <a href="#alteredbuildingblock">AlteredBuildingBlock</a> to identify the type of a building block.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Simulation</code></td>
+</tr></thead><tbody><tr><td><code>Simulation</code></td>
 <td>A simulation.</td>
-</tr><tr class="even"><td><code>Compound</code></td>
+</tr><tr><td><code>Compound</code></td>
 <td>A compound (drug).</td>
-</tr><tr class="odd"><td><code>Formulation</code></td>
+</tr><tr><td><code>Formulation</code></td>
 <td>A formulation.</td>
-</tr><tr class="even"><td><code>Protocol</code></td>
+</tr><tr><td><code>Protocol</code></td>
 <td>A dosing protocol.</td>
-</tr><tr class="odd"><td><code>Individual</code></td>
+</tr><tr><td><code>Individual</code></td>
 <td>An individual organism.</td>
-</tr><tr class="even"><td><code>Population</code></td>
+</tr><tr><td><code>Population</code></td>
 <td>A population.</td>
-</tr><tr class="odd"><td><code>Event</code></td>
+</tr><tr><td><code>Event</code></td>
 <td>A simulation event.</td>
-</tr><tr class="even"><td><code>ObserverSet</code></td>
+</tr><tr><td><code>ObserverSet</code></td>
 <td>A set of observers.</td>
-</tr><tr class="odd"><td><code>ExpressionProfile</code></td>
+</tr><tr><td><code>ExpressionProfile</code></td>
 <td>An expression profile.</td>
 </tr></tbody></table><p>Composite values: <code>SimulationSubject</code> = Individual, Population. <code>Template</code> = all non-Simulation types.</p>
 </div>
 <div class="section level3">
 <h3 id="valueoriginsourceid">ValueOriginSourceId<a class="anchor" aria-label="anchor" href="#valueoriginsourceid"></a></h3>
 <p>Used in <a href="#valueorigin">ValueOrigin</a> to identify where a parameter value came from.</p>
-<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr class="header"><th>Value</th>
+<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Undefined</code></td>
+</tr></thead><tbody><tr><td><code>Undefined</code></td>
 <td>Not specified (default).</td>
-</tr><tr class="even"><td><code>Unknown</code></td>
+</tr><tr><td><code>Unknown</code></td>
 <td>Source is unknown.</td>
-</tr><tr class="odd"><td><code>Database</code></td>
+</tr><tr><td><code>Database</code></td>
 <td>Value from the PKSim database.</td>
-</tr><tr class="even"><td><code>Internet</code></td>
+</tr><tr><td><code>Internet</code></td>
 <td>Value sourced from an internet resource.</td>
-</tr><tr class="odd"><td><code>Publication</code></td>
+</tr><tr><td><code>Publication</code></td>
 <td>Value from a scientific publication.</td>
-</tr><tr class="even"><td><code>ParameterIdentification</code></td>
+</tr><tr><td><code>ParameterIdentification</code></td>
 <td>Value determined by parameter identification (fitting).</td>
-</tr><tr class="odd"><td><code>Other</code></td>
+</tr><tr><td><code>Other</code></td>
 <td>Other source not listed above.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="valueorigindeterminationmethodid">ValueOriginDeterminationMethodId<a class="anchor" aria-label="anchor" href="#valueorigindeterminationmethodid"></a></h3>
 <p>Used in <a href="#valueorigin">ValueOrigin</a> to describe how a parameter value was determined.</p>
-<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr class="header"><th>Value</th>
+<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Undefined</code></td>
+</tr></thead><tbody><tr><td><code>Undefined</code></td>
 <td>Not specified (default).</td>
-</tr><tr class="even"><td><code>Unknown</code></td>
+</tr><tr><td><code>Unknown</code></td>
 <td>Determination method unknown.</td>
-</tr><tr class="odd"><td><code>Assumption</code></td>
+</tr><tr><td><code>Assumption</code></td>
 <td>Value based on an assumption.</td>
-</tr><tr class="even"><td><code>ManualFit</code></td>
+</tr><tr><td><code>ManualFit</code></td>
 <td>Value determined by manual fitting.</td>
-</tr><tr class="odd"><td><code>ParameterIdentification</code></td>
+</tr><tr><td><code>ParameterIdentification</code></td>
 <td>Value determined by automated parameter identification.</td>
-</tr><tr class="even"><td><code>InVitro</code></td>
+</tr><tr><td><code>InVitro</code></td>
 <td>Value measured in vitro.</td>
-</tr><tr class="odd"><td><code>InVivo</code></td>
+</tr><tr><td><code>InVivo</code></td>
 <td>Value measured in vivo.</td>
-</tr><tr class="even"><td><code>Other</code></td>
+</tr><tr><td><code>Other</code></td>
 <td>Other method not listed above.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="columnorigins">ColumnOrigins<a class="anchor" aria-label="anchor" href="#columnorigins"></a></h3>
 <p>Used in <a href="#datacolumn">DataColumn</a> (via <code>DataInfo</code>) to classify the origin of a data column.</p>
-<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr class="header"><th>Value</th>
+<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Undefined</code></td>
+</tr></thead><tbody><tr><td><code>Undefined</code></td>
 <td>Origin not specified.</td>
-</tr><tr class="even"><td><code>BaseGrid</code></td>
+</tr><tr><td><code>BaseGrid</code></td>
 <td>Independent variable column (e.g. time).</td>
-</tr><tr class="odd"><td><code>Calculation</code></td>
+</tr><tr><td><code>Calculation</code></td>
 <td>Result of a simulation calculation.</td>
-</tr><tr class="even"><td><code>Observation</code></td>
+</tr><tr><td><code>Observation</code></td>
 <td>Experimentally observed data.</td>
-</tr><tr class="odd"><td><code>ObservationAuxiliary</code></td>
+</tr><tr><td><code>ObservationAuxiliary</code></td>
 <td>Auxiliary data related to observations (e.g. error bars).</td>
-</tr><tr class="even"><td><code>CalculationAuxiliary</code></td>
+</tr><tr><td><code>CalculationAuxiliary</code></td>
 <td>Auxiliary data related to calculations.</td>
-</tr><tr class="odd"><td><code>DeviationLine</code></td>
+</tr><tr><td><code>DeviationLine</code></td>
 <td>Deviation line for comparison.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="auxiliarytype">AuxiliaryType<a class="anchor" aria-label="anchor" href="#auxiliarytype"></a></h3>
 <p>Used in <a href="#datacolumn">DataColumn</a> (via <code>DataInfo</code>) to classify auxiliary column types.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Undefined</code></td>
+</tr></thead><tbody><tr><td><code>Undefined</code></td>
 <td>Not an auxiliary column.</td>
-</tr><tr class="even"><td><code>ArithmeticStdDev</code></td>
+</tr><tr><td><code>ArithmeticStdDev</code></td>
 <td>Arithmetic standard deviation.</td>
-</tr><tr class="odd"><td><code>GeometricStdDev</code></td>
+</tr><tr><td><code>GeometricStdDev</code></td>
 <td>Geometric standard deviation.</td>
-</tr><tr class="even"><td><code>ArithmeticMeanPop</code></td>
+</tr><tr><td><code>ArithmeticMeanPop</code></td>
 <td>Arithmetic mean of population.</td>
-</tr><tr class="odd"><td><code>GeometricMeanPop</code></td>
+</tr><tr><td><code>GeometricMeanPop</code></td>
 <td>Geometric mean of population.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="populationanalysistype">PopulationAnalysisType<a class="anchor" aria-label="anchor" href="#populationanalysistype"></a></h3>
 <p>Used in <a href="#populationanalysischart">PopulationAnalysisChart</a> to determine the chart type.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>TimeProfile</code></td>
+</tr></thead><tbody><tr><td><code>TimeProfile</code></td>
 <td>Time-profile analysis chart.</td>
-</tr><tr class="even"><td><code>BoxWhisker</code></td>
+</tr><tr><td><code>BoxWhisker</code></td>
 <td>Box-and-whisker plot.</td>
-</tr><tr class="odd"><td><code>Scatter</code></td>
+</tr><tr><td><code>Scatter</code></td>
 <td>Scatter plot.</td>
-</tr><tr class="even"><td><code>Range</code></td>
+</tr><tr><td><code>Range</code></td>
 <td>Range plot (e.g. percentile bands).</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="axistypes">AxisTypes<a class="anchor" aria-label="anchor" href="#axistypes"></a></h3>
 <p>Used in <a href="#curvechart">CurveChart</a> axes and curve options to assign curves to axes.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>X</code></td>
+</tr></thead><tbody><tr><td><code>X</code></td>
 <td>X-axis (typically time).</td>
-</tr><tr class="even"><td><code>Y</code></td>
+</tr><tr><td><code>Y</code></td>
 <td>Primary Y-axis.</td>
-</tr><tr class="odd"><td><code>Y2</code></td>
+</tr><tr><td><code>Y2</code></td>
 <td>Secondary Y-axis.</td>
-</tr><tr class="even"><td><code>Y3</code></td>
+</tr><tr><td><code>Y3</code></td>
 <td>Tertiary Y-axis.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="linestyles">LineStyles<a class="anchor" aria-label="anchor" href="#linestyles"></a></h3>
 <p>Used in <a href="#curvechart">CurveChart</a> curve options and axes to define line rendering.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>None</code></td>
+</tr></thead><tbody><tr><td><code>None</code></td>
 <td>No line drawn.</td>
-</tr><tr class="even"><td><code>Solid</code></td>
+</tr><tr><td><code>Solid</code></td>
 <td>Solid continuous line.</td>
-</tr><tr class="odd"><td><code>Dash</code></td>
+</tr><tr><td><code>Dash</code></td>
 <td>Dashed line.</td>
-</tr><tr class="even"><td><code>Dot</code></td>
+</tr><tr><td><code>Dot</code></td>
 <td>Dotted line.</td>
-</tr><tr class="odd"><td><code>DashDot</code></td>
+</tr><tr><td><code>DashDot</code></td>
 <td>Alternating dash-dot line.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="symbols">Symbols<a class="anchor" aria-label="anchor" href="#symbols"></a></h3>
 <p>Used in <a href="#curvechart">CurveChart</a> curve options to define data point markers.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>None</code></td>
+</tr></thead><tbody><tr><td><code>None</code></td>
 <td>No symbol drawn.</td>
-</tr><tr class="even"><td><code>Circle</code></td>
+</tr><tr><td><code>Circle</code></td>
 <td>Circle marker.</td>
-</tr><tr class="odd"><td><code>Diamond</code></td>
+</tr><tr><td><code>Diamond</code></td>
 <td>Diamond marker.</td>
-</tr><tr class="even"><td><code>Triangle</code></td>
+</tr><tr><td><code>Triangle</code></td>
 <td>Upward-pointing triangle.</td>
-</tr><tr class="odd"><td><code>Square</code></td>
+</tr><tr><td><code>Square</code></td>
 <td>Square marker.</td>
-</tr><tr class="even"><td><code>InvertedTriangle</code></td>
+</tr><tr><td><code>InvertedTriangle</code></td>
 <td>Downward-pointing triangle.</td>
-</tr><tr class="odd"><td><code>Plus</code></td>
+</tr><tr><td><code>Plus</code></td>
 <td>Plus sign (+) marker.</td>
-</tr><tr class="even"><td><code>Cross</code></td>
+</tr><tr><td><code>Cross</code></td>
 <td>Cross (x) marker.</td>
-</tr><tr class="odd"><td><code>Star</code></td>
+</tr><tr><td><code>Star</code></td>
 <td>Star marker.</td>
-</tr><tr class="even"><td><code>Pentagon</code></td>
+</tr><tr><td><code>Pentagon</code></td>
 <td>Pentagon marker.</td>
-</tr><tr class="odd"><td><code>Hexagon</code></td>
+</tr><tr><td><code>Hexagon</code></td>
 <td>Hexagon marker.</td>
-</tr><tr class="even"><td><code>ThinCross</code></td>
+</tr><tr><td><code>ThinCross</code></td>
 <td>Thin cross marker.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="interpolationmodes">InterpolationModes<a class="anchor" aria-label="anchor" href="#interpolationmodes"></a></h3>
 <p>Used in <a href="#curvechart">CurveChart</a> curve options to define how points are connected.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>xLinear</code></td>
+</tr></thead><tbody><tr><td><code>xLinear</code></td>
 <td>Linear interpolation along the X-axis.</td>
-</tr><tr class="even"><td><code>yLinear</code></td>
+</tr><tr><td><code>yLinear</code></td>
 <td>Linear interpolation along the Y-axis.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="numbermodes">NumberModes<a class="anchor" aria-label="anchor" href="#numbermodes"></a></h3>
 <p>Used in <a href="#curvechart">CurveChart</a> axes to control number display format.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Normal</code></td>
+</tr></thead><tbody><tr><td><code>Normal</code></td>
 <td>Standard decimal notation.</td>
-</tr><tr class="even"><td><code>Scientific</code></td>
+</tr><tr><td><code>Scientific</code></td>
 <td>Scientific notation (e.g. 1.5E+03).</td>
-</tr><tr class="odd"><td><code>Relative</code></td>
+</tr><tr><td><code>Relative</code></td>
 <td>Relative/normalized values.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="pivotarea">PivotArea<a class="anchor" aria-label="anchor" href="#pivotarea"></a></h3>
 <p>Flags enum. Used in <a href="#populationanalysischart">PopulationAnalysisChart</a> fields to control where a field appears in the analysis pivot layout.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>DataArea</code></td>
+</tr></thead><tbody><tr><td><code>DataArea</code></td>
 <td>Field provides the data values.</td>
-</tr><tr class="even"><td><code>FilterArea</code></td>
+</tr><tr><td><code>FilterArea</code></td>
 <td>Field is used as a filter.</td>
-</tr><tr class="odd"><td><code>RowArea</code></td>
+</tr><tr><td><code>RowArea</code></td>
 <td>Field defines the rows (grouping).</td>
-</tr><tr class="even"><td><code>ColorArea</code></td>
+</tr><tr><td><code>ColorArea</code></td>
 <td>Field controls the color grouping.</td>
-</tr><tr class="odd"><td><code>SymbolArea</code></td>
+</tr><tr><td><code>SymbolArea</code></td>
 <td>Field controls the symbol grouping.</td>
 </tr></tbody></table><p>Composite values: <code>ColumnArea</code> = ColorArea, SymbolArea. <code>All</code> = DataArea, FilterArea, ColumnArea, RowArea.</p>
 </div>
 <div class="section level3">
 <h3 id="legendpositions">LegendPositions<a class="anchor" aria-label="anchor" href="#legendpositions"></a></h3>
 <p>Used in <a href="#chartsettings">ChartSettings</a> to control legend placement.</p>
-<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr class="header"><th>Value</th>
+<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>None</code></td>
+</tr></thead><tbody><tr><td><code>None</code></td>
 <td>No legend displayed.</td>
-</tr><tr class="even"><td><code>Right</code></td>
+</tr><tr><td><code>Right</code></td>
 <td>Legend placed to the right of the chart, outside the plot area.</td>
-</tr><tr class="odd"><td><code>RightInside</code></td>
+</tr><tr><td><code>RightInside</code></td>
 <td>Legend placed inside the plot area, top-right (default).</td>
-</tr><tr class="even"><td><code>Bottom</code></td>
+</tr><tr><td><code>Bottom</code></td>
 <td>Legend placed below the chart, outside the plot area.</td>
-</tr><tr class="odd"><td><code>BottomInside</code></td>
+</tr><tr><td><code>BottomInside</code></td>
 <td>Legend placed inside the plot area, bottom.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="extendedpropertytype">ExtendedPropertyType<a class="anchor" aria-label="anchor" href="#extendedpropertytype"></a></h3>
 <p>Used in <a href="#extendedproperty">ExtendedProperty</a> to explicitly specify the .NET type for value parsing.</p>
-<table class="table"><thead><tr class="header"><th>Value</th>
+<table class="table"><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>String</code></td>
+</tr></thead><tbody><tr><td><code>String</code></td>
 <td>Value is a string.</td>
-</tr><tr class="even"><td><code>Integer</code></td>
+</tr><tr><td><code>Integer</code></td>
 <td>Value is parsed as <code>int</code>.</td>
-</tr><tr class="odd"><td><code>Double</code></td>
+</tr><tr><td><code>Double</code></td>
 <td>Value is parsed as <code>double</code>.</td>
-</tr><tr class="even"><td><code>Boolean</code></td>
+</tr><tr><td><code>Boolean</code></td>
 <td>Value is parsed as <code>bool</code>.</td>
 </tr></tbody></table></div>
 <div class="section level3">
 <h3 id="labelgenerationstrategyid">LabelGenerationStrategyId<a class="anchor" aria-label="anchor" href="#labelgenerationstrategyid"></a></h3>
 <p>Used in <a href="#groupingdefinition">GroupingDefinition</a> to control how bin labels are generated for number-of-bins groupings.</p>
-<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr class="header"><th>Value</th>
+<table class="table"><colgroup><col width="35%"><col width="65%"></colgroup><thead><tr><th>Value</th>
 <th>Description</th>
-</tr></thead><tbody><tr class="odd"><td><code>Numeric</code></td>
+</tr></thead><tbody><tr><td><code>Numeric</code></td>
 <td>Labels generated as numeric values (e.g. <code>1</code>, <code>2</code>, <code>3</code>).</td>
-</tr><tr class="even"><td><code>Alpha</code></td>
+</tr><tr><td><code>Alpha</code></td>
 <td>Labels generated as alphabetic characters (e.g. <code>A</code>, <code>B</code>, <code>C</code>).</td>
-</tr><tr class="odd"><td><code>Roman</code></td>
+</tr><tr><td><code>Roman</code></td>
 <td>Labels generated as Roman numerals (e.g. <code>I</code>, <code>II</code>, <code>III</code>).</td>
 </tr></tbody></table></div>
 </div>
@@ -2966,7 +2966,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
 <div class="pkgdown-footer-right">

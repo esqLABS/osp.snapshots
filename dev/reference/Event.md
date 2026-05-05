@@ -26,7 +26,7 @@ a summary of its information.
 
 ### Public methods
 
-- [`Event$new()`](#method-Event-new)
+- [`Event$new()`](#method-Event-initialize)
 
 - [`Event$print()`](#method-Event-print)
 
@@ -36,7 +36,7 @@ a summary of its information.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Event$new()`
 
 Create a new Event object
 
@@ -56,7 +56,7 @@ A new Event object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Event$print()`
 
 Print a summary of the event
 
@@ -76,7 +76,7 @@ Invisibly returns the object
 
 ------------------------------------------------------------------------
 
-### Method `to_dataframe()`
+### `Event$to_dataframe()`
 
 Convert the event to a data frame for easier manipulation
 
@@ -90,7 +90,7 @@ A tibble with event information
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Event$clone()`
 
 The objects of this class are cloneable with this method.
 

@@ -13,7 +13,7 @@ and display a summary of its information. Protocols can be either simple
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,31 +58,31 @@ and display a summary of its information. Protocols can be either simple
 <dd><p>The raw data of the protocol</p></dd>
 
 
-<dt><code>name</code></dt>
+    <dt><code>name</code></dt>
 <dd><p>The name of the protocol</p></dd>
 
 
-<dt><code>is_advanced</code></dt>
+    <dt><code>is_advanced</code></dt>
 <dd><p>Whether the protocol is advanced (schema-based)</p></dd>
 
 
-<dt><code>application_type</code></dt>
+    <dt><code>application_type</code></dt>
 <dd><p>The application type (for simple protocols)</p></dd>
 
 
-<dt><code>dosing_interval</code></dt>
+    <dt><code>dosing_interval</code></dt>
 <dd><p>The dosing interval (for simple protocols)</p></dd>
 
 
-<dt><code>time_unit</code></dt>
+    <dt><code>time_unit</code></dt>
 <dd><p>The time unit for the protocol</p></dd>
 
 
-<dt><code>parameters</code></dt>
+    <dt><code>parameters</code></dt>
 <dd><p>The parameters of the protocol (for simple protocols)</p></dd>
 
 
-<dt><code>schemas</code></dt>
+    <dt><code>schemas</code></dt>
 <dd><p>The schemas of the protocol (for advanced protocols)</p></dd>
 
 
@@ -93,97 +93,92 @@ and display a summary of its information. Protocols can be either simple
 
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
-
-<ul><li><p><a href="#method-Protocol-new"><code>Protocol$new()</code></a></p></li>
+<p></p><ul><li><p><a href="#method-Protocol-initialize"><code>Protocol$new()</code></a></p></li>
 <li><p><a href="#method-Protocol-print"><code>Protocol$print()</code></a></p></li>
 <li><p><a href="#method-Protocol-to_df"><code>Protocol$to_df()</code></a></p></li>
 <li><p><a href="#method-Protocol-get_human_application_type"><code>Protocol$get_human_application_type()</code></a></p></li>
 <li><p><a href="#method-Protocol-get_human_dosing_interval"><code>Protocol$get_human_dosing_interval()</code></a></p></li>
 <li><p><a href="#method-Protocol-clone"><code>Protocol$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-Protocol-new"></a><div class="section">
-<h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
+</ul></div><p></p><hr><a id="method-Protocol-initialize"></a><div class="section">
+<h3 id="protocol-new-"><code>Protocol$new()</code><a class="anchor" aria-label="anchor" href="#protocol-new-"></a></h3>
 <p>Create a new Protocol object</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Protocol.html">Protocol</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>data</code></dt>
 <dd><p>Raw protocol data from a snapshot</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
 <p>A new Protocol object</p>
 </div>
 
-</div><p></p><hr><a id="method-Protocol-print"></a><div class="section">
-<h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Protocol-print"></a><div class="section">
+<h3 id="protocol-print-"><code>Protocol$print()</code><a class="anchor" aria-label="anchor" href="#protocol-print-"></a></h3>
 <p>Print a summary of the protocol including its properties and parameters.</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Protocol</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>...</code></dt>
 <dd><p>Additional arguments passed to print methods</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
 <p>Invisibly returns the Protocol object for method chaining</p>
 </div>
 
-</div><p></p><hr><a id="method-Protocol-to_df"></a><div class="section">
-<h3 id="method-to-df-">Method <code>to_df()</code><a class="anchor" aria-label="anchor" href="#method-to-df-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Protocol-to_df"></a><div class="section">
+<h3 id="protocol-to-df-"><code>Protocol$to_df()</code><a class="anchor" aria-label="anchor" href="#protocol-to-df-"></a></h3>
 <p>Convert protocol data to a single consolidated tibble</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Protocol</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
 <p>A tibble containing all protocol data in a single data frame</p>
 </div>
 
-</div><p></p><hr><a id="method-Protocol-get_human_application_type"></a><div class="section">
-<h3 id="method-get-human-application-type-">Method <code>get_human_application_type()</code><a class="anchor" aria-label="anchor" href="#method-get-human-application-type-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Protocol-get_human_application_type"></a><div class="section">
+<h3 id="protocol-get-human-application-type-"><code>Protocol$get_human_application_type()</code><a class="anchor" aria-label="anchor" href="#protocol-get-human-application-type-"></a></h3>
 <p>Get human-readable application type</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Protocol</span><span class="op">$</span><span class="fu">get_human_application_type</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
 <p>Character string with human-readable application type</p>
 </div>
 
-</div><p></p><hr><a id="method-Protocol-get_human_dosing_interval"></a><div class="section">
-<h3 id="method-get-human-dosing-interval-">Method <code>get_human_dosing_interval()</code><a class="anchor" aria-label="anchor" href="#method-get-human-dosing-interval-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Protocol-get_human_dosing_interval"></a><div class="section">
+<h3 id="protocol-get-human-dosing-interval-"><code>Protocol$get_human_dosing_interval()</code><a class="anchor" aria-label="anchor" href="#protocol-get-human-dosing-interval-"></a></h3>
 <p>Get human-readable dosing interval</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Protocol</span><span class="op">$</span><span class="fu">get_human_dosing_interval</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
 <p>Character string with human-readable dosing interval</p>
 </div>
 
-</div><p></p><hr><a id="method-Protocol-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-Protocol-clone"></a><div class="section">
+<h3 id="protocol-clone-"><code>Protocol$clone()</code><a class="anchor" aria-label="anchor" href="#protocol-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Protocol</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
@@ -194,6 +189,7 @@ and display a summary of its information. Protocols can be either simple
 
 </div>
 
+
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -201,7 +197,7 @@ and display a summary of its information. Protocols can be either simple
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
 <div class="pkgdown-footer-right">
