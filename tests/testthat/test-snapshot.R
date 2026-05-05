@@ -61,7 +61,11 @@ test_that("Snapshot path handling works correctly", {
   # Use mustWork=TRUE and winslash="/" to handle Windows short paths properly
   new_abs_path <- normalizePath(new_temp_file, mustWork = TRUE, winslash = "/")
   expect_equal(
-    normalizePath(snapshot$.__enclos_env__$private$.abs_path, mustWork = TRUE, winslash = "/"),
+    normalizePath(
+      snapshot$.__enclos_env__$private$.abs_path,
+      mustWork = TRUE,
+      winslash = "/"
+    ),
     new_abs_path
   )
 
@@ -70,7 +74,11 @@ test_that("Snapshot path handling works correctly", {
   # Compare absolute paths to avoid Windows relative path issues
   # Both paths should resolve to the same absolute location
   expect_equal(
-    normalizePath(snapshot$.__enclos_env__$private$.abs_path, mustWork = TRUE, winslash = "/"),
+    normalizePath(
+      snapshot$.__enclos_env__$private$.abs_path,
+      mustWork = TRUE,
+      winslash = "/"
+    ),
     normalizePath(new_abs_path, mustWork = TRUE, winslash = "/")
   )
 
@@ -139,7 +147,11 @@ test_that("Snapshot data can be exported and reimported", {
   expect_true(file.exists(temp_file))
 
   # Import the file as a list rather than creating another temporary Snapshot
-  exported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE, simplifyVector = FALSE)
+  exported_data <- jsonlite::fromJSON(
+    temp_file,
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
 
   # Verify singleton arrays are preserved as lists (not simplified to atomic vectors)
   # simulation1$ObservedData has exactly 1 string element in test_snapshot
@@ -201,6 +213,39 @@ test_that("Snapshot data can be exported and reimported", {
         length(snapshot$data[[section]]),
         length(snapshot2$data[[section]])
       )
+    }
+  }
+})
+
+test_that("Snapshot round-trip preserves observed data and expression profile shape", {
+  snapshot <- test_snapshot$clone()
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(temp_file)
+
+  snapshot2 <- Snapshot$new(temp_file)
+
+  observed_datasets <- snapshot2$observed_data
+  expect_gt(length(observed_datasets), 0)
+
+  first_dataset <- observed_datasets[[1]]
+  expect_type(first_dataset$xValues, "double")
+  expect_type(first_dataset$yValues, "double")
+  expect_equal(length(first_dataset$xValues), length(first_dataset$yValues))
+  expect_false(any(is.na(first_dataset$xValues)))
+
+  individuals <- snapshot2$data$Individuals
+  if (length(individuals) > 0) {
+    profiles_with_expression <- Filter(
+      \(ind) length(ind$ExpressionProfiles) > 0,
+      individuals
+    )
+    if (length(profiles_with_expression) > 0) {
+      first_individual <- profiles_with_expression[[1]]
+      expressions <- snapshot2$individuals[[first_individual$Name]]$to_df(
+        type = "individuals_expressions"
+      )
+      expect_type(expressions$profile, "character")
+      expect_false(anyNA(expressions$profile))
     }
   }
 })
@@ -376,7 +421,11 @@ test_that("Snapshot$export creates a valid JSON file", {
   expect_true(file.exists(temp_file))
 
   # Read the JSON file to verify structure
-  json_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE, simplifyVector = FALSE)
+  json_data <- jsonlite::fromJSON(
+    temp_file,
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
   expect_equal(json_data$Version, 80)
 
   # Test that Compounds and Individuals are lists (may be named or unnamed)
@@ -459,7 +508,11 @@ test_that("export_snapshot function works correctly", {
   expect_true(file.exists(temp_file))
 
   # Verify the exported data is valid JSON
-  exported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE, simplifyVector = FALSE)
+  exported_data <- jsonlite::fromJSON(
+    temp_file,
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
   expect_equal(exported_data$Version, snapshot$data$Version)
 
   # Verify singleton arrays are preserved as lists (not simplified to atomic vectors)
@@ -579,4 +632,3 @@ test_that(".get_templates_data helper function works", {
     }
   )
 })
-

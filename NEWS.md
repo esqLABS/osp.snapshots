@@ -1,5 +1,10 @@
 # osp.snapshots (development version)
 
+## Bug fixes
+
+- Fixed snapshot export/import so single-element JSON arrays remain arrays,
+  allowing exported snapshots to load in PK-Sim (#23).
+
 # osp.snapshots 0.2.2
 
 ## New features
