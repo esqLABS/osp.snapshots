@@ -9,106 +9,114 @@ This class provides methods to access different properties of a parameter
 and display a summary of its information.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{data}}{The raw data of the parameter}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{data}}{The raw data of the parameter}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{path}}{The path of the parameter}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{path}}{The path of the parameter}
 
-\item{\code{name}}{The name of the parameter (same as path)}
+    \item{\code{name}}{The name of the parameter (same as path)}
 
-\item{\code{value}}{The value of the parameter}
+    \item{\code{value}}{The value of the parameter}
 
-\item{\code{unit}}{The unit of the parameter (if any)}
+    \item{\code{unit}}{The unit of the parameter (if any)}
 
-\item{\code{value_origin}}{The origin information for the parameter value}
+    \item{\code{value_origin}}{The origin information for the parameter value}
 
-\item{\code{table_formula}}{The table formula data for table parameters}
-}
-\if{html}{\out{</div>}}
+    \item{\code{table_formula}}{The table formula data for table parameters}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Parameter-new}{\code{Parameter$new()}}
-\item \href{#method-Parameter-print}{\code{Parameter$print()}}
-\item \href{#method-Parameter-to_df}{\code{Parameter$to_df()}}
-\item \href{#method-Parameter-clone}{\code{Parameter$clone()}}
-}
+  \itemize{
+    \item \href{#method-Parameter-initialize}{\code{Parameter$new()}}
+    \item \href{#method-Parameter-print}{\code{Parameter$print()}}
+    \item \href{#method-Parameter-to_df}{\code{Parameter$to_df()}}
+    \item \href{#method-Parameter-clone}{\code{Parameter$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Parameter-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Parameter-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Parameter object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Parameter$new(data)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Parameter-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Parameter-initialize}{}}}
+\subsection{\code{Parameter$new()}}{
+  Create a new Parameter object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Parameter$new(data)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{Raw parameter data from a snapshot}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new Parameter object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{Raw parameter data from a snapshot}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new Parameter object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Parameter-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Parameter-print}{}}}
-\subsection{Method \code{print()}}{
-Print a summary of the parameter
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Parameter$print(...)}\if{html}{\out{</div>}}
+\subsection{\code{Parameter$print()}}{
+  Print a summary of the parameter
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Parameter$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Additional arguments passed to print methods}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Additional arguments passed to print methods}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Parameter-to_df"></a>}}
 \if{latex}{\out{\hypertarget{method-Parameter-to_df}{}}}
-\subsection{Method \code{to_df()}}{
-Convert parameter data to a tibble row
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Parameter$to_df()}\if{html}{\out{</div>}}
+\subsection{\code{Parameter$to_df()}}{
+  Convert parameter data to a tibble row
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Parameter$to_df()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble with one row containing the parameter data
+  }
 }
 
-\subsection{Returns}{
-A tibble with one row containing the parameter data
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Parameter-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Parameter-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Parameter$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Parameter$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Parameter$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -18,6 +18,12 @@ Useful links:
 \author{
 \strong{Maintainer}: Felix MIL \email{felix.mil@esqlabs.com}
 
+Authors:
+\itemize{
+  \item Felix MIL \email{felix.mil@esqlabs.com}
+  \item Diane Lefaudeux \email{diane.lefaudeux@esqlabs.com}
+}
+
 Other contributors:
 \itemize{
   \item ESQlabs, GmbH [copyright holder, funder]

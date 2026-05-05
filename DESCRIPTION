@@ -9,7 +9,7 @@ Authors@R: c(
       role = c("aut", "cre")
     ),
     person(
-      "Diane", "Lefaudeux"
+      "Diane", "Lefaudeux",
       email = "diane.lefaudeux@esqlabs.com",
       role = c("aut")
     ),
@@ -28,7 +28,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://esqlabs.github.io/osp.snapshots/
-RoxygenNote: 7.3.3
 Depends:
     R (>= 4.1.0)
 Imports:
@@ -53,3 +52,4 @@ Config/testthat/edition: 3
 Remotes:
     ospsuite=Open-Systems-Pharmacology/OSPSuite-R
 Config/Needs/website: quarto
+Config/roxygen2/version: 8.0.0
