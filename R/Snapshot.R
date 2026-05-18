@@ -172,29 +172,16 @@ Snapshot <- R6::R6Class(
     #' snapshot$add_individual(ind)
     #' }
     add_individual = function(individual) {
-      # Validate that the input is an Individual object
-      if (!inherits(individual, "Individual")) {
-        cli::cli_abort(
-          "Expected an Individual object, but got {.cls {class(individual)[1]}}"
-        )
-      }
-
-      # Force lazy construction of any existing individuals before mutating
-      private$.ensure_individuals()
-
-      # Add the individual to the list
-      private$.individuals <- c(private$.individuals, list(individual))
-
-      # Reset the named list to include the new individual
-      private$.individuals_named <- private$.build_named_list(
-        private$.individuals,
-        "individual_collection"
+      private$.add_block(
+        obj = individual,
+        expected_class = "Individual",
+        class_article = "an",
+        slot = ".individuals",
+        named_slot = ".individuals_named",
+        ensure = private$.ensure_individuals,
+        collection_class = "individual_collection",
+        label = "individual"
       )
-
-      cli::cli_alert_success(
-        "Added individual '{individual$name}' to the snapshot"
-      )
-      invisible(self)
     },
 
     #' @description
@@ -207,39 +194,16 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_individual("Subject_001")
     #' }
     remove_individual = function(individual_name) {
-      # Force lazy construction so we can inspect the current set
-      private$.ensure_individuals()
-
-      if (length(private$.individuals) == 0) {
-        cli::cli_warn("No individuals to remove")
-        return(invisible(self))
-      }
-
-      # Get current individual names
-      current_names <- sapply(private$.individuals, function(i) i$name)
-
-      # Check if requested individuals exist
-      for (name in individual_name) {
-        if (!(name %in% current_names)) {
-          cli::cli_warn("Individual '{name}' not found in snapshot")
-        }
-      }
-
-      # Remove the requested individuals
-      keep_indices <- which(!(current_names %in% individual_name))
-      num_removed <- length(private$.individuals) - length(keep_indices)
-      private$.individuals <- private$.individuals[keep_indices]
-
-      # Reset the named list
-      private$.individuals_named <- private$.build_named_list(
-        private$.individuals,
-        "individual_collection"
+      private$.remove_block(
+        input_keys = individual_name,
+        slot = ".individuals",
+        named_slot = ".individuals_named",
+        ensure = private$.ensure_individuals,
+        collection_class = "individual_collection",
+        label_singular_title = "Individual",
+        label_plural = "individuals",
+        label_count = "individual(s)"
       )
-
-      cli::cli_alert_success(
-        "Removed {num_removed} individual(s)"
-      )
-      invisible(self)
     },
 
     #' @description
@@ -255,29 +219,16 @@ Snapshot <- R6::R6Class(
     #' snapshot$add_formulation(form)
     #' }
     add_formulation = function(formulation) {
-      # Validate that the input is a Formulation object
-      if (!inherits(formulation, "Formulation")) {
-        cli::cli_abort(
-          "Expected a Formulation object, but got {.cls {class(formulation)[1]}}"
-        )
-      }
-
-      # Force lazy construction of any existing formulations before mutating
-      private$.ensure_formulations()
-
-      # Add the formulation to the list
-      private$.formulations <- c(private$.formulations, list(formulation))
-
-      # Reset the named list to include the new formulation
-      private$.formulations_named <- private$.build_named_list(
-        private$.formulations,
-        "formulation_collection"
+      private$.add_block(
+        obj = formulation,
+        expected_class = "Formulation",
+        class_article = "a",
+        slot = ".formulations",
+        named_slot = ".formulations_named",
+        ensure = private$.ensure_formulations,
+        collection_class = "formulation_collection",
+        label = "formulation"
       )
-
-      cli::cli_alert_success(
-        "Added formulation '{formulation$name}' to the snapshot"
-      )
-      invisible(self)
     },
 
     #' @description
@@ -290,39 +241,16 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_formulation("Tablet")
     #' }
     remove_formulation = function(formulation_name) {
-      # Force lazy construction so we can inspect the current set
-      private$.ensure_formulations()
-
-      if (length(private$.formulations) == 0) {
-        cli::cli_warn("No formulations to remove")
-        return(invisible(self))
-      }
-
-      # Get current formulation names
-      current_names <- sapply(private$.formulations, function(f) f$name)
-
-      # Check if requested formulations exist
-      for (name in formulation_name) {
-        if (!(name %in% current_names)) {
-          cli::cli_warn("Formulation '{name}' not found in snapshot")
-        }
-      }
-
-      # Remove the requested formulations
-      keep_indices <- which(!(current_names %in% formulation_name))
-      num_removed <- length(private$.formulations) - length(keep_indices)
-      private$.formulations <- private$.formulations[keep_indices]
-
-      # Reset the named list
-      private$.formulations_named <- private$.build_named_list(
-        private$.formulations,
-        "formulation_collection"
+      private$.remove_block(
+        input_keys = formulation_name,
+        slot = ".formulations",
+        named_slot = ".formulations_named",
+        ensure = private$.ensure_formulations,
+        collection_class = "formulation_collection",
+        label_singular_title = "Formulation",
+        label_plural = "formulations",
+        label_count = "formulation(s)"
       )
-
-      cli::cli_alert_success(
-        "Removed {num_removed} formulation(s)"
-      )
-      invisible(self)
     },
 
     #' @description
@@ -335,39 +263,16 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_population("pop_1")
     #' }
     remove_population = function(population_name) {
-      # Force lazy construction so we can inspect the current set
-      private$.ensure_populations()
-
-      if (length(private$.populations) == 0) {
-        cli::cli_warn("No populations to remove")
-        return(invisible(self))
-      }
-
-      # Get current population names
-      current_names <- sapply(private$.populations, function(p) p$name)
-
-      # Check if requested populations exist
-      for (name in population_name) {
-        if (!(name %in% current_names)) {
-          cli::cli_warn("Population '{name}' not found in snapshot")
-        }
-      }
-
-      # Remove the requested populations
-      keep_indices <- which(!(current_names %in% population_name))
-      num_removed <- length(private$.populations) - length(keep_indices)
-      private$.populations <- private$.populations[keep_indices]
-
-      # Reset the named list
-      private$.populations_named <- private$.build_named_list(
-        private$.populations,
-        "population_collection"
+      private$.remove_block(
+        input_keys = population_name,
+        slot = ".populations",
+        named_slot = ".populations_named",
+        ensure = private$.ensure_populations,
+        collection_class = "population_collection",
+        label_singular_title = "Population",
+        label_plural = "populations",
+        label_count = "population(s)"
       )
-
-      cli::cli_alert_success(
-        "Removed {num_removed} population(s)"
-      )
-      invisible(self)
     },
 
     #' @description
@@ -390,33 +295,18 @@ Snapshot <- R6::R6Class(
     #' snapshot$add_expression_profile(profile)
     #' }
     add_expression_profile = function(expression_profile) {
-      # Validate that the input is an ExpressionProfile object
-      if (!inherits(expression_profile, "ExpressionProfile")) {
-        cli::cli_abort(
-          "Expected an ExpressionProfile object, but got {.cls {class(expression_profile)[1]}}"
-        )
-      }
-
-      # Force lazy construction of any existing expression profiles before mutating
-      private$.ensure_expression_profiles()
-
-      # Add the expression profile to the list
-      private$.expression_profiles <- c(
-        private$.expression_profiles,
-        list(expression_profile)
+      private$.add_block(
+        obj = expression_profile,
+        expected_class = "ExpressionProfile",
+        class_article = "an",
+        slot = ".expression_profiles",
+        named_slot = ".expression_profiles_named",
+        ensure = private$.ensure_expression_profiles,
+        collection_class = "expression_profile_collection",
+        key_fn = \(x) x$id,
+        label = "expression profile",
+        display_fn = \(x) x$molecule
       )
-
-      # Reset the named list to include the new expression profile
-      private$.expression_profiles_named <- private$.build_named_list(
-        private$.expression_profiles,
-        "expression_profile_collection",
-        key_fn = \(x) x$id
-      )
-
-      cli::cli_alert_success(
-        "Added expression profile '{expression_profile$molecule}' to the snapshot"
-      )
-      invisible(self)
     },
 
     #' @description
@@ -429,104 +319,43 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     #' }
     remove_expression_profile = function(profile_id) {
-      # Force lazy construction so we can inspect the current set
-      private$.ensure_expression_profiles()
-
-      if (length(private$.expression_profiles) == 0) {
-        cli::cli_warn("No expression profiles to remove")
-        return(invisible(self))
-      }
-
-      # Get current expression profile IDs
-      current_ids <- sapply(
-        private$.expression_profiles,
-        function(prof) prof$id
+      private$.remove_block(
+        input_keys = profile_id,
+        slot = ".expression_profiles",
+        named_slot = ".expression_profiles_named",
+        ensure = private$.ensure_expression_profiles,
+        collection_class = "expression_profile_collection",
+        key_fn = \(x) x$id,
+        label_singular_title = "Expression profile",
+        label_plural = "expression profiles",
+        label_count = "expression profile(s)"
       )
-
-      # Check if requested expression profiles exist
-      for (id in profile_id) {
-        if (!(id %in% current_ids)) {
-          cli::cli_warn("Expression profile '{id}' not found in snapshot")
-        }
-      }
-
-      # Remove the requested expression profiles
-      keep_indices <- which(!(current_ids %in% profile_id))
-      num_removed <- length(private$.expression_profiles) -
-        length(keep_indices)
-      private$.expression_profiles <- private$.expression_profiles[
-        keep_indices
-      ]
-
-      # Reset the named list
-      private$.expression_profiles_named <- private$.build_named_list(
-        private$.expression_profiles,
-        "expression_profile_collection",
-        key_fn = \(x) x$id
-      )
-
-      cli::cli_alert_success(
-        "Removed {num_removed} expression profile(s)"
-      )
-      invisible(self)
     },
 
     add_observer_set = function(observer_set) {
-      if (!inherits(observer_set, "ObserverSet")) {
-        cli::cli_abort(
-          "Expected an ObserverSet object, but got {.cls {class(observer_set)[1]}}"
-        )
-      }
-
-      private$.ensure_observer_sets()
-
-      private$.observer_sets <- c(private$.observer_sets, list(observer_set))
-
-      private$.observer_sets_named <- private$.build_named_list(
-        private$.observer_sets,
-        "observer_set_collection"
+      private$.add_block(
+        obj = observer_set,
+        expected_class = "ObserverSet",
+        class_article = "an",
+        slot = ".observer_sets",
+        named_slot = ".observer_sets_named",
+        ensure = private$.ensure_observer_sets,
+        collection_class = "observer_set_collection",
+        label = "observer set"
       )
-
-      cli::cli_alert_success(
-        "Added observer set '{observer_set$name}' to the snapshot"
-      )
-      invisible(self)
     },
 
     remove_observer_set = function(observer_set_name) {
-      private$.ensure_observer_sets()
-
-      if (length(private$.observer_sets) == 0) {
-        cli::cli_warn("No observer sets to remove")
-        return(invisible(self))
-      }
-
-      current_names <- vapply(
-        private$.observer_sets,
-        function(os) os$name,
-        character(1)
+      private$.remove_block(
+        input_keys = observer_set_name,
+        slot = ".observer_sets",
+        named_slot = ".observer_sets_named",
+        ensure = private$.ensure_observer_sets,
+        collection_class = "observer_set_collection",
+        label_singular_title = "Observer set",
+        label_plural = "observer sets",
+        label_count = "observer set(s)"
       )
-
-      for (name in unique(observer_set_name)) {
-        if (!(name %in% current_names)) {
-          cli::cli_warn("Observer set '{name}' not found in snapshot")
-        }
-      }
-
-      keep_indices <- which(!(current_names %in% observer_set_name))
-
-      private$.observer_sets <- private$.observer_sets[keep_indices]
-
-      private$.observer_sets_named <- private$.build_named_list(
-        private$.observer_sets,
-        "observer_set_collection"
-      )
-
-      n_removed <- length(current_names) - length(keep_indices)
-      cli::cli_alert_success(
-        "Removed {n_removed} observer set(s)"
-      )
-      invisible(self)
     },
 
     #' @description
@@ -534,51 +363,39 @@ Snapshot <- R6::R6Class(
     #' @param observed_data A DataSet object created from snapshot observed data
     #' @return Invisibly returns the object
     add_observed_data = function(observed_data) {
-      # Validate that the input is a DataSet object
-      if (!inherits(observed_data, "DataSet")) {
-        cli::cli_abort(
-          "Expected a DataSet object, but got {.cls {class(observed_data)[1]}}"
-        )
-      }
-
-      # Force lazy construction of any existing observed data before mutating
-      private$.ensure_observed_data()
-
-      # Warn once at add time if the new DataSet has no backing JSON slice in
-      # `.original_data`; `ospsuite::DataSet` does not round-trip back to the
-      # snapshot list shape, so such entries are dropped on export. Warning
-      # here (rather than inside the export adapter) keeps `print()` and other
-      # `$data` accesses quiet.
-      original <- private$.original_data$ObservedData
-      original_names <- if (is.null(original)) {
-        character()
-      } else {
-        vapply(
-          original,
-          function(od) od$Name %||% od$name,
-          character(1)
-        )
-      }
-      if (!(observed_data$name %in% original_names)) {
-        cli::cli_warn(c(
-          "Observed data {.val {observed_data$name}} cannot be serialized on export.",
-          i = "{.cls DataSet} objects have no {.code $data} accessor; only entries present in the original snapshot are exported."
-        ))
-      }
-
-      # Add the observed data to the list
-      private$.observed_data <- c(private$.observed_data, list(observed_data))
-
-      # Reset the named list to include the new observed data
-      private$.observed_data_named <- private$.build_named_list(
-        private$.observed_data,
-        "observed_data_collection"
+      private$.add_block(
+        obj = observed_data,
+        expected_class = "DataSet",
+        class_article = "a",
+        slot = ".observed_data",
+        named_slot = ".observed_data_named",
+        ensure = private$.ensure_observed_data,
+        collection_class = "observed_data_collection",
+        label = "observed data",
+        pre_add = function(obj) {
+          # Warn once at add time if the new DataSet has no backing JSON slice
+          # in `.original_data`; `ospsuite::DataSet` does not round-trip back
+          # to the snapshot list shape, so such entries are dropped on export.
+          # Warning here (rather than inside the export adapter) keeps
+          # `print()` and other `$data` accesses quiet.
+          original <- private$.original_data$ObservedData
+          original_names <- if (is.null(original)) {
+            character()
+          } else {
+            vapply(
+              original,
+              function(od) od$Name %||% od$name,
+              character(1)
+            )
+          }
+          if (!(obj$name %in% original_names)) {
+            cli::cli_warn(c(
+              "Observed data {.val {obj$name}} cannot be serialized on export.",
+              i = "{.cls DataSet} objects have no {.code $data} accessor; only entries present in the original snapshot are exported."
+            ))
+          }
+        }
       )
-
-      cli::cli_alert_success(
-        "Added observed data '{observed_data$name}' to the snapshot"
-      )
-      invisible(self)
     },
 
     #' @description
@@ -586,212 +403,107 @@ Snapshot <- R6::R6Class(
     #' @param observed_data_name Character vector of observed data names to remove
     #' @return Invisibly returns the object
     remove_observed_data = function(observed_data_name) {
-      # Force lazy construction so we can inspect the current set
-      private$.ensure_observed_data()
-
-      if (length(private$.observed_data) == 0) {
-        cli::cli_warn("No observed data to remove")
-        return(invisible(self))
-      }
-
-      # Get current observed data names
-      current_names <- sapply(private$.observed_data, function(od) od$name)
-
-      # Check if requested observed data exist
-      for (name in observed_data_name) {
-        if (!(name %in% current_names)) {
-          cli::cli_warn("Observed data '{name}' not found in snapshot")
-        }
-      }
-
-      # Remove the requested observed data
-      keep_indices <- which(!(current_names %in% observed_data_name))
-      num_removed <- length(private$.observed_data) - length(keep_indices)
-      private$.observed_data <- private$.observed_data[keep_indices]
-
-      # Reset the named list
-      private$.observed_data_named <- private$.build_named_list(
-        private$.observed_data,
-        "observed_data_collection"
+      private$.remove_block(
+        input_keys = observed_data_name,
+        slot = ".observed_data",
+        named_slot = ".observed_data_named",
+        ensure = private$.ensure_observed_data,
+        collection_class = "observed_data_collection",
+        label_singular_title = "Observed data",
+        label_plural = "observed data",
+        label_count = "observed data item(s)"
       )
-
-      cli::cli_alert_success(
-        "Removed {num_removed} observed data item(s)"
-      )
-      invisible(self)
     },
 
     add_compound = function(compound) {
-      if (!inherits(compound, "Compound")) {
-        cli::cli_abort(
-          "Expected a Compound object, but got {.cls {class(compound)[1]}}"
-        )
-      }
-
-      private$.ensure_compounds()
-      private$.compounds <- c(private$.compounds, list(compound))
-      private$.compounds_named <- private$.build_named_list(
-        private$.compounds,
-        "compound_collection"
+      private$.add_block(
+        obj = compound,
+        expected_class = "Compound",
+        class_article = "a",
+        slot = ".compounds",
+        named_slot = ".compounds_named",
+        ensure = private$.ensure_compounds,
+        collection_class = "compound_collection",
+        label = "compound"
       )
-
-      cli::cli_alert_success(
-        "Added compound '{compound$name}' to the snapshot"
-      )
-      invisible(self)
     },
 
     remove_compound = function(compound_name) {
-      private$.ensure_compounds()
-
-      if (length(private$.compounds) == 0) {
-        cli::cli_warn("No compounds to remove")
-        return(invisible(self))
-      }
-
-      current_names <- sapply(private$.compounds, function(c) c$name)
-
-      for (name in compound_name) {
-        if (!(name %in% current_names)) {
-          cli::cli_warn("Compound '{name}' not found in snapshot")
-        }
-      }
-
-      keep_indices <- which(!(current_names %in% compound_name))
-      num_removed <- length(private$.compounds) - length(keep_indices)
-      private$.compounds <- private$.compounds[keep_indices]
-
-      private$.compounds_named <- private$.build_named_list(
-        private$.compounds,
-        "compound_collection"
+      private$.remove_block(
+        input_keys = compound_name,
+        slot = ".compounds",
+        named_slot = ".compounds_named",
+        ensure = private$.ensure_compounds,
+        collection_class = "compound_collection",
+        label_singular_title = "Compound",
+        label_plural = "compounds",
+        label_count = "compound(s)"
       )
-
-      cli::cli_alert_success(
-        "Removed {num_removed} compound(s)"
-      )
-      invisible(self)
     },
 
     add_population = function(population) {
-      if (!inherits(population, "Population")) {
-        cli::cli_abort(
-          "Expected a Population object, but got {.cls {class(population)[1]}}"
-        )
-      }
-
-      private$.ensure_populations()
-      private$.populations <- c(private$.populations, list(population))
-      private$.populations_named <- private$.build_named_list(
-        private$.populations,
-        "population_collection"
+      private$.add_block(
+        obj = population,
+        expected_class = "Population",
+        class_article = "a",
+        slot = ".populations",
+        named_slot = ".populations_named",
+        ensure = private$.ensure_populations,
+        collection_class = "population_collection",
+        label = "population"
       )
-
-      cli::cli_alert_success(
-        "Added population '{population$name}' to the snapshot"
-      )
-      invisible(self)
     },
 
     add_protocol = function(protocol) {
-      if (!inherits(protocol, "Protocol")) {
-        cli::cli_abort(
-          "Expected a Protocol object, but got {.cls {class(protocol)[1]}}"
-        )
-      }
-
-      private$.ensure_protocols()
-      private$.protocols <- c(private$.protocols, list(protocol))
-      private$.protocols_named <- private$.build_named_list(
-        private$.protocols,
-        "protocol_collection"
+      private$.add_block(
+        obj = protocol,
+        expected_class = "Protocol",
+        class_article = "a",
+        slot = ".protocols",
+        named_slot = ".protocols_named",
+        ensure = private$.ensure_protocols,
+        collection_class = "protocol_collection",
+        label = "protocol"
       )
-
-      cli::cli_alert_success(
-        "Added protocol '{protocol$name}' to the snapshot"
-      )
-      invisible(self)
     },
 
     remove_protocol = function(protocol_name) {
-      private$.ensure_protocols()
-
-      if (length(private$.protocols) == 0) {
-        cli::cli_warn("No protocols to remove")
-        return(invisible(self))
-      }
-
-      current_names <- sapply(private$.protocols, function(p) p$name)
-
-      for (name in protocol_name) {
-        if (!(name %in% current_names)) {
-          cli::cli_warn("Protocol '{name}' not found in snapshot")
-        }
-      }
-
-      keep_indices <- which(!(current_names %in% protocol_name))
-      num_removed <- length(private$.protocols) - length(keep_indices)
-      private$.protocols <- private$.protocols[keep_indices]
-
-      private$.protocols_named <- private$.build_named_list(
-        private$.protocols,
-        "protocol_collection"
+      private$.remove_block(
+        input_keys = protocol_name,
+        slot = ".protocols",
+        named_slot = ".protocols_named",
+        ensure = private$.ensure_protocols,
+        collection_class = "protocol_collection",
+        label_singular_title = "Protocol",
+        label_plural = "protocols",
+        label_count = "protocol(s)"
       )
-
-      cli::cli_alert_success(
-        "Removed {num_removed} protocol(s)"
-      )
-      invisible(self)
     },
 
     add_event = function(event) {
-      if (!inherits(event, "Event")) {
-        cli::cli_abort(
-          "Expected an Event object, but got {.cls {class(event)[1]}}"
-        )
-      }
-
-      private$.ensure_events()
-      private$.events <- c(private$.events, list(event))
-      private$.events_named <- private$.build_named_list(
-        private$.events,
-        "event_collection"
+      private$.add_block(
+        obj = event,
+        expected_class = "Event",
+        class_article = "an",
+        slot = ".events",
+        named_slot = ".events_named",
+        ensure = private$.ensure_events,
+        collection_class = "event_collection",
+        label = "event"
       )
-
-      cli::cli_alert_success(
-        "Added event '{event$name}' to the snapshot"
-      )
-      invisible(self)
     },
 
     remove_event = function(event_name) {
-      private$.ensure_events()
-
-      if (length(private$.events) == 0) {
-        cli::cli_warn("No events to remove")
-        return(invisible(self))
-      }
-
-      current_names <- sapply(private$.events, function(e) e$name)
-
-      for (name in event_name) {
-        if (!(name %in% current_names)) {
-          cli::cli_warn("Event '{name}' not found in snapshot")
-        }
-      }
-
-      keep_indices <- which(!(current_names %in% event_name))
-      num_removed <- length(private$.events) - length(keep_indices)
-      private$.events <- private$.events[keep_indices]
-
-      private$.events_named <- private$.build_named_list(
-        private$.events,
-        "event_collection"
+      private$.remove_block(
+        input_keys = event_name,
+        slot = ".events",
+        named_slot = ".events_named",
+        ensure = private$.ensure_events,
+        collection_class = "event_collection",
+        label_singular_title = "Event",
+        label_plural = "events",
+        label_count = "event(s)"
       )
-
-      cli::cli_alert_success(
-        "Removed {num_removed} event(s)"
-      )
-      invisible(self)
     }
   ),
   active = list(
@@ -1218,6 +930,102 @@ Snapshot <- R6::R6Class(
 
     # Cache for the named observed data list with disambiguated names
     .observed_data_named = NULL,
+
+    # Shared append routine for `add_<kind>` methods. Validates `obj` against
+    # `expected_class`, forces lazy construction of the cache via `ensure()`,
+    # appends the new object to the unnamed cache slot, rebuilds the named
+    # cache via `.build_named_list`, and emits a success message. `pre_add`,
+    # when supplied, is run after the class check but before mutation; it is
+    # used by `add_observed_data` to warn about un-serializable DataSets.
+    .add_block = function(
+      obj,
+      expected_class,
+      slot,
+      named_slot,
+      ensure,
+      collection_class,
+      label,
+      key_fn = \(x) x$name,
+      display_fn = \(x) x$name,
+      class_article = "a",
+      pre_add = NULL
+    ) {
+      if (!inherits(obj, expected_class)) {
+        cli::cli_abort(
+          "Expected {class_article} {expected_class} object, but got {.cls {class(obj)[1]}}",
+          call = rlang::caller_env()
+        )
+      }
+
+      if (!is.null(pre_add)) {
+        pre_add(obj)
+      }
+
+      ensure()
+
+      private[[slot]] <- c(private[[slot]], list(obj))
+
+      private[[named_slot]] <- private$.build_named_list(
+        private[[slot]],
+        collection_class,
+        key_fn = key_fn
+      )
+
+      cli::cli_alert_success(
+        "Added {label} '{display_fn(obj)}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    # Shared filter routine for `remove_<kind>` methods. Forces lazy
+    # construction, warns and bails when the collection is empty, warns once
+    # per missing key, filters by `key_fn`, rebuilds the named cache, and
+    # emits a success count message. Empty-after-removal leaves the cache
+    # slot as `list()`, never `NULL`; for `.observed_data` this preserves
+    # the tri-state sentinel that `$data` reads for export gating.
+    .remove_block = function(
+      input_keys,
+      slot,
+      named_slot,
+      ensure,
+      collection_class,
+      label_singular_title,
+      label_plural,
+      label_count,
+      key_fn = \(x) x$name
+    ) {
+      ensure()
+
+      if (length(private[[slot]]) == 0) {
+        cli::cli_warn("No {label_plural} to remove")
+        return(invisible(self))
+      }
+
+      current_keys <- vapply(private[[slot]], key_fn, character(1))
+
+      for (key in unique(input_keys)) {
+        if (!(key %in% current_keys)) {
+          cli::cli_warn(
+            "{label_singular_title} '{key}' not found in snapshot"
+          )
+        }
+      }
+
+      keep_indices <- which(!(current_keys %in% input_keys))
+      num_removed <- length(current_keys) - length(keep_indices)
+      private[[slot]] <- private[[slot]][keep_indices]
+
+      private[[named_slot]] <- private$.build_named_list(
+        private[[slot]],
+        collection_class,
+        key_fn = key_fn
+      )
+
+      cli::cli_alert_success(
+        "Removed {num_removed} {label_count}"
+      )
+      invisible(self)
+    },
 
     # Build a named list from a building-block collection, disambiguating
     # duplicate keys by appending "_{n}" suffixes. `key_fn` extracts the
