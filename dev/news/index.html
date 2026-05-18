@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9011</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9012</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,11 +67,12 @@
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-development-version">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-development-version"></a></h3>
-<ul><li>Building-block collections now share a <code>snapshot_collection</code> S3 class with a single generic <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> method, replacing the eight per-kind methods. The existing per-kind classes (<code>compound_collection</code>, <code>individual_collection</code>, etc.) are preserved as marker classes (#34).</li>
+<ul><li><p>Building-block collections now share a <code>snapshot_collection</code> S3 class with a single generic <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> method, replacing the eight per-kind methods. The existing per-kind classes (<code>compound_collection</code>, <code>individual_collection</code>, etc.) are preserved as marker classes (#34).</p></li>
+<li><p><code><a href="../reference/export_snapshot.html">export_snapshot()</a></code> now documents that mutations to a <code>DataSet</code> after load (e.g. changing <code>xUnit</code> on an entry in <code>Snapshot$observed_data</code>) are not preserved on export. The exported <code>ObservedData</code> section is replayed verbatim from the original snapshot JSON, filtered to entries that still exist after <code>remove_observed_data()</code>. This matches the previous behaviour; only the documentation is new (#35).</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
-<ul><li><p>Fixed <code>Snapshot$data</code> so observed data removed via <code>remove_observed_data()</code> is also dropped from the exported snapshot. Previously the export reused the full original <code>ObservedData</code> list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip.</p></li>
+<ul><li><p>Fixed <code>Snapshot$data</code> so observed data removed via <code>remove_observed_data()</code> is also dropped from the exported snapshot. Previously the export reused the full original <code>ObservedData</code> list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip. The same fix applies to every building-block section: clearing a collection via <code><a href="../reference/remove_individual.html">remove_individual()</a></code>, <code><a href="../reference/remove_formulation.html">remove_formulation()</a></code>, <code><a href="../reference/remove_population.html">remove_population()</a></code>, or <code><a href="../reference/remove_expression_profile.html">remove_expression_profile()</a></code> now writes an empty section on export instead of falling back to the original entries (#35).</p></li>
 <li><p>Fixed snapshot export/import so single-element JSON arrays remain arrays, allowing exported snapshots to load in PK-Sim (#23).</p></li>
 </ul></div>
 </div>
