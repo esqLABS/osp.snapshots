@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9007</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,18 @@
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>New <code>LocalizedParameter</code> R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from <code>Parameter</code> and migrates legacy <code>Applications</code> path segments to <code>Events</code> for v11+ snapshots. <code><a href="../reference/create_parameter.html">create_parameter()</a></code> now routes to <code>LocalizedParameter</code> when called with a <code>path</code> argument (#31).</li>
+<li>
+<code><a href="../reference/create_compound.html">create_compound()</a></code> builds a Compound building block from named arguments, wrapping <code>Compound$new()</code> with validation of common fields (#27). <code>molecular_weight_unit</code> is now validated against <code>ospsuite::ospUnits$"Molecular weight"</code> when <code>molecular_weight</code> is supplied (#48).</li>
+<li>
+<code><a href="../reference/create_event.html">create_event()</a></code> builds an Event building block from named arguments and a template name, wrapping <code>Event$new()</code> (#27).</li>
+<li>
+<code><a href="../reference/create_expression_profile.html">create_expression_profile()</a></code> builds an ExpressionProfile building block from named arguments, requiring molecule, species, category, and type (#27).</li>
+<li>
+<code><a href="../reference/create_observed_data.html">create_observed_data()</a></code> builds an <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">ospsuite::DataSet</a></code> from named arguments for time, values, units, and optional error series (#27). <code>value_dimension</code> is now required (previously defaulted silently to <code>"Concentration (mass)"</code>); <code>time_unit</code> and <code>value_unit</code> are validated against the corresponding dimension (#48).</li>
+<li>
+<code><a href="../reference/create_population.html">create_population()</a></code> builds a Population building block from named arguments and <code>Range</code> objects for age, weight, height, and BMI bounds (#27). <code>number_of_individuals</code> must be a positive integer; <code>proportion_of_females</code> must be a length-1 number (#48).</li>
+<li>
+<code><a href="../reference/create_protocol.html">create_protocol()</a></code> builds a Simple or Advanced Protocol building block from named arguments, wrapping <code>Protocol$new()</code> (#27). Passing <code>schemas</code> now errors if any Simple Protocol field (<code>application_type</code>, <code>dosing_interval</code>, <code>target_organ</code>, <code>target_compartment</code>, <code>parameters</code>) is also supplied (#48).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-development-version">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-development-version"></a></h3>

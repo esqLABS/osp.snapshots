@@ -11,7 +11,8 @@ library(ospsuite)
 This vignette demonstrates how to create new building blocks from
 scratch and manage existing ones within snapshots. You’ll learn to:
 
-- Create individuals, formulations, and parameters
+- Create individuals, formulations, parameters, compounds, populations,
+  expression profiles, protocols, events, and observed data
 - Add and remove building blocks from snapshots
 - Work with observed data
 - Manage collections efficiently
@@ -258,6 +259,194 @@ detailed_param
 #> • Unit: ml/min
 #> • Source: Literature
 #> • Description: Normal adult GFR
+```
+
+## Creating Compounds
+
+[`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
+wraps `Compound$new()` so you can build a \[Compound\] from named
+arguments instead of a raw list.
+
+``` r
+
+# Create a minimal compound
+drug <- create_compound(name = "Drug X")
+
+# Create a small molecule with molecular weight and binding partner
+drug <- create_compound(
+  name = "Drug X",
+  is_small_molecule = TRUE,
+  molecular_weight = 250.3,
+  plasma_protein_binding_partner = "Albumin",
+  parameters = list(
+    create_parameter(name = "Cl_spec", value = 5, unit = "ml/min/kg")
+  )
+)
+
+drug
+#> 
+#> ── Compound: Drug X ────────────────────────────────────────────────────────────
+#> 
+#> ── Basic Properties ──
+#> 
+#> • Type: Small Molecule
+#> • Plasma Protein Binding Partner: Albumin
+#> • Molecular Weight: 250.3 g/mol
+#> 
+#> ── Physicochemical Properties ──
+#> 
+#> ── Additional Parameters ──
+#> 
+#> • Additional Parameters (1 total):
+#>   • Cl_spec: 5 ml/min/kg [Unknown]
+```
+
+## Creating Populations
+
+[`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
+builds a \[Population\] recipe: settings used by PK-Sim to sample a
+cohort at simulation time. Use \[range()\] for age, weight, height, and
+BMI bounds.
+
+``` r
+
+adults <- create_population(
+  name = "Healthy Adults",
+  number_of_individuals = 50,
+  proportion_of_females = 50,
+  species = "Human",
+  source_population = "European_ICRP_2002",
+  age_range = range(20, 60, "year(s)"),
+  weight_range = range(50, 90, "kg")
+)
+
+adults
+#> 
+#> ── Population: Healthy Adults ──
+#> 
+#> Source Population: European_ICRP_2002
+#> Number of individuals: 50
+#> Proportion of females: 50%
+#> Age range: 20 - 60 year(s)
+#> Weight range: 50 - 90 kg
+```
+
+## Creating Expression Profiles
+
+[`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
+builds an \[ExpressionProfile\]. The identity of a profile is the
+composite `Molecule|Species|Category`, so all three are required, along
+with the molecule `type`.
+
+``` r
+
+cyp3a4 <- create_expression_profile(
+  molecule = "CYP3A4",
+  species = "Human",
+  category = "Healthy",
+  type = "Enzyme",
+  ontogeny = "CYP3A4"
+)
+
+cyp3a4
+#> 
+#> ── Expression Profile: CYP3A4 (Enzyme) ─────────────────────────────────────────
+#> • Species: Human
+#> • Category: Healthy
+#> • Ontogeny: CYP3A4
+```
+
+## Creating Protocols
+
+[`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
+builds a \[Protocol\]. By default it creates a Simple Protocol; pass
+`schemas` to create an Advanced Protocol.
+
+``` r
+
+# Simple oral protocol with one dose
+single_dose <- create_protocol(
+  name = "Single dose 10mg",
+  application_type = "Oral",
+  dosing_interval = "Single",
+  parameters = list(
+    create_parameter(name = "Start time", value = 0, unit = "h"),
+    create_parameter(name = "InputDose", value = 10, unit = "mg")
+  )
+)
+
+single_dose
+#> 
+#> ── Protocol: Single dose 10mg ──────────────────────────────────────────────────
+#> • Type: Simple
+#> • Application Type: Oral
+#> • Dosing Interval: Once
+#> 
+#> ── Parameters ──
+#> 
+#> • Start time: 0 h
+#> • InputDose: 10 mg
+```
+
+## Creating Events
+
+[`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
+builds an \[Event\] from a named template (for example a meal). PK-Sim
+clones the template and applies your parameter overrides.
+
+``` r
+
+breakfast <- create_event(
+  name = "Breakfast",
+  template = "Meal: Standard (Human)",
+  parameters = list(
+    create_parameter(name = "Meal energy content", value = 500, unit = "kcal"),
+    create_parameter(name = "Meal volume", value = 0.3, unit = "l")
+  )
+)
+
+breakfast
+#> 
+#> ── Event: Breakfast ────────────────────────────────────────────────────────────
+#> • Template: Meal: Standard (Human)
+#> 
+#> ── Parameters: ──
+#> 
+#> • Meal energy content: 500 kcal
+#> • Meal volume: 0.3 l
+```
+
+## Creating Observed Data
+
+[`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
+builds an
+[`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
+from named arguments for the time grid, measurement values, units, and
+optional error series.
+
+``` r
+
+obs <- create_observed_data(
+  name = "Phase I - Subject 001",
+  time = c(0, 0.5, 1, 2, 4, 8, 12, 24),
+  values = c(0, 12.5, 18.2, 15.8, 11.2, 6.8, 3.4, 1.1),
+  time_unit = "h",
+  value_unit = "mg/l",
+  value_dimension = "Concentration (mass)"
+)
+
+obs
+#> <DataSet>
+#>   • Name: Phase I - Subject 001
+#>   • X dimension: Time
+#>   • X unit: h
+#>   • Y dimension: Concentration (mass)
+#>   • Y unit: mg/l
+#>   • Error type: NULL
+#>   • Error unit: NULL
+#>   • Molecular weight: NULL
+#>   • LLOQ: NULL
+#> Meta data:
 ```
 
 ## Managing Building Blocks

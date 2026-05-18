@@ -26,9 +26,15 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/collection_kind_info.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/convert_ospsuite_time_to_duration.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/convert_ospsuite_time_unit_to_lubridate.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_events_dfs.html</loc></url>

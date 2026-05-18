@@ -11,6 +11,36 @@
   [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   now routes to `LocalizedParameter` when called with a `path` argument
   (#31).
+- [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
+  builds a Compound building block from named arguments, wrapping
+  `Compound$new()` with validation of common fields (#27).
+  `molecular_weight_unit` is now validated against
+  `ospsuite::ospUnits$"Molecular weight"` when `molecular_weight` is
+  supplied (#48).
+- [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
+  builds an Event building block from named arguments and a template
+  name, wrapping `Event$new()` (#27).
+- [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
+  builds an ExpressionProfile building block from named arguments,
+  requiring molecule, species, category, and type (#27).
+- [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
+  builds an
+  [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
+  from named arguments for time, values, units, and optional error
+  series (#27). `value_dimension` is now required (previously defaulted
+  silently to `"Concentration (mass)"`); `time_unit` and `value_unit`
+  are validated against the corresponding dimension (#48).
+- [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
+  builds a Population building block from named arguments and `Range`
+  objects for age, weight, height, and BMI bounds (#27).
+  `number_of_individuals` must be a positive integer;
+  `proportion_of_females` must be a length-1 number (#48).
+- [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
+  builds a Simple or Advanced Protocol building block from named
+  arguments, wrapping `Protocol$new()` (#27). Passing `schemas` now
+  errors if any Simple Protocol field (`application_type`,
+  `dosing_interval`, `target_organ`, `target_compartment`, `parameters`)
+  is also supplied (#48).
 
 ### Minor improvements
 

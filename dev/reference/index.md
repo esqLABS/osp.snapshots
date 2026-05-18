@@ -44,12 +44,24 @@ Main classes for working with snapshots and building blocks
 
 Functions to create new building blocks from scratch
 
-- [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
-  : Create a new individual
+- [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
+  : Create a new compound
+- [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
+  : Create a new event
+- [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
+  : Create a new expression profile
 - [`create_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
   : Create a new formulation
+- [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
+  : Create a new individual
+- [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
+  : Create a new observed data set
 - [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   : Create a new parameter
+- [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
+  : Create a new population
+- [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
+  : Create a new protocol
 
 ## Manage Building Blocks
 

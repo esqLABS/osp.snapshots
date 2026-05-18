@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9007</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,9 @@
 <p>This vignette demonstrates how to create new building blocks from
 scratch and manage existing ones within snapshots. You’ll learn to:</p>
 <ul>
-<li>Create individuals, formulations, and parameters</li>
+<li>Create individuals, formulations, parameters, compounds,
+populations, expression profiles, protocols, events, and observed
+data</li>
 <li>Add and remove building blocks from snapshots</li>
 <li>Work with observed data</li>
 <li>Manage collections efficiently</li>
@@ -320,12 +322,185 @@ scratch and manage existing ones within snapshots. You’ll learn to:</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="creating-compounds">Creating Compounds<a class="anchor" aria-label="anchor" href="#creating-compounds"></a>
+</h2>
+<p><code><a href="../reference/create_compound.html">create_compound()</a></code> wraps <code>Compound$new()</code> so
+you can build a [Compound] from named arguments instead of a raw
+list.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a minimal compound</span></span>
+<span><span class="va">drug</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_compound.html">create_compound</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Drug X"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create a small molecule with molecular weight and binding partner</span></span>
+<span><span class="va">drug</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_compound.html">create_compound</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"Drug X"</span>,</span>
+<span>  is_small_molecule <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  molecular_weight <span class="op">=</span> <span class="fl">250.3</span>,</span>
+<span>  plasma_protein_binding_partner <span class="op">=</span> <span class="st">"Albumin"</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="../reference/create_parameter.html">create_parameter</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Cl_spec"</span>, value <span class="op">=</span> <span class="fl">5</span>, unit <span class="op">=</span> <span class="st">"ml/min/kg"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">drug</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Compound: Drug X</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Basic Properties</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Type: Small Molecule</span></span>
+<span><span class="co">#&gt; • Plasma Protein Binding Partner: Albumin</span></span>
+<span><span class="co">#&gt; • Molecular Weight: 250.3 g/mol</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Physicochemical Properties</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Additional Parameters</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Additional Parameters (1 total):</span></span>
+<span><span class="co">#&gt;   • Cl_spec: 5 ml/min/kg [Unknown]</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="creating-populations">Creating Populations<a class="anchor" aria-label="anchor" href="#creating-populations"></a>
+</h2>
+<p><code><a href="../reference/create_population.html">create_population()</a></code> builds a [Population] recipe:
+settings used by PK-Sim to sample a cohort at simulation time. Use
+[range()] for age, weight, height, and BMI bounds.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">adults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_population.html">create_population</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"Healthy Adults"</span>,</span>
+<span>  number_of_individuals <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  proportion_of_females <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  species <span class="op">=</span> <span class="st">"Human"</span>,</span>
+<span>  source_population <span class="op">=</span> <span class="st">"European_ICRP_2002"</span>,</span>
+<span>  age_range <span class="op">=</span> <span class="fu"><a href="../reference/Range.html">range</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">60</span>, <span class="st">"year(s)"</span><span class="op">)</span>,</span>
+<span>  weight_range <span class="op">=</span> <span class="fu"><a href="../reference/Range.html">range</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">90</span>, <span class="st">"kg"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">adults</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Population: Healthy Adults</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Source Population: European_ICRP_2002</span></span>
+<span><span class="co">#&gt; Number of individuals: 50</span></span>
+<span><span class="co">#&gt; Proportion of females: 50%</span></span>
+<span><span class="co">#&gt; Age range: 20 - 60 year(s)</span></span>
+<span><span class="co">#&gt; Weight range: 50 - 90 kg</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="creating-expression-profiles">Creating Expression Profiles<a class="anchor" aria-label="anchor" href="#creating-expression-profiles"></a>
+</h2>
+<p><code><a href="../reference/create_expression_profile.html">create_expression_profile()</a></code> builds an
+[ExpressionProfile]. The identity of a profile is the composite
+<code>Molecule|Species|Category</code>, so all three are required, along
+with the molecule <code>type</code>.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cyp3a4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_expression_profile.html">create_expression_profile</a></span><span class="op">(</span></span>
+<span>  molecule <span class="op">=</span> <span class="st">"CYP3A4"</span>,</span>
+<span>  species <span class="op">=</span> <span class="st">"Human"</span>,</span>
+<span>  category <span class="op">=</span> <span class="st">"Healthy"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"Enzyme"</span>,</span>
+<span>  ontogeny <span class="op">=</span> <span class="st">"CYP3A4"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cyp3a4</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Expression Profile: CYP3A4 (Enzyme)</span> <span style="color: #00BBBB;">─────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; • Species: Human</span></span>
+<span><span class="co">#&gt; • Category: Healthy</span></span>
+<span><span class="co">#&gt; • Ontogeny: CYP3A4</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="creating-protocols">Creating Protocols<a class="anchor" aria-label="anchor" href="#creating-protocols"></a>
+</h2>
+<p><code><a href="../reference/create_protocol.html">create_protocol()</a></code> builds a [Protocol]. By default it
+creates a Simple Protocol; pass <code>schemas</code> to create an
+Advanced Protocol.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Simple oral protocol with one dose</span></span>
+<span><span class="va">single_dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_protocol.html">create_protocol</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"Single dose 10mg"</span>,</span>
+<span>  application_type <span class="op">=</span> <span class="st">"Oral"</span>,</span>
+<span>  dosing_interval <span class="op">=</span> <span class="st">"Single"</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="../reference/create_parameter.html">create_parameter</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Start time"</span>, value <span class="op">=</span> <span class="fl">0</span>, unit <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="../reference/create_parameter.html">create_parameter</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"InputDose"</span>, value <span class="op">=</span> <span class="fl">10</span>, unit <span class="op">=</span> <span class="st">"mg"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">single_dose</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Protocol: Single dose 10mg</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; • Type: Simple</span></span>
+<span><span class="co">#&gt; • Application Type: Oral</span></span>
+<span><span class="co">#&gt; • Dosing Interval: Once</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Parameters</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Start time: 0 h</span></span>
+<span><span class="co">#&gt; • InputDose: 10 mg</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="creating-events">Creating Events<a class="anchor" aria-label="anchor" href="#creating-events"></a>
+</h2>
+<p><code><a href="../reference/create_event.html">create_event()</a></code> builds an [Event] from a named template
+(for example a meal). PK-Sim clones the template and applies your
+parameter overrides.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">breakfast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_event.html">create_event</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"Breakfast"</span>,</span>
+<span>  template <span class="op">=</span> <span class="st">"Meal: Standard (Human)"</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="../reference/create_parameter.html">create_parameter</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Meal energy content"</span>, value <span class="op">=</span> <span class="fl">500</span>, unit <span class="op">=</span> <span class="st">"kcal"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="../reference/create_parameter.html">create_parameter</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Meal volume"</span>, value <span class="op">=</span> <span class="fl">0.3</span>, unit <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">breakfast</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Event: Breakfast</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; • Template: Meal: Standard (Human)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Parameters:</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Meal energy content: 500 kcal</span></span>
+<span><span class="co">#&gt; • Meal volume: 0.3 l</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="creating-observed-data">Creating Observed Data<a class="anchor" aria-label="anchor" href="#creating-observed-data"></a>
+</h2>
+<p><code><a href="../reference/create_observed_data.html">create_observed_data()</a></code> builds an
+<code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">ospsuite::DataSet</a></code> from named arguments for the time grid,
+measurement values, units, and optional error series.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_observed_data.html">create_observed_data</a></span><span class="op">(</span></span>
+<span>  name <span class="op">=</span> <span class="st">"Phase I - Subject 001"</span>,</span>
+<span>  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">12</span>, <span class="fl">24</span><span class="op">)</span>,</span>
+<span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12.5</span>, <span class="fl">18.2</span>, <span class="fl">15.8</span>, <span class="fl">11.2</span>, <span class="fl">6.8</span>, <span class="fl">3.4</span>, <span class="fl">1.1</span><span class="op">)</span>,</span>
+<span>  time_unit <span class="op">=</span> <span class="st">"h"</span>,</span>
+<span>  value_unit <span class="op">=</span> <span class="st">"mg/l"</span>,</span>
+<span>  value_dimension <span class="op">=</span> <span class="st">"Concentration (mass)"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">obs</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;DataSet&gt;</span></span></span>
+<span><span class="co">#&gt;   • Name: Phase I - Subject 001</span></span>
+<span><span class="co">#&gt;   • X dimension: Time</span></span>
+<span><span class="co">#&gt;   • X unit: h</span></span>
+<span><span class="co">#&gt;   • Y dimension: Concentration (mass)</span></span>
+<span><span class="co">#&gt;   • Y unit: mg/l</span></span>
+<span><span class="co">#&gt;   • Error type: NULL</span></span>
+<span><span class="co">#&gt;   • Error unit: NULL</span></span>
+<span><span class="co">#&gt;   • Molecular weight: NULL</span></span>
+<span><span class="co">#&gt;   • LLOQ: NULL</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Meta data</span>:</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="managing-building-blocks">Managing Building Blocks<a class="anchor" aria-label="anchor" href="#managing-building-blocks"></a>
 </h2>
 <div class="section level3">
 <h3 id="removing-building-blocks">Removing Building Blocks<a class="anchor" aria-label="anchor" href="#removing-building-blocks"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Remove individuals by name</span></span>
 <span><span class="fu"><a href="../reference/remove_individual.html">remove_individual</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"Patient_001"</span><span class="op">)</span></span>
 <span></span>
@@ -344,7 +519,7 @@ scratch and manage existing ones within snapshots. You’ll learn to:</p>
 <div class="section level3">
 <h3 id="batch-operations">Batch Operations<a class="anchor" aria-label="anchor" href="#batch-operations"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create multiple individuals at once</span></span>
 <span><span class="va">patients</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_A"</span>, age <span class="op">=</span> <span class="fl">25</span>, gender <span class="op">=</span> <span class="st">"MALE"</span><span class="op">)</span>,</span>
@@ -376,7 +551,7 @@ scratch and manage existing ones within snapshots. You’ll learn to:</p>
 </h3>
 <p>Observed data must be provided as <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">ospsuite::DataSet</a></code>
 objects:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a new DataSet</span></span>
 <span><span class="va">study_data</span> <span class="op">&lt;-</span> <span class="va"><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">DataSet</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Phase I Study - Subject 001"</span><span class="op">)</span></span>
 <span></span>
@@ -408,7 +583,7 @@ objects:</p>
 <div class="section level3">
 <h3 id="adding-observed-data">Adding Observed Data<a class="anchor" aria-label="anchor" href="#adding-observed-data"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add to snapshot (function needs to be implemented)</span></span>
 <span><span class="co"># add_observed_data(snapshot, study_data)</span></span>
 <span></span>
@@ -422,7 +597,7 @@ objects:</p>
 <div class="section level3">
 <h3 id="modifying-existing-building-blocks">Modifying Existing Building Blocks<a class="anchor" aria-label="anchor" href="#modifying-existing-building-blocks"></a>
 </h3>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get an individual and modify properties</span></span>
 <span><span class="va">patient</span> <span class="op">&lt;-</span> <span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`Patient_A`</span></span>
 <span><span class="va">patient</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
@@ -441,7 +616,7 @@ objects:</p>
 <div class="section level3">
 <h3 id="copying-and-modifying-building-blocks">Copying and Modifying Building Blocks<a class="anchor" aria-label="anchor" href="#copying-and-modifying-building-blocks"></a>
 </h3>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a copy of an existing individual with modifications</span></span>
 <span><span class="va">original</span> <span class="op">&lt;-</span> <span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span></span>
 <span></span>
@@ -461,7 +636,7 @@ objects:</p>
 <h3 id="validation-and-error-handling">Validation and Error Handling<a class="anchor" aria-label="anchor" href="#validation-and-error-handling"></a>
 </h3>
 <p>The package includes validation for common inputs:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># These will produce validation errors:</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
 <span>  <span class="op">{</span></span>
@@ -486,7 +661,7 @@ objects:</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error: subscript out of bounds</span></span></code></pre></div>
 <p>Valid options are available through validation functions:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check valid species (this would show available options)</span></span>
 <span><span class="co"># validate_species("Human")  # Returns TRUE</span></span>
 <span></span>
@@ -498,7 +673,7 @@ objects:</p>
 <h2 id="working-with-templates">Working with Templates<a class="anchor" aria-label="anchor" href="#working-with-templates"></a>
 </h2>
 <p>You can load predefined templates and modify them:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load a template (if available)</span></span>
 <span><span class="co"># template_snapshot &lt;- load_snapshot("TemplateName")</span></span>
 <span></span>
@@ -514,7 +689,7 @@ objects:</p>
 </h2>
 <p>After creating and managing building blocks, export your
 snapshot:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Export the modified snapshot</span></span>
 <span><span class="fu"><a href="../reference/export_snapshot.html">export_snapshot</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"modified_snapshot_with_new_blocks.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -525,7 +700,7 @@ snapshot:</p>
 <h3 id="naming-conventions">Naming Conventions<a class="anchor" aria-label="anchor" href="#naming-conventions"></a>
 </h3>
 <p>Use descriptive names for building blocks:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Good naming</span></span>
 <span><span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Elderly_Female_80kg"</span>,</span>
@@ -543,7 +718,7 @@ snapshot:</p>
 <h3 id="organization">Organization<a class="anchor" aria-label="anchor" href="#organization"></a>
 </h3>
 <p>Keep related building blocks together:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a family of related individuals</span></span>
 <span><span class="va">pediatric_patients</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Pediatric_5yr"</span>, age <span class="op">=</span> <span class="fl">5</span>, weight <span class="op">=</span> <span class="fl">18</span><span class="op">)</span>,</span>
@@ -561,7 +736,7 @@ snapshot:</p>
 <h3 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h3>
 <p>Document your building blocks with meaningful metadata:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add comments or descriptions when creating parameters</span></span>
 <span><span class="va">hepatic_clearance</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_parameter.html">create_parameter</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"Organism|Liver|Hepatic clearance"</span>,</span>
