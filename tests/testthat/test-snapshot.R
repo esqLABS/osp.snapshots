@@ -598,6 +598,13 @@ test_that("Snapshot rejects snapshots with a non-integer Version", {
   expect_snapshot(Snapshot$new(list(Version = "v11")), error = TRUE)
 })
 
+test_that("Snapshot accepts a list-wrapped Version (jsonlite shape)", {
+  # `jsonlite::fromJSON(simplifyVector = FALSE)` can return scalars as
+  # length-1 lists; the version validator must unwrap them.
+  snapshot <- Snapshot$new(list(Version = list(80)))
+  expect_equal(snapshot$pksim_version, "12.0")
+})
+
 test_that("skip_if_offline helper works", {
   # Use a local definition with withr for test scoping
   expect_no_error(testthat::skip_if_offline())

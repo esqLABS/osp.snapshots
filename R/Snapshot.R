@@ -798,7 +798,9 @@ Snapshot <- R6::R6Class(
     # not model; refusing them is preferable to silently rewriting fields.
     .validate_version = function() {
       raw <- private$.original_data$Version
-      version_num <- suppressWarnings(as.integer(raw))
+      # `unlist()` guards against list-wrapped values (jsonlite is configured
+      # with `simplifyVector = FALSE`, so scalars can arrive as length-1 lists).
+      version_num <- suppressWarnings(as.integer(unlist(raw)))
       if (
         is.null(raw) ||
           length(version_num) != 1 ||
@@ -820,7 +822,7 @@ Snapshot <- R6::R6Class(
     # Convert the raw version number to a human-readable PKSIM version
     # Returns a string with the human-readable PKSIM version
     .get_pksim_version = function() {
-      version_num <- as.integer(private$.original_data$Version)
+      version_num <- as.integer(unlist(private$.original_data$Version))
 
       pksim_version <- switch(
         as.character(version_num),
