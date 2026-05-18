@@ -164,6 +164,70 @@
       Warning:
       No events to remove
 
+# remove_individual warns when name is missing
+
+    Code
+      remove_individual(snapshot, "Other")
+    Condition
+      Warning:
+      Individual 'Other' not found in snapshot
+    Message
+      v Removed 0 individual(s)
+
+# remove_individual warns on empty collection
+
+    Code
+      remove_individual(snapshot, "Subject_001")
+    Condition
+      Warning:
+      No individuals to remove
+
+# remove_individual reports the actual count when some names are missing
+
+    Code
+      remove_individual(snapshot, c(existing, "Other"))
+    Condition
+      Warning:
+      Individual 'Other' not found in snapshot
+    Message
+      v Removed 1 individual(s)
+
+# remove_formulation warns when name is missing
+
+    Code
+      remove_formulation(snapshot, "Other")
+    Condition
+      Warning:
+      Formulation 'Other' not found in snapshot
+    Message
+      v Removed 0 formulation(s)
+
+# remove_formulation warns on empty collection
+
+    Code
+      remove_formulation(snapshot, "Tablet")
+    Condition
+      Warning:
+      No formulations to remove
+
+# remove_population warns when name is missing
+
+    Code
+      remove_population(snapshot, "Other")
+    Condition
+      Warning:
+      Population 'Other' not found in snapshot
+    Message
+      v Removed 0 population(s)
+
+# remove_population warns on empty collection
+
+    Code
+      remove_population(snapshot, "pop_1")
+    Condition
+      Warning:
+      No populations to remove
+
 # remove_observed_data warns when name is missing
 
     Code
@@ -181,6 +245,16 @@
     Condition
       Warning:
       No observed data to remove
+
+# remove_observed_data reports the actual count when some names are missing
+
+    Code
+      remove_observed_data(snapshot, c(dataset$name, "Other"))
+    Condition
+      Warning:
+      Observed data 'Other' not found in snapshot
+    Message
+      v Removed 1 observed data item(s)
 
 # remove_expression_profile warns when id is missing
 
