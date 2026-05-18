@@ -1,8 +1,8 @@
 ---
-title: "Working with Data Frames"
+title: "Working with data frames"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Working with Data Frames}
+  %\VignetteIndexEntry{Working with data frames}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,100 +25,119 @@ library(tidyr)
 
 ## Overview
 
-One of the key features of osp.snapshots is the ability to convert complex nested snapshot data into structured data frames that are easy to work with in R. This vignette demonstrates how to extract, convert, and analyze snapshot data using standard R data analysis tools.
-
-## Setup
-
-Let's start by loading our test snapshot:
+osp.snapshots ships a tibble layer that converts the nested PK-Sim snapshot tree into flat, joinable tibbles ready for `dplyr`, `tidyr`, and `ggplot2`. This vignette walks through the entry point, the per-collection shapes, and a few common analysis patterns.
 
 ```{r}
 snapshot <- load_snapshot("Midazolam")
 ```
 
-## Converting Building Blocks to Data Frames
+## The `as_tibbles()` entry point
 
-The unified `as_tibbles()` function is the canonical entry point. It takes a snapshot plus a `kind` naming the collection to convert, and returns a tibble (or named list of tibbles for collections that need to be split into related tables).
+`as_tibbles()` is the canonical entry point. It takes the snapshot plus a `kind` naming the collection to convert, and returns either a tibble or a named list of tibbles for collections that split into related tables.
 
-Valid values of `kind` are `"compounds"`, `"individuals"`, `"formulations"`, `"populations"`, `"events"`, `"expression_profiles"`, `"protocols"`, and `"observed_data"`.
+Valid values of `kind`: `"compounds"`, `"individuals"`, `"formulations"`, `"populations"`, `"events"`, `"expression_profiles"`, `"protocols"`, `"observed_data"`, `"observer_sets"`.
 
-### Converting Individuals
+```{r}
+compound_dfs <- as_tibbles(snapshot, "compounds")
+names(compound_dfs)
+```
 
-Individual data is converted into multiple related data frames:
+The eight `get_*_dfs()` helpers (`get_compounds_dfs()`, `get_individuals_dfs()`, `get_formulations_dfs()`, `get_populations_dfs()`, `get_events_dfs()`, `get_expression_profiles_dfs()`, `get_protocols_dfs()`, `get_observed_data_dfs()`) plus `get_observer_sets_dfs()` remain available as thin wrappers around `as_tibbles()`. New code should prefer `as_tibbles()`.
+
+The tibble layer is read-only: mutating a returned tibble does not feed changes back into the snapshot.
+
+## Compounds: `$properties` and `$processes`
+
+`get_compounds_dfs()` (and `as_tibbles(snapshot, "compounds")`) returns a list of two tibbles:
+
+* `$properties` carries one row per (compound, parameter) pair across the *Compound* physicochemical properties.
+* `$processes` is the long-form view: one row per (compound, process, parameter) triple across every biological *Process* (metabolism, transport, clearance, binding, ...).
+
+```{r}
+head(compound_dfs$properties)
+head(compound_dfs$processes)
+```
+
+The `$processes` tibble carries a `category` column that mirrors `process$category` on the R6 side. Filtering by category gives the same view as the deprecated per-category accessors on `Compound`:
+
+```{r, eval=FALSE}
+compound_dfs$processes |>
+  filter(category == "metabolizing_enzymes")
+```
+
+## Individuals: three related tibbles
+
+`as_tibbles(snapshot, "individuals")` returns three tibbles joinable on `individual_id`:
 
 ```{r}
 individual_dfs <- as_tibbles(snapshot, "individuals")
 names(individual_dfs)
-```
 
-Let's examine each data frame:
-
-```{r}
-# Basic characteristics
 head(individual_dfs$individuals)
-
-# Parameters
 head(individual_dfs$individuals_parameters)
-
-# Expression profiles
 head(individual_dfs$individuals_expressions)
 ```
 
-### Converting Single Individual
-
-You can also convert a single individual to data frames:
+You can also convert a single `Individual` directly via its `$to_df()` method:
 
 ```{r}
-# Get the first individual
 individual <- snapshot$individuals[[1]]
-single_individual_df <- individual$to_df()
-
-names(single_individual_df)
-head(single_individual_df$individuals)
+single_dfs <- individual$to_df()
+names(single_dfs)
+head(single_dfs$individuals)
 ```
 
-### Converting Compounds
+## Formulations
 
 ```{r}
-compounds_df <- as_tibbles(snapshot, "compounds")
-head(compounds_df)
+formulation_dfs <- as_tibbles(snapshot, "formulations")
+names(formulation_dfs)
+head(formulation_dfs$formulations)
+head(formulation_dfs$formulations_parameters)
 ```
 
-### Converting Formulations
+## Populations
 
 ```{r}
-formulations_dfs <- as_tibbles(snapshot, "formulations")
-names(formulations_dfs)
-
-# Basic formulation info
-head(formulations_dfs$formulations)
-
-# Formulation parameters
-head(formulations_dfs$formulations_parameters)
+population_dfs <- as_tibbles(snapshot, "populations")
+names(population_dfs)
+head(population_dfs$populations)
 ```
 
-### Converting Populations
+## Protocols: `Schema` and `SchemaItem` rows
+
+`as_tibbles(snapshot, "protocols")` returns a 13-column tibble whether the snapshot has any protocols or not (this used to vary; see NEWS for #56). *Advanced Protocols* contribute one row per *Schema* item, with the protocol-level, schema-level, and item-level parameters joined by name.
 
 ```{r}
-populations_dfs <- as_tibbles(snapshot, "populations")
-names(populations_dfs)
-
-head(populations_dfs$populations)
+protocols_df <- as_tibbles(snapshot, "protocols")
+head(protocols_df)
 ```
 
-### Converting Observed Data
+## Observer sets: `$observer_sets` and `$observers`
 
-Observed data conversion creates a flat data frame perfect for analysis:
+`as_tibbles(snapshot, "observer_sets")` returns a list of two tibbles:
+
+* `$observer_sets` has one row per *ObserverSet* with its container metadata.
+* `$observers` has one row per *Observer* with `observer_set_id` / `observer_set_name` columns for joining back to the parent set.
+
+```{r, eval=FALSE}
+observer_dfs <- as_tibbles(snapshot, "observer_sets")
+names(observer_dfs)
+head(observer_dfs$observers)
+```
+
+The `container_tags` column on the `$observers` tibble carries the `|`-joined `Tag` values from the underlying `ContainerCriteria`.
+
+## Observed data
+
+`as_tibbles(snapshot, "observed_data")` flattens every observed-data series into a long-form tibble ready for plotting.
 
 ```{r}
 obs_data_df <- as_tibbles(snapshot, "observed_data")
 head(obs_data_df)
 ```
 
-## Legacy per-kind helpers
+## Next steps
 
-For backwards compatibility, the eight original `get_*_dfs()` functions (`get_compounds_dfs()`, `get_individuals_dfs()`, `get_formulations_dfs()`, `get_populations_dfs()`, `get_events_dfs()`, `get_expression_profiles_dfs()`, `get_protocols_dfs()`, `get_observed_data_dfs()`) remain available as thin wrappers around `as_tibbles()`. New code should prefer `as_tibbles()`.
-
-## Next Steps
-
-- Learn how to create new building blocks in `vignette("creating-building-blocks")`
-- Explore the full API in the [function reference](https://esqlabs.github.io/osp.snapshots/reference/)
+* `vignette("creating-building-blocks")` covers the `create_*()` factory family for building new snapshots.
+* The full API reference is at <https://esqlabs.github.io/osp.snapshots/reference/>.
