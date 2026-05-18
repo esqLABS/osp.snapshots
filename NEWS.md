@@ -1,5 +1,14 @@
 # osp.snapshots (development version)
 
+## New features
+
+- `create_compound()` builds a Compound building block from named arguments, wrapping `Compound$new()` with validation of common fields (#27).
+- `create_event()` builds an Event building block from named arguments and a template name, wrapping `Event$new()` (#27).
+- `create_expression_profile()` builds an ExpressionProfile building block from named arguments, requiring molecule, species, category, and type (#27).
+- `create_observed_data()` builds an `ospsuite::DataSet` from named arguments for time, values, units, and optional error series (#27).
+- `create_population()` builds a Population building block from named arguments and `Range` objects for age, weight, height, and BMI bounds (#27).
+- `create_protocol()` builds a Simple or Advanced Protocol building block from named arguments, wrapping `Protocol$new()` (#27).
+
 ## Bug fixes
 
 - Fixed snapshot export/import so single-element JSON arrays remain arrays,

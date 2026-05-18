@@ -118,19 +118,19 @@ convert_ospsuite_time_unit_to_lubridate <- function(unit) {
   if (is.null(unit) || is.na(unit)) {
     return(unit)
   }
-  
+
   # Define mapping from ospsuite units to lubridate units
   unit_mapping <- list(
     "s" = "seconds",
-    "min" = "minutes", 
+    "min" = "minutes",
     "h" = "hours",
     "day(s)" = "days",
     "week(s)" = "weeks",
     "month(s)" = "months",
     "year(s)" = "years",
-    "ks" = "seconds"  # kiloseconds - will need special handling for value
+    "ks" = "seconds" # kiloseconds - will need special handling for value
   )
-  
+
   # Return mapped unit or original if not found
   lubridate_unit <- unit_mapping[[unit]]
   if (!is.null(lubridate_unit)) {
@@ -156,19 +156,64 @@ convert_ospsuite_time_to_duration <- function(value, unit) {
   if (is.null(value) || is.na(value)) {
     return(lubridate::duration(0))
   }
-  
+
   if (is.null(unit) || is.na(unit)) {
     # Default to seconds if no unit provided
     return(lubridate::duration(value, units = "seconds"))
   }
-  
+
   # Handle special case for kiloseconds
   if (unit == "ks") {
     # Convert kiloseconds to seconds
     return(lubridate::duration(value * 1000, units = "seconds"))
   }
-  
+
   # Convert unit and create duration
   lubridate_unit <- convert_ospsuite_time_unit_to_lubridate(unit)
   return(lubridate::duration(value, units = lubridate_unit))
+}
+
+# Internal: assert that `value` is a non-empty scalar character.
+# Used by the create_* factories to validate required string arguments.
+# Captures a missing promise so callers can pass a possibly-unsupplied
+# argument without R signalling its default "argument is missing" error.
+check_required_string <- function(value, arg_name) {
+  is_missing <- tryCatch(
+    {
+      force(value)
+      FALSE
+    },
+    error = function(e) TRUE
+  )
+  if (
+    is_missing ||
+      is.null(value) ||
+      !is.character(value) ||
+      length(value) != 1 ||
+      !nzchar(value)
+  ) {
+    cli::cli_abort(
+      "{.arg {arg_name}} must be a non-empty string",
+      call = parent.frame()
+    )
+  }
+  invisible(value)
+}
+
+# Internal: convert a list of Parameter R6 objects (or raw parameter lists)
+# into the raw list-of-lists shape used in snapshot JSON.
+# When `name_key = "Name"`, any `Path` field is renamed to `Name` (used by
+# Compound, Event, and Protocol parameter arrays which key on `Name`).
+to_raw_parameters <- function(parameters, name_key = c("Path", "Name")) {
+  name_key <- match.arg(name_key)
+  lapply(parameters, function(param) {
+    raw <- if (inherits(param, "Parameter")) param$data else param
+    if (identical(name_key, "Name")) {
+      if (is.null(raw$Name) && !is.null(raw$Path)) {
+        raw$Name <- raw$Path
+      }
+      raw$Path <- NULL
+    }
+    raw
+  })
 }

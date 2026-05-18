@@ -63,9 +63,15 @@ reference:
 - title: "Create Building Blocks"
   desc: "Functions to create new building blocks from scratch"
   contents:
-  - create_individual
+  - create_compound
+  - create_event
+  - create_expression_profile
   - create_formulation
+  - create_individual
+  - create_observed_data
   - create_parameter
+  - create_population
+  - create_protocol
 
 - title: "Manage Building Blocks"
   desc: "Add and remove building blocks from snapshots"
