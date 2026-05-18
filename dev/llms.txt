@@ -164,6 +164,10 @@ Reusable sub-structures shared across building blocks
   : OriginData class for OSP snapshot individuals
 - [`CalculationMethodCache`](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
   : CalculationMethodCache class for OSP snapshots
+- [`Schema`](https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.md)
+  : Schema class for OSP advanced protocols
+- [`SchemaItem`](https://esqlabs.github.io/osp.snapshots/dev/reference/SchemaItem.md)
+  : SchemaItem class for OSP advanced protocols
 
 ## Create Building Blocks
 

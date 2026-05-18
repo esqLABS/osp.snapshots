@@ -35,6 +35,12 @@
   an `Individual` (species, population, gender, age, weight, height,
   gestational age, calculation methods, optional disease state).
   Available via `Individual$origin_data` (#30).
+- New `Schema` and `SchemaItem` R6 classes wrapping the repeatable
+  blocks and individual applications inside an Advanced `Protocol`.
+  `Protocol$schemas` now returns a named list of `Schema` objects, each
+  exposing `$items` as a list of `SchemaItem` objects with fields for
+  application type, formulation key, target organ and compartment, and
+  parameters (#29).
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   builds a Compound building block from named arguments, wrapping
   `Compound$new()` with validation of common fields (#27).
