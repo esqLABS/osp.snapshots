@@ -1,47 +1,79 @@
-#' Get all compounds in a snapshot as data frames
+#' Convert a snapshot collection to a tibble or list of tibbles
 #'
 #' @description
-#' This function extracts all compounds from a snapshot and converts them to
-#' data frames for easier analysis and visualization, following the same format
-#' as the legacy compound dataframe functions.
+#' Unified bridge from a `Snapshot` to the tidyverse for any
+#' building-block kind plus observed data. Replaces the eight
+#' per-kind `get_*_dfs()` functions as the canonical entry point;
+#' those remain available as thin wrappers.
 #'
-#' @param snapshot A Snapshot object
-#' @return A data frame with compound parameter data including:
+#' @param snapshot A `Snapshot` object.
+#' @param kind Character scalar naming the collection to convert.
+#'   One of `"compounds"`, `"individuals"`, `"formulations"`,
+#'   `"populations"`, `"events"`, `"expression_profiles"`,
+#'   `"protocols"`, `"observer_sets"`, `"observed_data"`.
+#'
+#' @return A tibble or a named list of tibbles, depending on `kind`:
 #' \itemize{
-#'   \item compound: Compound name
-#'   \item category: Broad parameter category - "physicochemical_property" for basic properties,
-#'         or descriptive categories like "protein_binding_partners", "metabolizing_enzymes",
-#'         "hepatic_clearance", "transporter_proteins", "renal_clearance", "biliary_clearance",
-#'         "inhibition", "induction" for process-related data
-#'   \item type: Specific type within category - for physicochemical properties: property type
-#'         (e.g., "lipophilicity", "fraction_unbound", "molecular_weight"); for processes:
-#'         the InternalName from process data (e.g., "SpecificBinding", "Metabolization", "ActiveTransport")
-#'   \item parameter: Specific parameter details (e.g., parameter names, molecule names)
-#'   \item value: Parameter value (raw values from data)
-#'   \item unit: Parameter unit
-#'   \item data_source: Data source information from the snapshot
-#'   \item source: Original source information
+#'   \item `"compounds"`, `"protocols"`, `"observer_sets"`,
+#'     `"observed_data"`: a single tibble.
+#'   \item `"individuals"`: a list with `individuals`,
+#'     `individuals_parameters`, `individuals_expressions`.
+#'   \item `"formulations"`: a list with `formulations`,
+#'     `formulations_parameters`.
+#'   \item `"populations"`: a list with `populations`,
+#'     `populations_parameters`.
+#'   \item `"events"`: a list with `events`, `events_parameters`.
+#'   \item `"expression_profiles"`: a list with `expression_profiles`,
+#'     `expression_profiles_parameters`.
 #' }
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' snapshot <- load_snapshot("Midazolam")
 #'
-#' # Get all compound data as a data frame
-#' compounds_df <- get_compounds_dfs(snapshot)
+#' # Single tibble
+#' compounds <- as_tibbles(snapshot, "compounds")
 #'
+#' # List of tibbles
+#' individuals <- as_tibbles(snapshot, "individuals")
+#' individuals$individuals_parameters
 #' }
-get_compounds_dfs <- function(snapshot) {
-  # Check if input is a snapshot
+as_tibbles <- function(snapshot, kind) {
   validate_snapshot(snapshot)
 
-  # Get all compounds from the snapshot
+  builders <- list(
+    compounds = as_tibbles_compounds,
+    individuals = as_tibbles_individuals,
+    formulations = as_tibbles_formulations,
+    populations = as_tibbles_populations,
+    events = as_tibbles_events,
+    expression_profiles = as_tibbles_expression_profiles,
+    protocols = as_tibbles_protocols,
+    observer_sets = as_tibbles_observer_sets,
+    observed_data = as_tibbles_observed_data
+  )
+
+  if (!is.character(kind) || length(kind) != 1L || is.na(kind)) {
+    cli::cli_abort(
+      "{.arg kind} must be a single string, not {.obj_type_friendly {kind}}."
+    )
+  }
+
+  if (!kind %in% names(builders)) {
+    cli::cli_abort(c(
+      "Unknown {.arg kind} {.val {kind}}.",
+      i = "Must be one of {.val {names(builders)}}."
+    ))
+  }
+
+  builders[[kind]](snapshot)
+}
+
+as_tibbles_compounds <- function(snapshot) {
   compounds <- snapshot$compounds
 
-  # Initialize empty result dataframe
   result <- tibble::tibble(
     compound = character(0),
     category = character(0),
@@ -53,64 +85,18 @@ get_compounds_dfs <- function(snapshot) {
     source = character(0)
   )
 
-  # If there are no compounds, return the empty tibble
   if (length(compounds) == 0) {
     return(result)
   }
 
-  # Get data frames for each compound and combine them
-  compound_dfs <- lapply(compounds, function(compound) {
-    compound$to_df()
-  })
-
-  # Combine all compound data frames
-  if (length(compound_dfs) > 0) {
-    result <- dplyr::bind_rows(compound_dfs)
-  }
-
-  # Sort compounds by compound name
-  result <- result[order(result$compound), ]
-  return(result)
+  compound_dfs <- lapply(compounds, \(compound) compound$to_df())
+  result <- dplyr::bind_rows(compound_dfs)
+  result[order(result$compound), ]
 }
 
-#' Get all individuals in a snapshot as data frames
-#'
-#' @description
-#' This function extracts all individuals from a snapshot and converts them to
-#' data frames for easier analysis and visualization.
-#'
-#' @param snapshot A Snapshot object
-#'
-#' @return A list containing three data frames:
-#' \itemize{
-#'   \item individuals: Basic information about each individual
-#'   \item individuals_parameters: All parameters for all individuals
-#'   \item individuals_expressions: Expression profiles for all individuals
-#' }
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#'
-#' # Get all individual data as data frames
-#' dfs <- get_individuals_dfs(snapshot)
-#'
-#' # Access specific data frames
-#' individuals_df <- dfs$individuals
-#' individuals_parameters_df <- dfs$individuals_parameters
-#' individuals_expressions_df <- dfs$individuals_expressions
-#' }
-get_individuals_dfs <- function(snapshot) {
-  # Check if input is a snapshot
-  validate_snapshot(snapshot)
-
-  # Get all individuals from the snapshot
+as_tibbles_individuals <- function(snapshot) {
   individuals <- snapshot$individuals
 
-  # Initialize empty result list with tibbles for each data type
   result <- list(
     individuals = tibble::tibble(
       individual_id = character(0),
@@ -146,85 +132,26 @@ get_individuals_dfs <- function(snapshot) {
     )
   )
 
-  # If there are no individuals, return the empty tibbles
   if (length(individuals) == 0) {
     return(result)
   }
 
-  # Get data frames for each individual and combine them
-  ind_dfs <- lapply(individuals, function(individual) {
-    individual$to_df()
-  })
+  ind_dfs <- lapply(individuals, \(individual) individual$to_df())
 
-  # Combine all individuals data frames
-  if (length(ind_dfs) > 0) {
-    # Combine individuals data
-    individuals_dfs <- lapply(ind_dfs, function(df) df$individuals)
-    individuals_dfs <- individuals_dfs[!sapply(individuals_dfs, is.null)]
-    if (length(individuals_dfs) > 0) {
-      result$individuals <- dplyr::bind_rows(individuals_dfs)
-    }
-
-    # Combine parameters data
-    param_dfs <- lapply(ind_dfs, function(df) df$individuals_parameters)
-    param_dfs <- param_dfs[!sapply(param_dfs, is.null)]
-    if (length(param_dfs) > 0) {
-      result$individuals_parameters <- dplyr::bind_rows(param_dfs)
-    }
-
-    # Combine expression profiles data
-    expr_dfs <- lapply(ind_dfs, function(df) df$individuals_expressions)
-    expr_dfs <- expr_dfs[!sapply(expr_dfs, is.null)]
-    if (length(expr_dfs) > 0) {
-      result$individuals_expressions <- dplyr::bind_rows(expr_dfs)
+  for (slot in names(result)) {
+    parts <- lapply(ind_dfs, \(df) df[[slot]])
+    parts <- parts[!vapply(parts, is.null, logical(1))]
+    if (length(parts) > 0) {
+      result[[slot]] <- dplyr::bind_rows(parts)
     }
   }
 
-  return(result)
+  result
 }
 
-
-#' Get all formulations in a snapshot as data frames
-#'
-#' @description
-#' This function extracts all formulations from a snapshot and converts them to
-#' data frames for easier analysis and visualization.
-#'
-#' @param snapshot A Snapshot object
-#'
-#' @return A list containing two data frames:
-#' \itemize{
-#'   \item formulations: Basic information about each formulation
-#'   \item formulations_parameters: All parameters for all formulations, including
-#'         table parameter points. Table parameter points have is_table_point=TRUE
-#'         and include x_value, y_value, and table_name values.
-#' }
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#'
-#' # Get all formulation data as data frames
-#' dfs <- get_formulations_dfs(snapshot)
-#'
-#' # Access specific data frames
-#' formulations_df <- dfs$formulations
-#' formulations_parameters_df <- dfs$formulations_parameters
-#'
-#' # Filter to get only table points
-#' table_points <- formulations_parameters_df[formulations_parameters_df$is_table_point, ]
-#' }
-get_formulations_dfs <- function(snapshot) {
-  # Check if input is a snapshot
-  validate_snapshot(snapshot)
-
-  # Get all formulations from the snapshot
+as_tibbles_formulations <- function(snapshot) {
   formulations <- snapshot$formulations
 
-  # Initialize empty result list with tibbles for each data type
   result <- list(
     formulations = tibble::tibble(
       formulation_id = character(0),
@@ -244,72 +171,26 @@ get_formulations_dfs <- function(snapshot) {
     )
   )
 
-  # If there are no formulations, return the empty tibbles
   if (length(formulations) == 0) {
     return(result)
   }
 
-  # Get data frames for each formulation and combine them
-  form_dfs <- lapply(formulations, function(formulation) {
-    formulation$to_df()
-  })
+  form_dfs <- lapply(formulations, \(formulation) formulation$to_df())
 
-  # Combine all main data frames
-  if (length(form_dfs) > 0) {
-    # Combine formulations data
-    formulations_dfs <- lapply(form_dfs, function(df) df$formulations)
-    formulations_dfs <- formulations_dfs[!sapply(formulations_dfs, is.null)]
-    if (length(formulations_dfs) > 0) {
-      result$formulations <- dplyr::bind_rows(formulations_dfs)
-    }
-
-    # Combine parameters data
-    param_dfs <- lapply(form_dfs, function(df) df$formulations_parameters)
-    param_dfs <- param_dfs[!sapply(param_dfs, is.null)]
-    if (length(param_dfs) > 0) {
-      result$formulations_parameters <- dplyr::bind_rows(param_dfs)
+  for (slot in names(result)) {
+    parts <- lapply(form_dfs, \(df) df[[slot]])
+    parts <- parts[!vapply(parts, is.null, logical(1))]
+    if (length(parts) > 0) {
+      result[[slot]] <- dplyr::bind_rows(parts)
     }
   }
 
-  return(result)
+  result
 }
 
-#' Get all populations in a snapshot as data frames
-#'
-#' @description
-#' This function extracts all populations from a snapshot and converts them to
-#' data frames for easier analysis and visualization.
-#'
-#' @param snapshot A Snapshot object
-#'
-#' @return A list containing two data frames:
-#' \itemize{
-#'   \item populations: Basic information about each population including ranges
-#'   \item populations_parameters: All parameters for all populations
-#' }
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#'
-#' # Get all population data as data frames
-#' dfs <- get_populations_dfs(snapshot)
-#'
-#' # Access specific data frames
-#' populations_df <- dfs$populations
-#' populations_parameters_df <- dfs$populations_parameters
-#' }
-get_populations_dfs <- function(snapshot) {
-  # Check if input is a snapshot
-  validate_snapshot(snapshot)
-
-  # Get all populations from the snapshot
+as_tibbles_populations <- function(snapshot) {
   populations <- snapshot$populations
 
-  # Initialize empty result list with tibbles for each data type
   result <- list(
     populations = tibble::tibble(
       population_id = character(0),
@@ -348,12 +229,10 @@ get_populations_dfs <- function(snapshot) {
     )
   )
 
-  # If there are no populations, return the empty tibbles
   if (length(populations) == 0) {
     return(result)
   }
 
-  # Process each population
   for (pop in populations) {
     pop_dfs <- pop$to_df()
     result$populations <- dplyr::bind_rows(
@@ -366,45 +245,12 @@ get_populations_dfs <- function(snapshot) {
     )
   }
 
-  return(result)
+  result
 }
 
-#' Get all events in a snapshot as data frames
-#'
-#' @description
-#' This function extracts all events from a snapshot and converts them to
-#' data frames for easier analysis and visualization.
-#'
-#' @param snapshot A Snapshot object
-#'
-#' @return A list containing two data frames:
-#' \itemize{
-#'   \item events: Basic information about each event
-#'   \item events_parameters: All parameters for all events
-#' }
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#'
-#' # Get all event data as data frames
-#' dfs <- get_events_dfs(snapshot)
-#'
-#' # Access specific data frames
-#' events_df <- dfs$events
-#' events_parameters_df <- dfs$events_parameters
-#' }
-get_events_dfs <- function(snapshot) {
-  # Check if input is a snapshot
-  validate_snapshot(snapshot)
-
-  # Get all events from the snapshot
+as_tibbles_events <- function(snapshot) {
   events <- snapshot$events
 
-  # Initialize empty result list with tibbles for each data type
   result <- list(
     events = tibble::tibble(
       event_id = character(0),
@@ -419,37 +265,29 @@ get_events_dfs <- function(snapshot) {
     )
   )
 
-  # If there are no events, return the empty tibbles
   if (length(events) == 0) {
     return(result)
   }
 
-  # Process each event
   basic_list <- list()
   params_list <- list()
 
   for (event_name in names(events)) {
     event <- events[[event_name]]
-
-    # Use the to_dataframe method to get consistent data structure
     event_df <- event$to_dataframe()
 
-    # Add event_id to the main data
     if (!is.null(event_df$events)) {
-      events_df <- dplyr::bind_cols(
+      basic_list[[length(basic_list) + 1]] <- dplyr::bind_cols(
         tibble::tibble(event_id = event_name),
         event_df$events
       )
-      basic_list[[length(basic_list) + 1]] <- events_df
     }
 
-    # Add event_id to the parameters data if available
     if (
       !is.null(event_df$events_parameters) &&
         nrow(event_df$events_parameters) > 0
     ) {
-      # Add event_id to parameters data
-      param_df <- dplyr::bind_cols(
+      params_list[[length(params_list) + 1]] <- dplyr::bind_cols(
         tibble::tibble(
           event_id = rep(event_name, nrow(event_df$events_parameters))
         ),
@@ -460,59 +298,22 @@ get_events_dfs <- function(snapshot) {
           "value" = "param_value",
           "unit" = "param_unit"
         )
-
-      params_list[[length(params_list) + 1]] <- param_df
     }
   }
 
-  # Combine all data frames
   if (length(basic_list) > 0) {
     result$events <- dplyr::bind_rows(basic_list)
   }
-
   if (length(params_list) > 0) {
     result$events_parameters <- dplyr::bind_rows(params_list)
   }
 
-  return(result)
+  result
 }
 
-#' Get all expression profiles in a snapshot as data frames
-#'
-#' @description
-#' This function extracts all expression profiles from a snapshot and converts them to
-#' data frames for easier analysis and visualization.
-#'
-#' @param snapshot A Snapshot object
-#'
-#' @return A list containing two data frames:
-#' \itemize{
-#'   \item expression_profiles: Basic information about each expression profile
-#'   \item expression_profiles_parameters: All parameters for all expression profiles
-#' }
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#'
-#' # Get all expression profile data as data frames
-#' dfs <- get_expression_profiles_dfs(snapshot)
-#'
-#' # Access specific data frames
-#' expression_profiles_df <- dfs$expression_profiles
-#' expression_profiles_parameters_df <- dfs$expression_profiles_parameters
-#' }
-get_expression_profiles_dfs <- function(snapshot) {
-  # Check if input is a snapshot
-  validate_snapshot(snapshot)
-
-  # Get all expression profiles from the snapshot
+as_tibbles_expression_profiles <- function(snapshot) {
   expression_profiles <- snapshot$expression_profiles
 
-  # Initialize empty result list with tibbles for each data type
   result <- list(
     expression_profiles = tibble::tibble(
       expression_id = character(0),
@@ -533,91 +334,26 @@ get_expression_profiles_dfs <- function(snapshot) {
     )
   )
 
-  # If there are no expression profiles, return the empty tibbles
   if (length(expression_profiles) == 0) {
     return(result)
   }
 
-  # Get data frames for each expression profile and combine them
-  profile_dfs <- lapply(expression_profiles, function(profile) {
-    profile$to_df()
-  })
+  profile_dfs <- lapply(expression_profiles, \(profile) profile$to_df())
 
-  # Combine all main data frames
-  if (length(profile_dfs) > 0) {
-    expression_profiles_dfs <- lapply(
-      profile_dfs,
-      function(df) df$expression_profiles
-    )
-    result$expression_profiles <- dplyr::bind_rows(expression_profiles_dfs)
-    param_dfs <- lapply(
-      profile_dfs,
-      function(df) df$expression_profiles_parameters
-    )
-    param_dfs <- param_dfs[!sapply(param_dfs, is.null)]
-    if (length(param_dfs) > 0) {
-      result$expression_profiles_parameters <- dplyr::bind_rows(param_dfs)
+  for (slot in names(result)) {
+    parts <- lapply(profile_dfs, \(df) df[[slot]])
+    parts <- parts[!vapply(parts, is.null, logical(1))]
+    if (length(parts) > 0) {
+      result[[slot]] <- dplyr::bind_rows(parts)
     }
   }
 
-  return(result)
+  result
 }
 
-#' Get all protocols in a snapshot as a single consolidated data frame
-#'
-#' @description
-#' This function extracts all protocols from a snapshot and converts them to
-#' a single consolidated data frame containing all protocol information, including
-#' simple protocol parameters and advanced protocol schema details.
-#'
-#' @param snapshot A Snapshot object
-#'
-#' @return A tibble containing all protocol data with the following columns:
-#' \itemize{
-#'   \item protocol_id: Protocol identifier
-#'   \item protocol_name: Protocol name
-#'   \item is_advanced: Whether the protocol is advanced (schema-based)
-#'   \item protocol_application_type: Application type (for simple protocols)
-#'   \item protocol_dosing_interval: Dosing interval (for simple protocols)
-#'   \item protocol_time_unit: Time unit
-#'   \item schema_id: Schema identifier (NA for simple protocols)
-#'   \item schema_name: Schema name (NA for simple protocols)
-#'   \item schema_item_id: Schema item identifier (NA for simple protocols)
-#'   \item schema_item_name: Schema item name (NA for simple protocols)
-#'   \item schema_item_application_type: Schema item application type (NA for simple protocols)
-#'   \item schema_item_formulation_key: Schema item formulation key (NA for simple protocols)
-#'   \item parameter_name: Parameter name (NA if no parameters)
-#'   \item parameter_value: Parameter value (NA if no parameters)
-#'   \item parameter_unit: Parameter unit (NA if no parameters)
-#'   \item parameter_source: Parameter source (NA if no parameters)
-#'   \item parameter_description: Parameter description (NA if no parameters)
-#'   \item parameter_source_id: Parameter source ID (NA if no parameters)
-#' }
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#'
-#' # Get all protocol data as a single data frame
-#' protocols_df <- get_protocols_dfs(snapshot)
-#'
-#' # Filter simple protocols
-#' simple_protocols <- protocols_df[!protocols_df$is_advanced, ]
-#'
-#' # Filter advanced protocols
-#' advanced_protocols <- protocols_df[protocols_df$is_advanced, ]
-#' }
-get_protocols_dfs <- function(snapshot) {
-  # Check if input is a snapshot
-  validate_snapshot(snapshot)
-
-  # Get all protocols from the snapshot
+as_tibbles_protocols <- function(snapshot) {
   protocols <- snapshot$protocols
 
-  # If there are no protocols, return an empty tibble with correct structure
   if (length(protocols) == 0) {
     return(tibble::tibble(
       protocol_id = character(0),
@@ -641,55 +377,38 @@ get_protocols_dfs <- function(snapshot) {
     ))
   }
 
-  # Get data frames for each protocol and combine them
-  protocol_dfs <- lapply(protocols, function(protocol) {
-    protocol$to_df()
-  })
-
-  # Combine all data frames
-  result <- dplyr::bind_rows(protocol_dfs)
-
-  return(result)
+  protocol_dfs <- lapply(protocols, \(protocol) protocol$to_df())
+  dplyr::bind_rows(protocol_dfs)
 }
 
-#' Get all observed data in a snapshot as data frames
-#'
-#' @description
-#' This function extracts all observed data from a snapshot and converts them to
-#' data frames for easier analysis and visualization.
-#'
-#' @param snapshot A Snapshot object
-#'
-#' @return A tibble containing all observed data in long format with columns:
-#' \itemize{
-#'   \item observed_data_name: Name of the observed data set
-#'   \item time: Time values
-#'   \item time_unit: Unit for time values
-#'   \item column_name: Name of the measurement column
-#'   \item value: Measured values
-#'   \item unit: Unit for the measured values
-#'   \item path: Full path of the measurement
-#'   \item auxiliary_type: Type of auxiliary data (e.g., ArithmeticMean, ArithmeticStdDev)
-#' }
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#'
-#' # Get all observed data as data frames
-#' observed_data_df <- get_observed_data_dfs(snapshot)
-#' }
-get_observed_data_dfs <- function(snapshot) {
-  # Check if input is a snapshot
-  validate_snapshot(snapshot)
+as_tibbles_observer_sets <- function(snapshot) {
+  observer_sets <- snapshot$observer_sets
 
-  # Get all observed data from the snapshot
+  result <- tibble::tibble(
+    observer_set_id = character(0),
+    name = character(0),
+    n_observers = integer(0)
+  )
+
+  if (length(observer_sets) == 0) {
+    return(result)
+  }
+
+  rows <- lapply(names(observer_sets), function(id) {
+    os <- observer_sets[[id]]
+    tibble::tibble(
+      observer_set_id = id,
+      name = os$name %||% NA_character_,
+      n_observers = length(os$observers)
+    )
+  })
+
+  dplyr::bind_rows(rows)
+}
+
+as_tibbles_observed_data <- function(snapshot) {
   observed_data_items <- snapshot$observed_data
 
-  # Initialize empty result dataframe with compatible structure
   result <- tibble::tibble(
     name = character(0),
     xValues = numeric(0),
@@ -705,18 +424,201 @@ get_observed_data_dfs <- function(snapshot) {
     lloq = numeric(0)
   )
 
-  # If there are no observed data items, return the empty tibble
   if (length(observed_data_items) == 0) {
     return(result)
   }
 
-  # Convert DataSet objects to tibble using ospsuite function
-  if (length(observed_data_items) > 0) {
-    # Convert list of DataSet objects to a combined tibble
-    result <- ospsuite::dataSetToTibble(dataSets = unname(observed_data_items))
-  }
+  result <- ospsuite::dataSetToTibble(dataSets = unname(observed_data_items))
+  result[order(result$name, result$xValues), ]
+}
 
-  # Sort by name and time
-  result <- result[order(result$name, result$xValues), ]
-  return(result)
+#' Get all compounds in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "compounds"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A tibble with one row per compound parameter; see
+#'   [as_tibbles()] for the column contract.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' compounds_df <- get_compounds_dfs(snapshot)
+#' }
+get_compounds_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "compounds")
+}
+
+#' Get all individuals in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "individuals"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `individuals`, `individuals_parameters`, and
+#'   `individuals_expressions` tibbles.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_individuals_dfs(snapshot)
+#' }
+get_individuals_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "individuals")
+}
+
+#' Get all formulations in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "formulations"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `formulations` and `formulations_parameters`
+#'   tibbles. Table parameter points have `is_table_point = TRUE` and
+#'   carry `x_value`, `y_value`, and `table_name`.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_formulations_dfs(snapshot)
+#' }
+get_formulations_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "formulations")
+}
+
+#' Get all populations in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "populations"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `populations` and `populations_parameters`
+#'   tibbles.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_populations_dfs(snapshot)
+#' }
+get_populations_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "populations")
+}
+
+#' Get all events in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "events"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `events` and `events_parameters` tibbles.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_events_dfs(snapshot)
+#' }
+get_events_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "events")
+}
+
+#' Get all expression profiles in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with
+#' `kind = "expression_profiles"`. Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `expression_profiles` and
+#'   `expression_profiles_parameters` tibbles.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_expression_profiles_dfs(snapshot)
+#' }
+get_expression_profiles_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "expression_profiles")
+}
+
+#' Get all protocols in a snapshot as a single consolidated data frame
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "protocols"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A tibble with one row per protocol parameter (or per schema
+#'   item parameter for advanced protocols).
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' protocols_df <- get_protocols_dfs(snapshot)
+#' }
+get_protocols_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "protocols")
+}
+
+#' Get all observer sets in a snapshot as a tibble
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "observer_sets"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A tibble with one row per `ObserverSet`, with columns
+#'   `observer_set_id`, `name`, `n_observers`. Richer per-observer
+#'   detail is deferred until the `Observer` leaf class lands.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' observer_sets_df <- get_observer_sets_dfs(snapshot)
+#' }
+get_observer_sets_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "observer_sets")
+}
+
+#' Get all observed data in a snapshot as a tibble
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "observed_data"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A tibble in long format with columns `name`, `xValues`,
+#'   `yValues`, `yErrorValues`, `xDimension`, `xUnit`, `yDimension`,
+#'   `yUnit`, `yErrorType`, `yErrorUnit`, `molWeight`, `lloq`.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' observed_data_df <- get_observed_data_dfs(snapshot)
+#' }
+get_observed_data_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "observed_data")
 }

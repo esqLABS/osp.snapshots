@@ -7,31 +7,19 @@
 get_individuals_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A Snapshot object}
+\item{snapshot}{A `Snapshot` object.}
 }
 \value{
-A list containing three data frames:
-\itemize{
-  \item individuals: Basic information about each individual
-  \item individuals_parameters: All parameters for all individuals
-  \item individuals_expressions: Expression profiles for all individuals
-}
+A list with `individuals`, `individuals_parameters`, and
+  `individuals_expressions` tibbles.
 }
 \description{
-This function extracts all individuals from a snapshot and converts them to
-data frames for easier analysis and visualization.
+Thin wrapper around [as_tibbles()] with `kind = "individuals"`.
+Prefer [as_tibbles()] in new code.
 }
 \examples{
 \dontrun{
-# Load a snapshot
 snapshot <- load_snapshot("path/to/snapshot.json")
-
-# Get all individual data as data frames
 dfs <- get_individuals_dfs(snapshot)
-
-# Access specific data frames
-individuals_df <- dfs$individuals
-individuals_parameters_df <- dfs$individuals_parameters
-individuals_expressions_df <- dfs$individuals_expressions
 }
 }

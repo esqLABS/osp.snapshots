@@ -307,6 +307,21 @@ test_that("Mutations through OriginData propagate to the snapshot export", {
   expect_equal(reloaded_origin$Species, "Human")
 })
 
+test_that("Snapshot export drops a building-block section when all items are removed", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  individual_names <- names(snapshot$individuals)
+  expect_gt(length(individual_names), 0)
+
+  snapshot$remove_individual(individual_names)
+  expect_length(snapshot$individuals, 0)
+  expect_length(snapshot$data$Individuals, 0)
+
+  out <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(out)
+  reloaded <- load_snapshot(out)
+  expect_length(reloaded$individuals, 0)
+})
+
 test_that("Snapshot print method works", {
   # Create a snapshot object
   snapshot <- test_snapshot$clone()
