@@ -1,20 +1,49 @@
-#' S3 print method for compound collections
+#' Generic print method for snapshot collections
 #'
-#' @param x A compound collection object
-#' @param ... Additional arguments passed to print methods
-#' @return Invisibly returns the compound collection
+#' Shared S3 print method that renders any building-block collection: a
+#' header with the kind and item count, one bullet per item with a
+#' per-kind summary, and a friendly message when the collection is
+#' empty. Per-item summary lines and per-kind labels are dispatched to
+#' internal generics `collection_kind_info()` and
+#' `collection_item_label()`, each with one method per collection class.
+#'
+#' @param x A snapshot collection (a `snapshot_collection` named list).
+#' @param n Maximum number of items to display before truncating with
+#'   "... and X more". Honoured only when the collection's
+#'   `collection_kind_info()` method returns `truncate = TRUE`; the
+#'   default is to show every item. Currently only the
+#'   `observed_data_collection` opts in.
+#' @param ... Additional arguments passed to print methods.
+#' @return Invisibly returns the collection.
 #' @export
-print.compound_collection <- function(x, ...) {
-  output <- cli::cli_format_method({
-    cli::cli_h1("Compounds ({length(x)})")
+print.snapshot_collection <- function(x, n = 5, ...) {
+  info <- collection_kind_info(x)
 
-    if (length(x) > 0) {
-      # Create a simple bullet point list with just the names
-      for (name in names(x)) {
-        cli::cli_li("{name}")
-      }
+  stopifnot(
+    is.character(info$title),
+    length(info$title) == 1L,
+    is.character(info$empty_message),
+    length(info$empty_message) == 1L
+  )
+
+  output <- cli::cli_format_method({
+    cli::cli_h1("{info$title} ({length(x)})")
+
+    if (length(x) == 0) {
+      cli::cli_alert_info(info$empty_message)
     } else {
-      cli::cli_alert_info("No compounds found")
+      names_to_show <- if (isTRUE(info$truncate)) {
+        utils::head(names(x), n)
+      } else {
+        names(x)
+      }
+      for (name in names_to_show) {
+        cli::cli_li(collection_item_label(x, item = x[[name]], name = name))
+      }
+      remaining <- length(x) - length(names_to_show)
+      if (remaining > 0) {
+        cli::cli_text("... and {remaining} more")
+      }
     }
   })
 
@@ -22,115 +51,169 @@ print.compound_collection <- function(x, ...) {
   invisible(x)
 }
 
-#' S3 print method for individual collections
+#' Per-kind header info for a snapshot collection
 #'
-#' @param x An individual collection object
-#' @param ... Additional arguments passed to print methods
-#' @return Invisibly returns the individual collection
-#' @export
-print.individual_collection <- function(x, ...) {
-  output <- cli::cli_format_method({
-    cli::cli_h1("Individuals ({length(x)})")
-
-    if (length(x) > 0) {
-      # Create a simple bullet point list with just the names
-      for (name in names(x)) {
-        cli::cli_li("{name}")
-      }
-    } else {
-      cli::cli_alert_info("No individuals found")
-    }
-  })
-
-  cat(output, sep = "\n")
-  invisible(x)
+#' Internal S3 generic. Returns a list describing how
+#' `print.snapshot_collection()` should label the collection.
+#'
+#' Required return shape:
+#' * `title`: length-1 character. Header title (e.g. "Compounds").
+#' * `empty_message`: length-1 character. Message shown when the
+#'   collection has no items.
+#' * `truncate` (optional): length-1 logical. When `TRUE`,
+#'   `print.snapshot_collection()` truncates the listing at its `n`
+#'   argument. Defaults to `FALSE` (show every item) when absent.
+#'
+#' @param x A snapshot collection. Used for dispatch only.
+#' @return A list with `title`, `empty_message`, and optionally
+#'   `truncate`.
+#' @keywords internal
+collection_kind_info <- function(x) {
+  UseMethod("collection_kind_info")
 }
 
-#' S3 print method for population collections
-#'
-#' @param x A population collection object
-#' @param ... Additional arguments passed to print methods
-#' @return Invisibly returns the population collection
 #' @export
-print.population_collection <- function(x, ...) {
-  output <- cli::cli_format_method({
-    cli::cli_h1("Populations ({length(x)})")
-
-    if (length(x) > 0) {
-      # Create a simple bullet point list with name and number of individuals
-      for (name in names(x)) {
-        n_individuals <- x[[name]]$number_of_individuals
-        source_text <- if (!is.null(x[[name]]$source_population)) {
-          glue::glue(" [Source: {x[[name]]$source_population}]")
-        } else {
-          ""
-        }
-        cli::cli_li("{name}{source_text} ({n_individuals} individuals)")
-      }
-    } else {
-      cli::cli_alert_info("No populations found")
-    }
-  })
-
-  cat(output, sep = "\n")
-  invisible(x)
+collection_kind_info.compound_collection <- function(x) {
+  list(title = "Compounds", empty_message = "No compounds found")
 }
 
-#' S3 print method for formulation collections
-#'
-#' @param x A formulation collection object
-#' @param ... Additional arguments passed to print methods
-#' @return Invisibly returns the formulation collection
 #' @export
-print.formulation_collection <- function(x, ...) {
-  output <- cli::cli_format_method({
-    cli::cli_h1("Formulations ({length(x)})")
-
-    if (length(x) > 0) {
-      # Create a bullet point list with names and formulation types
-      for (name in names(x)) {
-        formulation_type_human <- x[[name]]$get_human_formulation_type()
-        cli::cli_li("{name} ({formulation_type_human})")
-      }
-    } else {
-      cli::cli_alert_info("No formulations found")
-    }
-  })
-
-  cat(output, sep = "\n")
-  invisible(x)
+collection_kind_info.individual_collection <- function(x) {
+  list(title = "Individuals", empty_message = "No individuals found")
 }
 
-#' S3 print method for event collections
-#'
-#' @param x An event collection object
-#' @param ... Additional arguments passed to print methods
-#' @return Invisibly returns the event collection
 #' @export
-print.event_collection <- function(x, ...) {
-  output <- cli::cli_format_method({
-    cli::cli_h1("Events ({length(x)})")
+collection_kind_info.population_collection <- function(x) {
+  list(title = "Populations", empty_message = "No populations found")
+}
 
-    if (length(x) > 0) {
-      # Create a bullet point list with names, templates, and parameter counts
-      for (name in names(x)) {
-        event <- x[[name]]
-        template <- event$template
-        param_count <- length(event$parameters)
+#' @export
+collection_kind_info.formulation_collection <- function(x) {
+  list(title = "Formulations", empty_message = "No formulations found")
+}
 
-        if (param_count > 0) {
-          cli::cli_li("{name} ({template}) - {param_count} parameter{?s}")
-        } else {
-          cli::cli_li("{name} ({template})")
-        }
-      }
+#' @export
+collection_kind_info.event_collection <- function(x) {
+  list(title = "Events", empty_message = "No events found")
+}
+
+#' @export
+collection_kind_info.expression_profile_collection <- function(x) {
+  list(
+    title = "Expression Profiles",
+    empty_message = "No expression profiles found"
+  )
+}
+
+#' @export
+collection_kind_info.protocol_collection <- function(x) {
+  list(title = "Protocols", empty_message = "No protocols found")
+}
+
+#' @export
+collection_kind_info.observed_data_collection <- function(x) {
+  list(
+    title = "Observed Data",
+    empty_message = "No observed data available",
+    truncate = TRUE
+  )
+}
+
+#' Per-item bullet label for a snapshot collection
+#'
+#' Internal S3 generic. Returns the text used for the bullet of a single
+#' item in `print.snapshot_collection()`.
+#'
+#' Required return shape: length-1 character or glue string.
+#'
+#' @param x The owning snapshot collection. Present so that dispatch
+#'   reads the collection class via `UseMethod()`; methods typically
+#'   ignore the value.
+#' @param item The current entry, i.e. `x[[name]]`.
+#' @param name The current entry's name in `x`.
+#' @return A length-1 character (or glue) string.
+#' @keywords internal
+collection_item_label <- function(x, item, name) {
+  UseMethod("collection_item_label")
+}
+
+#' @export
+collection_item_label.compound_collection <- function(x, item, name) {
+  name
+}
+
+#' @export
+collection_item_label.individual_collection <- function(x, item, name) {
+  name
+}
+
+#' @export
+collection_item_label.population_collection <- function(x, item, name) {
+  source_text <- if (!is.null(item$source_population)) {
+    glue::glue(" [Source: {item$source_population}]")
+  } else {
+    ""
+  }
+  glue::glue("{name}{source_text} ({item$number_of_individuals} individuals)")
+}
+
+#' @export
+collection_item_label.formulation_collection <- function(x, item, name) {
+  glue::glue("{name} ({item$get_human_formulation_type()})")
+}
+
+#' @export
+collection_item_label.event_collection <- function(x, item, name) {
+  template <- item$template
+  param_count <- length(item$parameters)
+  if (param_count > 0) {
+    plural <- if (param_count == 1) "parameter" else "parameters"
+    glue::glue("{name} ({template}) - {param_count} {plural}")
+  } else {
+    glue::glue("{name} ({template})")
+  }
+}
+
+#' @export
+collection_item_label.expression_profile_collection <- function(x, item, name) {
+  category <- if (!is.null(item$category)) item$category else "N/A"
+  glue::glue("{item$molecule} ({item$type}, {item$species}, {category})")
+}
+
+#' @export
+collection_item_label.protocol_collection <- function(x, item, name) {
+  if (item$is_advanced) {
+    schema_count <- length(item$schemas)
+    plural <- if (schema_count == 1) "schema" else "schemas"
+    glue::glue("{name} (Advanced - {schema_count} {plural})")
+  } else {
+    type_text <- if (!is.null(item$application_type)) {
+      glue::glue(" - {item$get_human_application_type()}")
     } else {
-      cli::cli_alert_info("No events found")
+      ""
     }
-  })
+    interval_text <- if (!is.null(item$dosing_interval)) {
+      glue::glue(" - {item$get_human_dosing_interval()}")
+    } else {
+      ""
+    }
+    glue::glue("{name} (Simple{type_text}{interval_text})")
+  }
+}
 
-  cat(output, sep = "\n")
-  invisible(x)
+#' @export
+collection_item_label.observed_data_collection <- function(x, item, name) {
+  name
+}
+
+# Helper that tags a list with the snapshot_collection class triplet:
+# (kind, "snapshot_collection", "list"). Class ordering matters: the
+# kind-specific class must appear first so `collection_kind_info()` /
+# `collection_item_label()` dispatch on the kind, with
+# `print.snapshot_collection` as the shared method.
+as_snapshot_collection <- function(x, kind) {
+  class(x) <- c(kind, "snapshot_collection", "list")
+  x
 }
 
 #' Print method for parameter collections
@@ -186,76 +269,6 @@ print.parameter_collection <- function(x, ...) {
     ))
   }
 
-  invisible(x)
-}
-
-#' S3 print method for expression profile collections
-#'
-#' @param x An expression profile collection object
-#' @param ... Additional arguments passed to print methods
-#' @return Invisibly returns the expression profile collection
-#' @export
-print.expression_profile_collection <- function(x, ...) {
-  output <- cli::cli_format_method({
-    cli::cli_h1("Expression Profiles ({length(x)})")
-
-    if (length(x) > 0) {
-      # Create a bullet point list with molecule, type and species
-      for (name in names(x)) {
-        profile <- x[[name]]
-        type <- profile$type
-        species <- profile$species
-        molecule <- profile$molecule
-        category <- if (!is.null(profile$category)) profile$category else "N/A"
-
-        cli::cli_li("{molecule} ({type}, {species}, {category})")
-      }
-    } else {
-      cli::cli_alert_info("No expression profiles found")
-    }
-  })
-
-  cat(output, sep = "\n")
-  invisible(x)
-}
-
-#' S3 print method for protocol collections
-#'
-#' @param x A protocol collection object
-#' @param ... Additional arguments passed to print methods
-#' @return Invisibly returns the protocol collection
-#' @export
-print.protocol_collection <- function(x, ...) {
-  output <- cli::cli_format_method({
-    cli::cli_h1("Protocols ({length(x)})")
-
-    if (length(x) > 0) {
-      # Create a bullet point list with protocol names and types
-      for (name in names(x)) {
-        protocol <- x[[name]]
-        if (protocol$is_advanced) {
-          schema_count <- length(protocol$schemas)
-          cli::cli_li("{name} (Advanced - {schema_count} schema{?s})")
-        } else {
-          type_text <- if (!is.null(protocol$application_type)) {
-            glue::glue(" - {protocol$get_human_application_type()}")
-          } else {
-            ""
-          }
-          interval_text <- if (!is.null(protocol$dosing_interval)) {
-            glue::glue(" - {protocol$get_human_dosing_interval()}")
-          } else {
-            ""
-          }
-          cli::cli_li("{name} (Simple{type_text}{interval_text})")
-        }
-      }
-    } else {
-      cli::cli_alert_info("No protocols found")
-    }
-  })
-
-  cat(output, sep = "\n")
   invisible(x)
 }
 
@@ -391,7 +404,7 @@ print.physicochemical_property <- function(x, ...) {
           ) {
             # Extract table points
             points_text <- sapply(table_formula$Points, function(point) {
-              glue::glue("pH {point$X}\u2192{point$Y} mg/l")
+              glue::glue("pH {point$X}→{point$Y} mg/l")
             })
             table_info <- glue::glue(
               " (Table: {paste(points_text, collapse=', ')})"
@@ -469,7 +482,7 @@ print.compound_processes <- function(x, ...) {
 
     # Add metabolite information if available (for metabolism processes)
     if (!is.null(p$Metabolite) && p$Metabolite != "") {
-      process_name <- paste0(process_name, " \u2192 ", p$Metabolite)
+      process_name <- paste0(process_name, " → ", p$Metabolite)
     }
 
     # Extract all relevant parameters (more comprehensive)
@@ -635,7 +648,7 @@ print.compound_additional_parameters <- function(x, ...) {
   })
 
   # Display parameters
-  cli::cli_text("\u2022 Additional Parameters ({length(param_data)} total):")
+  cli::cli_text("• Additional Parameters ({length(param_data)} total):")
   cli::cli_ul()
 
   for (param in param_data) {
@@ -669,7 +682,7 @@ print.metabolizing_enzymes <- function(x, ...) {
 
       # Format process name with metabolite if available
       process_display <- if (!is.null(metabolite) && metabolite != "") {
-        paste0(process_name, " (", molecule, ") \u2192 ", metabolite)
+        paste0(process_name, " (", molecule, ") → ", metabolite)
       } else {
         paste0(process_name, " (", molecule, ")")
       }
@@ -1083,39 +1096,5 @@ print.biliary_clearance <- function(x, ...) {
   }
 
   cli::cli_end(id = "biliary")
-  invisible(x)
-}
-
-#' Print method for observed data collection
-#'
-#' @param x An observed_data_collection object (a named list of DataSet objects)
-#' @param n Number of observed data names to display (default: 10)
-#' @param ... Additional arguments (not used)
-#' @return The input object x, invisibly
-#' @importFrom utils head
-#' @export
-print.observed_data_collection <- function(x, n = 5, ...) {
-  output <- cli::cli_format_method({
-    cli::cli_h1("Observed Data ({length(x)})")
-
-    if (length(x) == 0) {
-      cli::cli_alert_info("No observed data available")
-    } else {
-      # Show first n names
-      names_to_show <- head(names(x), n)
-
-      for (name in names_to_show) {
-        cli::cli_li("{name}")
-      }
-
-      # Show "... and X more" if there are additional items
-      remaining <- length(x) - length(names_to_show)
-      if (remaining > 0) {
-        cli::cli_text("... and {remaining} more")
-      }
-    }
-  })
-
-  cat(output, sep = "\n")
   invisible(x)
 }

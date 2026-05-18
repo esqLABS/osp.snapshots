@@ -88,14 +88,18 @@ test_that("print.event_collection works", {
     Event$new(simple_event_data)
   )
   names(events) <- c("meal", "gb")
-  class(events) <- c("event_collection", "list")
+  class(events) <- c("event_collection", "snapshot_collection", "list")
 
   # Test printing (output captured by testthat)
   expect_snapshot(print(events))
 
   # Test empty collection
   empty_events <- list()
-  class(empty_events) <- c("event_collection", "list")
+  class(empty_events) <- c(
+    "event_collection",
+    "snapshot_collection",
+    "list"
+  )
   expect_snapshot(print(empty_events))
 })
 
