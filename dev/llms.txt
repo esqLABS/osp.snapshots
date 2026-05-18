@@ -156,6 +156,15 @@ Main classes for working with snapshots and building blocks
 - [`range()`](https://esqlabs.github.io/osp.snapshots/dev/reference/Range.md)
   : Create a range object for physiological parameters
 
+## Domain Types
+
+Reusable sub-structures shared across building blocks
+
+- [`OriginData`](https://esqlabs.github.io/osp.snapshots/dev/reference/OriginData.md)
+  : OriginData class for OSP snapshot individuals
+- [`CalculationMethodCache`](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
+  : CalculationMethodCache class for OSP snapshots
+
 ## Create Building Blocks
 
 Functions to create new building blocks from scratch
@@ -253,8 +262,6 @@ Formatted display methods for building block collections
   : Print method for biliary clearance processes
 - [`print(`*`<compound_additional_parameters>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.compound_additional_parameters.md)
   : Print method for compound additional parameters
-- [`print(`*`<compound_calculation_methods>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.compound_calculation_methods.md)
-  : Print method for compound calculation methods
 - [`print(`*`<compound_processes>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.compound_processes.md)
   : S3 print method for compound processes
 - [`print(`*`<hepatic_clearance>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.hepatic_clearance.md)

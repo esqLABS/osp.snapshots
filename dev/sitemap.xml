@@ -8,12 +8,14 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/index.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/news/index.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/AdvancedParameter.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Event.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/ExpressionProfile.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Formulation.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Individual.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/OriginData.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Population.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.html</loc></url>
@@ -51,7 +53,6 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/osp_models.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/print.biliary_clearance.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/print.compound_additional_parameters.html</loc></url>
-<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/print.compound_calculation_methods.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/print.compound_processes.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/print.hepatic_clearance.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/print.induction.html</loc></url>

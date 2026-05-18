@@ -2,8 +2,23 @@
 
 ## osp.snapshots (development version)
 
+### Breaking changes
+
+- `Compound$calculation_methods` now returns a `CalculationMethodCache`
+  R6 object instead of a plain list with class
+  `compound_calculation_methods`. The old list-shape accessors
+  (`compound$calculation_methods$partition_coef`,
+  `compound$calculation_methods$permeability`) no longer work; use the
+  new R6 surface (`$methods`, `$add()`, `$remove()`, `$length`) on
+  `CalculationMethodCache` instead (#30).
+
 ### New features
 
+- New `CalculationMethodCache` R6 class wrapping the array of
+  calculation method names stored on a `Compound` and inside an
+  `Individual`’s `OriginData`. `Compound$calculation_methods` and
+  `Individual$origin_data$calculation_methods` now return this class
+  (#30).
 - New `LocalizedParameter` R6 class for path-bearing parameters used in
   Individual, ExpressionProfile, and Simulation parameter trees.
   Inherits from `Parameter` and migrates legacy `Applications` path
@@ -11,6 +26,10 @@
   [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   now routes to `LocalizedParameter` when called with a `path` argument
   (#31).
+- New `OriginData` R6 class wrapping the demographic starting point of
+  an `Individual` (species, population, gender, age, weight, height,
+  gestational age, calculation methods, optional disease state).
+  Available via `Individual$origin_data` (#30).
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   builds a Compound building block from named arguments, wrapping
   `Compound$new()` with validation of common fields (#27).

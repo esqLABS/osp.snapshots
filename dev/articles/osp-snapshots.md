@@ -146,8 +146,8 @@ snapshot$compounds$Midazolam
 #> 
 #> ── Calculation Methods ──
 #> 
-#> • Partition Coefficient: Rodgers and Rowland
-#> • Permeability: PK-Sim Standard
+#> • Cellular partition coefficient method - Rodgers and Rowland
+#> • Cellular permeability - PK-Sim Standard
 #> 
 #> ── Physicochemical Properties ──
 #> 

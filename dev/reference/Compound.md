@@ -8,7 +8,9 @@ display a summary of its information.
 
 - `data`:
 
-  The raw data of the compound (read-only)
+  The raw data of the compound (read-only). Refreshed from the embedded
+  \[CalculationMethodCache\] so that mutations flow back to the export
+  payload.
 
 - `name`:
 
@@ -56,7 +58,8 @@ display a summary of its information.
 
 - `calculation_methods`:
 
-  The calculation methods of the compound
+  A \[CalculationMethodCache\] holding the compound's calculation
+  methods.
 
 - `parameters`:
 

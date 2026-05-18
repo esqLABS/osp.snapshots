@@ -18,6 +18,11 @@ display a summary of its information.
 
   The simulation seed for the individual
 
+- `origin_data`:
+
+  The \[OriginData\] object holding species, population, gender,
+  physiological parameters, and calculation methods.
+
 - `species`:
 
   The species of the individual
@@ -76,7 +81,10 @@ display a summary of its information.
 
 - `calculation_methods`:
 
-  The calculation methods of the individual
+  The calculation methods of the individual, returned as a character
+  vector for backwards compatibility. Use
+  \`\$origin_data\$calculation_methods\` to access the
+  \[CalculationMethodCache\] directly.
 
 - `expression_profiles`:
 

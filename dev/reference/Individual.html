@@ -11,7 +11,7 @@ and display a summary of its information."><meta name="robots" content="noindex"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9008</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,11 @@ and display a summary of its information.</p>
 
     <dt><code>seed</code></dt>
 <dd><p>The simulation seed for the individual</p></dd>
+
+
+    <dt><code>origin_data</code></dt>
+<dd><p>The [OriginData] object holding species, population,
+gender, physiological parameters, and calculation methods.</p></dd>
 
 
     <dt><code>species</code></dt>
@@ -120,7 +125,10 @@ and display a summary of its information.</p>
 
 
     <dt><code>calculation_methods</code></dt>
-<dd><p>The calculation methods of the individual</p></dd>
+<dd><p>The calculation methods of the individual,
+returned as a character vector for backwards compatibility. Use
+`$origin_data$calculation_methods` to access the
+[CalculationMethodCache] directly.</p></dd>
 
 
     <dt><code>expression_profiles</code></dt>
