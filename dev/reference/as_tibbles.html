@@ -13,7 +13,7 @@ those remain available as thin wrappers."><meta name="robots" content="noindex">
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9020</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9021</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,8 +78,10 @@ tibbles. <code>properties</code> carries one row per (compound,
 physicochemical property) pair (plus folded process rows
 for backwards compatibility); <code>processes</code> is the long-form,
 one row per (compound, process, parameter) triple.</p></li>
-<li><p><code>"protocols"</code>, <code>"observer_sets"</code>,
-<code>"observed_data"</code>: a single tibble.</p></li>
+<li><p><code>"protocols"</code>, <code>"observed_data"</code>: a single tibble.</p></li>
+<li><p><code>"observer_sets"</code>: a list with <code>observer_sets</code> (one row per
+<code>ObserverSet</code>) and <code>observers</code> (one row per <code>Observer</code>, joinable
+to its parent via <code>observer_set_id</code> / <code>observer_set_name</code>).</p></li>
 <li><p><code>"individuals"</code>: a list with <code>individuals</code>,
 <code>individuals_parameters</code>, <code>individuals_expressions</code>.</p></li>
 <li><p><code>"formulations"</code>: a list with <code>formulations</code>,

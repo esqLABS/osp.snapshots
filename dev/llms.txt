@@ -149,6 +149,8 @@ Main classes for working with snapshots and building blocks
   : Event class for OSP snapshot events
 - [`ExpressionProfile`](https://esqlabs.github.io/osp.snapshots/dev/reference/ExpressionProfile.md)
   : ExpressionProfile class for OSP snapshot expression profiles
+- [`Observer`](https://esqlabs.github.io/osp.snapshots/dev/reference/Observer.md)
+  : Observer class for OSP snapshot observer sets
 - [`ObserverSet`](https://esqlabs.github.io/osp.snapshots/dev/reference/ObserverSet.md)
   : ObserverSet class for OSP snapshot observer sets
 - [`Parameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
@@ -265,7 +267,7 @@ Convert building blocks to data frames for analysis
 - [`get_observed_data_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observed_data_dfs.md)
   : Get all observed data in a snapshot as a tibble
 - [`get_observer_sets_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observer_sets_dfs.md)
-  : Get all observer sets in a snapshot as a tibble
+  : Get all observer sets in a snapshot as data frames
 
 ## Observed Data
 

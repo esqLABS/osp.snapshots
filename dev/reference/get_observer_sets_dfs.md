@@ -1,4 +1,4 @@
-# Get all observer sets in a snapshot as a tibble
+# Get all observer sets in a snapshot as data frames
 
 Thin wrapper around
 [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
@@ -20,9 +20,12 @@ get_observer_sets_dfs(snapshot)
 
 ## Value
 
-A tibble with one row per `ObserverSet`, with columns `observer_set_id`,
-`name`, `n_observers`. Richer per-observer detail is deferred until the
-`Observer` leaf class lands.
+A list with two tibbles. `observer_sets` has one row per `ObserverSet`
+with columns `observer_set_id`, `name`, `n_observers`. `observers` has
+one row per `Observer` with columns `observer_set_id`,
+`observer_set_name`, `name`, `type`, `dimension`, `formula`,
+`container_path`; rows join back to their parent `ObserverSet` by
+`observer_set_id` or `observer_set_name`.
 
 ## Examples
 

@@ -37,6 +37,12 @@
   callers from `df <- get_compounds_dfs(snap)` to
   `dfs <- get_compounds_dfs(snap); df <- dfs$properties`, or switch to
   the new long-form `dfs$processes` (#40).
+- [`get_observer_sets_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observer_sets_dfs.md)
+  now returns a list with two tibbles, `observer_sets` (one row per
+  `ObserverSet`) and `observers` (one row per `Observer`, joinable back
+  to its parent via `observer_set_id` / `observer_set_name`), instead of
+  the single combined tibble it returned before. Use the `observers`
+  element to access per-Observer rows (#38, \#42).
 
 ### New features
 
@@ -52,6 +58,11 @@
   [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   now routes to `LocalizedParameter` when called with a `path` argument
   (#31).
+- New `Observer` R6 class representing one observer (a simulation-time
+  formula that computes a derived quantity from the underlying model)
+  inside an `ObserverSet`. `observer_set$observers` now returns a named
+  list of `Observer` objects exposing `name`, `type`, `dimension`,
+  `formula`, and `container_path` (#42).
 - New `ObserverSet` R6 class wrapping the `ObserverSets` building blocks
   of a snapshot, accessible through `snapshot$observer_sets` and
   exported on round-trip. Observers inside a set are exposed as a raw
@@ -132,9 +143,6 @@
   errors if any Simple Protocol field (`application_type`,
   `dosing_interval`, `target_organ`, `target_compartment`, `parameters`)
   is also supplied (#48).
-- [`get_observer_sets_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observer_sets_dfs.md)
-  returns a tibble with one row per `ObserverSet` and a count of its
-  observers (#38).
 - [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
   removes compounds from a `Snapshot` by name (#39).
 - [`remove_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_event.md)

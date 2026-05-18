@@ -34,7 +34,11 @@ A tibble or a named list of tibbles, depending on `kind`:
   `processes` is the long-form, one row per (compound, process,
   parameter) triple.
 
-- `"protocols"`, `"observer_sets"`, `"observed_data"`: a single tibble.
+- `"protocols"`, `"observed_data"`: a single tibble.
+
+- `"observer_sets"`: a list with `observer_sets` (one row per
+  `ObserverSet`) and `observers` (one row per `Observer`, joinable to
+  its parent via `observer_set_id` / `observer_set_name`).
 
 - `"individuals"`: a list with `individuals`, `individuals_parameters`,
   `individuals_expressions`.

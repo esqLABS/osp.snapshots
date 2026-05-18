@@ -1,16 +1,18 @@
 # ObserverSet class for OSP snapshot observer sets
 
 An R6 class that represents an `ObserverSet` building block in an OSP
-snapshot. An `ObserverSet` is a named bundle of observers that
-simulations can reference by name. The class exposes the set's name and
-its raw `Observers` list; richer wrapping of individual observers is
-deferred to a follow-up.
+snapshot. An `ObserverSet` is a named bundle of
+[Observer](https://esqlabs.github.io/osp.snapshots/dev/reference/Observer.md)
+objects that simulations can reference by name.
 
 ## Active bindings
 
 - `data`:
 
-  The raw data of the observer set (read-only)
+  The raw data of the observer set, refreshed from the wrapped
+  [Observer](https://esqlabs.github.io/osp.snapshots/dev/reference/Observer.md)
+  objects so mutations through the R6 surface flow back into the
+  snapshot payload (read-only).
 
 - `name`:
 
@@ -18,7 +20,14 @@ deferred to a follow-up.
 
 - `observers`:
 
-  The raw list of observers in the set
+  A named list of
+  [Observer](https://esqlabs.github.io/osp.snapshots/dev/reference/Observer.md)
+  objects keyed by each observer's `$name`. Duplicate names are
+  disambiguated with `_{n}` suffixes. Assigning accepts either a list of
+  [Observer](https://esqlabs.github.io/osp.snapshots/dev/reference/Observer.md)
+  objects or a list of raw observer dicts; both are normalised to
+  [Observer](https://esqlabs.github.io/osp.snapshots/dev/reference/Observer.md)
+  objects and the underlying raw data is kept in sync.
 
 ## Methods
 
