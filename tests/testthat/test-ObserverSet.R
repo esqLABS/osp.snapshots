@@ -117,22 +117,72 @@ test_that("ObserverSets round-trip byte-equivalently through export", {
   expect_equal(reloaded$ObserverSets, snapshot$data$ObserverSets)
 })
 
-test_that("Observer mutations survive export and reload", {
-  snapshot <- test_snapshot$clone(deep = TRUE)
+test_that("Observer name mutation survives a load-mutate-export-reload cycle", {
+  snapshot <- Snapshot$new(test_path("data", "test_snapshot.json"))
   os_id <- names(snapshot$observer_sets)[[1]]
-  observer_id <- names(snapshot$observer_sets[[os_id]]$observers)[[1]]
-  observer <- snapshot$observer_sets[[os_id]]$observers[[observer_id]]
+  observer <- snapshot$observer_sets[[os_id]]$observers[[1]]
 
-  observer$dimension <- "Time"
-  observer$formula <- "2*Conc"
+  observer$name <- "renamed_observer"
 
   tmp <- withr::local_tempfile(fileext = ".json")
   snapshot$export(tmp)
   reloaded <- Snapshot$new(tmp)
 
-  reloaded_observer <- reloaded$observer_sets[[os_id]]$observers[[observer_id]]
-  expect_equal(reloaded_observer$dimension, "Time")
-  expect_equal(reloaded_observer$formula, "2*Conc")
+  expect_equal(
+    reloaded$observer_sets[[os_id]]$observers[[1]]$name,
+    "renamed_observer"
+  )
+})
+
+test_that("Observer type mutation survives a load-mutate-export-reload cycle", {
+  snapshot <- Snapshot$new(test_path("data", "test_snapshot.json"))
+  os_id <- names(snapshot$observer_sets)[[1]]
+  observer <- snapshot$observer_sets[[os_id]]$observers[[1]]
+
+  observer$type <- "Amount"
+
+  tmp <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(tmp)
+  reloaded <- Snapshot$new(tmp)
+
+  expect_equal(
+    reloaded$observer_sets[[os_id]]$observers[[1]]$type,
+    "Amount"
+  )
+})
+
+test_that("Observer dimension mutation survives a load-mutate-export-reload cycle", {
+  snapshot <- Snapshot$new(test_path("data", "test_snapshot.json"))
+  os_id <- names(snapshot$observer_sets)[[1]]
+  observer <- snapshot$observer_sets[[os_id]]$observers[[1]]
+
+  observer$dimension <- "Concentration (molar)"
+
+  tmp <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(tmp)
+  reloaded <- Snapshot$new(tmp)
+
+  expect_equal(
+    reloaded$observer_sets[[os_id]]$observers[[1]]$dimension,
+    "Concentration (molar)"
+  )
+})
+
+test_that("Observer formula mutation survives a load-mutate-export-reload cycle", {
+  snapshot <- Snapshot$new(test_path("data", "test_snapshot.json"))
+  os_id <- names(snapshot$observer_sets)[[1]]
+  observer <- snapshot$observer_sets[[os_id]]$observers[[1]]
+
+  observer$formula <- "3*Conc_Br"
+
+  tmp <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(tmp)
+  reloaded <- Snapshot$new(tmp)
+
+  expect_equal(
+    reloaded$observer_sets[[os_id]]$observers[[1]]$formula,
+    "3*Conc_Br"
+  )
 })
 
 # ---- Mutators ----
