@@ -234,9 +234,16 @@ Parameter <- R6::R6Class(
 #'
 #' Returns a [LocalizedParameter] when a non-NULL `path` is supplied (i.e.
 #' the parameter is identified by its position within a target's parameter
-#' tree); otherwise returns a plain [Parameter]. For backwards compatibility,
-#' `name` is used as the path when `path` is not provided, matching the
-#' historical behaviour of this factory.
+#' tree); otherwise returns a plain [Parameter].
+#'
+#' # Data shape
+#'
+#' Plain `Parameter` objects carry the identifier in `data$Name`, matching
+#' the JSON shape used by `Parameter` slots in `Compound`, `Formulation`,
+#' `Protocol`, and `Event` (per `snapshot-spec.md`). `LocalizedParameter`
+#' objects carry the identifier in `data$Path`. The factory writes whichever
+#' field matches the returned class so the raw `data` shape reflects the
+#' kind of parameter unambiguously.
 #'
 #' @param name Character. Name of the parameter.
 #' @param value Numeric. Value of the parameter.
@@ -325,11 +332,15 @@ create_parameter <- function(
   x_dimension = NULL,
   y_dimension = NULL
 ) {
-  # For legacy callers, `name` doubles as the path when no `path` is given.
-  data <- list(
-    Path = path %||% name,
-    Value = value
-  )
+  # Plain Parameter is identified by Name (matches `Compound`, `Formulation`,
+  # `Protocol`, and `Event` parameter slots in the snapshot schema);
+  # LocalizedParameter is identified by Path. Pick the field that matches the
+  # returned class.
+  if (!is.null(path)) {
+    data <- list(Path = path, Value = value)
+  } else {
+    data <- list(Name = name, Value = value)
+  }
 
   # Add unit if provided
   if (!is.null(unit)) {

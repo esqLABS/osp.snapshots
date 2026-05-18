@@ -3,6 +3,9 @@
 ## Breaking changes
 
 - `Compound$calculation_methods` now returns a `CalculationMethodCache` R6 object instead of a plain list with class `compound_calculation_methods`. The old list-shape accessors (`compound$calculation_methods$partition_coef`, `compound$calculation_methods$permeability`) no longer work; use the new R6 surface (`$methods`, `$add()`, `$remove()`, `$length`) on `CalculationMethodCache` instead (#30).
+- `Snapshot$new()` (and therefore `load_snapshot()`) now refuses snapshots that lack a `Version` field or whose `Version` is below 79 (v11.2). Earlier versions used pre-v11 conventions (notably `Applications|...` path segments) that this package does not model (#52).
+- `create_parameter()` now writes the identifier to `data$Name` when called without `path` (plain `Parameter`) and to `data$Path` only when called with `path` (`LocalizedParameter`). Previously every result carried `data$Path`, hiding which kind of parameter the factory had produced (#52).
+- `LocalizedParameter$new()` now emits a deprecation warning when falling back to `data$Name` for the path, and drops `Name` from the stored data so the resulting shape is unambiguous. The fallback continues to work; real v11+ snapshots never hit it (#52).
 
 ## New features
 

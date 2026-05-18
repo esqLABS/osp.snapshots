@@ -1,8 +1,23 @@
+# Minimum supported snapshot `Version`. PK-Sim v11.2 maps to numeric 79;
+# anything below that uses pre-v11 conventions (notably `Applications|...`
+# path segments instead of `Events|...`) that this package does not model.
+SUPPORTED_VERSION_MIN <- 79L
+
 #' Snapshot class for OSP snapshots
 #'
 #' @description
 #' An R6 class that represents an OSP snapshot file. This class provides
-#' methods to access different components of the snapshot and visualize its structure.
+#' methods to access different components of the snapshot and visualize its
+#' structure.
+#'
+#' # Supported snapshot versions
+#'
+#' `Snapshot` only accepts PK-Sim v11+ snapshots, i.e. integer `Version`
+#' values of `79` or greater (see `osp.snapshots:::SUPPORTED_VERSION_MIN`).
+#' Earlier snapshots use different conventions (notably `Applications|...`
+#' instead of `Events|...` in parameter paths) and are not modelled by this
+#' package; `Snapshot$new()` aborts on them rather than silently rewriting
+#' fields. Hand-rolled list input must supply `Version` for the same reason.
 #'
 #' @importFrom R6 R6Class
 #' @importFrom fs path_rel
@@ -13,7 +28,10 @@ Snapshot <- R6::R6Class(
   public = list(
     #' @description
     #' Create a new Snapshot object from a JSON file or a list
-    #' @param input Path to the snapshot JSON file, URL, template name, or a list containing snapshot data
+    #' @param input Path to the snapshot JSON file, URL, template name, or a
+    #'   list containing snapshot data. The parsed data must contain an
+    #'   integer `Version` field of `79` (v11.2) or greater; older or missing
+    #'   versions abort.
     #' @return A new Snapshot object
     initialize = function(input) {
       if (is.character(input)) {
@@ -35,6 +53,8 @@ Snapshot <- R6::R6Class(
       } else {
         cli::cli_abort("Input must be either a path to a JSON file or a list")
       }
+
+      private$.validate_version()
 
       # Building-block collections are constructed lazily on first access via
       # their active bindings; all `private$.<kind>` caches stay NULL here.
@@ -772,6 +792,31 @@ Snapshot <- R6::R6Class(
     .pksim_version = NULL,
     .abs_path = NULL,
 
+    # Abort when the parsed snapshot is missing `Version` or sits below the
+    # supported v11+ floor. Below v11, snapshots use `Applications|...` in
+    # localized parameter paths and other older conventions this package does
+    # not model; refusing them is preferable to silently rewriting fields.
+    .validate_version = function() {
+      raw <- private$.original_data$Version
+      version_num <- suppressWarnings(as.integer(raw))
+      if (
+        is.null(raw) ||
+          length(version_num) != 1 ||
+          is.na(version_num)
+      ) {
+        cli::cli_abort(c(
+          "Snapshot is missing an integer {.field Version} field.",
+          i = "{.pkg osp.snapshots} requires PK-Sim v11+ snapshots ({.field Version} >= {SUPPORTED_VERSION_MIN})."
+        ))
+      }
+      if (version_num < SUPPORTED_VERSION_MIN) {
+        cli::cli_abort(c(
+          "Unsupported snapshot {.field Version} {version_num}.",
+          i = "{.pkg osp.snapshots} requires PK-Sim v11+ snapshots ({.field Version} >= {SUPPORTED_VERSION_MIN})."
+        ))
+      }
+    },
+
     # Convert the raw version number to a human-readable PKSIM version
     # Returns a string with the human-readable PKSIM version
     .get_pksim_version = function() {
@@ -781,8 +826,6 @@ Snapshot <- R6::R6Class(
         as.character(version_num),
         "80" = "12.0",
         "79" = "11.2",
-        "78" = "10.0",
-        "77" = "9.1",
         "Unknown"
       )
 

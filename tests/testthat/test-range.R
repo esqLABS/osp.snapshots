@@ -32,7 +32,7 @@ test_that("Snapshot handles different types of range values in populations", {
   # Create a minimal snapshot with a population
   snapshot <- Snapshot$new({
     data <- list(
-      Version = 70,
+      Version = 79,
       Compounds = list(),
       Individuals = list(),
       Populations = list(

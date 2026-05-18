@@ -151,6 +151,8 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 
 **Version mapping.** The numeric `Version` field (e.g. `80`) is mapped to a human PKSIM version (e.g. `"12.0"`) by `private$.get_pksim_version()` and exposed as the `pksim_version` active field, allowing future version-conditional behaviour.
 
+**Supported snapshot versions.** `Snapshot$new()` accepts only v11+ snapshots (`Version >= 79`, enforced via the package-private constant `SUPPORTED_VERSION_MIN`); a missing or older `Version` aborts at load. This guard backs `LocalizedParameter`'s unconditional `Applications` to `Events` migration: in v11+ snapshots the migration is a no-op (PK-Sim already writes `Events|...`), and the load-time assertion is what makes it safe to keep it unconditional inside the parameter constructor. Pre-v11 snapshots are out of scope and would need broader migrations the package does not model.
+
 **Loading order.** Per `snapshot-spec.md`, `ExpressionProfiles` are loaded first because `Individuals` reference them by name. The current `Snapshot$initialize` honours this by initialising `expression_profiles` before `individuals`.
 
 **Path handling.** `private$.abs_path` stores either a normalised local path or a URL. The `path` active field returns a relative path (via `fs::path_rel`) when local, or the URL as-is.

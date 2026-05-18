@@ -13,12 +13,15 @@ test_that("LocalizedParameter inherits from Parameter and exposes path", {
 })
 
 test_that("LocalizedParameter accepts Name as a legacy path fallback", {
-  param <- LocalizedParameter$new(list(
-    Name = "Dose",
-    Value = 100
-  ))
+  expect_snapshot(
+    param <- LocalizedParameter$new(list(
+      Name = "Dose",
+      Value = 100
+    ))
+  )
 
   expect_equal(param$path, "Dose")
+  expect_null(param$data$Name)
 })
 
 test_that("LocalizedParameter errors when no path is supplied", {
@@ -134,6 +137,26 @@ test_that("create_parameter returns plain Parameter when no path is given", {
 
   expect_s3_class(plain, "Parameter")
   expect_false(inherits(plain, "LocalizedParameter"))
+})
+
+test_that("create_parameter writes Name (not Path) for plain Parameter", {
+  plain <- create_parameter(
+    name = "Dose",
+    value = 100
+  )
+
+  expect_equal(plain$data$Name, "Dose")
+  expect_null(plain$data$Path)
+})
+
+test_that("create_parameter writes Path (not Name) for LocalizedParameter", {
+  localized <- create_parameter(
+    path = "Organism|Liver|Volume",
+    value = 1.5
+  )
+
+  expect_equal(localized$data$Path, "Organism|Liver|Volume")
+  expect_null(localized$data$Name)
 })
 
 test_that("create_parameter migrates Applications when path is given", {
