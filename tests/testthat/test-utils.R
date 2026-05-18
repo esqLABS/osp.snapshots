@@ -111,3 +111,15 @@ test_that("disambiguate_names preserves single occurrence with no suffix", {
     "only"
   )
 })
+
+test_that("disambiguate_names guarantees uniqueness when a generated suffix collides with an existing input name", {
+  result <- disambiguate_names(c("a_1", "a", "a"))
+  expect_equal(length(unique(result)), length(result))
+  expect_equal(result, c("a_1", "a_2", "a_3"))
+})
+
+test_that("disambiguate_names handles a colliding suffix that appears after the duplicates", {
+  result <- disambiguate_names(c("a", "a_1", "a"))
+  expect_equal(length(unique(result)), length(result))
+  expect_equal(result, c("a_2", "a_1", "a_3"))
+})
