@@ -183,3 +183,42 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
 # Will be deprecated when function moves to ospsuite
 #' @export
 ObservedData <- loadDataSetFromSnapshot
+
+# Export adapter for the ObservedData section of a Snapshot.
+#
+# `ospsuite::DataSet` does not round-trip back to the snapshot list shape, so
+# the export payload for `ObservedData` is always replayed from the raw JSON
+# slice that was parsed at load time. Mutations to a `DataSet` after load
+# (e.g. `dataset$xUnit <- "min"`) are silently lost on export; only
+# removals (via `remove_observed_data()`) and reorderings of surviving names
+# are honoured. Items added at runtime through `add_observed_data()` cannot be
+# serialized either: their backing JSON is not in `.original_data`, so they
+# are dropped with a warning.
+#
+# Contract:
+#   items     - cache slot value: `NULL` (untouched), `list()` (cleared by
+#               user), or a non-empty list of `DataSet` objects.
+#   original  - the raw `ObservedData` slice from `.original_data` (may be NULL).
+# Returns the value to write back into the export payload.
+.observed_data_export_adapter <- function(items, original) {
+  if (is.null(items)) {
+    return(original)
+  }
+  if (length(items) == 0) {
+    return(NULL)
+  }
+  surviving_names <- vapply(items, function(od) od$name, character(1))
+  original_names <- vapply(
+    original,
+    function(od) od$Name %||% od$name,
+    character(1)
+  )
+  result <- original[original_names %in% surviving_names]
+  if (length(items) > length(result)) {
+    cli::cli_warn(c(
+      "Some observed data added at runtime cannot be serialized.",
+      i = "DataSet objects have no $data accessor; only original entries are exported."
+    ))
+  }
+  result
+}

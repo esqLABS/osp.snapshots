@@ -155,6 +155,19 @@ test_that("Snapshot export includes observed data", {
   expect_true(length(data$ObservedData) > 0)
 })
 
+test_that("Snapshot export replays the original ObservedData slice verbatim", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  original <- snapshot$.__enclos_env__$private$.original_data$ObservedData
+
+  # Touch the lazy cache (forces the export adapter onto the "filter by
+  # surviving names" path) and mutate a DataSet in place.
+  dataset <- snapshot$observed_data[[1]]
+  dataset$xUnit <- ospsuite::ospUnits$Time$min
+
+  exported <- snapshot$data
+  expect_identical(exported$ObservedData, original)
+})
+
 test_that("Snapshot export drops removed observed data on round-trip", {
   snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
   initial_count <- length(snapshot$observed_data)

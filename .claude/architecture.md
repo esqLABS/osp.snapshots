@@ -125,7 +125,7 @@ sequenceDiagram
     JSON-->>User: file written
 ```
 
-The `Snapshot$data` active field (defined in `R/Snapshot.R` around the `active = list(data = function() ...)` block) starts from a copy of `private$.original_data` and overwrites each known section with the current state of its R6 children. `ObservedData` is a special case: because `ospsuite::DataSet` does not round-trip back to the snapshot list shape, the original observed-data block is replayed verbatim (or cleared if the collection is empty). This is the mechanism that preserves unmapped fields.
+The `Snapshot$data` active field (defined in `R/Snapshot.R` around the `active = list(data = function() ...)` block) starts from a copy of `private$.original_data` and overwrites each known section with the value returned by that section's export adapter. The adapter table (`private$.export_adapters`) pairs each top-level JSON key with a private cache slot and a function `adapter(items, original)` returning the value to write back; the default adapter applies `lapply(items, \(b) b$data)` when the cache holds items and falls back to the raw original slice otherwise. `ObservedData` has its own adapter (`.observed_data_export_adapter`, co-located with `R/ObservedData.R`): because `ospsuite::DataSet` does not round-trip back to the snapshot list shape, the original observed-data block is replayed verbatim (or cleared if the collection is empty), and any post-load mutation of a `DataSet` is silently lost on export. This carve-out is documented next to the adapter.
 
 ## Tibble / dataframe layer
 

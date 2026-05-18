@@ -1,3 +1,15 @@
+# Default export adapter for a building-block section. Returns the raw
+# original slice unchanged when the lazy cache is untouched or empty,
+# otherwise extracts `$data` from each cached R6 wrapper. Pairs with the
+# per-section table `Snapshot$private$.export_adapters`; non-default sections
+# (currently only ObservedData) supply their own adapter.
+.default_export_adapter <- function(items, original) {
+  if (length(items) == 0) {
+    return(original)
+  }
+  lapply(items, function(item) item$data)
+}
+
 #' Snapshot class for OSP snapshots
 #'
 #' @description
@@ -511,107 +523,15 @@ Snapshot <- R6::R6Class(
   active = list(
     #' @field data The aggregated data of the snapshot from all components
     data = function() {
-      # Start with a copy of the original data
       result <- private$.original_data
-
-      # Update with current compound data
-      if (length(private$.compounds) > 0) {
-        # Extract raw data from each compound object
-        compound_data <- lapply(private$.compounds, function(comp) comp$data)
-        result$Compounds <- compound_data
-      }
-
-      # Update with current expression profile data
-      if (length(private$.expression_profiles) > 0) {
-        # Extract raw data from each expression profile object
-        expression_profile_data <- lapply(
-          private$.expression_profiles,
-          function(profile) profile$data
+      for (section in names(private$.export_adapters)) {
+        spec <- private$.export_adapters[[section]]
+        result[[section]] <- spec$adapter(
+          private[[spec$cache]],
+          private$.original_data[[section]]
         )
-        result$ExpressionProfiles <- expression_profile_data
       }
-
-      # Update with current individual data
-      if (length(private$.individuals) > 0) {
-        # Extract raw data from each individual object
-        individual_data <- lapply(private$.individuals, function(ind) ind$data)
-        result$Individuals <- individual_data
-      }
-
-      # Update with current formulation data
-      if (length(private$.formulations) > 0) {
-        # Extract raw data from each formulation object
-        formulation_data <- lapply(
-          private$.formulations,
-          function(form) form$data
-        )
-        result$Formulations <- formulation_data
-      }
-
-      # Update with current population data
-      if (length(private$.populations) > 0) {
-        # Extract raw data from each population object
-        population_data <- lapply(
-          private$.populations,
-          function(pop) pop$data
-        )
-        result$Populations <- population_data
-      }
-
-      # Update with current event data
-      if (length(private$.events) > 0) {
-        # Extract raw data from each event object
-        event_data <- lapply(
-          private$.events,
-          function(evt) evt$data
-        )
-        result$Events <- event_data
-      }
-
-      # Update with current protocol data
-      if (length(private$.protocols) > 0) {
-        # Extract raw data from each protocol object
-        protocol_data <- lapply(
-          private$.protocols,
-          function(protocol) protocol$data
-        )
-        result$Protocols <- protocol_data
-      }
-
-      # Update with current observed data
-      # Note: DataSet objects have no $data accessor so the raw JSON entries in
-      # `.original_data$ObservedData` are the source of truth on export. When
-      # the lazy cache has been touched, filter the original entries down to
-      # the names that still survive in the cache so removals and re-orderings
-      # are honored. Items added at runtime (whose backing JSON is not in
-      # `.original_data`) cannot be serialized here and are dropped with a
-      # warning.
-      if (!is.null(private$.observed_data)) {
-        if (length(private$.observed_data) == 0) {
-          result$ObservedData <- NULL
-        } else {
-          surviving_names <- vapply(
-            private$.observed_data,
-            function(od) od$name,
-            character(1)
-          )
-          original <- private$.original_data$ObservedData
-          original_names <- vapply(
-            original,
-            function(od) od$Name %||% od$name,
-            character(1)
-          )
-          result$ObservedData <- original[original_names %in% surviving_names]
-          if (length(private$.observed_data) > length(result$ObservedData)) {
-            cli::cli_warn(c(
-              "Some observed data added at runtime cannot be serialized.",
-              i = "DataSet objects have no $data accessor; only original entries are exported."
-            ))
-          }
-        }
-      }
-
-      return(result)
+      result
     },
 
     #' @field pksim_version The human-readable PKSIM version corresponding to the snapshot version
@@ -771,6 +691,47 @@ Snapshot <- R6::R6Class(
     .original_data = NULL,
     .pksim_version = NULL,
     .abs_path = NULL,
+
+    # Per-section export adapter table used by `$data` to rebuild the export
+    # payload. Each entry pairs a private cache slot with an adapter function
+    # `adapter(items, original)` that turns the lazy cache + the raw slice
+    # from `.original_data` into the value to write back. Most sections use
+    # the default building-block adapter; ObservedData has its own carve-out
+    # co-located with `R/ObservedData.R` (see `.observed_data_export_adapter`).
+    .export_adapters = list(
+      Compounds = list(
+        cache = ".compounds",
+        adapter = .default_export_adapter
+      ),
+      ExpressionProfiles = list(
+        cache = ".expression_profiles",
+        adapter = .default_export_adapter
+      ),
+      Individuals = list(
+        cache = ".individuals",
+        adapter = .default_export_adapter
+      ),
+      Formulations = list(
+        cache = ".formulations",
+        adapter = .default_export_adapter
+      ),
+      Populations = list(
+        cache = ".populations",
+        adapter = .default_export_adapter
+      ),
+      Events = list(
+        cache = ".events",
+        adapter = .default_export_adapter
+      ),
+      Protocols = list(
+        cache = ".protocols",
+        adapter = .default_export_adapter
+      ),
+      ObservedData = list(
+        cache = ".observed_data",
+        adapter = .observed_data_export_adapter
+      )
+    ),
 
     # Convert the raw version number to a human-readable PKSIM version
     # Returns a string with the human-readable PKSIM version
