@@ -94,6 +94,7 @@ reference:
 - title: "Data Frame Conversion"
   desc: "Convert building blocks to data frames for analysis"
   contents:
+  - as_tibbles
   - get_individuals_dfs
   - get_compounds_dfs
   - get_formulations_dfs
