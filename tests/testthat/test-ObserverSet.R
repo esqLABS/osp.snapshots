@@ -154,6 +154,22 @@ test_that("remove_observer_set() warns on empty collection", {
   expect_snapshot(remove_observer_set(snapshot, "missing"))
 })
 
+test_that("remove_observer_set() deduplicates warnings and reports actual count", {
+  data <- list(
+    Version = 80,
+    ObserverSets = list(
+      list(Name = "keep", Observers = list()),
+      list(Name = "drop", Observers = list())
+    )
+  )
+  snapshot <- Snapshot$new(data)
+
+  expect_snapshot(
+    remove_observer_set(snapshot, c("drop", "drop", "missing", "missing"))
+  )
+  expect_named(snapshot$observer_sets, "keep")
+})
+
 # ---- Tibble exporter ----
 test_that("get_observer_sets_dfs() returns one row per set", {
   snapshot <- test_snapshot$clone()

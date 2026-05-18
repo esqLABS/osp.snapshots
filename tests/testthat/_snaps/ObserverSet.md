@@ -30,7 +30,7 @@
       Warning:
       Observer set 'missing' not found in snapshot
     Message
-      v Removed 1 observer set(s)
+      v Removed 0 observer set(s)
 
 # remove_observer_set() warns on empty collection
 
@@ -39,6 +39,16 @@
     Condition
       Warning:
       No observer sets to remove
+
+# remove_observer_set() deduplicates warnings and reports actual count
+
+    Code
+      remove_observer_set(snapshot, c("drop", "drop", "missing", "missing"))
+    Condition
+      Warning:
+      Observer set 'missing' not found in snapshot
+    Message
+      v Removed 1 observer set(s)
 
 # print.ObserverSet prints a summary
 

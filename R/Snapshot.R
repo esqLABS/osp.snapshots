@@ -464,9 +464,13 @@ Snapshot <- R6::R6Class(
         return(invisible(self))
       }
 
-      current_names <- sapply(private$.observer_sets, function(os) os$name)
+      current_names <- vapply(
+        private$.observer_sets,
+        function(os) os$name,
+        character(1)
+      )
 
-      for (name in observer_set_name) {
+      for (name in unique(observer_set_name)) {
         if (!(name %in% current_names)) {
           cli::cli_warn("Observer set '{name}' not found in snapshot")
         }
@@ -474,19 +478,16 @@ Snapshot <- R6::R6Class(
 
       keep_indices <- which(!(current_names %in% observer_set_name))
 
-      if (length(keep_indices) == 0) {
-        private$.observer_sets <- list()
-      } else {
-        private$.observer_sets <- private$.observer_sets[keep_indices]
-      }
+      private$.observer_sets <- private$.observer_sets[keep_indices]
 
       private$.observer_sets_named <- private$.build_named_list(
         private$.observer_sets,
         "observer_set_collection"
       )
 
+      n_removed <- length(current_names) - length(keep_indices)
       cli::cli_alert_success(
-        "Removed {length(observer_set_name)} observer set(s)"
+        "Removed {n_removed} observer set(s)"
       )
       invisible(self)
     },
