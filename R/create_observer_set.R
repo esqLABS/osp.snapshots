@@ -49,26 +49,11 @@
 #' )
 create_observer_set <- function(name, observers = NULL) {
   check_required_string(name, "name")
-  if (!is.null(observers) && (!is.list(observers) || is.object(observers))) {
-    cli::cli_abort("{.arg observers} must be a list")
-  }
 
   data <- list(Name = name)
 
   if (!is.null(observers)) {
-    call <- environment()
-    data$Observers <- unname(lapply(observers, function(observer) {
-      if (inherits(observer, "Observer")) {
-        return(observer$data)
-      }
-      if (is.list(observer) && !is.object(observer)) {
-        return(observer)
-      }
-      cli::cli_abort(
-        "Every entry of {.arg observers} must be an {.cls Observer} or a list",
-        call = call
-      )
-    }))
+    data$Observers <- to_raw_r6_or_list(observers, "Observer", "observers")
   }
 
   ObserverSet$new(data)

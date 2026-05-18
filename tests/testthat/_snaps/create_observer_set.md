@@ -28,7 +28,7 @@
       create_observer_set(name = "S", observers = list(42))
     Condition
       Error in `create_observer_set()`:
-      ! Every entry of `observers` must be an <Observer> or a list
+      ! Every entry of `observers` must be a <Observer> or a raw list
 
 # create_observer_set rejects a bare Observer R6 as `observers`
 
@@ -44,5 +44,5 @@
       create_observer_set(name = "S", observers = list(compound))
     Condition
       Error in `create_observer_set()`:
-      ! Every entry of `observers` must be an <Observer> or a list
+      ! Every entry of `observers` must be a <Observer> or a raw list
 

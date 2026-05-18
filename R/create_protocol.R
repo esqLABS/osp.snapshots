@@ -109,28 +109,11 @@ create_protocol <- function(
   if (!is.null(parameters) && !is.list(parameters)) {
     cli::cli_abort("{.arg parameters} must be a list")
   }
-  if (!is.null(schemas) && !is.list(schemas)) {
-    cli::cli_abort("{.arg schemas} must be a list")
-  }
 
   data <- list(Name = name)
 
   if (!is.null(schemas)) {
-    valid <- vapply(
-      schemas,
-      function(schema) inherits(schema, "Schema") || is.list(schema),
-      logical(1)
-    )
-    if (!all(valid)) {
-      cli::cli_abort(
-        "Every entry of {.arg schemas} must be a {.cls Schema} or a raw list"
-      )
-    }
-    # `unname()` keeps the JSON shape an array rather than an object when a
-    # user supplies a named list of schemas, matching `Protocol$data`.
-    data$Schemas <- unname(lapply(schemas, function(schema) {
-      if (inherits(schema, "Schema")) schema$data else schema
-    }))
+    data$Schemas <- to_raw_r6_or_list(schemas, "Schema", "schemas")
   } else {
     if (!is.null(application_type)) {
       data$ApplicationType <- application_type

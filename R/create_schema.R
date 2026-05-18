@@ -45,9 +45,6 @@ create_schema <- function(name, parameters = NULL, items = NULL) {
   if (!is.null(parameters) && !is.list(parameters)) {
     cli::cli_abort("{.arg parameters} must be a list")
   }
-  if (!is.null(items) && !is.list(items)) {
-    cli::cli_abort("{.arg items} must be a list")
-  }
 
   data <- list(Name = name)
 
@@ -58,21 +55,7 @@ create_schema <- function(name, parameters = NULL, items = NULL) {
   }
 
   if (!is.null(items)) {
-    valid <- vapply(
-      items,
-      function(item) inherits(item, "SchemaItem") || is.list(item),
-      logical(1)
-    )
-    if (!all(valid)) {
-      cli::cli_abort(
-        "Every entry of {.arg items} must be a {.cls SchemaItem} or a raw list"
-      )
-    }
-    # `unname()` keeps the JSON shape an array rather than an object when a
-    # user supplies a named list of schema items.
-    data$SchemaItems <- unname(lapply(items, function(item) {
-      if (inherits(item, "SchemaItem")) item$data else item
-    }))
+    data$SchemaItems <- to_raw_r6_or_list(items, "SchemaItem", "items")
   }
 
   Schema$new(data)
