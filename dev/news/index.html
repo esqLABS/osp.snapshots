@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9006</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,10 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ospsnapshots-development-version">osp.snapshots (development version)<a class="anchor" aria-label="anchor" href="#ospsnapshots-development-version"></a></h2>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li>New <code>LocalizedParameter</code> R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from <code>Parameter</code> and migrates legacy <code>Applications</code> path segments to <code>Events</code> for v11+ snapshots. <code><a href="../reference/create_parameter.html">create_parameter()</a></code> now routes to <code>LocalizedParameter</code> when called with a <code>path</code> argument (#31).</li>
+</ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-development-version">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-development-version"></a></h3>
 <ul><li>Building-block collections now share a <code>snapshot_collection</code> S3 class with a single generic <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> method, replacing the eight per-kind methods. The existing per-kind classes (<code>compound_collection</code>, <code>individual_collection</code>, etc.) are preserved as marker classes (#34).</li>

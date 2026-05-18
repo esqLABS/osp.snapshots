@@ -3,12 +3,19 @@
 Create a new parameter with the specified properties. All arguments
 except name and value are optional.
 
+Returns a \[LocalizedParameter\] when a non-NULL \`path\` is supplied
+(i.e. the parameter is identified by its position within a target's
+parameter tree); otherwise returns a plain \[Parameter\]. For backwards
+compatibility, \`name\` is used as the path when \`path\` is not
+provided, matching the historical behaviour of this factory.
+
 ## Usage
 
 ``` r
 create_parameter(
   name,
   value,
+  path = NULL,
   unit = NULL,
   source = NULL,
   description = NULL,
@@ -27,59 +34,66 @@ create_parameter(
 
 - name:
 
-  Character. Name of the parameter
+  Character. Name of the parameter.
 
 - value:
 
-  Numeric. Value of the parameter
+  Numeric. Value of the parameter.
+
+- path:
+
+  Character. Full container path of the parameter within its parameter
+  tree. Supply this to obtain a \[LocalizedParameter\] (used in
+  Individual, ExpressionProfile, and Simulation parameter sections).
 
 - unit:
 
-  Character. Unit of the parameter (optional)
+  Character. Unit of the parameter (optional).
 
 - source:
 
-  Character. Source of the value (optional)
+  Character. Source of the value (optional).
 
 - description:
 
-  Character. Description of the value origin (optional)
+  Character. Description of the value origin (optional).
 
 - source_id:
 
-  Integer. ID of the source (optional)
+  Integer. ID of the source (optional).
 
 - table_formula:
 
-  List. Table formula data for table parameters (optional)
+  List. Table formula data for table parameters (optional).
 
 - table_points:
 
-  List. Points for table parameters, a list of x,y pairs (optional)
+  List. Points for table parameters, a list of x,y pairs (optional).
 
 - x_name:
 
-  Character. Name of X axis for table parameters (optional)
+  Character. Name of X axis for table parameters (optional).
 
 - y_name:
 
-  Character. Name of Y axis for table parameters (optional)
+  Character. Name of Y axis for table parameters (optional).
 
 - x_unit:
 
-  Character. Unit for X axis for table parameters (optional)
+  Character. Unit for X axis for table parameters (optional).
 
 - x_dimension:
 
-  Character. Dimension for X axis for table parameters (optional)
+  Character. Dimension for X axis for table parameters (optional).
 
 - y_dimension:
 
-  Character. Dimension for Y axis for table parameters (optional)
+  Character. Dimension for Y axis for table parameters (optional).
 
 ## Value
 
-A Parameter object
+A \[Parameter\] object, or a \[LocalizedParameter\] when \`path\` is
+supplied.
 
 ## Examples
 
@@ -104,6 +118,13 @@ param <- create_parameter(
   unit = "L",
   source = "Publication",
   description = "Reference XYZ"
+)
+
+# Create a localized parameter (path-bearing)
+localized <- create_parameter(
+  path = "Organism|Liver|Volume",
+  value = 1.5,
+  unit = "L"
 )
 
 # Create a table parameter

@@ -33,6 +33,8 @@ Main classes for working with snapshots and building blocks
   : ExpressionProfile class for OSP snapshot expression profiles
 - [`Parameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
   : Parameter class for OSP snapshot parameters
+- [`LocalizedParameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.md)
+  : LocalizedParameter class for path-bearing OSP snapshot parameters
 - [`AdvancedParameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/AdvancedParameter.md)
   : AdvancedParameter class for Population advanced parameters
 - [`range()`](https://esqlabs.github.io/osp.snapshots/dev/reference/Range.md)
