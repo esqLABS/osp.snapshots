@@ -1,11 +1,31 @@
-# Default export adapter for a building-block section. Returns the raw
-# original slice unchanged when the lazy cache is untouched or empty,
-# otherwise extracts `$data` from each cached R6 wrapper. Pairs with the
+# Default export adapter for a building-block section. Pairs with the
 # per-section table `Snapshot$private$.export_adapters`; non-default sections
 # (currently only ObservedData) supply their own adapter.
+#
+# Contract:
+#   items     cache slot value: `NULL` (lazy cache untouched, replay original
+#             verbatim), `list()` (cache touched and now empty), or a
+#             non-empty list of R6 wrappers (extract each wrapper's `$data`).
+#   original  the raw slice from `.original_data` (may be NULL).
+#
+# When `items` is `list()`, the cache could be empty either because the user
+# removed every entry or because the lazy loader observed an absent/empty
+# section. In the latter case `original` is also empty (`NULL` or `list()`),
+# so falling through to `list()` faithfully represents the section as empty
+# in both cases. The previously-buggy fallback to `original` re-introduced
+# removed entries when the original slice was non-empty.
 .default_export_adapter <- function(items, original) {
-  if (length(items) == 0) {
+  if (is.null(items)) {
     return(original)
+  }
+  if (length(items) == 0) {
+    # Preserve the historical NULL shape when the original slice was already
+    # NULL or empty; only emit `list()` when the user actually cleared a
+    # non-empty section.
+    if (length(original) == 0) {
+      return(original)
+    }
+    return(list())
   }
   lapply(items, function(item) item$data)
 }
@@ -460,6 +480,28 @@ Snapshot <- R6::R6Class(
 
       # Force lazy construction of any existing observed data before mutating
       private$.ensure_observed_data()
+
+      # Warn once at add time if the new DataSet has no backing JSON slice in
+      # `.original_data`; `ospsuite::DataSet` does not round-trip back to the
+      # snapshot list shape, so such entries are dropped on export. Warning
+      # here (rather than inside the export adapter) keeps `print()` and other
+      # `$data` accesses quiet.
+      original <- private$.original_data$ObservedData
+      original_names <- if (is.null(original)) {
+        character()
+      } else {
+        vapply(
+          original,
+          function(od) od$Name %||% od$name,
+          character(1)
+        )
+      }
+      if (!(observed_data$name %in% original_names)) {
+        cli::cli_warn(c(
+          "Observed data {.val {observed_data$name}} cannot be serialized on export.",
+          i = "{.cls DataSet} objects have no {.code $data} accessor; only entries present in the original snapshot are exported."
+        ))
+      }
 
       # Add the observed data to the list
       private$.observed_data <- c(private$.observed_data, list(observed_data))

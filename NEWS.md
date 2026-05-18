@@ -27,7 +27,11 @@
 - Fixed `Snapshot$data` so observed data removed via `remove_observed_data()`
   is also dropped from the exported snapshot. Previously the export reused the
   full original `ObservedData` list whenever the lazy cache had been touched,
-  re-introducing the removed entries on round-trip.
+  re-introducing the removed entries on round-trip. The same fix applies to
+  every building-block section: clearing a collection via `remove_individual()`,
+  `remove_formulation()`, `remove_population()`, or
+  `remove_expression_profile()` now writes an empty section on export instead
+  of falling back to the original entries (#35).
 
 - Fixed snapshot export/import so single-element JSON arrays remain arrays,
   allowing exported snapshots to load in PK-Sim (#23).

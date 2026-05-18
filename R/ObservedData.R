@@ -193,12 +193,14 @@ ObservedData <- loadDataSetFromSnapshot
 # removals (via `remove_observed_data()`) and reorderings of surviving names
 # are honoured. Items added at runtime through `add_observed_data()` cannot be
 # serialized either: their backing JSON is not in `.original_data`, so they
-# are dropped with a warning.
+# are dropped silently here. `Snapshot$add_observed_data()` warns at the time
+# of addition so the user is informed once, rather than on every `$data`
+# access (which includes `print()`).
 #
 # Contract:
-#   items     - cache slot value: `NULL` (untouched), `list()` (cleared by
-#               user), or a non-empty list of `DataSet` objects.
-#   original  - the raw `ObservedData` slice from `.original_data` (may be NULL).
+#   items     cache slot value: `NULL` (untouched), `list()` (cleared by
+#             user), or a non-empty list of `DataSet` objects.
+#   original  the raw `ObservedData` slice from `.original_data` (may be NULL).
 # Returns the value to write back into the export payload.
 .observed_data_export_adapter <- function(items, original) {
   if (is.null(items)) {
@@ -213,12 +215,8 @@ ObservedData <- loadDataSetFromSnapshot
     function(od) od$Name %||% od$name,
     character(1)
   )
-  result <- original[original_names %in% surviving_names]
-  if (length(items) > length(result)) {
-    cli::cli_warn(c(
-      "Some observed data added at runtime cannot be serialized.",
-      i = "DataSet objects have no $data accessor; only original entries are exported."
-    ))
-  }
-  result
+  # Use match() so the export order tracks the user's current ordering of
+  # `items` rather than the order of the original snapshot slice.
+  indices <- match(surviving_names, original_names)
+  original[indices[!is.na(indices)]]
 }
