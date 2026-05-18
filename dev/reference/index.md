@@ -78,6 +78,8 @@ Functions to create new building blocks from scratch
   : Create a new individual
 - [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
   : Create a new observed data set
+- [`create_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set.md)
+  : Create a new observer set
 - [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   : Create a new parameter
 - [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)

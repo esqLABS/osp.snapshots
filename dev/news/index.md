@@ -134,6 +134,10 @@
   series (#27). `value_dimension` is now required (previously defaulted
   silently to `"Concentration (mass)"`); `time_unit` and `value_unit`
   are validated against the corresponding dimension (#48).
+- [`create_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set.md)
+  builds an ObserverSet building block from a `name` and an optional
+  list of `Observer` objects or raw observer lists, wrapping
+  `ObserverSet$new()` (#43).
 - [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
   builds a Population building block from named arguments and `Range`
   objects for age, weight, height, and BMI bounds (#27).

@@ -519,6 +519,54 @@ breakfast
 #> • Meal volume: 0.3 l
 ```
 
+## Creating Observer Sets
+
+[`create_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set.md)
+builds an \[ObserverSet\] from a name and an optional list of observers.
+Each observer is a simulation-time formula that exposes a derived
+quantity (for example a tissue concentration) that is not a natural
+model output. You can pass either raw observer lists or \[Observer\] R6
+objects.
+
+``` r
+
+# Build the set from raw observer lists
+brain_set <- create_observer_set(
+  name = "BrainPlasmaConcentration",
+  observers = list(
+    list(
+      Name = "brain_plasma_conc",
+      Type = "Container",
+      Dimension = "Concentration (molar)",
+      Formula = list(Formula = "Conc_Br")
+    )
+  )
+)
+
+brain_set
+#> 
+#> ── ObserverSet: BrainPlasmaConcentration ───────────────────────────────────────
+#> • 1 observer
+
+# Or build it from Observer R6 objects
+observer <- Observer$new(list(
+  Name = "brain_plasma_conc",
+  Type = "Container",
+  Dimension = "Concentration (molar)",
+  Formula = list(Formula = "Conc_Br")
+))
+
+brain_set_from_r6 <- create_observer_set(
+  name = "BrainPlasmaConcentration",
+  observers = list(observer)
+)
+
+brain_set_from_r6
+#> 
+#> ── ObserverSet: BrainPlasmaConcentration ───────────────────────────────────────
+#> • 1 observer
+```
+
 ## Creating Observed Data
 
 [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
