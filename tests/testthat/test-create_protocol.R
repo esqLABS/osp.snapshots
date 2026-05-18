@@ -45,6 +45,141 @@ test_that("create_protocol creates an advanced protocol from schemas", {
   expect_equal(protocol$time_unit, "h")
 })
 
+test_that("create_protocol accepts Schema R6 objects in `schemas`", {
+  protocol <- create_protocol(
+    name = "Advanced",
+    schemas = list(
+      create_schema(
+        name = "Schema 1",
+        parameters = list(
+          create_parameter(name = "NumberOfRepetitions", value = 1),
+          create_parameter(
+            name = "TimeBetweenRepetitions",
+            value = 0,
+            unit = "h"
+          )
+        ),
+        items = list(
+          create_schema_item(
+            name = "Item 1",
+            application_type = "Oral",
+            parameters = list(
+              create_parameter(name = "InputDose", value = 5, unit = "mg")
+            )
+          )
+        )
+      )
+    ),
+    time_unit = "h"
+  )
+
+  expect_r6_class(protocol, "Protocol")
+  expect_true(protocol$is_advanced)
+  expect_length(protocol$schemas, 1)
+  expect_equal(protocol$schemas[[1]]$items[[1]]$application_type, "Oral")
+})
+
+test_that("create_protocol Schema-object form round-trips to raw-list form", {
+  from_objects <- create_protocol(
+    name = "Advanced",
+    schemas = list(
+      create_schema(
+        name = "Schema 1",
+        parameters = list(
+          create_parameter(name = "NumberOfRepetitions", value = 1),
+          create_parameter(
+            name = "TimeBetweenRepetitions",
+            value = 0,
+            unit = "h"
+          )
+        ),
+        items = list(
+          create_schema_item(
+            name = "Item 1",
+            application_type = "Oral",
+            parameters = list(
+              create_parameter(name = "InputDose", value = 5, unit = "mg")
+            )
+          )
+        )
+      )
+    ),
+    time_unit = "h"
+  )
+
+  from_raw <- create_protocol(
+    name = "Advanced",
+    schemas = list(list(
+      Name = "Schema 1",
+      Parameters = list(
+        list(Name = "NumberOfRepetitions", Value = 1),
+        list(Name = "TimeBetweenRepetitions", Value = 0, Unit = "h")
+      ),
+      SchemaItems = list(list(
+        Name = "Item 1",
+        ApplicationType = "Oral",
+        Parameters = list(
+          list(Name = "InputDose", Value = 5, Unit = "mg")
+        )
+      ))
+    )),
+    time_unit = "h"
+  )
+
+  expect_equal(from_objects$data, from_raw$data)
+  expect_identical(
+    jsonlite::toJSON(from_objects$data, auto_unbox = TRUE, digits = NA),
+    jsonlite::toJSON(from_raw$data, auto_unbox = TRUE, digits = NA)
+  )
+})
+
+test_that("create_protocol accepts a mix of Schema objects and raw lists", {
+  protocol <- create_protocol(
+    name = "Mixed",
+    schemas = list(
+      create_schema(
+        name = "Schema 1",
+        items = list(
+          create_schema_item(name = "Item 1", application_type = "Oral")
+        )
+      ),
+      list(
+        Name = "Schema 2",
+        SchemaItems = list(list(
+          Name = "Item 2",
+          ApplicationType = "IntravenousBolus"
+        ))
+      )
+    )
+  )
+
+  expect_length(protocol$schemas, 2)
+  expect_equal(protocol$schemas[[1]]$name, "Schema 1")
+  expect_equal(protocol$schemas[[2]]$name, "Schema 2")
+})
+
+test_that("create_protocol strips names from the schemas list", {
+  protocol <- create_protocol(
+    name = "Advanced",
+    schemas = list(
+      first = create_schema(
+        name = "Schema 1",
+        items = list(
+          create_schema_item(name = "Item 1", application_type = "Oral")
+        )
+      ),
+      second = list(
+        Name = "Schema 2",
+        SchemaItems = list(list(
+          Name = "Item 2",
+          ApplicationType = "IntravenousBolus"
+        ))
+      )
+    )
+  )
+  expect_null(names(protocol$data$Schemas))
+})
+
 test_that("create_protocol validates required arguments", {
   expect_snapshot(error = TRUE, create_protocol())
   expect_snapshot(error = TRUE, create_protocol(name = ""))

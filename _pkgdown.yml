@@ -86,6 +86,8 @@ reference:
   - create_population
   - create_process
   - create_protocol
+  - create_schema
+  - create_schema_item
 
 - title: "Manage Building Blocks"
   desc: "Add and remove building blocks from snapshots"

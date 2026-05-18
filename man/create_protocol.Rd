@@ -35,9 +35,10 @@ dose.}
 \code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists for Simple Protocol
 parameters such as start time, end time, and dose.}
 
-\item{schemas}{List of schema lists for an Advanced Protocol. Each
-schema is a list with \code{Name}, \code{Parameters}, and \code{SchemaItems}. If
-provided, the protocol is created as an Advanced Protocol.}
+\item{schemas}{List of schemas for an Advanced Protocol. Entries may
+be \link{Schema} objects (created with \code{\link[=create_schema]{create_schema()}}) or raw schema
+lists with \code{Name}, \code{Parameters}, and \code{SchemaItems}. If provided,
+the protocol is created as an Advanced Protocol.}
 
 \item{time_unit}{Character. Display time unit for the protocol.}
 }
@@ -74,5 +75,28 @@ protocol <- create_protocol(
   parameters = list(
     create_parameter(name = "InputDose", value = 5, unit = "mg")
   )
+)
+
+# Create an Advanced Protocol from Schema objects
+protocol <- create_protocol(
+  name = "Advanced",
+  schemas = list(
+    create_schema(
+      name = "Schema 1",
+      parameters = list(
+        create_parameter(name = "NumberOfRepetitions", value = 1)
+      ),
+      items = list(
+        create_schema_item(
+          name = "Item 1",
+          application_type = "Oral",
+          parameters = list(
+            create_parameter(name = "InputDose", value = 5, unit = "mg")
+          )
+        )
+      )
+    )
+  ),
+  time_unit = "h"
 )
 }
