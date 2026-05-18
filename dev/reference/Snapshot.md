@@ -4,6 +4,17 @@ An R6 class that represents an OSP snapshot file. This class provides
 methods to access different components of the snapshot and visualize its
 structure.
 
+\# Supported snapshot versions
+
+\`Snapshot\` only accepts PK-Sim v11+ snapshots, i.e. integer
+\`Version\` values of \`79\` or greater (see
+\`osp.snapshots:::SUPPORTED_VERSION_MIN\`). Earlier snapshots use
+different conventions (notably \`Applications\|...\` instead of
+\`Events\|...\` in parameter paths) and are not modelled by this
+package; \`Snapshot\$new()\` aborts on them rather than silently
+rewriting fields. Hand-rolled list input must supply \`Version\` for the
+same reason.
+
 ## Active bindings
 
 - `data`:
@@ -117,7 +128,9 @@ Create a new Snapshot object from a JSON file or a list
 - `input`:
 
   Path to the snapshot JSON file, URL, template name, or a list
-  containing snapshot data
+  containing snapshot data. The parsed data must contain an integer
+  \`Version\` field of \`79\` (v11.2) or greater; older or missing
+  versions abort.
 
 #### Returns
 

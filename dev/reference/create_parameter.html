@@ -3,15 +3,25 @@
 All arguments except name and value are optional.
 Returns a [LocalizedParameter] when a non-NULL `path` is supplied (i.e.
 the parameter is identified by its position within a target's parameter
-tree); otherwise returns a plain [Parameter]. For backwards compatibility,
-`name` is used as the path when `path` is not provided, matching the
-historical behaviour of this factory."><meta property="og:description" content="Create a new parameter with the specified properties.
+tree); otherwise returns a plain [Parameter].
+# Data shape
+Plain `Parameter` objects carry the identifier in `data$Name`, matching
+the JSON shape used by `Parameter` slots in `Compound`, `Formulation`,
+`Protocol`, and `Event` (per `snapshot-spec.md`). `LocalizedParameter`
+objects carry the identifier in `data$Path`. The factory writes whichever
+field matches the returned class so the raw `data` shape reflects the
+kind of parameter unambiguously."><meta property="og:description" content="Create a new parameter with the specified properties.
 All arguments except name and value are optional.
 Returns a [LocalizedParameter] when a non-NULL `path` is supplied (i.e.
 the parameter is identified by its position within a target's parameter
-tree); otherwise returns a plain [Parameter]. For backwards compatibility,
-`name` is used as the path when `path` is not provided, matching the
-historical behaviour of this factory."><meta name="robots" content="noindex"></head><body>
+tree); otherwise returns a plain [Parameter].
+# Data shape
+Plain `Parameter` objects carry the identifier in `data$Name`, matching
+the JSON shape used by `Parameter` slots in `Compound`, `Formulation`,
+`Protocol`, and `Event` (per `snapshot-spec.md`). `LocalizedParameter`
+objects carry the identifier in `data$Path`. The factory writes whichever
+field matches the returned class so the raw `data` shape reflects the
+kind of parameter unambiguously."><meta name="robots" content="noindex"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +29,7 @@ historical behaviour of this factory."><meta name="robots" content="noindex"></h
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9015</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9016</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,9 +65,14 @@ historical behaviour of this factory."><meta name="robots" content="noindex"></h
 All arguments except name and value are optional.</p>
 <p>Returns a [LocalizedParameter] when a non-NULL `path` is supplied (i.e.
 the parameter is identified by its position within a target's parameter
-tree); otherwise returns a plain [Parameter]. For backwards compatibility,
-`name` is used as the path when `path` is not provided, matching the
-historical behaviour of this factory.</p>
+tree); otherwise returns a plain [Parameter].</p>
+<p># Data shape</p>
+<p>Plain `Parameter` objects carry the identifier in `data$Name`, matching
+the JSON shape used by `Parameter` slots in `Compound`, `Formulation`,
+`Protocol`, and `Event` (per `snapshot-spec.md`). `LocalizedParameter`
+objects carry the identifier in `data$Path`. The factory writes whichever
+field matches the returned class so the raw `data` shape reflects the
+kind of parameter unambiguously.</p>
     </div>
 
     <div class="section level2">

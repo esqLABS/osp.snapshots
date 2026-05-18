@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9015</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9016</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,12 @@
 <code>Compound$calculation_methods</code> now returns a <code>CalculationMethodCache</code> R6 object instead of a plain list with class <code>compound_calculation_methods</code>. The old list-shape accessors (<code>compound$calculation_methods$partition_coef</code>, <code>compound$calculation_methods$permeability</code>) no longer work; use the new R6 surface (<code>$methods</code>, <code>$add()</code>, <code>$remove()</code>, <code>$length</code>) on <code>CalculationMethodCache</code> instead (#30).</li>
 <li>
 <code>Compound$processes</code> now returns a flat named list of <code>Process</code> R6 objects (with duplicate names disambiguated via <code>_{n}</code> suffixes), replacing the raw <code>compound_processes</code> list it returned before. Filter by <code>process$category</code> to recover the equivalent of the deprecated per-category accessors (#40).</li>
+<li>
+<code>LocalizedParameter$new()</code> now emits a deprecation warning when falling back to <code>data$Name</code> for the path, and drops <code>Name</code> from the stored data so the resulting shape is unambiguous. The fallback continues to work; real v11+ snapshots never hit it (#52).</li>
+<li>
+<code>Snapshot$new()</code> (and therefore <code><a href="../reference/load_snapshot.html">load_snapshot()</a></code>) now refuses snapshots that lack a <code>Version</code> field or whose <code>Version</code> is below 79 (v11.2). Earlier versions used pre-v11 conventions (notably <code>Applications|...</code> path segments) that this package does not model (#52).</li>
+<li>
+<code><a href="../reference/create_parameter.html">create_parameter()</a></code> now writes the identifier to <code>data$Name</code> when called without <code>path</code> (plain <code>Parameter</code>) and to <code>data$Path</code> only when called with <code>path</code> (<code>LocalizedParameter</code>). Previously every result carried <code>data$Path</code>, hiding which kind of parameter the factory had produced (#52).</li>
 <li>
 <code><a href="../reference/get_compounds_dfs.html">get_compounds_dfs()</a></code> now returns a list with two tibbles, <code>properties</code> and <code>processes</code>, instead of the single combined tibble it returned before. Update callers from <code>df &lt;- get_compounds_dfs(snap)</code> to <code>dfs &lt;- get_compounds_dfs(snap); df &lt;- dfs$properties</code>, or switch to the new long-form <code>dfs$processes</code> (#40).</li>
 </ul></div>

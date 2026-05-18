@@ -16,6 +16,21 @@
   replacing the raw `compound_processes` list it returned before. Filter
   by `process$category` to recover the equivalent of the deprecated
   per-category accessors (#40).
+- `LocalizedParameter$new()` now emits a deprecation warning when
+  falling back to `data$Name` for the path, and drops `Name` from the
+  stored data so the resulting shape is unambiguous. The fallback
+  continues to work; real v11+ snapshots never hit it (#52).
+- `Snapshot$new()` (and therefore
+  [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md))
+  now refuses snapshots that lack a `Version` field or whose `Version`
+  is below 79 (v11.2). Earlier versions used pre-v11 conventions
+  (notably `Applications|...` path segments) that this package does not
+  model (#52).
+- [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
+  now writes the identifier to `data$Name` when called without `path`
+  (plain `Parameter`) and to `data$Path` only when called with `path`
+  (`LocalizedParameter`). Previously every result carried `data$Path`,
+  hiding which kind of parameter the factory had produced (#52).
 - [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
   now returns a list with two tibbles, `properties` and `processes`,
   instead of the single combined tibble it returned before. Update
