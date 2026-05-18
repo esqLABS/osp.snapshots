@@ -57,6 +57,7 @@ reference:
   - Protocol
   - Event
   - ExpressionProfile
+  - Observer
   - ObserverSet
   - Parameter
   - LocalizedParameter
