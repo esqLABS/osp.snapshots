@@ -22,8 +22,10 @@ tibbles. \code{properties} carries one row per (compound,
 physicochemical property) pair (plus folded process rows
 for backwards compatibility); \code{processes} is the long-form,
 one row per (compound, process, parameter) triple.
-\item \code{"protocols"}, \code{"observer_sets"},
-\code{"observed_data"}: a single tibble.
+\item \code{"protocols"}, \code{"observed_data"}: a single tibble.
+\item \code{"observer_sets"}: a list with \code{observer_sets} (one row per
+\code{ObserverSet}) and \code{observers} (one row per \code{Observer}, joinable
+to its parent via \code{observer_set_id} / \code{observer_set_name}).
 \item \code{"individuals"}: a list with \code{individuals},
 \code{individuals_parameters}, \code{individuals_expressions}.
 \item \code{"formulations"}: a list with \code{formulations},

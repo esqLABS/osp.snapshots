@@ -19,8 +19,10 @@
 #'     physicochemical property) pair (plus folded process rows
 #'     for backwards compatibility); `processes` is the long-form,
 #'     one row per (compound, process, parameter) triple.
-#'   \item `"protocols"`, `"observer_sets"`,
-#'     `"observed_data"`: a single tibble.
+#'   \item `"protocols"`, `"observed_data"`: a single tibble.
+#'   \item `"observer_sets"`: a list with `observer_sets` (one row per
+#'     `ObserverSet`) and `observers` (one row per `Observer`, joinable
+#'     to its parent via `observer_set_id` / `observer_set_name`).
 #'   \item `"individuals"`: a list with `individuals`,
 #'     `individuals_parameters`, `individuals_expressions`.
 #'   \item `"formulations"`: a list with `formulations`,
@@ -378,17 +380,16 @@ as_tibbles_protocols <- function(snapshot) {
 as_tibbles_observer_sets <- function(snapshot) {
   observer_sets <- snapshot$observer_sets
 
-  result <- tibble::tibble(
-    observer_set_id = character(0),
-    name = character(0),
-    n_observers = integer(0)
+  result <- list(
+    observer_sets = empty_observer_sets_tibble(),
+    observers = empty_observers_tibble()
   )
 
   if (length(observer_sets) == 0) {
     return(result)
   }
 
-  rows <- lapply(names(observer_sets), function(id) {
+  set_rows <- lapply(names(observer_sets), function(id) {
     os <- observer_sets[[id]]
     tibble::tibble(
       observer_set_id = id,
@@ -396,8 +397,52 @@ as_tibbles_observer_sets <- function(snapshot) {
       n_observers = length(os$observers)
     )
   })
+  result$observer_sets <- dplyr::bind_rows(set_rows)
 
-  dplyr::bind_rows(rows)
+  observer_rows <- lapply(names(observer_sets), function(id) {
+    os <- observer_sets[[id]]
+    if (length(os$observers) == 0) {
+      return(NULL)
+    }
+    obs_df <- dplyr::bind_rows(lapply(os$observers, function(o) o$to_df()))
+    dplyr::bind_cols(
+      tibble::tibble(
+        observer_set_id = rep(id, nrow(obs_df)),
+        observer_set_name = rep(os$name %||% NA_character_, nrow(obs_df))
+      ),
+      obs_df
+    )
+  })
+  observer_rows <- observer_rows[!vapply(observer_rows, is.null, logical(1))]
+  if (length(observer_rows) > 0) {
+    result$observers <- dplyr::bind_rows(observer_rows)
+  }
+
+  result
+}
+
+# Shared empty tibble for the observer_sets element returned by
+# as_tibbles_observer_sets().
+empty_observer_sets_tibble <- function() {
+  tibble::tibble(
+    observer_set_id = character(0),
+    name = character(0),
+    n_observers = integer(0)
+  )
+}
+
+# Shared empty tibble for the observers element returned by
+# as_tibbles_observer_sets().
+empty_observers_tibble <- function() {
+  tibble::tibble(
+    observer_set_id = character(0),
+    observer_set_name = character(0),
+    name = character(0),
+    type = character(0),
+    dimension = character(0),
+    formula = character(0),
+    container_path = character(0)
+  )
 }
 
 as_tibbles_observed_data <- function(snapshot) {
@@ -575,16 +620,19 @@ get_protocols_dfs <- function(snapshot) {
   as_tibbles(snapshot, "protocols")
 }
 
-#' Get all observer sets in a snapshot as a tibble
+#' Get all observer sets in a snapshot as data frames
 #'
 #' @description
 #' Thin wrapper around [as_tibbles()] with `kind = "observer_sets"`.
 #' Prefer [as_tibbles()] in new code.
 #'
 #' @inheritParams as_tibbles
-#' @return A tibble with one row per `ObserverSet`, with columns
-#'   `observer_set_id`, `name`, `n_observers`. Richer per-observer
-#'   detail is deferred until the `Observer` leaf class lands.
+#' @return A list with two tibbles. `observer_sets` has one row per
+#'   `ObserverSet` with columns `observer_set_id`, `name`,
+#'   `n_observers`. `observers` has one row per `Observer` with columns
+#'   `observer_set_id`, `observer_set_name`, `name`, `type`,
+#'   `dimension`, `formula`, `container_path`; rows join back to their
+#'   parent `ObserverSet` by `observer_set_id` or `observer_set_name`.
 #'
 #' @export
 #'
