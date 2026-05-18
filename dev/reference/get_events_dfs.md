@@ -1,7 +1,7 @@
 # Get all events in a snapshot as data frames
 
-This function extracts all events from a snapshot and converts them to
-data frames for easier analysis and visualization.
+Thin wrapper around \[as_tibbles()\] with \`kind = "events"\`. Prefer
+\[as_tibbles()\] in new code.
 
 ## Usage
 
@@ -13,28 +13,17 @@ get_events_dfs(snapshot)
 
 - snapshot:
 
-  A Snapshot object
+  A \`Snapshot\` object.
 
 ## Value
 
-A list containing two data frames:
-
-- events: Basic information about each event
-
-- events_parameters: All parameters for all events
+A list with \`events\` and \`events_parameters\` tibbles.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Load a snapshot
 snapshot <- load_snapshot("path/to/snapshot.json")
-
-# Get all event data as data frames
 dfs <- get_events_dfs(snapshot)
-
-# Access specific data frames
-events_df <- dfs$events
-events_parameters_df <- dfs$events_parameters
 } # }
 ```

@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9009</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,14 +90,21 @@ and analyze snapshot data using standard R data analysis tools.</p>
 <div class="section level2">
 <h2 id="converting-building-blocks-to-data-frames">Converting Building Blocks to Data Frames<a class="anchor" aria-label="anchor" href="#converting-building-blocks-to-data-frames"></a>
 </h2>
-<p>Each building block type has a corresponding <code>get_*_dfs()</code>
-function that converts the data to structured data frames.</p>
+<p>The unified <code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> function is the canonical entry
+point. It takes a snapshot plus a <code>kind</code> naming the
+collection to convert, and returns a tibble (or named list of tibbles
+for collections that need to be split into related tables).</p>
+<p>Valid values of <code>kind</code> are <code>"compounds"</code>,
+<code>"individuals"</code>, <code>"formulations"</code>,
+<code>"populations"</code>, <code>"events"</code>,
+<code>"expression_profiles"</code>, <code>"protocols"</code>, and
+<code>"observed_data"</code>.</p>
 <div class="section level3">
 <h3 id="converting-individuals">Converting Individuals<a class="anchor" aria-label="anchor" href="#converting-individuals"></a>
 </h3>
 <p>Individual data is converted into multiple related data frames:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">individual_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_individuals_dfs.html">get_individuals_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">individual_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"individuals"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "individuals"             "individuals_parameters" </span></span>
 <span><span class="co">#&gt; [3] "individuals_expressions"</span></span></code></pre></div>
@@ -161,7 +168,7 @@ function that converts the data to structured data frames.</p>
 <h3 id="converting-compounds">Converting Compounds<a class="anchor" aria-label="anchor" href="#converting-compounds"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">compounds_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_compounds_dfs.html">get_compounds_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">compounds_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"compounds"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">compounds_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
 <span><span class="co">#&gt;   compound  category              type  parameter value unit  data_source source</span></span>
@@ -177,7 +184,7 @@ function that converts the data to structured data frames.</p>
 <h3 id="converting-formulations">Converting Formulations<a class="anchor" aria-label="anchor" href="#converting-formulations"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">formulations_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_formulations_dfs.html">get_formulations_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">formulations_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"formulations"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">formulations_dfs</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "formulations"            "formulations_parameters"</span></span>
 <span></span>
@@ -190,14 +197,21 @@ function that converts the data to structured data frames.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Tablet (Dormicum) Tablet (Dormicum) Formulation_Tablet_Weibu… Weibull</span></span>
 <span></span>
 <span><span class="co"># Formulation parameters</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">formulations_dfs</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">formulations_dfs</span><span class="op">$</span><span class="va">formulations_parameters</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 11</span></span></span>
+<span><span class="co">#&gt;   formulation_id    name   value unit  is_table_point x_value y_value table_name</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Tablet (Dormicum) Diss… 0.010<span style="text-decoration: underline;">7</span> min   FALSE               <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Tablet (Dormicum) Lag … 0      min   FALSE               <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Tablet (Dormicum) Diss… 4.38   <span style="color: #BB0000;">NA</span>    FALSE               <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Tablet (Dormicum) Use … 1      <span style="color: #BB0000;">NA</span>    FALSE               <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: source &lt;chr&gt;, description &lt;chr&gt;, source_id &lt;int&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="converting-populations">Converting Populations<a class="anchor" aria-label="anchor" href="#converting-populations"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">populations_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_populations_dfs.html">get_populations_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">populations_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"populations"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">populations_dfs</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "populations"            "populations_parameters"</span></span>
 <span></span>
@@ -217,7 +231,7 @@ function that converts the data to structured data frames.</p>
 <p>Observed data conversion creates a flat data frame perfect for
 analysis:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">obs_data_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_observed_data_dfs.html">get_observed_data_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">obs_data_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"observed_data"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">obs_data_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 30</span></span></span>
 <span><span class="co">#&gt;   name            xValues yValues yErrorValues xDimension xUnit yDimension yUnit</span></span>
@@ -235,6 +249,18 @@ analysis:</p>
 <span><span class="co">#&gt; <span style="color: #949494;">#   Dose &lt;chr&gt;, `Times of Administration [h]` &lt;chr&gt;, Formulation &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   `Food state` &lt;chr&gt;, Comment &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="legacy-per-kind-helpers">Legacy per-kind helpers<a class="anchor" aria-label="anchor" href="#legacy-per-kind-helpers"></a>
+</h2>
+<p>For backwards compatibility, the eight original
+<code>get_*_dfs()</code> functions (<code><a href="../reference/get_compounds_dfs.html">get_compounds_dfs()</a></code>,
+<code><a href="../reference/get_individuals_dfs.html">get_individuals_dfs()</a></code>, <code><a href="../reference/get_formulations_dfs.html">get_formulations_dfs()</a></code>,
+<code><a href="../reference/get_populations_dfs.html">get_populations_dfs()</a></code>, <code><a href="../reference/get_events_dfs.html">get_events_dfs()</a></code>,
+<code><a href="../reference/get_expression_profiles_dfs.html">get_expression_profiles_dfs()</a></code>,
+<code><a href="../reference/get_protocols_dfs.html">get_protocols_dfs()</a></code>, <code><a href="../reference/get_observed_data_dfs.html">get_observed_data_dfs()</a></code>)
+remain available as thin wrappers around <code><a href="../reference/as_tibbles.html">as_tibbles()</a></code>. New
+code should prefer <code><a href="../reference/as_tibbles.html">as_tibbles()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>

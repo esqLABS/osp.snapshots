@@ -14,6 +14,11 @@
 
 ### New features
 
+- [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+  is the new unified entry point for converting any building-block
+  collection in a snapshot to a tibble (or list of tibbles), dispatched
+  on a `kind` argument. The eight existing `get_*_dfs()` functions
+  remain available as thin wrappers (#36).
 - New `CalculationMethodCache` R6 class wrapping the array of
   calculation method names stored on a `Compound` and inside an
   `Individual`’s `OriginData`. `Compound$calculation_methods` and

@@ -95,6 +95,8 @@ Add and remove building blocks from snapshots
 
 Convert building blocks to data frames for analysis
 
+- [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+  : Convert a snapshot collection to a tibble or list of tibbles
 - [`get_individuals_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_individuals_dfs.md)
   : Get all individuals in a snapshot as data frames
 - [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
@@ -110,7 +112,7 @@ Convert building blocks to data frames for analysis
 - [`get_expression_profiles_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_expression_profiles_dfs.md)
   : Get all expression profiles in a snapshot as data frames
 - [`get_observed_data_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observed_data_dfs.md)
-  : Get all observed data in a snapshot as data frames
+  : Get all observed data in a snapshot as a tibble
 
 ## Observed Data
 

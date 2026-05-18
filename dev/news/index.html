@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9009</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,9 @@
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li>New <code>CalculationMethodCache</code> R6 class wrapping the array of calculation method names stored on a <code>Compound</code> and inside an <code>Individual</code>’s <code>OriginData</code>. <code>Compound$calculation_methods</code> and <code>Individual$origin_data$calculation_methods</code> now return this class (#30).</li>
+<ul><li>
+<code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> is the new unified entry point for converting any building-block collection in a snapshot to a tibble (or list of tibbles), dispatched on a <code>kind</code> argument. The eight existing <code>get_*_dfs()</code> functions remain available as thin wrappers (#36).</li>
+<li>New <code>CalculationMethodCache</code> R6 class wrapping the array of calculation method names stored on a <code>Compound</code> and inside an <code>Individual</code>’s <code>OriginData</code>. <code>Compound$calculation_methods</code> and <code>Individual$origin_data$calculation_methods</code> now return this class (#30).</li>
 <li>New <code>LocalizedParameter</code> R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from <code>Parameter</code> and migrates legacy <code>Applications</code> path segments to <code>Events</code> for v11+ snapshots. <code><a href="../reference/create_parameter.html">create_parameter()</a></code> now routes to <code>LocalizedParameter</code> when called with a <code>path</code> argument (#31).</li>
 <li>New <code>OriginData</code> R6 class wrapping the demographic starting point of an <code>Individual</code> (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via <code>Individual$origin_data</code> (#30).</li>
 <li>

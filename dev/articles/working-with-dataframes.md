@@ -26,8 +26,15 @@ snapshot <- load_snapshot("Midazolam")
 
 ## Converting Building Blocks to Data Frames
 
-Each building block type has a corresponding `get_*_dfs()` function that
-converts the data to structured data frames.
+The unified
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+function is the canonical entry point. It takes a snapshot plus a `kind`
+naming the collection to convert, and returns a tibble (or named list of
+tibbles for collections that need to be split into related tables).
+
+Valid values of `kind` are `"compounds"`, `"individuals"`,
+`"formulations"`, `"populations"`, `"events"`, `"expression_profiles"`,
+`"protocols"`, and `"observed_data"`.
 
 ### Converting Individuals
 
@@ -35,7 +42,7 @@ Individual data is converted into multiple related data frames:
 
 ``` r
 
-individual_dfs <- get_individuals_dfs(snapshot)
+individual_dfs <- as_tibbles(snapshot, "individuals")
 names(individual_dfs)
 #> [1] "individuals"             "individuals_parameters" 
 #> [3] "individuals_expressions"
@@ -106,7 +113,7 @@ head(single_individual_df$individuals)
 
 ``` r
 
-compounds_df <- get_compounds_dfs(snapshot)
+compounds_df <- as_tibbles(snapshot, "compounds")
 head(compounds_df)
 #> # A tibble: 6 × 8
 #>   compound  category              type  parameter value unit  data_source source
@@ -123,7 +130,7 @@ head(compounds_df)
 
 ``` r
 
-formulations_dfs <- get_formulations_dfs(snapshot)
+formulations_dfs <- as_tibbles(snapshot, "formulations")
 names(formulations_dfs)
 #> [1] "formulations"            "formulations_parameters"
 
@@ -136,15 +143,22 @@ head(formulations_dfs$formulations)
 #> 2 Tablet (Dormicum) Tablet (Dormicum) Formulation_Tablet_Weibu… Weibull
 
 # Formulation parameters
-head(formulations_dfs$parameters)
-#> NULL
+head(formulations_dfs$formulations_parameters)
+#> # A tibble: 4 × 11
+#>   formulation_id    name   value unit  is_table_point x_value y_value table_name
+#>   <chr>             <chr>  <dbl> <chr> <lgl>            <dbl>   <dbl> <chr>     
+#> 1 Tablet (Dormicum) Diss… 0.0107 min   FALSE               NA      NA NA        
+#> 2 Tablet (Dormicum) Lag … 0      min   FALSE               NA      NA NA        
+#> 3 Tablet (Dormicum) Diss… 4.38   NA    FALSE               NA      NA NA        
+#> 4 Tablet (Dormicum) Use … 1      NA    FALSE               NA      NA NA        
+#> # ℹ 3 more variables: source <chr>, description <chr>, source_id <int>
 ```
 
 ### Converting Populations
 
 ``` r
 
-populations_dfs <- get_populations_dfs(snapshot)
+populations_dfs <- as_tibbles(snapshot, "populations")
 names(populations_dfs)
 #> [1] "populations"            "populations_parameters"
 
@@ -165,7 +179,7 @@ Observed data conversion creates a flat data frame perfect for analysis:
 
 ``` r
 
-obs_data_df <- get_observed_data_dfs(snapshot)
+obs_data_df <- as_tibbles(snapshot, "observed_data")
 head(obs_data_df)
 #> # A tibble: 6 × 30
 #>   name            xValues yValues yErrorValues xDimension xUnit yDimension yUnit
@@ -183,6 +197,22 @@ head(obs_data_df)
 #> #   Dose <chr>, `Times of Administration [h]` <chr>, Formulation <chr>,
 #> #   `Food state` <chr>, Comment <chr>
 ```
+
+## Legacy per-kind helpers
+
+For backwards compatibility, the eight original `get_*_dfs()` functions
+([`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md),
+[`get_individuals_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_individuals_dfs.md),
+[`get_formulations_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_formulations_dfs.md),
+[`get_populations_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_populations_dfs.md),
+[`get_events_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_events_dfs.md),
+[`get_expression_profiles_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_expression_profiles_dfs.md),
+[`get_protocols_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_protocols_dfs.md),
+[`get_observed_data_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observed_data_dfs.md))
+remain available as thin wrappers around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md).
+New code should prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md).
 
 ## Next Steps
 
