@@ -142,7 +142,18 @@
   arguments, wrapping `Protocol$new()` (#27). Passing `schemas` now
   errors if any Simple Protocol field (`application_type`,
   `dosing_interval`, `target_organ`, `target_compartment`, `parameters`)
-  is also supplied (#48).
+  is also supplied (#48). `schemas` now accepts a list of `Schema`
+  objects (created with
+  [`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md))
+  in addition to raw schema lists (#54).
+- [`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md)
+  builds a `Schema` for an Advanced Protocol from named arguments,
+  accepting `Parameter` and `SchemaItem` objects (or raw lists) and
+  wrapping `Schema$new()` (#54).
+- [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
+  builds a `SchemaItem` for an Advanced Protocol from named arguments,
+  validating `application_type` against the canonical PK-Sim application
+  types and wrapping `SchemaItem$new()` (#54).
 - [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
   removes compounds from a `Snapshot` by name (#39).
 - [`remove_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_event.md)

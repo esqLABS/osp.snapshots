@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9021</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9022</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,11 @@
 <li>
 <code><a href="../reference/create_process.html">create_process()</a></code> builds a <code>Process</code> from named arguments, wrapping <code>Process$new()</code> with validation of <code>internal_name</code> and <code>data_source</code> (#40).</li>
 <li>
-<code><a href="../reference/create_protocol.html">create_protocol()</a></code> builds a Simple or Advanced Protocol building block from named arguments, wrapping <code>Protocol$new()</code> (#27). Passing <code>schemas</code> now errors if any Simple Protocol field (<code>application_type</code>, <code>dosing_interval</code>, <code>target_organ</code>, <code>target_compartment</code>, <code>parameters</code>) is also supplied (#48).</li>
+<code><a href="../reference/create_protocol.html">create_protocol()</a></code> builds a Simple or Advanced Protocol building block from named arguments, wrapping <code>Protocol$new()</code> (#27). Passing <code>schemas</code> now errors if any Simple Protocol field (<code>application_type</code>, <code>dosing_interval</code>, <code>target_organ</code>, <code>target_compartment</code>, <code>parameters</code>) is also supplied (#48). <code>schemas</code> now accepts a list of <code>Schema</code> objects (created with <code><a href="../reference/create_schema.html">create_schema()</a></code>) in addition to raw schema lists (#54).</li>
+<li>
+<code><a href="../reference/create_schema.html">create_schema()</a></code> builds a <code>Schema</code> for an Advanced Protocol from named arguments, accepting <code>Parameter</code> and <code>SchemaItem</code> objects (or raw lists) and wrapping <code>Schema$new()</code> (#54).</li>
+<li>
+<code><a href="../reference/create_schema_item.html">create_schema_item()</a></code> builds a <code>SchemaItem</code> for an Advanced Protocol from named arguments, validating <code>application_type</code> against the canonical PK-Sim application types and wrapping <code>SchemaItem$new()</code> (#54).</li>
 <li>
 <code><a href="../reference/remove_compound.html">remove_compound()</a></code> removes compounds from a <code>Snapshot</code> by name (#39).</li>
 <li>

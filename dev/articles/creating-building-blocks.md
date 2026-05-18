@@ -432,6 +432,63 @@ single_dose
 #> • InputDose: 10 mg
 ```
 
+### Advanced Protocols
+
+For dosing schedules that do not fit the Simple Protocol pattern, build
+an Advanced Protocol from one or more \[Schema\] blocks. Each \[Schema\]
+owns schema-level parameters (such as `NumberOfRepetitions` and
+`TimeBetweenRepetitions`) and an ordered list of \[SchemaItem\]
+applications.
+[`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md)
+and
+[`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
+wrap the R6 constructors so you can pass \[Parameter\] objects directly
+without hand-rolling the raw JSON shape.
+
+``` r
+
+# Build the schema item, the schema, and the protocol from named arguments
+qd_oral <- create_protocol(
+  name = "Once daily oral, 5 days",
+  schemas = list(
+    create_schema(
+      name = "Schema 1",
+      parameters = list(
+        create_parameter(name = "NumberOfRepetitions", value = 5),
+        create_parameter(name = "TimeBetweenRepetitions", value = 24, unit = "h")
+      ),
+      items = list(
+        create_schema_item(
+          name = "Item 1",
+          application_type = "Oral",
+          parameters = list(
+            create_parameter(name = "Start time", value = 0, unit = "h"),
+            create_parameter(name = "InputDose", value = 10, unit = "mg")
+          )
+        )
+      )
+    )
+  ),
+  time_unit = "h"
+)
+
+qd_oral
+#> 
+#> ── Protocol: Once daily oral, 5 days ───────────────────────────────────────────
+#> • Type: Advanced (Schema-based)
+#> • Time Unit: h
+#> 
+#> ── Schemas ──
+#> 
+#> • Schema: Schema 1
+#>   • Item 1: Oral -
+```
+
+`application_type` on a schema item is validated against the canonical
+PK-Sim application types (`"Oral"`, `"IntravenousBolus"`,
+`"IntravenousInfusion"`, `"Intramuscular"`, `"Subcutaneous"`,
+`"Dermal"`, `"Rectal"`, `"Inhalation"`, `"Intraperitoneal"`).
+
 ## Creating Events
 
 [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)

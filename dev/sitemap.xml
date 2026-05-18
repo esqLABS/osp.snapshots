@@ -50,6 +50,8 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_process.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_events_dfs.html</loc></url>

@@ -86,6 +86,10 @@ Functions to create new building blocks from scratch
   : Create a new compound process
 - [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
   : Create a new protocol
+- [`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md)
+  : Create a new schema
+- [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
+  : Create a new schema item
 
 ## Manage Building Blocks
 

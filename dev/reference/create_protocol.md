@@ -61,9 +61,12 @@ create_protocol(
 
 - schemas:
 
-  List of schema lists for an Advanced Protocol. Each schema is a list
-  with `Name`, `Parameters`, and `SchemaItems`. If provided, the
-  protocol is created as an Advanced Protocol.
+  List of schemas for an Advanced Protocol. Entries may be
+  [Schema](https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.md)
+  objects (created with
+  [`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md))
+  or raw schema lists with `Name`, `Parameters`, and `SchemaItems`. If
+  provided, the protocol is created as an Advanced Protocol.
 
 - time_unit:
 
@@ -97,5 +100,28 @@ protocol <- create_protocol(
   parameters = list(
     create_parameter(name = "InputDose", value = 5, unit = "mg")
   )
+)
+
+# Create an Advanced Protocol from Schema objects
+protocol <- create_protocol(
+  name = "Advanced",
+  schemas = list(
+    create_schema(
+      name = "Schema 1",
+      parameters = list(
+        create_parameter(name = "NumberOfRepetitions", value = 1)
+      ),
+      items = list(
+        create_schema_item(
+          name = "Item 1",
+          application_type = "Oral",
+          parameters = list(
+            create_parameter(name = "InputDose", value = 5, unit = "mg")
+          )
+        )
+      )
+    )
+  ),
+  time_unit = "h"
 )
 ```

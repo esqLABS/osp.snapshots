@@ -19,7 +19,7 @@ dosing_interval."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9021</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9022</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,9 +110,10 @@ parameters such as start time, end time, and dose.</p></dd>
 
 
 <dt id="arg-schemas">schemas<a class="anchor" aria-label="anchor" href="#arg-schemas"></a></dt>
-<dd><p>List of schema lists for an Advanced Protocol. Each
-schema is a list with <code>Name</code>, <code>Parameters</code>, and <code>SchemaItems</code>. If
-provided, the protocol is created as an Advanced Protocol.</p></dd>
+<dd><p>List of schemas for an Advanced Protocol. Entries may
+be <a href="Schema.html">Schema</a> objects (created with <code><a href="create_schema.html">create_schema()</a></code>) or raw schema
+lists with <code>Name</code>, <code>Parameters</code>, and <code>SchemaItems</code>. If provided,
+the protocol is created as an Advanced Protocol.</p></dd>
 
 
 <dt id="arg-time-unit">time_unit<a class="anchor" aria-label="anchor" href="#arg-time-unit"></a></dt>
@@ -145,6 +146,29 @@ provided, the protocol is created as an Advanced Protocol.</p></dd>
 <span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="create_parameter.html">create_parameter</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"InputDose"</span>, value <span class="op">=</span> <span class="fl">5</span>, unit <span class="op">=</span> <span class="st">"mg"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create an Advanced Protocol from Schema objects</span></span></span>
+<span class="r-in"><span><span class="va">protocol</span> <span class="op">&lt;-</span> <span class="fu">create_protocol</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Advanced"</span>,</span></span>
+<span class="r-in"><span>  schemas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="create_schema.html">create_schema</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      name <span class="op">=</span> <span class="st">"Schema 1"</span>,</span></span>
+<span class="r-in"><span>      parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        <span class="fu"><a href="create_parameter.html">create_parameter</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"NumberOfRepetitions"</span>, value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span>,</span></span>
+<span class="r-in"><span>      items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        <span class="fu"><a href="create_schema_item.html">create_schema_item</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>          name <span class="op">=</span> <span class="st">"Item 1"</span>,</span></span>
+<span class="r-in"><span>          application_type <span class="op">=</span> <span class="st">"Oral"</span>,</span></span>
+<span class="r-in"><span>          parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>            <span class="fu"><a href="create_parameter.html">create_parameter</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"InputDose"</span>, value <span class="op">=</span> <span class="fl">5</span>, unit <span class="op">=</span> <span class="st">"mg"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>          <span class="op">)</span></span></span>
+<span class="r-in"><span>        <span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  time_unit <span class="op">=</span> <span class="st">"h"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
