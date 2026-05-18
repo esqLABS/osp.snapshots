@@ -42,6 +42,10 @@ structure.
 
   List of Event objects in the snapshot
 
+- `observer_sets`:
+
+  List of ObserverSet objects in the snapshot
+
 - `protocols`:
 
   List of Protocol objects in the snapshot
@@ -73,6 +77,10 @@ structure.
 - [`Snapshot$add_expression_profile()`](#method-Snapshot-add_expression_profile)
 
 - [`Snapshot$remove_expression_profile()`](#method-Snapshot-remove_expression_profile)
+
+- [`Snapshot$add_observer_set()`](#method-Snapshot-add_observer_set)
+
+- [`Snapshot$remove_observer_set()`](#method-Snapshot-remove_observer_set)
 
 - [`Snapshot$add_observed_data()`](#method-Snapshot-add_observed_data)
 
@@ -331,6 +339,22 @@ Invisibly returns the object
 
     # Remove an expression profile from the snapshot
     snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
+
+------------------------------------------------------------------------
+
+### `Snapshot$add_observer_set()`
+
+#### Usage
+
+    Snapshot$add_observer_set(observer_set)
+
+------------------------------------------------------------------------
+
+### `Snapshot$remove_observer_set()`
+
+#### Usage
+
+    Snapshot$remove_observer_set(observer_set_name)
 
 ------------------------------------------------------------------------
 

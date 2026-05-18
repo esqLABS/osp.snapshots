@@ -22,14 +22,14 @@ as_tibbles(snapshot, kind)
   Character scalar naming the collection to convert. One of
   \`"compounds"\`, \`"individuals"\`, \`"formulations"\`,
   \`"populations"\`, \`"events"\`, \`"expression_profiles"\`,
-  \`"protocols"\`, \`"observed_data"\`.
+  \`"protocols"\`, \`"observer_sets"\`, \`"observed_data"\`.
 
 ## Value
 
 A tibble or a named list of tibbles, depending on \`kind\`:
 
-- \`"compounds"\`, \`"protocols"\`, \`"observed_data"\`: a single
-  tibble.
+- \`"compounds"\`, \`"protocols"\`, \`"observer_sets"\`,
+  \`"observed_data"\`: a single tibble.
 
 - \`"individuals"\`: a list with \`individuals\`,
   \`individuals_parameters\`, \`individuals_expressions\`.

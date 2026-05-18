@@ -31,6 +31,8 @@ Main classes for working with snapshots and building blocks
   : Event class for OSP snapshot events
 - [`ExpressionProfile`](https://esqlabs.github.io/osp.snapshots/dev/reference/ExpressionProfile.md)
   : ExpressionProfile class for OSP snapshot expression profiles
+- [`ObserverSet`](https://esqlabs.github.io/osp.snapshots/dev/reference/ObserverSet.md)
+  : ObserverSet class for OSP snapshot observer sets
 - [`Parameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
   : Parameter class for OSP snapshot parameters
 - [`LocalizedParameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.md)
@@ -86,6 +88,8 @@ Add and remove building blocks from snapshots
   : Add a formulation to a snapshot
 - [`add_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_expression_profile.md)
   : Add an expression profile to a snapshot
+- [`add_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observer_set.md)
+  : Add an observer set to a snapshot
 - [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md)
   : Remove individuals from a snapshot
 - [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md)
@@ -94,6 +98,8 @@ Add and remove building blocks from snapshots
   : Remove populations from a snapshot
 - [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md)
   : Remove expression profiles from a snapshot
+- [`remove_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observer_set.md)
+  : Remove observer sets from a snapshot
 
 ## Data Frame Conversion
 
@@ -117,6 +123,8 @@ Convert building blocks to data frames for analysis
   : Get all expression profiles in a snapshot as data frames
 - [`get_observed_data_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observed_data_dfs.md)
   : Get all observed data in a snapshot as a tibble
+- [`get_observer_sets_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observer_sets_dfs.md)
+  : Get all observer sets in a snapshot as a tibble
 
 ## Observed Data
 

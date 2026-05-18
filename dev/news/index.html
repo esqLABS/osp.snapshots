@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9012</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9013</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,8 +50,11 @@
 <code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> is the new unified entry point for converting any building-block collection in a snapshot to a tibble (or list of tibbles), dispatched on a <code>kind</code> argument. The eight existing <code>get_*_dfs()</code> functions remain available as thin wrappers (#36).</li>
 <li>New <code>CalculationMethodCache</code> R6 class wrapping the array of calculation method names stored on a <code>Compound</code> and inside an <code>Individual</code>’s <code>OriginData</code>. <code>Compound$calculation_methods</code> and <code>Individual$origin_data$calculation_methods</code> now return this class (#30).</li>
 <li>New <code>LocalizedParameter</code> R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from <code>Parameter</code> and migrates legacy <code>Applications</code> path segments to <code>Events</code> for v11+ snapshots. <code><a href="../reference/create_parameter.html">create_parameter()</a></code> now routes to <code>LocalizedParameter</code> when called with a <code>path</code> argument (#31).</li>
+<li>New <code>ObserverSet</code> R6 class wrapping the <code>ObserverSets</code> building blocks of a snapshot, accessible through <code>snapshot$observer_sets</code> and exported on round-trip. Observers inside a set are exposed as a raw list until the <code>Observer</code> leaf class lands (#38).</li>
 <li>New <code>OriginData</code> R6 class wrapping the demographic starting point of an <code>Individual</code> (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via <code>Individual$origin_data</code> (#30).</li>
 <li>New <code>Schema</code> and <code>SchemaItem</code> R6 classes wrapping the repeatable blocks and individual applications inside an Advanced <code>Protocol</code>. <code>Protocol$schemas</code> now returns a named list of <code>Schema</code> objects, each exposing <code>$items</code> as a list of <code>SchemaItem</code> objects with fields for application type, formulation key, target organ and compartment, and parameters (#29).</li>
+<li>
+<code><a href="../reference/add_observer_set.html">add_observer_set()</a></code> and <code><a href="../reference/remove_observer_set.html">remove_observer_set()</a></code> add and remove <code>ObserverSet</code> building blocks on a snapshot. Both are pipeable wrappers around the underlying R6 methods, following the same pattern as the other building-block mutators (#38).</li>
 <li>
 <code><a href="../reference/create_compound.html">create_compound()</a></code> builds a Compound building block from named arguments, wrapping <code>Compound$new()</code> with validation of common fields (#27). <code>molecular_weight_unit</code> is now validated against <code>ospsuite::ospUnits$"Molecular weight"</code> when <code>molecular_weight</code> is supplied (#48).</li>
 <li>
@@ -64,6 +67,8 @@
 <code><a href="../reference/create_population.html">create_population()</a></code> builds a Population building block from named arguments and <code>Range</code> objects for age, weight, height, and BMI bounds (#27). <code>number_of_individuals</code> must be a positive integer; <code>proportion_of_females</code> must be a length-1 number (#48).</li>
 <li>
 <code><a href="../reference/create_protocol.html">create_protocol()</a></code> builds a Simple or Advanced Protocol building block from named arguments, wrapping <code>Protocol$new()</code> (#27). Passing <code>schemas</code> now errors if any Simple Protocol field (<code>application_type</code>, <code>dosing_interval</code>, <code>target_organ</code>, <code>target_compartment</code>, <code>parameters</code>) is also supplied (#48).</li>
+<li>
+<code><a href="../reference/get_observer_sets_dfs.html">get_observer_sets_dfs()</a></code> returns a tibble with one row per <code>ObserverSet</code> and a count of its observers (#38).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-development-version">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-development-version"></a></h3>

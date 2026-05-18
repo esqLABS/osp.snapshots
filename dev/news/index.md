@@ -31,6 +31,10 @@
   [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   now routes to `LocalizedParameter` when called with a `path` argument
   (#31).
+- New `ObserverSet` R6 class wrapping the `ObserverSets` building blocks
+  of a snapshot, accessible through `snapshot$observer_sets` and
+  exported on round-trip. Observers inside a set are exposed as a raw
+  list until the `Observer` leaf class lands (#38).
 - New `OriginData` R6 class wrapping the demographic starting point of
   an `Individual` (species, population, gender, age, weight, height,
   gestational age, calculation methods, optional disease state).
@@ -41,6 +45,12 @@
   exposing `$items` as a list of `SchemaItem` objects with fields for
   application type, formulation key, target organ and compartment, and
   parameters (#29).
+- [`add_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observer_set.md)
+  and
+  [`remove_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observer_set.md)
+  add and remove `ObserverSet` building blocks on a snapshot. Both are
+  pipeable wrappers around the underlying R6 methods, following the same
+  pattern as the other building-block mutators (#38).
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   builds a Compound building block from named arguments, wrapping
   `Compound$new()` with validation of common fields (#27).
@@ -71,6 +81,9 @@
   errors if any Simple Protocol field (`application_type`,
   `dosing_interval`, `target_organ`, `target_compartment`, `parameters`)
   is also supplied (#48).
+- [`get_observer_sets_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observer_sets_dfs.md)
+  returns a tibble with one row per `ObserverSet` and a count of its
+  observers (#38).
 
 ### Minor improvements
 

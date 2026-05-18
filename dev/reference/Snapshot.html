@@ -9,7 +9,7 @@ methods to access different components of the snapshot and visualize its structu
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9012</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9013</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,6 +84,10 @@ methods to access different components of the snapshot and visualize its structu
 <dd><p>List of Event objects in the snapshot</p></dd>
 
 
+    <dt><code>observer_sets</code></dt>
+<dd><p>List of ObserverSet objects in the snapshot</p></dd>
+
+
     <dt><code>protocols</code></dt>
 <dd><p>List of Protocol objects in the snapshot</p></dd>
 
@@ -109,6 +113,8 @@ methods to access different components of the snapshot and visualize its structu
 <li><p><a href="#method-Snapshot-remove_population"><code>Snapshot$remove_population()</code></a></p></li>
 <li><p><a href="#method-Snapshot-add_expression_profile"><code>Snapshot$add_expression_profile()</code></a></p></li>
 <li><p><a href="#method-Snapshot-remove_expression_profile"><code>Snapshot$remove_expression_profile()</code></a></p></li>
+<li><p><a href="#method-Snapshot-add_observer_set"><code>Snapshot$add_observer_set()</code></a></p></li>
+<li><p><a href="#method-Snapshot-remove_observer_set"><code>Snapshot$remove_observer_set()</code></a></p></li>
 <li><p><a href="#method-Snapshot-add_observed_data"><code>Snapshot$add_observed_data()</code></a></p></li>
 <li><p><a href="#method-Snapshot-remove_observed_data"><code>Snapshot$remove_observed_data()</code></a></p></li>
 <li><p><a href="#method-Snapshot-clone"><code>Snapshot$clone()</code></a></p></li>
@@ -346,10 +352,28 @@ methods to access different components of the snapshot and visualize its structu
 
 </div>
 
+<p></p><hr><a id="method-Snapshot-add_observer_set"></a><div class="section">
+<h3 id="snapshot-add-observer-set-"><code>Snapshot$add_observer_set()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-observer-set-"></a></h3>
+<p></p><div class="section">
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_observer_set</span><span class="op">(</span><span class="va">observer_set</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-Snapshot-remove_observer_set"></a><div class="section">
+<h3 id="snapshot-remove-observer-set-"><code>Snapshot$remove_observer_set()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-observer-set-"></a></h3>
+<p></p><div class="section">
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_observer_set</span><span class="op">(</span><span class="va">observer_set_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-Snapshot-add_observed_data"></a><div class="section">
 <h3 id="snapshot-add-observed-data-"><code>Snapshot$add_observed_data()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-observed-data-"></a></h3>
 <p>Add a DataSet object (observed data) to the snapshot</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_observed_data</span><span class="op">(</span><span class="va">observed_data</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
@@ -368,7 +392,7 @@ methods to access different components of the snapshot and visualize its structu
 <p></p><hr><a id="method-Snapshot-remove_observed_data"></a><div class="section">
 <h3 id="snapshot-remove-observed-data-"><code>Snapshot$remove_observed_data()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-observed-data-"></a></h3>
 <p>Remove observed data from the snapshot by name</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_observed_data</span><span class="op">(</span><span class="va">observed_data_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
@@ -387,7 +411,7 @@ methods to access different components of the snapshot and visualize its structu
 <p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
 <h3 id="snapshot-clone-"><code>Snapshot$clone()</code><a class="anchor" aria-label="anchor" href="#snapshot-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>

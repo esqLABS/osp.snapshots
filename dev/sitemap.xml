@@ -15,6 +15,7 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Formulation.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Individual.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/ObserverSet.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/OriginData.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Population.html</loc></url>
@@ -26,6 +27,7 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/add_expression_profile.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/add_formulation.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/add_individual.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/add_observer_set.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/collection_item_label.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/collection_kind_info.html</loc></url>
@@ -47,6 +49,7 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_formulations_dfs.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_individuals_dfs.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_observed_data_dfs.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_observer_sets_dfs.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_populations_dfs.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_protocols_dfs.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/index.html</loc></url>
@@ -70,6 +73,7 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observer_set.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/remove_population.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/validate_gender.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/validate_population.html</loc></url>
