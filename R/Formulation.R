@@ -310,29 +310,28 @@ Formulation <- R6::R6Class(
     .data = NULL,
     .parameters = NULL,
     initialize_parameters = function() {
-      if (is.null(private$.data$Parameters)) {
-        return(invisible())
-      }
-
       # Formulation parameters carry `Name` rather than `Path`; reshape each
       # raw dict to the `Parameter` shape, preserving only the fields the
       # class consumes, before handing the list to the shared helper.
-      reshaped <- lapply(private$.data$Parameters, function(param) {
-        param_data <- list(
-          Path = param$Name,
-          Value = param$Value
-        )
-        if (!is.null(param$Unit)) {
-          param_data$Unit <- param$Unit
+      reshaped <- lapply(
+        private$.data$Parameters %||% list(),
+        function(param) {
+          param_data <- list(
+            Path = param$Name,
+            Value = param$Value
+          )
+          if (!is.null(param$Unit)) {
+            param_data$Unit <- param$Unit
+          }
+          if (!is.null(param$ValueOrigin)) {
+            param_data$ValueOrigin <- param$ValueOrigin
+          }
+          if (!is.null(param$TableFormula)) {
+            param_data$TableFormula <- param$TableFormula
+          }
+          param_data
         }
-        if (!is.null(param$ValueOrigin)) {
-          param_data$ValueOrigin <- param$ValueOrigin
-        }
-        if (!is.null(param$TableFormula)) {
-          param_data$TableFormula <- param$TableFormula
-        }
-        param_data
-      })
+      )
 
       private$.parameters <- build_parameters_from_raw(
         reshaped,
