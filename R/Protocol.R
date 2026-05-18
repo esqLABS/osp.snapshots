@@ -346,12 +346,14 @@ Protocol <- R6::R6Class(
           result$Schemas <- list()
         }
       }
-      if (
-        !self$is_advanced &&
-          !is.null(private$.data$Parameters) &&
-          length(private$.parameters) > 0
-      ) {
-        result$Parameters <- to_raw_parameters(private$.parameters, "Name")
+      if (!self$is_advanced) {
+        if (length(private$.parameters) > 0) {
+          result$Parameters <- to_raw_parameters(private$.parameters, "Name")
+        } else if (is.null(private$.data$Parameters)) {
+          result$Parameters <- NULL
+        } else {
+          result$Parameters <- list()
+        }
       }
       result
     },

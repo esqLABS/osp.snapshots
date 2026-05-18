@@ -203,6 +203,19 @@ test_that("Protocol parameters are converted to Parameter objects", {
   expect_true("End time" %in% param_names)
 })
 
+test_that("Protocol$data clears Parameters when emptied on simple protocols", {
+  simple_protocol <- Protocol$new(simple_protocol_data)
+  simple_protocol$parameters <- list()
+  expect_equal(simple_protocol$data$Parameters, list())
+})
+
+test_that("Protocol$data omits Parameters when absent from raw data", {
+  raw <- simple_protocol_data
+  raw$Parameters <- NULL
+  protocol <- Protocol$new(raw)
+  expect_null(protocol$data$Parameters)
+})
+
 test_that("Protocol schema structure is correct", {
   advanced_protocol <- Protocol$new(advanced_protocol_data)
 
