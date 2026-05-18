@@ -12,18 +12,18 @@ create_event(name, template, parameters = NULL)
 \item{template}{Character. Event template name passed to the PK-Sim
 factory (required). Determines which event type is created.}
 
-\item{parameters}{List of [Parameter] objects (created with
-[create_parameter()]) or raw parameter lists overriding values on
+\item{parameters}{List of \link{Parameter} objects (created with
+\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists overriding values on
 the cloned template.}
 }
 \value{
-An [Event] object.
+An \link{Event} object.
 }
 \description{
-Create an [Event] building block from named arguments. This is a thin
-factory around `Event$new()` that builds the raw list shape for you.
+Create an \link{Event} building block from named arguments. This is a thin
+factory around \code{Event$new()} that builds the raw list shape for you.
 
-An [Event] is a discrete non-administration perturbation that fires
+An \link{Event} is a discrete non-administration perturbation that fires
 at a specific simulation time (for example a meal, gallbladder
 emptying, or organ removal). PK-Sim creates events by cloning a named
 template and overriding parameters, so a template name is required.

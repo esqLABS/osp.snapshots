@@ -184,8 +184,9 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
 #' @format NULL
 #' @details
 #' `ObservedData` is a backwards-compatible alias for
-#' [loadDataSetFromSnapshot()]. It will be deprecated when this functionality
-#' moves to the `ospsuite` package.
+#' [loadDataSetFromSnapshot()] and may be retired in a future release if this
+#' functionality migrates to the `ospsuite` package. Prefer the
+#' `loadDataSetFromSnapshot()` name in new code.
 #' @export
 ObservedData <- loadDataSetFromSnapshot
 

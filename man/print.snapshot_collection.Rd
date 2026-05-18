@@ -7,13 +7,13 @@
 \method{print}{snapshot_collection}(x, n = 5, ...)
 }
 \arguments{
-\item{x}{A snapshot collection (a `snapshot_collection` named list).}
+\item{x}{A snapshot collection (a \code{snapshot_collection} named list).}
 
 \item{n}{Maximum number of items to display before truncating with
 "... and X more". Honoured only when the collection's
-`collection_kind_info()` method returns `truncate = TRUE`; the
+\code{collection_kind_info()} method returns \code{truncate = TRUE}; the
 default is to show every item. Currently only the
-`observed_data_collection` opts in.}
+\code{observed_data_collection} opts in.}
 
 \item{...}{Additional arguments passed to print methods.}
 }
@@ -25,6 +25,6 @@ Shared S3 print method that renders any building-block collection: a
 header with the kind and item count, one bullet per item with a
 per-kind summary, and a friendly message when the collection is
 empty. Per-item summary lines and per-kind labels are dispatched to
-internal generics `collection_kind_info()` and
-`collection_item_label()`, each with one method per collection class.
+internal generics \code{collection_kind_info()} and
+\code{collection_item_label()}, each with one method per collection class.
 }

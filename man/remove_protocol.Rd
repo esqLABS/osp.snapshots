@@ -7,15 +7,15 @@
 remove_protocol(snapshot, protocol_name)
 }
 \arguments{
-\item{snapshot}{A [Snapshot] object.}
+\item{snapshot}{A \link{Snapshot} object.}
 
 \item{protocol_name}{Character vector of protocol names to remove.}
 }
 \value{
-The updated [Snapshot] object, returned invisibly.
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Remove one or more protocols from a [Snapshot] by name.
+Remove one or more protocols from a \link{Snapshot} by name.
 }
 \examples{
 \dontrun{

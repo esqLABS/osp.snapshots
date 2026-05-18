@@ -7,10 +7,10 @@
 \description{
 An R6 class that represents a range of values with a minimum, maximum and
 unit. Used for age, weight, height, and BMI ranges in populations. Either
-`min` or `max` can be `NULL` to represent ranges with only an upper or
+\code{min} or \code{max} can be \code{NULL} to represent ranges with only an upper or
 lower bound.
 
-Use [range()] as the user-facing constructor; `Range$new()` is the
+Use \code{\link[=range]{range()}} as the user-facing constructor; \code{Range$new()} is the
 equivalent direct call on the R6 generator.
 }
 \section{Active bindings}{

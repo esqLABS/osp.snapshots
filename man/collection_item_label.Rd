@@ -8,19 +8,19 @@ collection_item_label(x, item, name)
 }
 \arguments{
 \item{x}{The owning snapshot collection. Present so that dispatch
-reads the collection class via `UseMethod()`; methods typically
+reads the collection class via \code{UseMethod()}; methods typically
 ignore the value.}
 
-\item{item}{The current entry, i.e. `x[[name]]`.}
+\item{item}{The current entry, i.e. \code{x[[name]]}.}
 
-\item{name}{The current entry's name in `x`.}
+\item{name}{The current entry's name in \code{x}.}
 }
 \value{
 A length-1 character (or glue) string.
 }
 \description{
 Internal S3 generic. Returns the text used for the bullet of a single
-item in `print.snapshot_collection()`.
+item in \code{print.snapshot_collection()}.
 }
 \details{
 Required return shape: length-1 character or glue string.

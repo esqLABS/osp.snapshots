@@ -19,40 +19,40 @@ create_protocol(
 \item{name}{Character. Name of the protocol (required).}
 
 \item{application_type}{Character. Application type for a Simple
-Protocol (for example `"Oral"`, `"IntravenousBolus"`, or
-`"IntravenousInfusion"`). Mutually exclusive with `schemas`.}
+Protocol (for example \code{"Oral"}, \code{"IntravenousBolus"}, or
+\code{"IntravenousInfusion"}). Mutually exclusive with \code{schemas}.}
 
 \item{dosing_interval}{Character. Dosing interval identifier for a
-Simple Protocol (for example `"Single"`, `"DI_12_12"`,
-`"DI_8_8_8"`, or `"DI_24"`).}
+Simple Protocol (for example \code{"Single"}, \code{"DI_12_12"},
+\code{"DI_8_8_8"}, or \code{"DI_24"}).}
 
 \item{target_organ}{Character. Target organ for the dose.}
 
 \item{target_compartment}{Character. Target compartment for the
 dose.}
 
-\item{parameters}{List of [Parameter] objects (created with
-[create_parameter()]) or raw parameter lists for Simple Protocol
+\item{parameters}{List of \link{Parameter} objects (created with
+\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists for Simple Protocol
 parameters such as start time, end time, and dose.}
 
 \item{schemas}{List of schema lists for an Advanced Protocol. Each
-schema is a list with `Name`, `Parameters`, and `SchemaItems`. If
+schema is a list with \code{Name}, \code{Parameters}, and \code{SchemaItems}. If
 provided, the protocol is created as an Advanced Protocol.}
 
 \item{time_unit}{Character. Display time unit for the protocol.}
 }
 \value{
-A [Protocol] object.
+A \link{Protocol} object.
 }
 \description{
-Create a [Protocol] building block from named arguments. This is a
-thin factory around `Protocol$new()` that builds the raw list shape
+Create a \link{Protocol} building block from named arguments. This is a
+thin factory around \code{Protocol$new()} that builds the raw list shape
 for you.
 
 By default this creates a Simple Protocol with a single application
 type and dosing interval. To create an Advanced Protocol pass a list
-of schemas via `schemas` instead of `application_type` and
-`dosing_interval`.
+of schemas via \code{schemas} instead of \code{application_type} and
+\code{dosing_interval}.
 }
 \examples{
 # Create a simple oral protocol with one dose

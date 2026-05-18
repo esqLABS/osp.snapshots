@@ -16,7 +16,7 @@ Invisibly returns the snapshot object
 }
 \description{
 Export a Snapshot object to a JSON file. This is a convenient wrapper
-around the `$export()` method of the Snapshot class.
+around the \verb{$export()} method of the Snapshot class.
 }
 \examples{
 \dontrun{

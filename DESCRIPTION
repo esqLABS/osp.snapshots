@@ -58,4 +58,5 @@ Config/testthat/edition: 3
 Remotes:
     ospsuite=Open-Systems-Pharmacology/OSPSuite-R
 Config/Needs/website: quarto
+Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.0.0

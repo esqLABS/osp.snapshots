@@ -7,16 +7,16 @@
 get_observer_sets_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
-A tibble with one row per `ObserverSet`, with columns
-  `observer_set_id`, `name`, `n_observers`. Richer per-observer
-  detail is deferred until the `Observer` leaf class lands.
+A tibble with one row per \code{ObserverSet}, with columns
+\code{observer_set_id}, \code{name}, \code{n_observers}. Richer per-observer
+detail is deferred until the \code{Observer} leaf class lands.
 }
 \description{
-Thin wrapper around [as_tibbles()] with `kind = "observer_sets"`.
-Prefer [as_tibbles()] in new code.
+Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "observer_sets"}.
+Prefer \code{\link[=as_tibbles]{as_tibbles()}} in new code.
 }
 \examples{
 \dontrun{

@@ -7,15 +7,15 @@
 get_populations_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
-A list with `populations` and `populations_parameters`
-  tibbles.
+A list with \code{populations} and \code{populations_parameters}
+tibbles.
 }
 \description{
-Thin wrapper around [as_tibbles()] with `kind = "populations"`.
-Prefer [as_tibbles()] in new code.
+Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "populations"}.
+Prefer \code{\link[=as_tibbles]{as_tibbles()}} in new code.
 }
 \examples{
 \dontrun{

@@ -8,19 +8,19 @@ An R6 class that represents a compound in an OSP snapshot.
 This class provides methods to access different properties of a compound
 and display a summary of its information.
 
-Compound processes are exposed via `$processes`, a flat named list of
-[Process] objects. The per-category tibble accessors
-(`$protein_binding_partners`, `$metabolizing_enzymes`,
-`$hepatic_clearance`, `$transporter_proteins`, `$renal_clearance`,
-`$biliary_clearance`, `$inhibition`, `$induction`) are
-[`lifecycle::deprecate_soft()`]-warned in favour of `$processes` and the
-long-form `processes` tibble returned by [get_compounds_dfs()].
+Compound processes are exposed via \verb{$processes}, a flat named list of
+\link{Process} objects. The per-category tibble accessors
+(\verb{$protein_binding_partners}, \verb{$metabolizing_enzymes},
+\verb{$hepatic_clearance}, \verb{$transporter_proteins}, \verb{$renal_clearance},
+\verb{$biliary_clearance}, \verb{$inhibition}, \verb{$induction}) are
+\code{\link[lifecycle:deprecate_soft]{lifecycle::deprecate_soft()}}-warned in favour of \verb{$processes} and the
+long-form \code{processes} tibble returned by \code{\link[=get_compounds_dfs]{get_compounds_dfs()}}.
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
     \item{\code{data}}{The raw data of the compound (read-only). Refreshed from
-the embedded [CalculationMethodCache] and the cached [Process]
+the embedded \link{CalculationMethodCache} and the cached \link{Process}
 objects so that mutations flow back to the export payload.}
 
     \item{\code{name}}{The name of the compound}
@@ -43,35 +43,34 @@ objects so that mutations flow back to the export payload.}
 
     \item{\code{pka_types}}{The pKa types of the compound}
 
-    \item{\code{processes}}{A flat named list of [Process] objects, one per
-entry in the compound's `Processes` array. Duplicate names are
-disambiguated with a numeric suffix (`_1`, `_2`, ...). The list is
+    \item{\code{processes}}{A flat named list of \link{Process} objects, one per
+entry in the compound's \code{Processes} array. Duplicate names are
+disambiguated with a numeric suffix (\verb{_1}, \verb{_2}, ...). The list is
 built once at construction so that state changes made on a
-[Process] persist across accesses.}
+\link{Process} persist across accesses.}
 
-    \item{\code{calculation_methods}}{A [CalculationMethodCache] holding the
+    \item{\code{calculation_methods}}{A \link{CalculationMethodCache} holding the
 compound's calculation methods.}
 
     \item{\code{parameters}}{The additional parameters of the compound (excluding molecular weight)}
 
     \item{\code{protein_binding_partners}}{Deprecated. Filter
-[get_compounds_dfs()]`$processes` on `category ==
-"protein_binding_partners"`, or iterate `self$processes` and check
-`process$category`.}
+\code{\link[=get_compounds_dfs]{get_compounds_dfs()}}\verb{$processes} on \code{category == "protein_binding_partners"}, or iterate \code{self$processes} and check
+\code{process$category}.}
 
-    \item{\code{metabolizing_enzymes}}{Deprecated. See `$protein_binding_partners`.}
+    \item{\code{metabolizing_enzymes}}{Deprecated. See \verb{$protein_binding_partners}.}
 
-    \item{\code{hepatic_clearance}}{Deprecated. See `$protein_binding_partners`.}
+    \item{\code{hepatic_clearance}}{Deprecated. See \verb{$protein_binding_partners}.}
 
-    \item{\code{transporter_proteins}}{Deprecated. See `$protein_binding_partners`.}
+    \item{\code{transporter_proteins}}{Deprecated. See \verb{$protein_binding_partners}.}
 
-    \item{\code{renal_clearance}}{Deprecated. See `$protein_binding_partners`.}
+    \item{\code{renal_clearance}}{Deprecated. See \verb{$protein_binding_partners}.}
 
-    \item{\code{biliary_clearance}}{Deprecated. See `$protein_binding_partners`.}
+    \item{\code{biliary_clearance}}{Deprecated. See \verb{$protein_binding_partners}.}
 
-    \item{\code{inhibition}}{Deprecated. See `$protein_binding_partners`.}
+    \item{\code{inhibition}}{Deprecated. See \verb{$protein_binding_partners}.}
 
-    \item{\code{induction}}{Deprecated. See `$protein_binding_partners`.}
+    \item{\code{induction}}{Deprecated. See \verb{$protein_binding_partners}.}
   }
   \if{html}{\out{</div>}}
 }
@@ -135,19 +134,19 @@ compound's calculation methods.}
   Convert this compound's physicochemical properties and process
 parameters to a single long-form tibble (legacy shape).
 
-Used by [get_compounds_dfs()] to assemble the compound-wide
-`properties` tibble. The process-derived rows produced here are
-[`lifecycle::deprecate_soft()`]-warned at the
-[get_compounds_dfs()] entry point; prefer the long-form
-`processes` tibble returned alongside.
+Used by \code{\link[=get_compounds_dfs]{get_compounds_dfs()}} to assemble the compound-wide
+\code{properties} tibble. The process-derived rows produced here are
+\code{\link[lifecycle:deprecate_soft]{lifecycle::deprecate_soft()}}-warned at the
+\code{\link[=get_compounds_dfs]{get_compounds_dfs()}} entry point; prefer the long-form
+\code{processes} tibble returned alongside.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Compound$to_df()}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    A tibble with columns `compound`, `category`, `type`,
-  `parameter`, `value`, `unit`, `data_source`, `source`.
+    A tibble with columns \code{compound}, \code{category}, \code{type},
+\code{parameter}, \code{value}, \code{unit}, \code{data_source}, \code{source}.
   }
 }
 

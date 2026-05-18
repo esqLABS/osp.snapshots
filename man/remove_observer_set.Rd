@@ -7,15 +7,15 @@
 remove_observer_set(snapshot, observer_set_name)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 
 \item{observer_set_name}{Character vector of observer set names to remove.}
 }
 \value{
-The updated `Snapshot` object, invisibly.
+The updated \code{Snapshot} object, invisibly.
 }
 \description{
-Remove one or more `ObserverSet` building blocks from a `Snapshot` by name.
+Remove one or more \code{ObserverSet} building blocks from a \code{Snapshot} by name.
 Names not present in the snapshot trigger a warning rather than an error so
 callers can run idempotent cleanup pipelines.
 }
