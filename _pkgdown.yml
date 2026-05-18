@@ -82,6 +82,7 @@ reference:
   - create_formulation
   - create_individual
   - create_observed_data
+  - create_observer_set
   - create_parameter
   - create_population
   - create_process
