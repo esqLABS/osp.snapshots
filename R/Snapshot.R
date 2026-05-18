@@ -814,46 +814,6 @@ Snapshot <- R6::R6Class(
 
       return(pksim_version)
     },
-    # Build a named list from a building-block collection, disambiguating
-    # duplicate keys by appending "_{n}" suffixes. `key_fn` extracts the
-    # lookup key from each item (typically `Name`, but ExpressionProfile uses
-    # the composite `Molecule|Species|Category` id).
-    .build_named_list = function(
-      items,
-      collection_class,
-      key_fn = function(x) x$name
-    ) {
-      named <- list()
-      class(named) <- c(collection_class, "list")
-
-      if (length(items) == 0) {
-        return(named)
-      }
-
-      keys <- vapply(items, key_fn, character(1))
-      key_counts <- table(keys)
-      key_indices <- list()
-
-      for (i in seq_along(items)) {
-        key <- keys[i]
-
-        if (is.null(key_indices[[key]])) {
-          key_indices[[key]] <- 0
-        }
-        key_indices[[key]] <- key_indices[[key]] + 1
-
-        if (key_counts[key] > 1) {
-          final_name <- glue::glue("{key}_{key_indices[[key]]}")
-        } else {
-          final_name <- key
-        }
-
-        named[[final_name]] <- items[[i]]
-      }
-
-      named
-    },
-
     # Store compound objects in an unnamed list
     .compounds = NULL,
 
@@ -900,7 +860,56 @@ Snapshot <- R6::R6Class(
     .observed_data = NULL,
 
     # Cache for the named observed data list with disambiguated names
-    .observed_data_named = NULL
+    .observed_data_named = NULL,
+
+    # Build a named list from a building-block collection, disambiguating
+    # duplicate keys by appending "_{n}" suffixes. `key_fn` extracts the
+    # lookup key from each item (typically the building-block's `$name`
+    # field, but ExpressionProfile uses the composite
+    # `Molecule|Species|Category` id).
+    .build_named_list = function(
+      items,
+      collection_class,
+      key_fn = \(x) x$name
+    ) {
+      named <- list()
+      class(named) <- c(collection_class, "list")
+
+      if (length(items) == 0) {
+        return(named)
+      }
+
+      keys <- vapply(items, key_fn, character(1))
+
+      if (!anyDuplicated(keys)) {
+        named <- items
+        names(named) <- keys
+        class(named) <- c(collection_class, "list")
+        return(named)
+      }
+
+      key_counts <- table(keys)
+      key_indices <- list()
+
+      for (i in seq_along(items)) {
+        key <- keys[i]
+
+        if (is.null(key_indices[[key]])) {
+          key_indices[[key]] <- 0
+        }
+        key_indices[[key]] <- key_indices[[key]] + 1
+
+        if (key_counts[key] > 1) {
+          final_name <- glue::glue("{key}_{key_indices[[key]]}")
+        } else {
+          final_name <- key
+        }
+
+        named[[final_name]] <- items[[i]]
+      }
+
+      named
+    }
   )
 )
 
