@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9013</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,17 @@
 <li>New <code>OriginData</code> R6 class wrapping the demographic starting point of an <code>Individual</code> (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via <code>Individual$origin_data</code> (#30).</li>
 <li>New <code>Schema</code> and <code>SchemaItem</code> R6 classes wrapping the repeatable blocks and individual applications inside an Advanced <code>Protocol</code>. <code>Protocol$schemas</code> now returns a named list of <code>Schema</code> objects, each exposing <code>$items</code> as a list of <code>SchemaItem</code> objects with fields for application type, formulation key, target organ and compartment, and parameters (#29).</li>
 <li>
+<code><a href="../reference/add_compound.html">add_compound()</a></code> attaches a <code>Compound</code> building block to a <code>Snapshot</code> (#39).</li>
+<li>
+<code><a href="../reference/add_event.html">add_event()</a></code> attaches an <code>Event</code> building block to a <code>Snapshot</code> (#39).</li>
+<li>
+<code><a href="../reference/add_observed_data.html">add_observed_data()</a></code> attaches an <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">ospsuite::DataSet</a></code> to a <code>Snapshot</code> as an exported function wrapping the existing R6 method (#39).</li>
+<li>
 <code><a href="../reference/add_observer_set.html">add_observer_set()</a></code> and <code><a href="../reference/remove_observer_set.html">remove_observer_set()</a></code> add and remove <code>ObserverSet</code> building blocks on a snapshot. Both are pipeable wrappers around the underlying R6 methods, following the same pattern as the other building-block mutators (#38).</li>
+<li>
+<code><a href="../reference/add_population.html">add_population()</a></code> attaches a <code>Population</code> building block to a <code>Snapshot</code> (#39).</li>
+<li>
+<code><a href="../reference/add_protocol.html">add_protocol()</a></code> attaches a <code>Protocol</code> building block to a <code>Snapshot</code> (#39).</li>
 <li>
 <code><a href="../reference/create_compound.html">create_compound()</a></code> builds a Compound building block from named arguments, wrapping <code>Compound$new()</code> with validation of common fields (#27). <code>molecular_weight_unit</code> is now validated against <code>ospsuite::ospUnits$"Molecular weight"</code> when <code>molecular_weight</code> is supplied (#48).</li>
 <li>
@@ -69,15 +79,23 @@
 <code><a href="../reference/create_protocol.html">create_protocol()</a></code> builds a Simple or Advanced Protocol building block from named arguments, wrapping <code>Protocol$new()</code> (#27). Passing <code>schemas</code> now errors if any Simple Protocol field (<code>application_type</code>, <code>dosing_interval</code>, <code>target_organ</code>, <code>target_compartment</code>, <code>parameters</code>) is also supplied (#48).</li>
 <li>
 <code><a href="../reference/get_observer_sets_dfs.html">get_observer_sets_dfs()</a></code> returns a tibble with one row per <code>ObserverSet</code> and a count of its observers (#38).</li>
+<li>
+<code><a href="../reference/remove_compound.html">remove_compound()</a></code> removes compounds from a <code>Snapshot</code> by name (#39).</li>
+<li>
+<code><a href="../reference/remove_event.html">remove_event()</a></code> removes events from a <code>Snapshot</code> by name (#39).</li>
+<li>
+<code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code> removes observed-data entries from a <code>Snapshot</code> by name as an exported function wrapping the existing R6 method (#39).</li>
+<li>
+<code><a href="../reference/remove_protocol.html">remove_protocol()</a></code> removes protocols from a <code>Snapshot</code> by name (#39).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-development-version">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-development-version"></a></h3>
 <ul><li><p>Building-block collections now share a <code>snapshot_collection</code> S3 class with a single generic <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> method, replacing the eight per-kind methods. The existing per-kind classes (<code>compound_collection</code>, <code>individual_collection</code>, etc.) are preserved as marker classes (#34).</p></li>
-<li><p><code><a href="../reference/export_snapshot.html">export_snapshot()</a></code> now documents that mutations to a <code>DataSet</code> after load (e.g. changing <code>xUnit</code> on an entry in <code>Snapshot$observed_data</code>) are not preserved on export. The exported <code>ObservedData</code> section is replayed verbatim from the original snapshot JSON, filtered to entries that still exist after <code>remove_observed_data()</code>. This matches the previous behaviour; only the documentation is new (#35).</p></li>
+<li><p><code><a href="../reference/export_snapshot.html">export_snapshot()</a></code> now documents that mutations to a <code>DataSet</code> after load (e.g. changing <code>xUnit</code> on an entry in <code>Snapshot$observed_data</code>) are not preserved on export. The exported <code>ObservedData</code> section is replayed verbatim from the original snapshot JSON, filtered to entries that still exist after <code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code>. This matches the previous behaviour; only the documentation is new (#35).</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
-<ul><li><p>Fixed <code>Snapshot$data</code> so observed data removed via <code>remove_observed_data()</code> is also dropped from the exported snapshot. Previously the export reused the full original <code>ObservedData</code> list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip. The same fix applies to every building-block section: clearing a collection via <code><a href="../reference/remove_individual.html">remove_individual()</a></code>, <code><a href="../reference/remove_formulation.html">remove_formulation()</a></code>, <code><a href="../reference/remove_population.html">remove_population()</a></code>, or <code><a href="../reference/remove_expression_profile.html">remove_expression_profile()</a></code> now writes an empty section on export instead of falling back to the original entries (#35).</p></li>
+<ul><li><p>Fixed <code>Snapshot$data</code> so observed data removed via <code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code> is also dropped from the exported snapshot. Previously the export reused the full original <code>ObservedData</code> list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip. The same fix applies to every building-block section: clearing a collection via <code><a href="../reference/remove_individual.html">remove_individual()</a></code>, <code><a href="../reference/remove_formulation.html">remove_formulation()</a></code>, <code><a href="../reference/remove_population.html">remove_population()</a></code>, or <code><a href="../reference/remove_expression_profile.html">remove_expression_profile()</a></code> now writes an empty section on export instead of falling back to the original entries (#35).</p></li>
 <li><p>Fixed snapshot export/import so single-element JSON arrays remain arrays, allowing exported snapshots to load in PK-Sim (#23).</p></li>
 </ul></div>
 </div>

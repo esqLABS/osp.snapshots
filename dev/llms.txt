@@ -198,24 +198,42 @@ Functions to create new building blocks from scratch
 
 Add and remove building blocks from snapshots
 
-- [`add_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_individual.md)
-  : Add an individual to a snapshot
-- [`add_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_formulation.md)
-  : Add a formulation to a snapshot
+- [`add_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_compound.md)
+  : Add a compound to a snapshot
+- [`add_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_event.md)
+  : Add an event to a snapshot
 - [`add_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_expression_profile.md)
   : Add an expression profile to a snapshot
+- [`add_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_formulation.md)
+  : Add a formulation to a snapshot
+- [`add_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_individual.md)
+  : Add an individual to a snapshot
+- [`add_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observed_data.md)
+  : Add observed data to a snapshot
 - [`add_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observer_set.md)
   : Add an observer set to a snapshot
-- [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md)
-  : Remove individuals from a snapshot
-- [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md)
-  : Remove formulations from a snapshot
-- [`remove_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_population.md)
-  : Remove populations from a snapshot
+- [`add_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_population.md)
+  : Add a population to a snapshot
+- [`add_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_protocol.md)
+  : Add a protocol to a snapshot
+- [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
+  : Remove compounds from a snapshot
+- [`remove_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_event.md)
+  : Remove events from a snapshot
 - [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md)
   : Remove expression profiles from a snapshot
+- [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md)
+  : Remove formulations from a snapshot
+- [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md)
+  : Remove individuals from a snapshot
+- [`remove_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observed_data.md)
+  : Remove observed data from a snapshot
 - [`remove_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observer_set.md)
   : Remove observer sets from a snapshot
+- [`remove_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_population.md)
+  : Remove populations from a snapshot
+- [`remove_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_protocol.md)
+  : Remove protocols from a snapshot
 
 ## Data Frame Conversion
 

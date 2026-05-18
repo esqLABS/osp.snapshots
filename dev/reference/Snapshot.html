@@ -9,7 +9,7 @@ methods to access different components of the snapshot and visualize its structu
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9013</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,6 +117,13 @@ methods to access different components of the snapshot and visualize its structu
 <li><p><a href="#method-Snapshot-remove_observer_set"><code>Snapshot$remove_observer_set()</code></a></p></li>
 <li><p><a href="#method-Snapshot-add_observed_data"><code>Snapshot$add_observed_data()</code></a></p></li>
 <li><p><a href="#method-Snapshot-remove_observed_data"><code>Snapshot$remove_observed_data()</code></a></p></li>
+<li><p><a href="#method-Snapshot-add_compound"><code>Snapshot$add_compound()</code></a></p></li>
+<li><p><a href="#method-Snapshot-remove_compound"><code>Snapshot$remove_compound()</code></a></p></li>
+<li><p><a href="#method-Snapshot-add_population"><code>Snapshot$add_population()</code></a></p></li>
+<li><p><a href="#method-Snapshot-add_protocol"><code>Snapshot$add_protocol()</code></a></p></li>
+<li><p><a href="#method-Snapshot-remove_protocol"><code>Snapshot$remove_protocol()</code></a></p></li>
+<li><p><a href="#method-Snapshot-add_event"><code>Snapshot$add_event()</code></a></p></li>
+<li><p><a href="#method-Snapshot-remove_event"><code>Snapshot$remove_event()</code></a></p></li>
 <li><p><a href="#method-Snapshot-clone"><code>Snapshot$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-Snapshot-initialize"></a><div class="section">
 <h3 id="snapshot-new-"><code>Snapshot$new()</code><a class="anchor" aria-label="anchor" href="#snapshot-new-"></a></h3>
@@ -408,10 +415,73 @@ methods to access different components of the snapshot and visualize its structu
 
 </div>
 
+<p></p><hr><a id="method-Snapshot-add_compound"></a><div class="section">
+<h3 id="snapshot-add-compound-"><code>Snapshot$add_compound()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-compound-"></a></h3>
+<p></p><div class="section">
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_compound</span><span class="op">(</span><span class="va">compound</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-Snapshot-remove_compound"></a><div class="section">
+<h3 id="snapshot-remove-compound-"><code>Snapshot$remove_compound()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-compound-"></a></h3>
+<p></p><div class="section">
+<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_compound</span><span class="op">(</span><span class="va">compound_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-Snapshot-add_population"></a><div class="section">
+<h3 id="snapshot-add-population-"><code>Snapshot$add_population()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-population-"></a></h3>
+<p></p><div class="section">
+<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_population</span><span class="op">(</span><span class="va">population</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-Snapshot-add_protocol"></a><div class="section">
+<h3 id="snapshot-add-protocol-"><code>Snapshot$add_protocol()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-protocol-"></a></h3>
+<p></p><div class="section">
+<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_protocol</span><span class="op">(</span><span class="va">protocol</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-Snapshot-remove_protocol"></a><div class="section">
+<h3 id="snapshot-remove-protocol-"><code>Snapshot$remove_protocol()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-protocol-"></a></h3>
+<p></p><div class="section">
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_protocol</span><span class="op">(</span><span class="va">protocol_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-Snapshot-add_event"></a><div class="section">
+<h3 id="snapshot-add-event-"><code>Snapshot$add_event()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-event-"></a></h3>
+<p></p><div class="section">
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_event</span><span class="op">(</span><span class="va">event</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-Snapshot-remove_event"></a><div class="section">
+<h3 id="snapshot-remove-event-"><code>Snapshot$remove_event()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-event-"></a></h3>
+<p></p><div class="section">
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_event</span><span class="op">(</span><span class="va">event_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
 <h3 id="snapshot-clone-"><code>Snapshot$clone()</code><a class="anchor" aria-label="anchor" href="#snapshot-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>

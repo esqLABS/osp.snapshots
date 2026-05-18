@@ -86,6 +86,20 @@ structure.
 
 - [`Snapshot$remove_observed_data()`](#method-Snapshot-remove_observed_data)
 
+- [`Snapshot$add_compound()`](#method-Snapshot-add_compound)
+
+- [`Snapshot$remove_compound()`](#method-Snapshot-remove_compound)
+
+- [`Snapshot$add_population()`](#method-Snapshot-add_population)
+
+- [`Snapshot$add_protocol()`](#method-Snapshot-add_protocol)
+
+- [`Snapshot$remove_protocol()`](#method-Snapshot-remove_protocol)
+
+- [`Snapshot$add_event()`](#method-Snapshot-add_event)
+
+- [`Snapshot$remove_event()`](#method-Snapshot-remove_event)
+
 - [`Snapshot$clone()`](#method-Snapshot-clone)
 
 ------------------------------------------------------------------------
@@ -395,6 +409,62 @@ Remove observed data from the snapshot by name
 #### Returns
 
 Invisibly returns the object
+
+------------------------------------------------------------------------
+
+### `Snapshot$add_compound()`
+
+#### Usage
+
+    Snapshot$add_compound(compound)
+
+------------------------------------------------------------------------
+
+### `Snapshot$remove_compound()`
+
+#### Usage
+
+    Snapshot$remove_compound(compound_name)
+
+------------------------------------------------------------------------
+
+### `Snapshot$add_population()`
+
+#### Usage
+
+    Snapshot$add_population(population)
+
+------------------------------------------------------------------------
+
+### `Snapshot$add_protocol()`
+
+#### Usage
+
+    Snapshot$add_protocol(protocol)
+
+------------------------------------------------------------------------
+
+### `Snapshot$remove_protocol()`
+
+#### Usage
+
+    Snapshot$remove_protocol(protocol_name)
+
+------------------------------------------------------------------------
+
+### `Snapshot$add_event()`
+
+#### Usage
+
+    Snapshot$add_event(event)
+
+------------------------------------------------------------------------
+
+### `Snapshot$remove_event()`
+
+#### Usage
+
+    Snapshot$remove_event(event_name)
 
 ------------------------------------------------------------------------
 

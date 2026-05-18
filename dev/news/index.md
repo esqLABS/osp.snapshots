@@ -45,12 +45,25 @@
   exposing `$items` as a list of `SchemaItem` objects with fields for
   application type, formulation key, target organ and compartment, and
   parameters (#29).
+- [`add_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_compound.md)
+  attaches a `Compound` building block to a `Snapshot` (#39).
+- [`add_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_event.md)
+  attaches an `Event` building block to a `Snapshot` (#39).
+- [`add_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observed_data.md)
+  attaches an
+  [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
+  to a `Snapshot` as an exported function wrapping the existing R6
+  method (#39).
 - [`add_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observer_set.md)
   and
   [`remove_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observer_set.md)
   add and remove `ObserverSet` building blocks on a snapshot. Both are
   pipeable wrappers around the underlying R6 methods, following the same
   pattern as the other building-block mutators (#38).
+- [`add_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_population.md)
+  attaches a `Population` building block to a `Snapshot` (#39).
+- [`add_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_protocol.md)
+  attaches a `Protocol` building block to a `Snapshot` (#39).
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   builds a Compound building block from named arguments, wrapping
   `Compound$new()` with validation of common fields (#27).
@@ -84,6 +97,15 @@
 - [`get_observer_sets_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observer_sets_dfs.md)
   returns a tibble with one row per `ObserverSet` and a count of its
   observers (#38).
+- [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
+  removes compounds from a `Snapshot` by name (#39).
+- [`remove_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_event.md)
+  removes events from a `Snapshot` by name (#39).
+- [`remove_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observed_data.md)
+  removes observed-data entries from a `Snapshot` by name as an exported
+  function wrapping the existing R6 method (#39).
+- [`remove_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_protocol.md)
+  removes protocols from a `Snapshot` by name (#39).
 
 ### Minor improvements
 
@@ -98,17 +120,19 @@
   `xUnit` on an entry in `Snapshot$observed_data`) are not preserved on
   export. The exported `ObservedData` section is replayed verbatim from
   the original snapshot JSON, filtered to entries that still exist after
-  `remove_observed_data()`. This matches the previous behaviour; only
-  the documentation is new (#35).
+  [`remove_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observed_data.md).
+  This matches the previous behaviour; only the documentation is new
+  (#35).
 
 ### Bug fixes
 
 - Fixed `Snapshot$data` so observed data removed via
-  `remove_observed_data()` is also dropped from the exported snapshot.
-  Previously the export reused the full original `ObservedData` list
-  whenever the lazy cache had been touched, re-introducing the removed
-  entries on round-trip. The same fix applies to every building-block
-  section: clearing a collection via
+  [`remove_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observed_data.md)
+  is also dropped from the exported snapshot. Previously the export
+  reused the full original `ObservedData` list whenever the lazy cache
+  had been touched, re-introducing the removed entries on round-trip.
+  The same fix applies to every building-block section: clearing a
+  collection via
   [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md),
   [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md),
   [`remove_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_population.md),
