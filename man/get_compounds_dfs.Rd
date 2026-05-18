@@ -7,15 +7,15 @@
 get_compounds_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
-A list with `properties` and `processes` tibbles; see
-  [as_tibbles()] for the column contract.
+A list with \code{properties} and \code{processes} tibbles; see
+\code{\link[=as_tibbles]{as_tibbles()}} for the column contract.
 }
 \description{
-Thin wrapper around [as_tibbles()] with `kind = "compounds"`.
-Prefer [as_tibbles()] in new code.
+Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "compounds"}.
+Prefer \code{\link[=as_tibbles]{as_tibbles()}} in new code.
 }
 \examples{
 \dontrun{

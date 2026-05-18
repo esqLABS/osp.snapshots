@@ -7,19 +7,22 @@
 range(min, max, unit)
 }
 \arguments{
-\item{min}{Numeric or NULL. Minimum value, can be NULL for ranges with only an upper bound}
+\item{min}{Numeric or \code{NULL}. Minimum value, can be \code{NULL} for ranges with
+only an upper bound.}
 
-\item{max}{Numeric or NULL. Maximum value, can be NULL for ranges with only a lower bound}
+\item{max}{Numeric or \code{NULL}. Maximum value, can be \code{NULL} for ranges with
+only a lower bound.}
 
-\item{unit}{Character. Unit for the range}
+\item{unit}{Character. Unit for the range.}
 }
 \value{
-A Range object
+A \link{Range} object.
 }
 \description{
-Create a new Range object with the specified min, max, and unit values.
-Either min or max can be NULL to represent ranges with only an upper or lower bound.
-Min and max can also be equal to represent a single value.
+Create a new \link{Range} object with the specified min, max, and unit values.
+Either \code{min} or \code{max} can be \code{NULL} to represent ranges with only an upper
+or lower bound. \code{min} and \code{max} can also be equal to represent a single
+value.
 }
 \examples{
 \dontrun{

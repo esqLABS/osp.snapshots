@@ -7,15 +7,15 @@
 remove_event(snapshot, event_name)
 }
 \arguments{
-\item{snapshot}{A [Snapshot] object.}
+\item{snapshot}{A \link{Snapshot} object.}
 
 \item{event_name}{Character vector of event names to remove.}
 }
 \value{
-The updated [Snapshot] object, returned invisibly.
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Remove one or more events from a [Snapshot] by name.
+Remove one or more events from a \link{Snapshot} by name.
 }
 \examples{
 \dontrun{

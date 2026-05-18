@@ -14,11 +14,11 @@ create_process(
 )
 }
 \arguments{
-\item{internal_name}{Character. The PK-Sim `InternalName` for the
-process template (e.g. `"SpecificBinding"`,
-`"MetabolizationSpecific_MM"`, `"GlomerularFiltration"`). Required.}
+\item{internal_name}{Character. The PK-Sim \code{InternalName} for the
+process template (e.g. \code{"SpecificBinding"},
+\code{"MetabolizationSpecific_MM"}, \code{"GlomerularFiltration"}). Required.}
 
-\item{data_source}{Character. The `DataSource` string identifying the
+\item{data_source}{Character. The \code{DataSource} string identifying the
 process. Required.}
 
 \item{molecule}{Character. Optional molecule name for partial processes
@@ -30,15 +30,15 @@ processes.}
 \item{species}{Character. Optional species name for species-dependent
 processes.}
 
-\item{parameters}{List of [Parameter] objects (created with
-[create_parameter()]) or raw parameter lists to attach to the process.}
+\item{parameters}{List of \link{Parameter} objects (created with
+\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists to attach to the process.}
 }
 \value{
-A [Process] object.
+A \link{Process} object.
 }
 \description{
-Create a [Process] (a PK-Sim `CompoundProcess`) from named arguments.
-This is a thin factory around `Process$new()` that builds the raw list
+Create a \link{Process} (a PK-Sim \code{CompoundProcess}) from named arguments.
+This is a thin factory around \code{Process$new()} that builds the raw list
 shape for you.
 
 For richer process structures (such as parameters with full value

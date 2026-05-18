@@ -7,15 +7,15 @@
 add_observer_set(snapshot, observer_set)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 
-\item{observer_set}{An `ObserverSet` object.}
+\item{observer_set}{An \code{ObserverSet} object.}
 }
 \value{
-The updated `Snapshot` object, invisibly.
+The updated \code{Snapshot} object, invisibly.
 }
 \description{
-Add an `ObserverSet` building block to a `Snapshot`. The exported function
+Add an \code{ObserverSet} building block to a \code{Snapshot}. The exported function
 is the canonical, pipeable surface for the mutation; it validates the
 snapshot before delegating to the underlying R6 method.
 }

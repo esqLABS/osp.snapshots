@@ -8,10 +8,11 @@ load_snapshot(source)
 }
 \arguments{
 \item{source}{Character string. Can be:
-
-  - Path to a local file (.json)
-  - URL to a remote snapshot file
-  - Name of a template from the OSPSuite.BuildingBlockTemplates repository}
+\itemize{
+\item Path to a local file (.json)
+\item URL to a remote snapshot file
+\item Name of a template from the OSPSuite.BuildingBlockTemplates repository
+}}
 }
 \value{
 A Snapshot object
@@ -20,7 +21,7 @@ A Snapshot object
 Conveniently load an OSP snapshot from a local file, URL, or predefined template name.
 }
 \details{
-Available templates can be listed with `osp_models()`.
+Available templates can be listed with \code{osp_models()}.
 }
 \examples{
 \dontrun{

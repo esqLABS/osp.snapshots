@@ -7,15 +7,15 @@
 add_compound(snapshot, compound)
 }
 \arguments{
-\item{snapshot}{A [Snapshot] object.}
+\item{snapshot}{A \link{Snapshot} object.}
 
-\item{compound}{A [Compound] object created with [create_compound()].}
+\item{compound}{A \link{Compound} object created with \code{\link[=create_compound]{create_compound()}}.}
 }
 \value{
-The updated [Snapshot] object, returned invisibly.
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add a [Compound] object to a [Snapshot].
+Add a \link{Compound} object to a \link{Snapshot}.
 }
 \examples{
 \dontrun{

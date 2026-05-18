@@ -18,42 +18,42 @@ create_expression_profile(
 }
 \arguments{
 \item{molecule}{Character. Name of the molecule (for example
-`"CYP3A4"`). Required.}
+\code{"CYP3A4"}). Required.}
 
-\item{species}{Character. Species (for example `"Human"`). Required.}
+\item{species}{Character. Species (for example \code{"Human"}). Required.}
 
 \item{category}{Character. Category disambiguator (for example
-`"Healthy"` or `"Variability"`). Required.}
+\code{"Healthy"} or \code{"Variability"}). Required.}
 
-\item{type}{Character. Molecule type, typically one of `"Enzyme"`,
-`"Transporter"`, or `"OtherProtein"`. Required.}
+\item{type}{Character. Molecule type, typically one of \code{"Enzyme"},
+\code{"Transporter"}, or \code{"OtherProtein"}. Required.}
 
 \item{localization}{Character. Expression localization for proteins.}
 
 \item{transport_type}{Character. Transporter type (for transporter
-profiles), for example `"Efflux"` or `"Influx"`.}
+profiles), for example \code{"Efflux"} or \code{"Influx"}.}
 
 \item{ontogeny}{Character or list. Ontogeny name, or a raw ontogeny
 list. If a string is supplied it is wrapped as
-`list(Name = ontogeny)`.}
+\code{list(Name = ontogeny)}.}
 
-\item{parameters}{List of [Parameter] objects (created with
-[create_parameter()]) or raw parameter lists describing relative
+\item{parameters}{List of \link{Parameter} objects (created with
+\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists describing relative
 expression and other per-organ values.}
 
 \item{description}{Character. Free-text description of the profile.}
 }
 \value{
-An [ExpressionProfile] object.
+An \link{ExpressionProfile} object.
 }
 \description{
-Create an [ExpressionProfile] building block from named arguments.
-This is a thin factory around `ExpressionProfile$new()` that builds
+Create an \link{ExpressionProfile} building block from named arguments.
+This is a thin factory around \code{ExpressionProfile$new()} that builds
 the raw list shape for you.
 
-An [ExpressionProfile]'s identity is the composite
-`Molecule|Species|Category`, so all three of `molecule`, `species`,
-and `category` are required.
+An \link{ExpressionProfile}'s identity is the composite
+\code{Molecule|Species|Category}, so all three of \code{molecule}, \code{species},
+and \code{category} are required.
 }
 \examples{
 # Create a minimal enzyme expression profile

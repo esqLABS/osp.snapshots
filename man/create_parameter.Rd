@@ -27,7 +27,7 @@ create_parameter(
 \item{value}{Numeric. Value of the parameter.}
 
 \item{path}{Character. Full container path of the parameter within its
-parameter tree. Supply this to obtain a [LocalizedParameter] (used in
+parameter tree. Supply this to obtain a \link{LocalizedParameter} (used in
 Individual, ExpressionProfile, and Simulation parameter sections).}
 
 \item{unit}{Character. Unit of the parameter (optional).}
@@ -57,26 +57,26 @@ Individual, ExpressionProfile, and Simulation parameter sections).}
 (optional).}
 }
 \value{
-A [Parameter] object, or a [LocalizedParameter] when `path` is
-  supplied.
+A \link{Parameter} object, or a \link{LocalizedParameter} when \code{path} is
+supplied.
 }
 \description{
 Create a new parameter with the specified properties.
 All arguments except name and value are optional.
 
-Returns a [LocalizedParameter] when a non-NULL `path` is supplied (i.e.
+Returns a \link{LocalizedParameter} when a non-NULL \code{path} is supplied (i.e.
 the parameter is identified by its position within a target's parameter
-tree); otherwise returns a plain [Parameter].
-
-# Data shape
-
-Plain `Parameter` objects carry the identifier in `data$Name`, matching
-the JSON shape used by `Parameter` slots in `Compound`, `Formulation`,
-`Protocol`, and `Event` (per `snapshot-spec.md`). `LocalizedParameter`
-objects carry the identifier in `data$Path`. The factory writes whichever
-field matches the returned class so the raw `data` shape reflects the
+tree); otherwise returns a plain \link{Parameter}.
+}
+\section{Data shape}{
+Plain \code{Parameter} objects carry the identifier in \code{data$Name}, matching
+the JSON shape used by \code{Parameter} slots in \code{Compound}, \code{Formulation},
+\code{Protocol}, and \code{Event} (per \code{snapshot-spec.md}). \code{LocalizedParameter}
+objects carry the identifier in \code{data$Path}. The factory writes whichever
+field matches the returned class so the raw \code{data} shape reflects the
 kind of parameter unambiguously.
 }
+
 \examples{
 # Create a basic parameter
 param <- create_parameter(

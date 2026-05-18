@@ -26,41 +26,41 @@ create_population(
 (required, must be a positive integer).}
 
 \item{proportion_of_females}{Numeric. Percentage of females in the
-population, between 0 and 100. Defaults to `50`.}
+population, between 0 and 100. Defaults to \code{50}.}
 
-\item{individual_name}{Character. Name of the base [Individual]
+\item{individual_name}{Character. Name of the base \link{Individual}
 building block the population samples from.}
 
 \item{species}{Character. Species used for the base individual when
-`individual_name` is not provided.}
+\code{individual_name} is not provided.}
 
 \item{source_population}{Character. Population name used for the base
-individual (for example `"European_ICRP_2002"`).}
+individual (for example \code{"European_ICRP_2002"}).}
 
-\item{age_range}{A [Range] object describing the age bounds (see
-[range()]).}
+\item{age_range}{A \link{Range} object describing the age bounds (see
+\code{\link[=range]{range()}}).}
 
-\item{weight_range}{A [Range] object describing the weight bounds.}
+\item{weight_range}{A \link{Range} object describing the weight bounds.}
 
-\item{height_range}{A [Range] object describing the height bounds.}
+\item{height_range}{A \link{Range} object describing the height bounds.}
 
-\item{bmi_range}{A [Range] object describing the BMI bounds.}
+\item{bmi_range}{A \link{Range} object describing the BMI bounds.}
 
 \item{seed}{Integer. Random seed for population generation.}
 
-\item{advanced_parameters}{List of [AdvancedParameter] objects or raw
+\item{advanced_parameters}{List of \link{AdvancedParameter} objects or raw
 advanced-parameter lists that override default variability
 distributions.}
 }
 \value{
-A [Population] object.
+A \link{Population} object.
 }
 \description{
-Create a [Population] building block from named arguments. This is a
-thin factory around `Population$new()` that builds the raw `Settings`
+Create a \link{Population} building block from named arguments. This is a
+thin factory around \code{Population$new()} that builds the raw \code{Settings}
 shape for you.
 
-A [Population] is a recipe for generating subjects: it owns the
+A \link{Population} is a recipe for generating subjects: it owns the
 settings PK-Sim uses to sample a cohort at simulation time. Subjects
 themselves are not stored in the snapshot.
 }

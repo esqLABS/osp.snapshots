@@ -416,7 +416,7 @@ print.physicochemical_property <- function(x, ...) {
           ) {
             # Extract table points
             points_text <- sapply(table_formula$Points, function(point) {
-              glue::glue("pH {point$X}→{point$Y} mg/l")
+              glue::glue("pH {point$X}\u2192{point$Y} mg/l")
             })
             table_info <- glue::glue(
               " (Table: {paste(points_text, collapse=', ')})"
@@ -494,7 +494,7 @@ print.compound_processes <- function(x, ...) {
 
     # Add metabolite information if available (for metabolism processes)
     if (!is.null(p$Metabolite) && p$Metabolite != "") {
-      process_name <- paste0(process_name, " → ", p$Metabolite)
+      process_name <- paste0(process_name, " \u2192 ", p$Metabolite)
     }
 
     # Extract all relevant parameters (more comprehensive)
@@ -660,7 +660,7 @@ print.compound_additional_parameters <- function(x, ...) {
   })
 
   # Display parameters
-  cli::cli_text("• Additional Parameters ({length(param_data)} total):")
+  cli::cli_text("\u2022 Additional Parameters ({length(param_data)} total):")
   cli::cli_ul()
 
   for (param in param_data) {
@@ -694,7 +694,7 @@ print.metabolizing_enzymes <- function(x, ...) {
 
       # Format process name with metabolite if available
       process_display <- if (!is.null(metabolite) && metabolite != "") {
-        paste0(process_name, " (", molecule, ") → ", metabolite)
+        paste0(process_name, " (", molecule, ") \u2192 ", metabolite)
       } else {
         paste0(process_name, " (", molecule, ")")
       }

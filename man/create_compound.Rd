@@ -21,29 +21,29 @@ create_compound(
 \item{description}{Character. Free-text description of the compound.}
 
 \item{is_small_molecule}{Logical. Whether the compound is a small
-molecule. Defaults to `TRUE` in PK-Sim when omitted.}
+molecule. Defaults to \code{TRUE} in PK-Sim when omitted.}
 
 \item{plasma_protein_binding_partner}{Character. Name of the plasma
-protein binding partner (for example `"Albumin"`).}
+protein binding partner (for example \code{"Albumin"}).}
 
 \item{molecular_weight}{Numeric. Molecular weight value.}
 
 \item{molecular_weight_unit}{Character. Unit for molecular weight.
-Defaults to `"g/mol"`.}
+Defaults to \code{"g/mol"}.}
 
 \item{calculation_methods}{Character vector. Calculation method names
 that PK-Sim uses to derive compound quantities.}
 
-\item{parameters}{List of [Parameter] objects (created with
-[create_parameter()]) or raw parameter lists to attach to the
+\item{parameters}{List of \link{Parameter} objects (created with
+\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists to attach to the
 compound.}
 }
 \value{
-A [Compound] object.
+A \link{Compound} object.
 }
 \description{
-Create a minimally populated [Compound] building block from named
-arguments. This is a thin factory around `Compound$new()` that builds
+Create a minimally populated \link{Compound} building block from named
+arguments. This is a thin factory around \code{Compound$new()} that builds
 the raw list shape for you.
 
 For richer compound structures (full lipophilicity alternatives,

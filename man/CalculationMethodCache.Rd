@@ -8,8 +8,8 @@ An R6 class that wraps the set of calculation methods PK-Sim uses to derive
 compound quantities (e.g. partition coefficient method, cellular
 permeability method, body surface area method). In an OSP snapshot, the
 calculation method cache is serialised as an array of method name strings.
-It appears in two places: directly on a [Compound] and inside an
-[OriginData] of an [Individual].
+It appears in two places: directly on a \link{Compound} and inside an
+\link{OriginData} of an \link{Individual}.
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -44,7 +44,7 @@ It appears in two places: directly on a [Compound] and inside an
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{methods}}{Character vector of method names. May be `NULL` or an
+      \item{\code{methods}}{Character vector of method names. May be \code{NULL} or an
 empty vector, both of which result in an empty cache.}
     }
     \if{html}{\out{</div>}}
@@ -103,10 +103,10 @@ snapshot's raw representation.
 \if{html}{\out{<a id="method-CalculationMethodCache-remove"></a>}}
 \if{latex}{\out{\hypertarget{method-CalculationMethodCache-remove}{}}}
 \subsection{\code{CalculationMethodCache$remove()}}{
-  Remove a method name from the cache. If `method` is not present, the
-cache is unchanged. Note the asymmetry with `$add()`: `$add()` keeps
+  Remove a method name from the cache. If \code{method} is not present, the
+cache is unchanged. Note the asymmetry with \verb{$add()}: \verb{$add()} keeps
 duplicates to mirror the snapshot's raw representation, whereas
-`$remove()` deletes every occurrence of `method` in a single call.
+\verb{$remove()} deletes every occurrence of \code{method} in a single call.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CalculationMethodCache$remove(method)}
@@ -129,7 +129,7 @@ duplicates to mirror the snapshot's raw representation, whereas
 \if{latex}{\out{\hypertarget{method-CalculationMethodCache-to_list}{}}}
 \subsection{\code{CalculationMethodCache$to_list()}}{
   Convert the cache back to its raw snapshot representation: a list of
-method-name strings, or `NULL` when the cache is empty. A list is used
+method-name strings, or \code{NULL} when the cache is empty. A list is used
 (rather than a character vector) so that single-method caches round-trip
 as JSON arrays.
   \subsection{Usage}{
@@ -138,7 +138,7 @@ as JSON arrays.
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    A list of method-name strings, or `NULL` when empty.
+    A list of method-name strings, or \code{NULL} when empty.
   }
 }
 

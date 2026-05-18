@@ -2,6 +2,7 @@
 % Please edit documentation in R/ObservedData.R
 \name{loadDataSetFromSnapshot}
 \alias{loadDataSetFromSnapshot}
+\alias{ObservedData}
 \title{Load DataSet from OSP snapshot observed data}
 \usage{
 loadDataSetFromSnapshot(observedDataStructure)
@@ -19,17 +20,23 @@ used throughout the OSP ecosystem.
 }
 \details{
 This function follows the same pattern as other DataSet loading functions in ospsuite:
-- `ospsuite::loadDataSetFromPKML()`
-- `ospsuite::loadDataSetFromExcel()`
-- `osp.snapshots::loadDataSetFromSnapshot()` (this function)
+\itemize{
+\item \code{ospsuite::loadDataSetFromPKML()}
+\item \code{ospsuite::loadDataSetFromExcel()}
+\item \code{osp.snapshots::loadDataSetFromSnapshot()} (this function)
+}
+
+\code{ObservedData} is a backwards-compatible alias for
+\code{\link[=loadDataSetFromSnapshot]{loadDataSetFromSnapshot()}} and may be retired in a future release if this
+functionality migrates to the \code{ospsuite} package. Prefer the
+\code{loadDataSetFromSnapshot()} name in new code.
 }
 \section{Migration Plan}{
 
 This function is designed for eventual migration to the ospsuite package.
 When migrated, the usage pattern will be:
 
-```r
-# Future usage (when moved to ospsuite):
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{# Future usage (when moved to ospsuite):
 dataset <- ospsuite::loadDataSetFromSnapshot(observedDataStructure)
 
 # Current usage:
@@ -39,6 +46,6 @@ dataset <- osp.snapshots::loadDataSetFromSnapshot(observedDataStructure)
 # 1. Copy this function to ospsuite package
 # 2. Update osp.snapshots to import from ospsuite
 # 3. Eventually remove from osp.snapshots
-```
+}\if{html}{\out{</div>}}
 }
 

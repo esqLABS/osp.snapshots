@@ -25,32 +25,32 @@ create_observed_data(
 \item{time}{Numeric vector. Time grid x-values (required).}
 
 \item{values}{Numeric vector. Measurement y-values, same length as
-`time` (required).}
+\code{time} (required).}
 
-\item{time_unit}{Character. Unit for `time` (for example `"h"`,
-`"min"`, `"day(s)"`). Validated against
-`ospsuite::ospUnits$Time`. Defaults to `"h"`.}
+\item{time_unit}{Character. Unit for \code{time} (for example \code{"h"},
+\code{"min"}, \code{"day(s)"}). Validated against
+\code{ospsuite::ospUnits$Time}. Defaults to \code{"h"}.}
 
-\item{value_unit}{Character. Unit for `values` (for example
-`"mg/l"`). When supplied alongside `value_dimension`, the unit is
-validated against the dimension via [validate_unit()].}
+\item{value_unit}{Character. Unit for \code{values} (for example
+\code{"mg/l"}). When supplied alongside \code{value_dimension}, the unit is
+validated against the dimension via \code{\link[=validate_unit]{validate_unit()}}.}
 
-\item{value_dimension}{Character. Dimension for `values` (for
-example `"Concentration (mass)"`). Required (no default): pass one
-of the names of `ospsuite::ospDimensions`. Previously defaulted
-silently to `"Concentration (mass)"`, which was wrong for
+\item{value_dimension}{Character. Dimension for \code{values} (for
+example \code{"Concentration (mass)"}). Required (no default): pass one
+of the names of \code{ospsuite::ospDimensions}. Previously defaulted
+silently to \code{"Concentration (mass)"}, which was wrong for
 non-concentration data.}
 
 \item{error}{Numeric vector. Optional error y-values, same length as
-`values`.}
+\code{values}.}
 
-\item{error_type}{Character. Auxiliary type for `error`, typically
-one of `"ArithmeticStdDev"`, `"GeometricStdDev"`, or
-`"ArithmeticStdErr"`. Defaults to `"ArithmeticStdDev"` when `error`
+\item{error_type}{Character. Auxiliary type for \code{error}, typically
+one of \code{"ArithmeticStdDev"}, \code{"GeometricStdDev"}, or
+\code{"ArithmeticStdErr"}. Defaults to \code{"ArithmeticStdDev"} when \code{error}
 is provided.}
 
-\item{error_unit}{Character. Unit for `error`. Defaults to
-`value_unit`.}
+\item{error_unit}{Character. Unit for \code{error}. Defaults to
+\code{value_unit}.}
 
 \item{molecular_weight}{Numeric. Molecular weight to attach to the
 data set, in g/mol.}
@@ -61,16 +61,16 @@ data set, in g/mol.}
 stored alongside the data set.}
 }
 \value{
-An `ospsuite::DataSet` object.
+An \code{ospsuite::DataSet} object.
 }
 \description{
-Create an `ospsuite::DataSet` from named arguments. This is a thin
-factory around [loadDataSetFromSnapshot()] that builds the raw
+Create an \code{ospsuite::DataSet} from named arguments. This is a thin
+factory around \code{\link[=loadDataSetFromSnapshot]{loadDataSetFromSnapshot()}} that builds the raw
 snapshot observed-data shape for you and converts it into a
-`DataSet`.
+\code{DataSet}.
 
 An observed data entry is the time + value (+ optional error) series
-attached to a snapshot. It is referenced by name from a [Snapshot]'s
+attached to a snapshot. It is referenced by name from a \link{Snapshot}'s
 simulations.
 }
 \examples{
