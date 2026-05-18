@@ -176,3 +176,39 @@ convert_ospsuite_time_to_duration <- function(value, unit) {
   lubridate_unit <- convert_ospsuite_time_unit_to_lubridate(unit)
   return(lubridate::duration(value, units = lubridate_unit))
 }
+
+# Internal: disambiguate duplicated keys in a character vector by appending
+# `_{n}` suffixes. Each occurrence of a duplicated key is numbered from 1 in
+# order of appearance; unique keys are returned unchanged. Used by the
+# building-block collection builders to keep list names unique while
+# preserving the original ordering.
+disambiguate_names <- function(names) {
+  if (length(names) == 0) {
+    return(character(0))
+  }
+
+  if (!anyDuplicated(names)) {
+    return(names)
+  }
+
+  key_counts <- table(names)
+  key_indices <- list()
+  result <- character(length(names))
+
+  for (i in seq_along(names)) {
+    key <- names[i]
+
+    if (is.null(key_indices[[key]])) {
+      key_indices[[key]] <- 0
+    }
+    key_indices[[key]] <- key_indices[[key]] + 1
+
+    if (key_counts[key] > 1) {
+      result[i] <- paste0(key, "_", key_indices[[key]])
+    } else {
+      result[i] <- key
+    }
+  }
+
+  result
+}

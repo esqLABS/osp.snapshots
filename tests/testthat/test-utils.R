@@ -72,3 +72,42 @@ test_that("convert_ospsuite_time_to_duration works correctly", {
   duration_default <- convert_ospsuite_time_to_duration(10, NULL)
   expect_equal(as.numeric(duration_default), 10) # Should default to seconds
 })
+
+test_that("disambiguate_names returns empty character on empty input", {
+  expect_equal(disambiguate_names(character(0)), character(0))
+})
+
+test_that("disambiguate_names leaves all-unique keys unchanged", {
+  expect_equal(
+    disambiguate_names(c("a", "b", "c")),
+    c("a", "b", "c")
+  )
+})
+
+test_that("disambiguate_names suffixes duplicated keys with `_{n}` in order", {
+  expect_equal(
+    disambiguate_names(c("a", "a", "a")),
+    c("a_1", "a_2", "a_3")
+  )
+})
+
+test_that("disambiguate_names only suffixes the keys that actually collide", {
+  expect_equal(
+    disambiguate_names(c("a", "b", "a", "c")),
+    c("a_1", "b", "a_2", "c")
+  )
+})
+
+test_that("disambiguate_names numbers each duplicated key independently", {
+  expect_equal(
+    disambiguate_names(c("a", "b", "a", "b", "c")),
+    c("a_1", "b_1", "a_2", "b_2", "c")
+  )
+})
+
+test_that("disambiguate_names preserves single occurrence with no suffix", {
+  expect_equal(
+    disambiguate_names(c("only")),
+    "only"
+  )
+})
