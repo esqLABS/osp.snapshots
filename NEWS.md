@@ -1,5 +1,13 @@
 # osp.snapshots (development version)
 
+## Policy decisions
+
+- Mutators on `Snapshot` keep their dual API: every R6 method (e.g.
+  `snapshot$add_individual()`) is paired with an exported function of the same
+  name that validates the snapshot, delegates to the method, and returns the
+  snapshot invisibly. New mutators added under issue #39 follow this contract
+  (#26).
+
 ## Bug fixes
 
 - Fixed snapshot export/import so single-element JSON arrays remain arrays,
