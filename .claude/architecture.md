@@ -42,14 +42,15 @@ A `Snapshot` is the root container. It holds eight kinds of building-block colle
 |-------|------|------------|-------------------|
 | `Snapshot` | `R/Snapshot.R` | Root document (a PKSIM project export). | Owns all building-block collections; only class that touches `jsonlite` directly. |
 | `Compound` | `R/Compound.R` | A drug molecule, including physicochemical properties, calculation methods, and processes (clearance, binding, transport, induction, inhibition). | Contains `Parameter` objects; printed via several `compound_*` S3 print methods. |
-| `Individual` | `R/Individual.R` | A simulated subject: demographic traits, origin data, expression-profile references, physiological parameters. | References `ExpressionProfile` by name; contains `Parameter`. |
+| `Individual` | `R/Individual.R` | A simulated subject: demographic traits, origin data, expression-profile references, physiological parameters. | References `ExpressionProfile` by name; contains `LocalizedParameter`. |
 | `Population` | `R/Population.R` | A population sampling specification: seed, settings, advanced parameters, individual-count range. | Contains `AdvancedParameter` (exported) and `Range`. |
 | `ExpressionProfile` | `R/ExpressionProfile.R` | Enzyme/transporter expression: molecule, type, species, category, localization. | Loaded before `Individual` (spec ordering); contains `Parameter`. |
 | `Formulation` | `R/Formulation.R` | Dissolution profile (Weibull, Lint80, Particles, Table, ZeroOrder, FirstOrder). | Contains `Parameter`. |
 | `Protocol` | `R/Protocol.R` | Dosing protocol; either simple (interval + dose) or advanced (schemas of schema items). | Contains `Parameter`. |
 | `Event` | `R/Event.R` | Administration event; references a formulation by key. | Contains `Parameter`. |
 | `ObservedData` | `R/ObservedData.R` | Experimental dataset. NOT an R6 class in this package; converted to `ospsuite::DataSet` at load time via `loadDataSetFromSnapshot()`. | Bridge into the ospsuite ecosystem. |
-| `Parameter` | `R/Parameter.R` | Scalar or table-based parameter: path, value, unit, value origin, optional table formula. | Leaf. |
+| `Parameter` | `R/Parameter.R` | Scalar or table-based parameter: name, value, unit, value origin, optional table formula. Used in contexts where the parameter is identified by name within its owning building block (Compound, Formulation, Protocol, Event, schema parameters). | Leaf. |
+| `LocalizedParameter` | `R/LocalizedParameter.R` | A `Parameter` identified by its full pipe-separated path within a target's parameter tree (Individual, ExpressionProfile, Simulation parameter trees). Inherits from `Parameter`; adds construction-time path validation and the v11+ `Applications` to `Events` path-segment migration. | Leaf; passes `inherits(x, "Parameter")`. |
 | `Range` | `R/Range.R` | Min/max value with unit (age, weight, height, BMI). | Leaf utility class. |
 
 Building blocks not yet wrapped in R6 (`Simulations`, `ObserverSets`, `ParameterIdentifications`, `SimulationComparisons`, `*Classifications`) live in `Snapshot`'s preserved raw data and pass through unchanged on export. See `snapshot-spec.md` for the full JSON contract.
@@ -69,7 +70,7 @@ All exports are listed in `NAMESPACE`. The user-facing surface clusters into fou
 
 - `create_individual(name, age, weight, gender, ...)` — `R/Individual.R`.
 - `create_formulation(name, type, ...)` — `R/Formulation.R`.
-- `create_parameter(path, value, unit, ...)` — `R/Parameter.R`.
+- `create_parameter(name, value, path = NULL, unit, ...)` — `R/Parameter.R`. Returns a `LocalizedParameter` when `path` is supplied; otherwise a plain `Parameter`.
 - `range(...)` — `R/Range.R`.
 
 **Mutators (function + method pairs)**
@@ -146,7 +147,7 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 
 **Unnamed-internal-list, named-access pattern.** Collections are stored as unnamed lists internally and exposed as named lists through active bindings. Duplicate names get numeric suffixes at access time. This separates positional identity (preserved for export) from convenient lookup by name.
 
-**Lazy parameter parsing.** Building blocks defer `Parameter` construction until a parameter is actually requested, via each block's `private$initialize_parameters()`. This keeps `Snapshot$new()` fast on large projects.
+**Lazy parameter parsing.** Building blocks defer `Parameter` construction until a parameter is actually requested, via each block's `private$initialize_parameters()`. Construction routes through the shared `build_parameters_from_raw()` helper in `R/parameter-init.R`; blocks whose parameters are localized (Individual today, Simulation once wrapped) pass `ctor = LocalizedParameter$new` to force path validation and the `Applications` to `Events` migration at construction. This keeps `Snapshot$new()` fast on large projects.
 
 **Version mapping.** The numeric `Version` field (e.g. `80`) is mapped to a human PKSIM version (e.g. `"12.0"`) by `private$.get_pksim_version()` and exposed as the `pksim_version` active field, allowing future version-conditional behaviour.
 
@@ -173,7 +174,9 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 | `Protocol.R` | `Protocol` R6 class plus dosing-time helpers (`convert_ospsuite_time_to_duration`, `convert_ospsuite_time_unit_to_lubridate`). |
 | `Event.R` | `Event` R6 class. |
 | `ObservedData.R` | `loadDataSetFromSnapshot()` (snapshot → `ospsuite::DataSet`), `ObservedData` export object. |
-| `Parameter.R` | `Parameter` R6 class and `create_parameter` factory. |
+| `Parameter.R` | `Parameter` R6 class and `create_parameter` factory (routes to `LocalizedParameter` when `path` is supplied). |
+| `LocalizedParameter.R` | `LocalizedParameter` R6 class (subclass of `Parameter`); applies the v11+ `Applications` to `Events` path-segment migration. |
+| `parameter-init.R` | Internal `build_parameters_from_raw()` helper shared across building blocks. |
 | `Range.R` | `Range` R6 class and `range()` constructor. |
 | `snapshot_dataframes.R` | All `get_*_dfs` exporters. |
 | `print_methods.R` | S3 `print.*` methods for the collection and sub-structure classes listed in `NAMESPACE`. |
@@ -210,7 +213,8 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 | Protocols | `R/Protocol.R` | `Protocol`, `convert_ospsuite_time_to_duration`, `convert_ospsuite_time_unit_to_lubridate` |
 | Events | `R/Event.R` | `Event` |
 | Observed data bridge | `R/ObservedData.R` | `loadDataSetFromSnapshot`, `ObservedData` |
-| Leaf types | `R/Parameter.R`, `R/Range.R` | `Parameter`, `create_parameter`, `Range`, `range` |
+| Leaf types | `R/Parameter.R`, `R/LocalizedParameter.R`, `R/Range.R` | `Parameter`, `LocalizedParameter`, `create_parameter`, `Range`, `range` |
+| Shared parameter loader | `R/parameter-init.R` | `build_parameters_from_raw`, `ensure_path_from_name` |
 | Tibble exporters | `R/snapshot_dataframes.R` | `get_compounds_dfs`, `get_individuals_dfs`, `get_formulations_dfs`, `get_protocols_dfs`, `get_events_dfs`, `get_populations_dfs`, `get_expression_profiles_dfs`, `get_observed_data_dfs` |
 | Validation | `R/utils.R` | `validate_snapshot`, `validate_species`, `validate_gender`, `validate_unit`, `validate_population` |
 | Print methods | `R/print_methods.R` | S3 methods for `*_collection` classes and compound sub-structures (see `NAMESPACE`) |
@@ -230,6 +234,7 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 | Protocol | A dosing schedule. Simple protocols specify dose plus interval; advanced protocols use schemas of schema items. |
 | Event | An administration or perturbation that happens during a simulation. |
 | Observed data | Experimental measurements (time, value, error). Mapped to `ospsuite::DataSet` rather than to a custom R6 class. |
-| Parameter | A named value with unit and origin. May be scalar or table-based (formula). |
+| Parameter | A named value with unit and origin. May be scalar or table-based (formula). Identified by `Name` within its owning building block. |
+| Localized parameter | A `Parameter` identified by its full pipe-separated path inside a target's parameter tree (typically a `Simulation` or `Individual`). The path locates where the override applies. Wrapped as R6 class `LocalizedParameter`, which inherits from `Parameter` and migrates v11+ `Applications` path segments to `Events` at construction. |
 | Range | A min/max pair with unit, used for physiological bounds (age, weight, height, BMI). |
 | ospsuite | The Open Systems Pharmacology R package: canonical R interface to PK-Sim. `osp.snapshots` integrates with it for observed data and for validating species, gender, and units. |
