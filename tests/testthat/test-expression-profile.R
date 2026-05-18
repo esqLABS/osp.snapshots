@@ -79,14 +79,22 @@ test_that("print.expression_profile_collection works", {
     "P-gp|Human|Healthy",
     "OATP1B1|Rat|NA"
   )
-  class(profiles) <- c("expression_profile_collection", "list")
+  class(profiles) <- c(
+    "expression_profile_collection",
+    "snapshot_collection",
+    "list"
+  )
 
   # Test printing
   expect_snapshot(print(profiles))
 
   # Test empty collection
   empty_profiles <- list()
-  class(empty_profiles) <- c("expression_profile_collection", "list")
+  class(empty_profiles) <- c(
+    "expression_profile_collection",
+    "snapshot_collection",
+    "list"
+  )
   expect_snapshot(print(empty_profiles))
 })
 
