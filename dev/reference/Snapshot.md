@@ -330,7 +330,7 @@ Invisibly returns the object
 #### Examples
 
     # Remove an expression profile from the snapshot
-    snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
+    snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
 
 ------------------------------------------------------------------------
 
@@ -468,6 +468,6 @@ snapshot$add_expression_profile(profile)
 
 if (FALSE) { # \dontrun{
 # Remove an expression profile from the snapshot
-snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
+snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
 } # }
 ```

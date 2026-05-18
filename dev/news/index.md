@@ -4,6 +4,12 @@
 
 ### Bug fixes
 
+- Fixed `Snapshot$data` so observed data removed via
+  `remove_observed_data()` is also dropped from the exported snapshot.
+  Previously the export reused the full original `ObservedData` list
+  whenever the lazy cache had been touched, re-introducing the removed
+  entries on round-trip.
+
 - Fixed snapshot export/import so single-element JSON arrays remain
   arrays, allowing exported snapshots to load in PK-Sim (#23).
 
