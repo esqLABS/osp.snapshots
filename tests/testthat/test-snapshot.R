@@ -335,6 +335,47 @@ test_that("Snapshot handles duplicated compound names correctly", {
   expect_equal(snapshot$compounds$CompoundA_2$data$Path, "Path2")
 })
 
+test_that("Snapshot disambiguates ExpressionProfiles by composite id", {
+  # Two profiles sharing Molecule, Species, Category collide on the composite
+  # id "CYP3A4_Human_Healthy"; a third with a different Category does not.
+  snapshot_data <- list(
+    Version = 80,
+    ExpressionProfiles = list(
+      list(
+        Type = "Enzyme",
+        Species = "Human",
+        Molecule = "CYP3A4",
+        Category = "Healthy"
+      ),
+      list(
+        Type = "Enzyme",
+        Species = "Human",
+        Molecule = "CYP3A4",
+        Category = "Healthy"
+      ),
+      list(
+        Type = "Enzyme",
+        Species = "Human",
+        Molecule = "CYP3A4",
+        Category = "Disease"
+      )
+    )
+  )
+
+  snapshot <- Snapshot$new(snapshot_data)
+
+  expect_s3_class(snapshot$expression_profiles, "expression_profile_collection")
+  expect_length(snapshot$expression_profiles, 3)
+  expect_named(
+    snapshot$expression_profiles,
+    c(
+      "CYP3A4_Human_Healthy_1",
+      "CYP3A4_Human_Healthy_2",
+      "CYP3A4_Human_Disease"
+    )
+  )
+})
+
 test_that("Snapshot handles empty individuals and compounds", {
   # Create a snapshot with empty individuals and compounds
   snapshot_data <- list(
