@@ -195,7 +195,7 @@ detailed_param
 
 ## Creating Compounds
 
-`create_compound()` wraps `Compound$new()` so you can build a [Compound] from named arguments instead of a raw list.
+`create_compound()` wraps `Compound$new()` so you can build a *Compound* from named arguments instead of a raw list.
 
 ```{r}
 # Create a minimal compound
@@ -217,7 +217,7 @@ drug
 
 ## Creating Compound Processes
 
-`create_process()` builds a [Process] (a PK-Sim `CompoundProcess`) from named arguments. The `internal_name` identifies the process template in PK-Sim's compound process repository (e.g. `"SpecificBinding"` for plasma protein binding, `"MetabolizationSpecific_MM"` for Michaelis-Menten metabolism, `"GlomerularFiltration"` for renal clearance), and `data_source` labels the data origin.
+`create_process()` builds a *Process* (a PK-Sim `CompoundProcess`) from named arguments. The `internal_name` identifies the process template in PK-Sim's compound process repository (e.g. `"SpecificBinding"` for plasma protein binding, `"MetabolizationSpecific_MM"` for Michaelis-Menten metabolism, `"GlomerularFiltration"` for renal clearance), and `data_source` labels the data origin.
 
 ```{r}
 # A minimal protein-binding process
@@ -242,11 +242,11 @@ metabolism <- create_process(
 metabolism$category
 ```
 
-The `$category` active binding derives a domain label (`"protein_binding_partners"`, `"metabolizing_enzymes"`, `"hepatic_clearance"`, `"transporter_proteins"`, `"renal_clearance"`, `"biliary_clearance"`, `"inhibition"`, or `"induction"`) from the `internal_name`. Compound processes from a loaded snapshot are exposed as a flat named list of [Process] objects via `compound$processes`, and the long-form `processes` tibble returned by [get_compounds_dfs()] surfaces every (process, parameter) pair as a row.
+The `$category` active binding derives a domain label (`"protein_binding_partners"`, `"metabolizing_enzymes"`, `"hepatic_clearance"`, `"transporter_proteins"`, `"renal_clearance"`, `"biliary_clearance"`, `"inhibition"`, or `"induction"`) from the `internal_name`. Compound processes from a loaded snapshot are exposed as a flat named list of *Process* objects via `compound$processes`, and the long-form `processes` tibble returned by `get_compounds_dfs()` surfaces every (process, parameter) pair as a row.
 
 ## Creating Populations
 
-`create_population()` builds a [Population] recipe: settings used by PK-Sim to sample a cohort at simulation time. Use [range()] for age, weight, height, and BMI bounds.
+`create_population()` builds a *Population* recipe: settings used by PK-Sim to sample a cohort at simulation time. Use `range()` for age, weight, height, and BMI bounds.
 
 ```{r}
 adults <- create_population(
@@ -264,7 +264,7 @@ adults
 
 ## Creating Expression Profiles
 
-`create_expression_profile()` builds an [ExpressionProfile]. The identity of a profile is the composite `Molecule|Species|Category`, so all three are required, along with the molecule `type`.
+`create_expression_profile()` builds an *ExpressionProfile*. The identity of a profile is the composite `Molecule|Species|Category`, so all three are required, along with the molecule `type`.
 
 ```{r}
 cyp3a4 <- create_expression_profile(
@@ -280,7 +280,7 @@ cyp3a4
 
 ## Creating Protocols
 
-`create_protocol()` builds a [Protocol]. By default it creates a Simple Protocol; pass `schemas` to create an Advanced Protocol.
+`create_protocol()` builds a *Protocol*. By default it creates a Simple Protocol; pass `schemas` to create an Advanced Protocol.
 
 ```{r}
 # Simple oral protocol with one dose
@@ -299,7 +299,7 @@ single_dose
 
 ### Advanced Protocols
 
-For dosing schedules that do not fit the Simple Protocol pattern, build an Advanced Protocol from one or more [Schema] blocks. Each [Schema] owns schema-level parameters (such as `NumberOfRepetitions` and `TimeBetweenRepetitions`) and an ordered list of [SchemaItem] applications. `create_schema()` and `create_schema_item()` wrap the R6 constructors so you can pass [Parameter] objects directly without hand-rolling the raw JSON shape.
+For dosing schedules that do not fit the Simple Protocol pattern, build an Advanced Protocol from one or more *Schema* blocks. Each *Schema* owns schema-level parameters (such as `NumberOfRepetitions` and `TimeBetweenRepetitions`) and an ordered list of *SchemaItem* applications. `create_schema()` and `create_schema_item()` wrap the R6 constructors so you can pass *Parameter* objects directly without hand-rolling the raw JSON shape.
 
 ```{r}
 # Build the schema item, the schema, and the protocol from named arguments
@@ -334,7 +334,7 @@ qd_oral
 
 ## Creating Events
 
-`create_event()` builds an [Event] from a named template (for example a meal). PK-Sim clones the template and applies your parameter overrides.
+`create_event()` builds an *Event* from a named template (for example a meal). PK-Sim clones the template and applies your parameter overrides.
 
 ```{r}
 breakfast <- create_event(
