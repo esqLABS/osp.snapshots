@@ -125,39 +125,25 @@ Formatted display methods for building block collections
   : Print method for compound additional parameters
 - [`print(`*`<compound_calculation_methods>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.compound_calculation_methods.md)
   : Print method for compound calculation methods
-- [`print(`*`<compound_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.compound_collection.md)
-  : S3 print method for compound collections
 - [`print(`*`<compound_processes>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.compound_processes.md)
   : S3 print method for compound processes
-- [`print(`*`<event_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.event_collection.md)
-  : S3 print method for event collections
-- [`print(`*`<expression_profile_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.expression_profile_collection.md)
-  : S3 print method for expression profile collections
-- [`print(`*`<formulation_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.formulation_collection.md)
-  : S3 print method for formulation collections
 - [`print(`*`<hepatic_clearance>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.hepatic_clearance.md)
   : Print method for hepatic clearance processes
-- [`print(`*`<individual_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.individual_collection.md)
-  : S3 print method for individual collections
 - [`print(`*`<induction>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.induction.md)
   : Print method for induction processes
 - [`print(`*`<inhibition>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.inhibition.md)
   : Print method for inhibition processes
 - [`print(`*`<metabolizing_enzymes>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.metabolizing_enzymes.md)
   : Print method for metabolizing enzymes
-- [`print(`*`<observed_data_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.observed_data_collection.md)
-  : Print method for observed data collection
 - [`print(`*`<parameter_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.parameter_collection.md)
   : Print method for parameter collections
 - [`print(`*`<physicochemical_property>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.physicochemical_property.md)
   : S3 print method for physicochemical properties
-- [`print(`*`<population_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.population_collection.md)
-  : S3 print method for population collections
 - [`print(`*`<protein_binding_partners>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.protein_binding_partners.md)
   : Print method for protein binding partners
-- [`print(`*`<protocol_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.protocol_collection.md)
-  : S3 print method for protocol collections
 - [`print(`*`<renal_clearance>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.renal_clearance.md)
   : Print method for renal clearance processes
+- [`print(`*`<snapshot_collection>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.snapshot_collection.md)
+  : Generic print method for snapshot collections
 - [`print(`*`<transporter_proteins>`*`)`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.transporter_proteins.md)
   : Print method for transporter proteins

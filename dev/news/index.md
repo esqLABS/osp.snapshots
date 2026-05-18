@@ -2,6 +2,14 @@
 
 ## osp.snapshots (development version)
 
+### Minor improvements
+
+- Building-block collections now share a `snapshot_collection` S3 class
+  with a single generic [`print()`](https://rdrr.io/r/base/print.html)
+  method, replacing the eight per-kind methods. The existing per-kind
+  classes (`compound_collection`, `individual_collection`, etc.) are
+  preserved as marker classes (#34).
+
 ### Bug fixes
 
 - Fixed `Snapshot$data` so observed data removed via
