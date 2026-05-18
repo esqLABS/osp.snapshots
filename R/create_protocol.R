@@ -23,9 +23,10 @@
 #' @param parameters List of [Parameter] objects (created with
 #'   [create_parameter()]) or raw parameter lists for Simple Protocol
 #'   parameters such as start time, end time, and dose.
-#' @param schemas List of schema lists for an Advanced Protocol. Each
-#'   schema is a list with `Name`, `Parameters`, and `SchemaItems`. If
-#'   provided, the protocol is created as an Advanced Protocol.
+#' @param schemas List of schemas for an Advanced Protocol. Entries may
+#'   be [Schema] objects (created with [create_schema()]) or raw schema
+#'   lists with `Name`, `Parameters`, and `SchemaItems`. If provided,
+#'   the protocol is created as an Advanced Protocol.
 #' @param time_unit Character. Display time unit for the protocol.
 #'
 #' @return A [Protocol] object.
@@ -51,6 +52,29 @@
 #'   parameters = list(
 #'     create_parameter(name = "InputDose", value = 5, unit = "mg")
 #'   )
+#' )
+#'
+#' # Create an Advanced Protocol from Schema objects
+#' protocol <- create_protocol(
+#'   name = "Advanced",
+#'   schemas = list(
+#'     create_schema(
+#'       name = "Schema 1",
+#'       parameters = list(
+#'         create_parameter(name = "NumberOfRepetitions", value = 1)
+#'       ),
+#'       items = list(
+#'         create_schema_item(
+#'           name = "Item 1",
+#'           application_type = "Oral",
+#'           parameters = list(
+#'             create_parameter(name = "InputDose", value = 5, unit = "mg")
+#'           )
+#'         )
+#'       )
+#'     )
+#'   ),
+#'   time_unit = "h"
 #' )
 create_protocol <- function(
   name,
@@ -92,7 +116,19 @@ create_protocol <- function(
   data <- list(Name = name)
 
   if (!is.null(schemas)) {
-    data$Schemas <- schemas
+    valid <- vapply(
+      schemas,
+      function(schema) inherits(schema, "Schema") || is.list(schema),
+      logical(1)
+    )
+    if (!all(valid)) {
+      cli::cli_abort(
+        "Every entry of {.arg schemas} must be a {.cls Schema} or a raw list"
+      )
+    }
+    data$Schemas <- lapply(schemas, function(schema) {
+      if (inherits(schema, "Schema")) schema$data else schema
+    })
   } else {
     if (!is.null(application_type)) {
       data$ApplicationType <- application_type
