@@ -1098,31 +1098,3 @@ print.biliary_clearance <- function(x, ...) {
   cli::cli_end(id = "biliary")
   invisible(x)
 }
-
-#' Print method for compound calculation methods
-#'
-#' @param x A compound_calculation_methods object
-#' @param ... Additional arguments (unused)
-#' @export
-print.compound_calculation_methods <- function(x, ...) {
-  if (is.null(x) || length(x) == 0) {
-    cli::cli_text("Calculation Methods: No data available")
-    return(invisible(x))
-  }
-
-  cli::cli_text("Calculation Methods:")
-  cli::cli_ul(id = "calc_methods")
-
-  # Display partition coefficient method
-  if (!is.null(x$partition_coef)) {
-    cli::cli_li("Partition Coefficient: {x$partition_coef}")
-  }
-
-  # Display permeability method
-  if (!is.null(x$permeability)) {
-    cli::cli_li("Permeability: {x$permeability}")
-  }
-
-  cli::cli_end(id = "calc_methods")
-  invisible(x)
-}

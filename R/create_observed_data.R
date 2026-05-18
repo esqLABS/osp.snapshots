@@ -89,10 +89,14 @@ create_observed_data <- function(
     )
   }
   if (is.null(value_dimension)) {
+    # Sort with radix to get deterministic, locale-independent order; the
+    # native iteration order of `ospsuite::ospDimensions` differs across
+    # platforms.
+    valid_dims <- sort(names(ospsuite::ospDimensions), method = "radix")
     cli::cli_abort(
       c(
         "{.arg value_dimension} is required.",
-        "i" = "Pass one of: {toString(names(ospsuite::ospDimensions))}."
+        "i" = "Pass one of: {toString(valid_dims)}."
       )
     )
   }

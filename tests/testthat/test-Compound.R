@@ -63,7 +63,7 @@ test_that("Compounds active binding data are of the same size than the raw data"
 
     expect_equal(
       length(compound$data$CalculationMethods),
-      length(compound$calculation_methods)
+      compound$calculation_methods$length
     )
   }
 })
@@ -77,4 +77,20 @@ test_that("Compounds can be converted to dataframes", {
 
   # expect_snapshot(print(get_compound_df(c_data, 5),n=Inf, width = Inf))
   expect_snapshot(print(get_compounds_dfs(snapshot), n = Inf))
+})
+
+
+# Deep clone -------------------------------------------------------------
+
+test_that("Compound$clone(deep = TRUE) isolates calculation_methods", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+  compound$calculation_methods <- c("Original")
+  cloned <- compound$clone(deep = TRUE)
+  cloned$calculation_methods$add("Mutated")
+
+  expect_equal(compound$calculation_methods$methods, "Original")
+  expect_equal(
+    cloned$calculation_methods$methods,
+    c("Original", "Mutated")
+  )
 })

@@ -17,6 +17,9 @@ and display a summary of its information.
 
     \item{\code{seed}}{The simulation seed for the individual}
 
+    \item{\code{origin_data}}{The [OriginData] object holding species, population,
+gender, physiological parameters, and calculation methods.}
+
     \item{\code{species}}{The species of the individual}
 
     \item{\code{population}}{The population of the individual}
@@ -45,7 +48,10 @@ and display a summary of its information.
 
     \item{\code{parameters}}{The list of parameter objects with a custom print method}
 
-    \item{\code{calculation_methods}}{The calculation methods of the individual}
+    \item{\code{calculation_methods}}{The calculation methods of the individual,
+returned as a character vector for backwards compatibility. Use
+`$origin_data$calculation_methods` to access the
+[CalculationMethodCache] directly.}
 
     \item{\code{expression_profiles}}{The expression profiles of the individual (read-only)}
   }

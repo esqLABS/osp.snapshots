@@ -18,6 +18,9 @@ Compound <- R6::R6Class(
     #' @return A new Compound object
     initialize = function(data) {
       private$.data <- data
+      private$.calculation_methods <- CalculationMethodCache$new(
+        data$CalculationMethods
+      )
       private$initialize_parameters()
     },
 
@@ -56,18 +59,10 @@ Compound <- R6::R6Class(
         }
 
         # Display calculation methods
-        if (
-          !is.null(self$calculation_methods) &&
-            length(self$calculation_methods) > 0
-        ) {
+        if (self$calculation_methods$length > 0) {
           cli::cli_h2("Calculation Methods")
-          if (!is.null(self$calculation_methods$partition_coef)) {
-            cli::cli_li(
-              "Partition Coefficient: {self$calculation_methods$partition_coef}"
-            )
-          }
-          if (!is.null(self$calculation_methods$permeability)) {
-            cli::cli_li("Permeability: {self$calculation_methods$permeability}")
+          for (method in self$calculation_methods$methods) {
+            cli::cli_li("{method}")
           }
         }
 
@@ -216,6 +211,7 @@ Compound <- R6::R6Class(
   private = list(
     .data = NULL,
     .parameters = NULL,
+    .calculation_methods = NULL,
     .protein_binding_partners = NULL,
     .metabolizing_enzymes = NULL,
     .hepatic_clearance = NULL,
@@ -224,6 +220,13 @@ Compound <- R6::R6Class(
     .biliary_clearance = NULL,
     .inhibition = NULL,
     .induction = NULL,
+
+    deep_clone = function(name, value) {
+      if (name == ".calculation_methods" && inherits(value, "R6")) {
+        return(value$clone(deep = TRUE))
+      }
+      value
+    },
 
     initialize_parameters = function() {
       private$.parameters <- build_parameters_from_raw(
@@ -1511,9 +1514,18 @@ Compound <- R6::R6Class(
   ),
 
   active = list(
-    #' @field data The raw data of the compound (read-only)
+    #' @field data The raw data of the compound (read-only). Refreshed from
+    #'   the embedded [CalculationMethodCache] so that mutations flow back to
+    #'   the export payload.
     data = function() {
-      private$.data
+      result <- private$.data
+      cm <- private$.calculation_methods$to_list()
+      if (is.null(cm) && is.null(private$.data$CalculationMethods)) {
+        result$CalculationMethods <- NULL
+      } else {
+        result$CalculationMethods <- cm
+      }
+      result
     },
 
     #' @field name The name of the compound
@@ -1626,27 +1638,17 @@ Compound <- R6::R6Class(
       result
     },
 
-    #' @field calculation_methods The calculation methods of the compound
-    calculation_methods = function() {
-      calc_methods <- private$.data$CalculationMethods
-      if (is.null(calc_methods)) {
-        return(NULL)
+    #' @field calculation_methods A [CalculationMethodCache] holding the
+    #'   compound's calculation methods.
+    calculation_methods = function(value) {
+      if (missing(value)) {
+        return(private$.calculation_methods)
       }
-
-      result <- list(
-        partition_coef = purrr::keep(calc_methods, function(x) {
-          grepl("partition coefficient", x)
-        }) |>
-          (\(x) sub(".*- ", "", x))(),
-        permeability = purrr::keep(calc_methods, function(x) {
-          grepl("permeability ", x)
-        }) |>
-          (\(x) sub(".*- ", "", x))()
-      )
-
-      # Add class for custom printing
-      class(result) <- c("compound_calculation_methods", "list")
-      result
+      if (inherits(value, "CalculationMethodCache")) {
+        private$.calculation_methods <- value
+      } else {
+        private$.calculation_methods <- CalculationMethodCache$new(value)
+      }
     },
 
     #' @field parameters The additional parameters of the compound (excluding molecular weight)

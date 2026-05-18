@@ -250,6 +250,63 @@ test_that("Snapshot round-trip preserves observed data and expression profile sh
   }
 })
 
+test_that("Snapshot round-trip preserves OriginData and CalculationMethodCache", {
+  snapshot <- test_snapshot$clone()
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(temp_file)
+  reloaded <- Snapshot$new(temp_file)
+
+  original_individuals <- snapshot$data$Individuals
+  reloaded_individuals <- reloaded$data$Individuals
+  expect_equal(length(original_individuals), length(reloaded_individuals))
+
+  for (i in seq_along(original_individuals)) {
+    expect_equal(
+      original_individuals[[i]]$OriginData,
+      reloaded_individuals[[i]]$OriginData
+    )
+  }
+
+  original_compounds <- snapshot$data$Compounds
+  reloaded_compounds <- reloaded$data$Compounds
+  expect_equal(length(original_compounds), length(reloaded_compounds))
+
+  for (i in seq_along(original_compounds)) {
+    expect_equal(
+      original_compounds[[i]]$CalculationMethods,
+      reloaded_compounds[[i]]$CalculationMethods
+    )
+  }
+})
+
+test_that("Snapshot exposes OriginData and CalculationMethodCache as R6 classes", {
+  snapshot <- test_snapshot$clone()
+  first_individual <- snapshot$individuals[[1]]
+  expect_r6_class(first_individual$origin_data, "OriginData")
+  expect_r6_class(
+    first_individual$origin_data$calculation_methods,
+    "CalculationMethodCache"
+  )
+
+  first_compound <- snapshot$compounds[[1]]
+  expect_r6_class(first_compound$calculation_methods, "CalculationMethodCache")
+})
+
+test_that("Mutations through OriginData propagate to the snapshot export", {
+  snapshot <- test_snapshot$clone()
+  individual <- snapshot$individuals[[1]]
+  individual$origin_data$calculation_methods$add("Custom method")
+  individual$origin_data$species <- "Human"
+
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(temp_file)
+  reloaded <- Snapshot$new(temp_file)
+
+  reloaded_origin <- reloaded$data$Individuals[[1]]$OriginData
+  expect_true("Custom method" %in% unlist(reloaded_origin$CalculationMethods))
+  expect_equal(reloaded_origin$Species, "Human")
+})
+
 test_that("Snapshot print method works", {
   # Create a snapshot object
   snapshot <- test_snapshot$clone()

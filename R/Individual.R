@@ -19,6 +19,7 @@ Individual <- R6::R6Class(
     #' @return A new Individual object
     initialize = function(data) {
       private$.data <- data
+      private$.origin_data <- OriginData$new(data$OriginData)
       private$initialize_parameters()
     },
 
@@ -273,6 +274,13 @@ Individual <- R6::R6Class(
   private = list(
     .data = NULL,
     .parameters = NULL,
+    .origin_data = NULL,
+    deep_clone = function(name, value) {
+      if (name == ".origin_data" && inherits(value, "R6")) {
+        return(value$clone(deep = TRUE))
+      }
+      value
+    },
     initialize_parameters = function() {
       # Individual parameters are LocalizedParameter[] per the snapshot spec;
       # routing through the shared helper preserves the lazy-init shape while
@@ -289,7 +297,17 @@ Individual <- R6::R6Class(
     #' @field data The raw data of the individual (read-only)
     data = function(value) {
       if (missing(value)) {
-        return(private$.data)
+        result <- private$.data
+        # Refresh OriginData from the embedded OriginData object so that any
+        # mutation flows back to the export payload. When OriginData was
+        # originally absent, keep it absent unless something was added.
+        origin_payload <- private$.origin_data$data
+        if (length(origin_payload) == 0 && is.null(private$.data$OriginData)) {
+          result$OriginData <- NULL
+        } else {
+          result$OriginData <- origin_payload
+        }
+        return(result)
       }
       cli::cli_abort("data is read-only")
     },
@@ -310,171 +328,120 @@ Individual <- R6::R6Class(
       private$.data$Seed <- value
     },
 
+    #' @field origin_data The [OriginData] object holding species, population,
+    #'   gender, physiological parameters, and calculation methods.
+    origin_data = function(value) {
+      if (missing(value)) {
+        return(private$.origin_data)
+      }
+      if (!inherits(value, "OriginData")) {
+        cli::cli_abort("origin_data must be an OriginData object")
+      }
+      private$.origin_data <- value
+    },
+
     #' @field species The species of the individual
     species = function(value) {
       if (missing(value)) {
-        return(private$.data$OriginData$Species)
+        return(private$.origin_data$species)
       }
-      validate_species(value)
-      private$.data$OriginData$Species <- value
+      private$.origin_data$species <- value
     },
 
     #' @field population The population of the individual
     population = function(value) {
       if (missing(value)) {
-        return(private$.data$OriginData$Population)
+        return(private$.origin_data$population)
       }
-      validate_population(value)
-      private$.data$OriginData$Population <- value
+      private$.origin_data$population <- value
     },
 
     #' @field gender The gender of the individual
     gender = function(value) {
       if (missing(value)) {
-        return(private$.data$OriginData$Gender)
+        return(private$.origin_data$gender)
       }
-      validate_gender(value)
-      private$.data$OriginData$Gender <- value
+      private$.origin_data$gender <- value
     },
 
     #' @field age The age value of the individual
     age = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Age)) {
-          return(NULL)
-        }
-        return(private$.data$OriginData$Age$Value)
+        return(private$.origin_data$age)
       }
-      private$.data$OriginData$Age$Value <- value
-      if (is.null(private$.data$OriginData$Age$Unit)) {
-        private$.data$OriginData$Age$Unit <- "year(s)"
-      }
+      private$.origin_data$age <- value
     },
 
     #' @field age_unit The age unit of the individual
     age_unit = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Age)) {
-          return(NULL)
-        }
-        return(private$.data$OriginData$Age$Unit)
+        return(private$.origin_data$age_unit)
       }
-      # Allow clearing unit
-      if (is.null(value) || (is.atomic(value) && is.na(value))) {
-        private$.data$OriginData$Age$Unit <- NULL
-        return(invisible(NULL))
-      }
-      validate_unit(value, "Age in years")
-      private$.data$OriginData$Age$Unit <- value
+      private$.origin_data$age_unit <- value
     },
 
     #' @field weight The weight value of the individual
     weight = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Weight)) {
-          return(NULL)
-        }
-        return(private$.data$OriginData$Weight$Value)
+        return(private$.origin_data$weight)
       }
-      private$.data$OriginData$Weight$Value <- value
-      if (is.null(private$.data$OriginData$Weight$Unit)) {
-        private$.data$OriginData$Weight$Unit <- "kg"
-      }
+      private$.origin_data$weight <- value
     },
 
     #' @field weight_unit The weight unit of the individual
     weight_unit = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Weight)) {
-          return(NULL)
-        }
-        return(private$.data$OriginData$Weight$Unit)
+        return(private$.origin_data$weight_unit)
       }
-      # Allow clearing unit
-      if (is.null(value) || (is.atomic(value) && is.na(value))) {
-        private$.data$OriginData$Weight$Unit <- NULL
-        return(invisible(NULL))
-      }
-      validate_unit(value, "Mass")
-      private$.data$OriginData$Weight$Unit <- value
+      private$.origin_data$weight_unit <- value
     },
 
     #' @field height The height value of the individual
     height = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Height)) {
-          return(NULL)
-        }
-        return(private$.data$OriginData$Height$Value)
+        return(private$.origin_data$height)
       }
-      private$.data$OriginData$Height$Value <- value
-      if (is.null(private$.data$OriginData$Height$Unit)) {
-        private$.data$OriginData$Height$Unit <- "cm"
-      }
+      private$.origin_data$height <- value
     },
 
     #' @field height_unit The height unit of the individual
     height_unit = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$Height)) {
-          return(NULL)
-        }
-        return(private$.data$OriginData$Height$Unit)
+        return(private$.origin_data$height_unit)
       }
-      # Allow clearing unit
-      if (is.null(value) || (is.atomic(value) && is.na(value))) {
-        private$.data$OriginData$Height$Unit <- NULL
-        return(invisible(NULL))
-      }
-      validate_unit(value, "Length")
-      private$.data$OriginData$Height$Unit <- value
+      private$.origin_data$height_unit <- value
     },
 
     #' @field gestational_age The gestational age value of the individual
     gestational_age = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$GestationalAge)) {
-          return(NULL)
-        }
-        return(private$.data$OriginData$GestationalAge$Value)
+        return(private$.origin_data$gestational_age)
       }
-      private$.data$OriginData$GestationalAge$Value <- value
-      if (is.null(private$.data$OriginData$GestationalAge$Unit)) {
-        private$.data$OriginData$GestationalAge$Unit <- "week(s)"
-      }
+      private$.origin_data$gestational_age <- value
     },
 
     #' @field gestational_age_unit The gestational age unit of the individual
     gestational_age_unit = function(value) {
       if (missing(value)) {
-        if (is.null(private$.data$OriginData$GestationalAge)) {
-          return(NULL)
-        }
-        return(private$.data$OriginData$GestationalAge$Unit)
+        return(private$.origin_data$gestational_age_unit)
       }
-      # Allow clearing unit
-      if (is.null(value) || (is.atomic(value) && is.na(value))) {
-        private$.data$OriginData$GestationalAge$Unit <- NULL
-        return(invisible(NULL))
-      }
-      validate_unit(value, "Time")
-      private$.data$OriginData$GestationalAge$Unit <- value
+      private$.origin_data$gestational_age_unit <- value
     },
 
     #' @field disease_state The disease state of the individual
     disease_state = function(value) {
       if (missing(value)) {
-        return(private$.data$OriginData$DiseaseState)
+        return(private$.origin_data$disease_state)
       }
-      private$.data$OriginData$DiseaseState <- value
+      private$.origin_data$disease_state <- value
     },
 
     #' @field disease_state_parameters The disease state parameters of the individual
     disease_state_parameters = function(value) {
       if (missing(value)) {
-        return(private$.data$OriginData$DiseaseStateParameters)
+        return(private$.origin_data$disease_state_parameters)
       }
-      private$.data$OriginData$DiseaseStateParameters <- value
+      private$.origin_data$disease_state_parameters <- value
     },
 
     #' @field parameters The list of parameter objects with a custom print method
@@ -506,12 +473,19 @@ Individual <- R6::R6Class(
       private$.parameters
     },
 
-    #' @field calculation_methods The calculation methods of the individual
+    #' @field calculation_methods The calculation methods of the individual,
+    #'   returned as a character vector for backwards compatibility. Use
+    #'   `$origin_data$calculation_methods` to access the
+    #'   [CalculationMethodCache] directly.
     calculation_methods = function(value) {
       if (missing(value)) {
-        return(private$.data$OriginData$CalculationMethods)
+        methods <- private$.origin_data$calculation_methods$methods
+        if (length(methods) == 0) {
+          return(NULL)
+        }
+        return(methods)
       }
-      private$.data$OriginData$CalculationMethods <- value
+      private$.origin_data$calculation_methods <- value
     },
 
     #' @field expression_profiles The expression profiles of the individual (read-only)
