@@ -5,6 +5,14 @@
 #' This class provides methods to access different properties of a compound
 #' and display a summary of its information.
 #'
+#' Compound processes are exposed via `$processes`, a flat named list of
+#' [Process] objects. The per-category tibble accessors
+#' (`$protein_binding_partners`, `$metabolizing_enzymes`,
+#' `$hepatic_clearance`, `$transporter_proteins`, `$renal_clearance`,
+#' `$biliary_clearance`, `$inhibition`, `$induction`) are
+#' [`lifecycle::deprecate_soft()`]-warned in favour of `$processes` and the
+#' long-form `processes` tibble returned by [get_compounds_dfs()].
+#'
 #' @importFrom tibble tibble as_tibble
 #' @importFrom glue glue
 #' @importFrom R6 R6Class
@@ -21,7 +29,10 @@ Compound <- R6::R6Class(
       private$.calculation_methods <- CalculationMethodCache$new(
         data$CalculationMethods
       )
-      private$initialize_parameters()
+      private$.parameters <- build_parameters_from_raw(
+        private$.data$Parameters,
+        key_by = "path"
+      )
     },
 
     #' @description
@@ -79,15 +90,16 @@ Compound <- R6::R6Class(
         for (prop_name in names(properties)) {
           prop_data <- self[[prop_name]]
           if (!is.null(prop_data) && length(prop_data) > 0) {
-            # Use the custom print method for physicochemical properties directly
             print.physicochemical_property(prop_data)
           }
         }
 
-        # Display processes using custom print method
-        if (!is.null(self$processes) && length(self$processes) > 0) {
+        # Display processes
+        raw_processes <- private$.data$Processes
+        if (!is.null(raw_processes) && length(raw_processes) > 0) {
           cli::cli_h2("Processes")
-          print.compound_processes(self$processes)
+          class(raw_processes) <- c("compound_processes", "list")
+          print.compound_processes(raw_processes)
         }
 
         # Display additional parameters using custom print method
@@ -102,24 +114,22 @@ Compound <- R6::R6Class(
     },
 
     #' @description
-    #' Convert compound data to tibbles for analysis
-    #' @return A tibble containing compound parameter data in the same format as legacy code
+    #' Convert this compound's physicochemical properties and process
+    #' parameters to a single long-form tibble (legacy shape).
+    #'
+    #' Used by [get_compounds_dfs()] to assemble the compound-wide
+    #' `properties` tibble. The process-derived rows produced here are
+    #' [`lifecycle::deprecate_soft()`]-warned at the
+    #' [get_compounds_dfs()] entry point; prefer the long-form
+    #' `processes` tibble returned alongside.
+    #'
+    #' @return A tibble with columns `compound`, `category`, `type`,
+    #'   `parameter`, `value`, `unit`, `data_source`, `source`.
     to_df = function() {
       compound_name <- self$name
 
-      # Initialize the dataframe
-      df <- tibble::tibble(
-        compound = character(),
-        category = character(),
-        type = character(),
-        parameter = character(),
-        value = character(),
-        unit = character(),
-        data_source = character(),
-        source = character()
-      )
+      df <- empty_compound_property_tibble()
 
-      # Process basic physicochemical properties
       for (p in c(
         "lipophilicity",
         "fraction_unbound",
@@ -131,80 +141,22 @@ Compound <- R6::R6Class(
       )) {
         prop_data <- private$.get_property_data(p)
         if (!is.null(prop_data) && length(prop_data) > 0) {
-          rows <- private$.property_to_rows(
-            compound_name,
-            p,
-            prop_data
+          df <- dplyr::bind_rows(
+            df,
+            private$.property_to_rows(compound_name, p, prop_data)
           )
-          df <- dplyr::bind_rows(df, rows)
         }
       }
 
-      # Process protein binding partners
-      if (!is.null(private$.protein_binding_partners)) {
-        rows <- private$.protein_binding_partners_to_table(
-          compound_name
-        )
-        df <- dplyr::bind_rows(df, rows)
+      process_rows <- compound_processes_to_legacy_df(
+        compound_name,
+        private$.data$Processes
+      )
+      if (nrow(process_rows) > 0) {
+        df <- dplyr::bind_rows(df, process_rows)
       }
 
-      # Process metabolizing enzymes
-      if (!is.null(private$.metabolizing_enzymes)) {
-        rows <- private$.metabolizing_enzymes_to_table(
-          compound_name
-        )
-        df <- dplyr::bind_rows(df, rows)
-      }
-
-      # Process hepatic clearance
-      if (!is.null(private$.hepatic_clearance)) {
-        rows <- private$.hepatic_clearance_to_table(
-          compound_name
-        )
-        df <- dplyr::bind_rows(df, rows)
-      }
-
-      # Process transporter proteins
-      if (!is.null(private$.transporter_proteins)) {
-        rows <- private$.transporter_proteins_to_table(
-          compound_name
-        )
-        df <- dplyr::bind_rows(df, rows)
-      }
-
-      # Process renal clearance
-      if (!is.null(private$.renal_clearance)) {
-        rows <- private$.renal_clearance_to_table(
-          compound_name
-        )
-        df <- dplyr::bind_rows(df, rows)
-      }
-
-      # Process biliary clearance
-      if (!is.null(private$.biliary_clearance)) {
-        rows <- private$.biliary_clearance_to_table(
-          compound_name
-        )
-        df <- dplyr::bind_rows(df, rows)
-      }
-
-      # Process inhibition
-      if (!is.null(private$.inhibition)) {
-        rows <- private$.inhibition_to_table(
-          compound_name
-        )
-        df <- dplyr::bind_rows(df, rows)
-      }
-
-      # Process induction
-      if (!is.null(private$.induction)) {
-        rows <- private$.induction_to_table(
-          compound_name
-        )
-        df <- dplyr::bind_rows(df, rows)
-      }
-
-      return(df)
+      df
     }
   ),
 
@@ -212,14 +164,6 @@ Compound <- R6::R6Class(
     .data = NULL,
     .parameters = NULL,
     .calculation_methods = NULL,
-    .protein_binding_partners = NULL,
-    .metabolizing_enzymes = NULL,
-    .hepatic_clearance = NULL,
-    .transporter_proteins = NULL,
-    .renal_clearance = NULL,
-    .biliary_clearance = NULL,
-    .inhibition = NULL,
-    .induction = NULL,
 
     deep_clone = function(name, value) {
       if (name == ".calculation_methods" && inherits(value, "R6")) {
@@ -228,158 +172,22 @@ Compound <- R6::R6Class(
       value
     },
 
-    initialize_parameters = function() {
-      private$.parameters <- build_parameters_from_raw(
-        private$.data$Parameters,
-        key_by = "path"
+    .format_value = function(x) {
+      vapply(
+        x,
+        function(nr) {
+          if (is.character(nr)) {
+            nr
+          } else if (is.null(nr)) {
+            NA_character_
+          } else {
+            as.character(nr)
+          }
+        },
+        character(1)
       )
-
-      # Sub-structure extraction (compound processes) stays on this class.
-      if (!is.null(private$.data$Processes)) {
-        private$.extract_process_data()
-      }
     },
 
-    .extract_process_data = function() {
-      processes <- private$.data$Processes
-
-      # Extract protein binding partners
-      all_bindings <- purrr::keep(
-        processes,
-        ~ .x$InternalName == "SpecificBinding"
-      )
-      if (length(all_bindings) > 0) {
-        private$.protein_binding_partners <- private$.extract_protein_binding_partners(
-          all_bindings
-        )
-      }
-
-      # Extract metabolizing enzymes
-      all_metabolizations <- purrr::keep(
-        processes,
-        ~ grepl("Metabolization|rCYP", .x$InternalName)
-      )
-      if (length(all_metabolizations) > 0) {
-        private$.metabolizing_enzymes <- private$.extract_metabolizing_enzymes(
-          all_metabolizations
-        )
-      }
-
-      # Extract hepatic clearance
-      private$.hepatic_clearance <- private$.extract_hepatic_clearance()
-
-      # Extract transporter proteins
-      private$.transporter_proteins <- private$.extract_transporter_proteins()
-
-      # Extract renal clearance
-      private$.renal_clearance <- private$.extract_renal_clearance()
-
-      # Extract biliary clearance
-      private$.biliary_clearance <- private$.extract_biliary_clearance()
-
-      # Extract inhibition
-      private$.inhibition <- private$.extract_inhibition()
-
-      # Extract induction
-      private$.induction <- private$.extract_induction()
-    },
-
-    # Utility function to extract value and unit from property entry
-    .extract_property_value = function(entry) {
-      if (is.null(entry$Parameters) || length(entry$Parameters) == 0) {
-        return("N/A")
-      }
-
-      # Find the main property parameter (usually the first one that's not a modifier)
-      main_param <- NULL
-      for (param in entry$Parameters) {
-        param_name <- param$Name %||% ""
-        # Skip modifier parameters like "Reference pH"
-        if (!grepl("Reference|pH|Modifier", param_name, ignore.case = TRUE)) {
-          main_param <- param
-          break
-        }
-      }
-
-      # If no main parameter found, use the first one
-      if (is.null(main_param) && length(entry$Parameters) > 0) {
-        main_param <- entry$Parameters[[1]]
-      }
-
-      if (is.null(main_param)) {
-        return("N/A")
-      }
-
-      # Check if this parameter has a TableFormula (table data)
-      if (
-        !is.null(main_param$TableFormula) &&
-          !is.null(main_param$TableFormula$Points)
-      ) {
-        points <- main_param$TableFormula$Points
-        x_name <- main_param$TableFormula$XName %||% "X"
-        y_unit <- main_param$TableFormula$YUnit %||% main_param$Unit %||% ""
-
-        # Format table points as "X1: Y1, X2: Y2, ..."
-        table_entries <- vapply(
-          points,
-          function(point) {
-            x_val <- point$X
-            y_val <- point$Y
-            if (y_unit != "") {
-              glue::glue("{x_name} {x_val}: {y_val} {y_unit}")
-            } else {
-              glue::glue("{x_name} {x_val}: {y_val}")
-            }
-          },
-          character(1)
-        )
-
-        return(paste(table_entries, collapse = ", "))
-      }
-
-      # Regular parameter (non-table)
-      value <- main_param$Value %||% "N/A"
-      unit <- main_param$Unit %||% ""
-
-      if (unit != "" && value != "N/A") {
-        return(glue::glue("{value} {unit}"))
-      } else {
-        return(as.character(value))
-      }
-    },
-
-    # Utility function to get source information
-    .get_source = function(value_origin) {
-      if (is.null(value_origin)) {
-        return(NA_character_)
-      }
-      if (value_origin$Source == "ParameterIdentification") {
-        return("Parameter optimization")
-      } else {
-        if (
-          is.null(value_origin$Description) || value_origin$Description == ""
-        ) {
-          return(NA_character_)
-        } else {
-          return(value_origin$Description)
-        }
-      }
-    },
-
-    # Format values as strings
-    .format_value = function(my_vector) {
-      return(sapply(my_vector, function(nr) {
-        if (is.character(nr)) {
-          return(nr)
-        } else if (is.null(nr)) {
-          return(NULL)
-        } else {
-          return(as.character(nr))
-        }
-      }))
-    },
-
-    # Extract property data based on property name
     .get_property_data = function(property) {
       switch(
         property,
@@ -394,12 +202,7 @@ Compound <- R6::R6Class(
       )
     },
 
-    # Convert property data to table rows
-    .property_to_rows = function(
-      compound_name,
-      parameter,
-      prop_data
-    ) {
+    .property_to_rows = function(compound_name, parameter, prop_data) {
       if (parameter == "molecular_weight" && !is.list(prop_data)) {
         return(tibble::tibble(
           compound = compound_name,
@@ -412,7 +215,7 @@ Compound <- R6::R6Class(
           source = prop_data$Source
         ))
       } else if (is.list(prop_data)) {
-        rows <- tibble::tibble(
+        return(tibble::tibble(
           compound = compound_name,
           category = "physicochemical_property",
           type = parameter,
@@ -440,22 +243,11 @@ Compound <- R6::R6Class(
           unit = purrr::map_chr(prop_data, ~ .x$Unit %||% NA_character_),
           data_source = NA_character_,
           source = purrr::map_chr(prop_data, ~ .x$Source)
-        )
-        return(rows)
+        ))
       }
-      return(tibble::tibble(
-        compound = character(0),
-        category = character(0),
-        type = character(0),
-        parameter = character(0),
-        value = character(0),
-        unit = character(0),
-        data_source = character(0),
-        source = character(0)
-      ))
+      empty_compound_property_tibble()
     },
 
-    # Extract lipophilicity data
     .extract_lipophilicity = function() {
       lipophilicity_data <- private$.data$Lipophilicity
       if (is.null(lipophilicity_data)) {
@@ -472,10 +264,9 @@ Compound <- R6::R6Class(
           "Lipophilicity"
         )
       }
-      return(data)
+      data
     },
 
-    # Extract fraction unbound data
     .extract_fraction_unbound = function() {
       fraction_unbound_data <- private$.data$FractionUnbound
       if (is.null(fraction_unbound_data)) {
@@ -492,18 +283,16 @@ Compound <- R6::R6Class(
           "Fraction unbound (plasma, reference value)"
         )
       }
-      return(data)
+      data
     },
 
-    # Extract molecular weight
     .extract_molecular_weight = function() {
-      return(list(private$.extract_parameters(
+      list(private$.extract_parameters(
         private$.data$Parameters,
         "Molecular weight"
-      )))
+      ))
     },
 
-    # Extract pKa data
     .extract_pka = function() {
       pKa_data <- private$.data$PkaTypes
       if (is.null(pKa_data)) {
@@ -518,13 +307,12 @@ Compound <- R6::R6Class(
         data[[j]] <- list()
         pka_source <- pKa_data[[j]]
         data[[j]]$Value <- pka_source$Pka
-        data[[j]]$Source <- private$.get_source(pka_source$ValueOrigin)
+        data[[j]]$Source <- compound_value_origin_source(pka_source$ValueOrigin)
       }
       names(data) <- tolower(names)
-      return(data)
+      data
     },
 
-    # Extract solubility data
     .extract_solubility = function() {
       solubility_data <- private$.data$Solubility
       if (is.null(solubility_data)) {
@@ -558,7 +346,7 @@ Compound <- R6::R6Class(
           data[[id]] <- list()
           data[[id]]$Value <- source$Value
           data[[id]]$Unit <- source$Unit
-          data[[id]]$Source <- private$.get_source(source$ValueOrigin)
+          data[[id]]$Source <- compound_value_origin_source(source$ValueOrigin)
           data[[id]]$ref_pH <- pH
           data[[id]]$gain_per_charge <- gain_per_charge
           data[[id]]$table_name <- name
@@ -568,15 +356,14 @@ Compound <- R6::R6Class(
           source <- purrr::keep(params, ~ .x$Name == "Solubility table")[[1]]
           data[[id]]$Value <- purrr::map_dbl(source$TableFormula$Points, ~ .$Y)
           data[[id]]$Unit <- source$Unit
-          data[[id]]$Source <- private$.get_source(source$ValueOrigin)
+          data[[id]]$Source <- compound_value_origin_source(source$ValueOrigin)
           data[[id]]$pH <- purrr::map_dbl(source$TableFormula$Points, ~ .$X)
           data[[id]]$table_name <- id
         }
       }
-      return(data)
+      data
     },
 
-    # Extract intestinal permeability data
     .extract_intestinal_permeability = function() {
       intestinal_permeability_data <- private$.data$IntestinalPermeability
       if (is.null(intestinal_permeability_data)) {
@@ -593,10 +380,9 @@ Compound <- R6::R6Class(
           "Specific intestinal permeability (transcellular)"
         )
       }
-      return(data)
+      data
     },
 
-    # Extract halogens data
     .extract_halogens = function() {
       halogen_data <- purrr::keep(
         private$.data$Parameters,
@@ -613,903 +399,25 @@ Compound <- R6::R6Class(
       for (j in seq_along(names)) {
         data[[j]] <- list()
         data[[j]]$Value <- halogen_data[[j]]$Value
-        data[[j]]$Source <- private$.get_source(halogen_data[[j]]$ValueOrigin)
+        data[[j]]$Source <- compound_value_origin_source(
+          halogen_data[[j]]$ValueOrigin
+        )
       }
-      return(data)
+      data
     },
 
-    # Extract parameters utility function
     .extract_parameters = function(parameters_list, property_name) {
       source <- purrr::keep(parameters_list, ~ .x$Name == property_name) |>
         purrr::list_c()
       if (!is.null(source)) {
-        data <- list()
-        data$Value <- as.numeric(source$Value)
-        data$Unit <- source$Unit %||% NA_character_
-        data$Source <- private$.get_source(source$ValueOrigin)
-        return(data)
+        list(
+          Value = as.numeric(source$Value),
+          Unit = source$Unit %||% NA_character_,
+          Source = compound_value_origin_source(source$ValueOrigin)
+        )
       } else {
-        return(NULL)
+        NULL
       }
-    },
-
-    # Extract protein binding partners
-    .extract_protein_binding_partners = function(all_bindings) {
-      # Use DataSource as primary index to avoid overwrites
-      datasource_names <- unique(purrr::list_c(purrr::map(
-        all_bindings,
-        "DataSource"
-      )))
-
-      binding_data <- list()
-
-      for (datasource in datasource_names) {
-        # Filter bindings by datasource
-        bindings <- purrr::keep(
-          all_bindings,
-          ~ .x$DataSource == datasource
-        )
-
-        # Store all binding data for this datasource
-        binding_data[[datasource]] <- purrr::map(
-          bindings,
-          function(binding) {
-            parameter_names <- purrr::list_c(purrr::map(
-              binding$Parameters,
-              "Name"
-            ))
-
-            binding_params <- purrr::map(
-              purrr::set_names(binding$Parameters, parameter_names),
-              function(parameter) {
-                list(
-                  Value = as.numeric(parameter$Value),
-                  Unit = parameter$Unit,
-                  Source = private$.get_source(parameter$ValueOrigin)
-                )
-              }
-            )
-
-            # Include metadata about the binding
-            binding_params$Process <- binding$InternalName
-            binding_params$Molecule <- binding$Molecule
-            binding_params$DataSource <- binding$DataSource
-
-            return(binding_params)
-          }
-        )
-      }
-
-      return(binding_data)
-    },
-
-    # Table conversion methods for protein binding partners
-    .protein_binding_partners_to_table = function(
-      compound_name
-    ) {
-      purrr::imap(
-        private$.protein_binding_partners,
-        function(datasource_bindings, datasource_name) {
-          purrr::map(datasource_bindings, function(binding) {
-            molecule_name <- binding$Molecule
-
-            # Extract parameters, excluding metadata
-            data <- binding |>
-              purrr::discard_at(c("Process", "Molecule", "DataSource"))
-
-            purrr::imap(data, function(param, param_name) {
-              tibble::tibble(
-                compound = compound_name,
-                category = "protein_binding_partners",
-                type = binding$Process,
-                parameter = paste(param_name, molecule_name, sep = ", "),
-                value = private$.format_value(param$Value),
-                unit = param$Unit,
-                data_source = datasource_name,
-                source = param$Source
-              )
-            }) |>
-              dplyr::bind_rows()
-          }) |>
-            dplyr::bind_rows()
-        }
-      ) |>
-        dplyr::bind_rows()
-    },
-
-    # Extract metabolizing enzymes
-    .extract_metabolizing_enzymes = function(all_metabolizations) {
-      # Use DataSource as primary index to avoid overwrites
-      datasource_names <- unique(purrr::list_c(purrr::map(
-        all_metabolizations,
-        "DataSource"
-      )))
-
-      metabolization_data <- list()
-
-      for (datasource in datasource_names) {
-        # Filter metabolizations by datasource
-        metabolizations <- purrr::keep(
-          all_metabolizations,
-          ~ .x$DataSource == datasource
-        )
-
-        # Store all metabolization data for this datasource
-        metabolization_data[[datasource]] <- purrr::map(
-          metabolizations,
-          function(metabolization) {
-            parameter_names <- purrr::list_c(purrr::map(
-              metabolization$Parameters,
-              "Name"
-            ))
-
-            metabolization_params <- purrr::map(
-              purrr::set_names(metabolization$Parameters, parameter_names),
-              function(parameter) {
-                list(
-                  Value = as.numeric(parameter$Value),
-                  Unit = parameter$Unit,
-                  Source = private$.get_source(parameter$ValueOrigin)
-                )
-              }
-            )
-
-            # Include metadata about the metabolization
-            metabolization_params$Process <- metabolization$InternalName
-            metabolization_params$Molecule <- metabolization$Molecule
-            metabolization_params$Metabolite <- metabolization$Metabolite
-            metabolization_params$DataSource <- metabolization$DataSource
-
-            return(metabolization_params)
-          }
-        )
-      }
-
-      return(metabolization_data)
-    },
-
-    # Metabolizing enzymes table conversion
-    .metabolizing_enzymes_to_table = function(compound_name) {
-      if (
-        is.null(private$.metabolizing_enzymes) ||
-          length(private$.metabolizing_enzymes) == 0
-      ) {
-        return(tibble::tibble())
-      }
-
-      purrr::imap(
-        private$.metabolizing_enzymes,
-        function(datasource_metabolizations, datasource_name) {
-          purrr::map(datasource_metabolizations, function(metabolization) {
-            molecule_name <- metabolization$Molecule
-            metabolite <- metabolization$Metabolite
-
-            # Extract parameters, excluding metadata
-            data <- metabolization |>
-              purrr::discard_at(c(
-                "Process",
-                "Molecule",
-                "Metabolite",
-                "DataSource"
-              ))
-
-            purrr::imap(data, function(param, param_name) {
-              if (!is.null(metabolite)) {
-                type_string <- paste(
-                  paste(
-                    param_name,
-                    molecule_name,
-                    sep = ", "
-                  ),
-                  metabolite,
-                  sep = "\n-"
-                )
-              } else {
-                type_string <- paste(
-                  param_name,
-                  molecule_name,
-                  sep = ", "
-                )
-              }
-              tibble::tibble(
-                compound = compound_name,
-                category = "metabolizing_enzymes",
-                type = metabolization$Process,
-                parameter = type_string,
-                value = private$.format_value(param$Value),
-                unit = param$Unit,
-                data_source = datasource_name,
-                source = param$Source
-              )
-            }) |>
-              dplyr::bind_rows()
-          }) |>
-            dplyr::bind_rows()
-        }
-      ) |>
-        dplyr::bind_rows()
-    },
-
-    # Extract hepatic clearance
-    .extract_hepatic_clearance = function() {
-      processes <- private$.data$Processes
-      if (is.null(processes)) {
-        return(NULL)
-      }
-
-      all_hepatic <- purrr::keep(
-        processes,
-        ~ grepl(
-          "Hepatocytes|LiverClearance|LiverMicrosomeR|LiverMicrosomeH",
-          .x$InternalName
-        )
-      )
-
-      if (length(all_hepatic) == 0) {
-        return(NULL)
-      }
-
-      # Use DataSource as primary index to avoid overwrites
-      datasource_names <- unique(purrr::list_c(purrr::map(
-        all_hepatic,
-        "DataSource"
-      )))
-
-      hepatic_data <- list()
-
-      for (datasource in datasource_names) {
-        # Filter hepatic processes by datasource
-        hepatic_processes <- purrr::keep(
-          all_hepatic,
-          ~ .x$DataSource == datasource
-        )
-
-        # Store all hepatic data for this datasource
-        hepatic_data[[datasource]] <- purrr::map(
-          hepatic_processes,
-          function(hepatic) {
-            parameter_names <- purrr::list_c(purrr::map(
-              hepatic$Parameters,
-              "Name"
-            ))
-
-            hepatic_params <- purrr::map(
-              purrr::set_names(hepatic$Parameters, parameter_names),
-              function(parameter) {
-                list(
-                  Value = as.numeric(parameter$Value),
-                  Unit = parameter$Unit,
-                  Source = private$.get_source(parameter$ValueOrigin)
-                )
-              }
-            )
-
-            # Include metadata
-            hepatic_params$Process <- hepatic$InternalName
-            hepatic_params$DataSource <- hepatic$DataSource
-
-            return(hepatic_params)
-          }
-        )
-      }
-
-      return(hepatic_data)
-    },
-
-    # Hepatic clearance table conversion
-    .hepatic_clearance_to_table = function(compound_name) {
-      if (
-        is.null(private$.hepatic_clearance) ||
-          length(private$.hepatic_clearance) == 0
-      ) {
-        return(tibble::tibble(
-          compound = character(0),
-          category = character(0),
-          type = character(0),
-          parameter = character(0),
-          value = character(0),
-          unit = character(0),
-          data_source = character(0),
-          source = character(0)
-        ))
-      }
-
-      purrr::imap(
-        private$.hepatic_clearance,
-        function(datasource_hepatic, datasource_name) {
-          purrr::map(datasource_hepatic, function(hepatic) {
-            # Extract parameters, excluding metadata
-            data <- hepatic |>
-              purrr::discard_at(c("Process", "DataSource"))
-
-            purrr::imap(data, function(param, param_name) {
-              tibble::tibble(
-                compound = compound_name,
-                category = "hepatic_clearance",
-                type = hepatic$Process,
-                parameter = param_name,
-                value = private$.format_value(param$Value),
-                unit = param$Unit,
-                data_source = datasource_name,
-                source = param$Source
-              )
-            }) |>
-              dplyr::bind_rows()
-          }) |>
-            dplyr::bind_rows()
-        }
-      ) |>
-        dplyr::bind_rows()
-    },
-
-    # Extract transporter proteins
-    .extract_transporter_proteins = function() {
-      processes <- private$.data$Processes
-      if (is.null(processes)) {
-        return(NULL)
-      }
-
-      all_transports <- purrr::keep(
-        processes,
-        ~ grepl("ActiveTransport", .x$InternalName)
-      )
-
-      if (length(all_transports) == 0) {
-        return(NULL)
-      }
-
-      # Use DataSource as primary index to avoid overwrites
-      datasource_names <- unique(purrr::list_c(purrr::map(
-        all_transports,
-        "DataSource"
-      )))
-
-      transporter_data <- list()
-
-      for (datasource in datasource_names) {
-        # Filter transports by datasource
-        transports <- purrr::keep(
-          all_transports,
-          ~ .x$DataSource == datasource
-        )
-
-        # Store all transport data for this datasource
-        transporter_data[[datasource]] <- purrr::map(
-          transports,
-          function(transport) {
-            parameter_names <- purrr::list_c(purrr::map(
-              transport$Parameters,
-              "Name"
-            ))
-
-            transport_data <- purrr::map(
-              purrr::set_names(transport$Parameters, parameter_names),
-              function(parameter) {
-                list(
-                  Value = as.numeric(parameter$Value),
-                  Unit = parameter$Unit,
-                  Source = private$.get_source(parameter$ValueOrigin)
-                )
-              }
-            )
-
-            # Keep all parameters - no filtering based on source
-            # This ensures all transporter data is accessible to the user
-
-            # Include metadata about the transport
-            transport_data$Process <- transport$InternalName
-            transport_data$Molecule <- transport$Molecule
-            transport_data$DataSource <- transport$DataSource
-
-            return(transport_data)
-          }
-        )
-      }
-
-      return(transporter_data)
-    },
-
-    # Transporter proteins table conversion
-    .transporter_proteins_to_table = function(compound_name) {
-      if (
-        is.null(private$.transporter_proteins) ||
-          length(private$.transporter_proteins) == 0
-      ) {
-        return(tibble::tibble(
-          compound = character(0),
-          category = character(0),
-          type = character(0),
-          parameter = character(0),
-          value = character(0),
-          unit = character(0),
-          data_source = character(0),
-          source = character(0)
-        ))
-      }
-
-      purrr::imap(
-        private$.transporter_proteins,
-        function(datasource_transports, datasource_name) {
-          purrr::map(datasource_transports, function(transport) {
-            molecule_name <- transport$Molecule
-            process <- transport$Process
-
-            # Extract parameters, excluding metadata
-            data <- transport |>
-              purrr::discard_at(
-                c("Process", "Molecule", "DataSource")
-              )
-
-            purrr::imap(data, function(param, param_name) {
-              type_string <- paste(param_name, molecule_name, sep = ", ")
-
-              tibble::tibble(
-                compound = compound_name,
-                category = "transporter_proteins",
-                type = transport$Process,
-                parameter = type_string,
-                value = private$.format_value(param$Value),
-                unit = param$Unit,
-                data_source = datasource_name,
-                source = param$Source
-              )
-            }) |>
-              dplyr::bind_rows()
-          }) |>
-            dplyr::bind_rows()
-        }
-      ) |>
-        dplyr::bind_rows()
-    },
-
-    # Extract renal clearance
-    .extract_renal_clearance = function() {
-      processes <- private$.data$Processes
-      if (is.null(processes)) {
-        return(NULL)
-      }
-
-      all_renal <- purrr::keep(
-        processes,
-        ~ grepl("Tubular|Kidney|Glomerular", .x$InternalName)
-      )
-
-      if (length(all_renal) == 0) {
-        return(NULL)
-      }
-
-      # Use DataSource as primary index to avoid overwrites
-      datasource_names <- unique(purrr::list_c(purrr::map(
-        all_renal,
-        "DataSource"
-      )))
-
-      renal_data <- list()
-
-      for (datasource in datasource_names) {
-        # Filter renal processes by datasource
-        renal_processes <- purrr::keep(
-          all_renal,
-          ~ .x$DataSource == datasource
-        )
-
-        # Store all renal data for this datasource
-        renal_data[[datasource]] <- purrr::map(
-          renal_processes,
-          function(renal) {
-            parameter_names <- purrr::list_c(purrr::map(
-              renal$Parameters,
-              "Name"
-            ))
-
-            renal_params <- purrr::map(
-              purrr::set_names(renal$Parameters, parameter_names),
-              function(parameter) {
-                list(
-                  Value = as.numeric(parameter$Value),
-                  Unit = parameter$Unit,
-                  Source = private$.get_source(parameter$ValueOrigin)
-                )
-              }
-            )
-
-            # Include metadata
-            renal_params$Process <- renal$InternalName
-            renal_params$DataSource <- renal$DataSource
-
-            return(renal_params)
-          }
-        )
-      }
-
-      return(renal_data)
-    },
-
-    # Renal clearance table conversion
-    .renal_clearance_to_table = function(compound_name) {
-      if (
-        is.null(private$.renal_clearance) ||
-          length(private$.renal_clearance) == 0
-      ) {
-        return(tibble::tibble(
-          compound = character(0),
-          category = character(0),
-          type = character(0),
-          parameter = character(0),
-          value = character(0),
-          unit = character(0),
-          data_source = character(0),
-          source = character(0)
-        ))
-      }
-
-      purrr::imap(
-        private$.renal_clearance,
-        function(datasource_renal, datasource_name) {
-          purrr::map(datasource_renal, function(renal) {
-            # Extract parameters, excluding metadata
-            data <- renal |>
-              purrr::discard_at(c("Process", "DataSource"))
-
-            purrr::imap(data, function(param, param_name) {
-              tibble::tibble(
-                compound = compound_name,
-                category = "renal_clearance",
-                type = renal$Process,
-                parameter = param_name,
-                value = private$.format_value(param$Value),
-                unit = param$Unit,
-                data_source = datasource_name,
-                source = param$Source
-              )
-            }) |>
-              dplyr::bind_rows()
-          }) |>
-            dplyr::bind_rows()
-        }
-      ) |>
-        dplyr::bind_rows()
-    },
-
-    # Extract biliary clearance
-    .extract_biliary_clearance = function() {
-      processes <- private$.data$Processes
-      if (is.null(processes)) {
-        return(NULL)
-      }
-
-      all_biliary <- purrr::keep(
-        processes,
-        ~ .x$InternalName == "BiliaryClearance"
-      )
-
-      if (length(all_biliary) == 0) {
-        return(NULL)
-      }
-
-      # Use DataSource as primary index to avoid overwrites
-      datasource_names <- unique(purrr::list_c(purrr::map(
-        all_biliary,
-        "DataSource"
-      )))
-
-      biliary_data <- list()
-
-      for (datasource in datasource_names) {
-        # Filter biliary processes by datasource
-        biliary_processes <- purrr::keep(
-          all_biliary,
-          ~ .x$DataSource == datasource
-        )
-
-        # Store all biliary data for this datasource
-        biliary_data[[datasource]] <- purrr::map(
-          biliary_processes,
-          function(biliary) {
-            parameter_names <- purrr::list_c(purrr::map(
-              biliary$Parameters,
-              "Name"
-            ))
-
-            biliary_params <- purrr::map(
-              purrr::set_names(biliary$Parameters, parameter_names),
-              function(parameter) {
-                list(
-                  Value = as.numeric(parameter$Value),
-                  Unit = parameter$Unit,
-                  Source = private$.get_source(parameter$ValueOrigin)
-                )
-              }
-            )
-
-            # Include metadata
-            biliary_params$Process <- biliary$InternalName
-            biliary_params$DataSource <- biliary$DataSource
-
-            return(biliary_params)
-          }
-        )
-      }
-
-      return(biliary_data)
-    },
-
-    # Biliary clearance table conversion
-    .biliary_clearance_to_table = function(compound_name) {
-      if (
-        is.null(private$.biliary_clearance) ||
-          length(private$.biliary_clearance) == 0
-      ) {
-        return(tibble::tibble(
-          compound = character(0),
-          category = character(0),
-          type = character(0),
-          parameter = character(0),
-          value = character(0),
-          unit = character(0),
-          data_source = character(0),
-          source = character(0)
-        ))
-      }
-
-      purrr::imap(
-        private$.biliary_clearance,
-        function(datasource_biliary, datasource_name) {
-          purrr::map(datasource_biliary, function(biliary) {
-            # Extract parameters, excluding metadata
-            data <- biliary |>
-              purrr::discard_at(c("Process", "DataSource"))
-
-            purrr::imap(data, function(param, param_name) {
-              tibble::tibble(
-                compound = compound_name,
-                category = "biliary_clearance",
-                type = biliary$Process,
-                parameter = param_name,
-                value = private$.format_value(param$Value),
-                unit = param$Unit,
-                data_source = datasource_name,
-                source = param$Source
-              )
-            }) |>
-              dplyr::bind_rows()
-          }) |>
-            dplyr::bind_rows()
-        }
-      ) |>
-        dplyr::bind_rows()
-    },
-
-    # Extract inhibition
-    .extract_inhibition = function() {
-      processes <- private$.data$Processes
-      if (is.null(processes)) {
-        return(NULL)
-      }
-
-      all_inhibitions <- purrr::keep(
-        processes,
-        ~ grepl("Inhibition", .x$InternalName)
-      )
-
-      if (length(all_inhibitions) == 0) {
-        return(NULL)
-      }
-
-      # Use DataSource as primary index to avoid overwrites
-      datasource_names <- unique(purrr::list_c(purrr::map(
-        all_inhibitions,
-        "DataSource"
-      )))
-
-      inhibition_data <- list()
-
-      for (datasource in datasource_names) {
-        # Filter inhibition processes by datasource
-        inhibition_processes <- purrr::keep(
-          all_inhibitions,
-          ~ .x$DataSource == datasource
-        )
-
-        # Store all inhibition data for this datasource
-        inhibition_data[[datasource]] <- purrr::map(
-          inhibition_processes,
-          function(inhibition) {
-            parameter_names <- purrr::list_c(purrr::map(
-              inhibition$Parameters,
-              "Name"
-            ))
-
-            inhibition_params <- purrr::map(
-              purrr::set_names(inhibition$Parameters, parameter_names),
-              function(parameter) {
-                list(
-                  Value = as.numeric(parameter$Value),
-                  Unit = parameter$Unit,
-                  Source = private$.get_source(parameter$ValueOrigin)
-                )
-              }
-            )
-
-            # Include metadata
-            inhibition_params$Process <- inhibition$InternalName
-            inhibition_params$Molecule <- inhibition$Molecule
-            inhibition_params$DataSource <- inhibition$DataSource
-
-            # Handle special case for IrreversibleInhibition
-            if (
-              inhibition_params$Process == "IrreversibleInhibition" &&
-                !("Ki" %in% names(inhibition_params))
-            ) {
-              inhibition_params$Ki <- inhibition_params$K_kinact_half
-              inhibition_params$Ki$Source <- "Assumed Ki=K-kinact-half"
-            }
-
-            return(inhibition_params)
-          }
-        )
-      }
-
-      return(inhibition_data)
-    },
-
-    # Inhibition table conversion
-    .inhibition_to_table = function(compound_name) {
-      if (is.null(private$.inhibition) || length(private$.inhibition) == 0) {
-        return(tibble::tibble(
-          compound = character(0),
-          category = character(0),
-          type = character(0),
-          parameter = character(0),
-          value = character(0),
-          unit = character(0),
-          data_source = character(0),
-          source = character(0)
-        ))
-      }
-
-      purrr::imap(
-        private$.inhibition,
-        function(datasource_inhibitions, datasource_name) {
-          purrr::map(datasource_inhibitions, function(inhibition) {
-            molecule_name <- inhibition$Molecule
-
-            # Extract parameters, excluding metadata
-            data <- inhibition |>
-              purrr::discard_at(c("Process", "Molecule", "DataSource"))
-
-            purrr::imap(data, function(param, param_name) {
-              type_string <- paste(
-                param_name,
-                molecule_name,
-                sep = ", "
-              )
-
-              tibble::tibble(
-                compound = compound_name,
-                category = "inhibition",
-                type = inhibition$Process,
-                parameter = type_string,
-                value = private$.format_value(param$Value),
-                unit = param$Unit,
-                data_source = datasource_name,
-                source = param$Source
-              )
-            }) |>
-              dplyr::bind_rows()
-          }) |>
-            dplyr::bind_rows()
-        }
-      ) |>
-        dplyr::bind_rows()
-    },
-
-    # Extract induction
-    .extract_induction = function() {
-      processes <- private$.data$Processes
-      if (is.null(processes)) {
-        return(NULL)
-      }
-
-      all_inductions <- purrr::keep(processes, ~ .x$InternalName == "Induction")
-
-      if (length(all_inductions) == 0) {
-        return(NULL)
-      }
-
-      # Use DataSource as primary index to avoid overwrites
-      datasource_names <- unique(purrr::list_c(purrr::map(
-        all_inductions,
-        "DataSource"
-      )))
-
-      induction_data <- list()
-
-      for (datasource in datasource_names) {
-        # Filter induction processes by datasource
-        induction_processes <- purrr::keep(
-          all_inductions,
-          ~ .x$DataSource == datasource
-        )
-
-        # Store all induction data for this datasource
-        induction_data[[datasource]] <- purrr::map(
-          induction_processes,
-          function(induction) {
-            parameter_names <- purrr::list_c(purrr::map(
-              induction$Parameters,
-              "Name"
-            ))
-
-            induction_params <- purrr::map(
-              purrr::set_names(induction$Parameters, parameter_names),
-              function(parameter) {
-                list(
-                  Value = as.numeric(parameter$Value),
-                  Unit = parameter$Unit,
-                  Source = private$.get_source(parameter$ValueOrigin)
-                )
-              }
-            )
-
-            # Include metadata
-            induction_params$Process <- induction$InternalName
-            induction_params$Molecule <- induction$Molecule
-            induction_params$DataSource <- induction$DataSource
-
-            return(induction_params)
-          }
-        )
-      }
-
-      return(induction_data)
-    },
-
-    # Induction table conversion
-    .induction_to_table = function(compound_name) {
-      if (is.null(private$.induction) || length(private$.induction) == 0) {
-        return(tibble::tibble(
-          compound = character(0),
-          category = character(0),
-          type = character(0),
-          parameter = character(0),
-          value = character(0),
-          unit = character(0),
-          data_source = character(0),
-          source = character(0)
-        ))
-      }
-
-      purrr::imap(
-        private$.induction,
-        function(datasource_inductions, datasource_name) {
-          purrr::map(datasource_inductions, function(induction) {
-            molecule_name <- induction$Molecule
-
-            # Extract parameters, excluding metadata
-            data <- induction |>
-              purrr::discard_at(c("Process", "Molecule", "DataSource"))
-
-            purrr::imap(data, function(param, param_name) {
-              type_string <- paste(param_name, molecule_name, sep = ", ")
-
-              tibble::tibble(
-                compound = compound_name,
-                category = "induction",
-                type = induction$Process,
-                parameter = type_string,
-                value = private$.format_value(param$Value),
-                unit = param$Unit,
-                data_source = datasource_name,
-                source = param$Source
-              )
-            }) |>
-              dplyr::bind_rows()
-          }) |>
-            dplyr::bind_rows()
-        }
-      ) |>
-        dplyr::bind_rows()
     }
   ),
 
@@ -1564,7 +472,7 @@ Compound <- R6::R6Class(
           }
         }
       }
-      return(NA)
+      NA
     },
 
     #' @field molecular_weight_unit The unit of the molecular weight
@@ -1576,7 +484,7 @@ Compound <- R6::R6Class(
           }
         }
       }
-      return("")
+      ""
     },
 
     #' @field lipophilicity The lipophilicity data of the compound
@@ -1629,13 +537,11 @@ Compound <- R6::R6Class(
       result
     },
 
-    #' @field processes The processes of the compound
+    #' @field processes A flat named list of [Process] objects, one per
+    #'   entry in the compound's `Processes` array. Duplicate names are
+    #'   disambiguated with a numeric suffix (`_1`, `_2`, ...).
     processes = function() {
-      result <- private$.data$Processes
-      if (!is.null(result)) {
-        class(result) <- c("compound_processes", "list")
-      }
-      result
+      build_processes_from_raw(private$.data$Processes)
     },
 
     #' @field calculation_methods A [CalculationMethodCache] holding the
@@ -1654,12 +560,10 @@ Compound <- R6::R6Class(
     #' @field parameters The additional parameters of the compound (excluding molecular weight)
     parameters = function(value) {
       if (missing(value)) {
-        # Get raw parameters directly from data
         raw_params <- private$.data$Parameters
         if (is.null(raw_params) || length(raw_params) == 0) {
           result <- list()
         } else {
-          # Filter out molecular weight parameters
           result <- purrr::keep(raw_params, function(param) {
             param_name <- param$Name %||% ""
             !grepl(
@@ -1669,88 +573,123 @@ Compound <- R6::R6Class(
             )
           })
         }
-
         if (!is.null(result)) {
           class(result) <- c("compound_additional_parameters", "list")
         }
         return(result)
       }
-
-      # For setting values, we could implement parameter updating logic here if needed
-      # For now, just return the current parameters
       self$parameters
     },
 
-    #' @field protein_binding_partners The protein binding partners data of the compound
+    #' @field protein_binding_partners Deprecated. Filter
+    #'   [get_compounds_dfs()]`$processes` on `category ==
+    #'   "protein_binding_partners"`, or iterate `self$processes` and check
+    #'   `process$category`.
     protein_binding_partners = function() {
-      result <- private$.protein_binding_partners
-      if (!is.null(result)) {
-        class(result) <- c("protein_binding_partners", "list")
-      }
-      result
+      deprecate_compound_category_accessor("protein_binding_partners")
+      legacy_category_named_list(
+        private$.data$Processes,
+        "protein_binding_partners"
+      )
     },
 
-    #' @field metabolizing_enzymes The metabolizing enzymes data of the compound
+    #' @field metabolizing_enzymes Deprecated. See `$protein_binding_partners`.
     metabolizing_enzymes = function() {
-      result <- private$.metabolizing_enzymes
-      if (!is.null(result)) {
-        class(result) <- c("metabolizing_enzymes", "list")
-      }
-      result
+      deprecate_compound_category_accessor("metabolizing_enzymes")
+      legacy_category_named_list(
+        private$.data$Processes,
+        "metabolizing_enzymes"
+      )
     },
 
-    #' @field hepatic_clearance The hepatic clearance data of the compound
+    #' @field hepatic_clearance Deprecated. See `$protein_binding_partners`.
     hepatic_clearance = function() {
-      result <- private$.hepatic_clearance
-      if (!is.null(result)) {
-        class(result) <- c("hepatic_clearance", "list")
-      }
-      result
+      deprecate_compound_category_accessor("hepatic_clearance")
+      legacy_category_named_list(
+        private$.data$Processes,
+        "hepatic_clearance"
+      )
     },
 
-    #' @field transporter_proteins The transporter proteins data of the compound
+    #' @field transporter_proteins Deprecated. See `$protein_binding_partners`.
     transporter_proteins = function() {
-      result <- private$.transporter_proteins
-      if (!is.null(result)) {
-        class(result) <- c("transporter_proteins", "list")
-      }
-      result
+      deprecate_compound_category_accessor("transporter_proteins")
+      legacy_category_named_list(
+        private$.data$Processes,
+        "transporter_proteins"
+      )
     },
 
-    #' @field renal_clearance The renal clearance data of the compound
+    #' @field renal_clearance Deprecated. See `$protein_binding_partners`.
     renal_clearance = function() {
-      result <- private$.renal_clearance
-      if (!is.null(result)) {
-        class(result) <- c("renal_clearance", "list")
-      }
-      result
+      deprecate_compound_category_accessor("renal_clearance")
+      legacy_category_named_list(
+        private$.data$Processes,
+        "renal_clearance"
+      )
     },
 
-    #' @field biliary_clearance The biliary clearance data of the compound
+    #' @field biliary_clearance Deprecated. See `$protein_binding_partners`.
     biliary_clearance = function() {
-      result <- private$.biliary_clearance
-      if (!is.null(result)) {
-        class(result) <- c("biliary_clearance", "list")
-      }
-      result
+      deprecate_compound_category_accessor("biliary_clearance")
+      legacy_category_named_list(
+        private$.data$Processes,
+        "biliary_clearance"
+      )
     },
 
-    #' @field inhibition The inhibition data of the compound
+    #' @field inhibition Deprecated. See `$protein_binding_partners`.
     inhibition = function() {
-      result <- private$.inhibition
-      if (!is.null(result)) {
-        class(result) <- c("inhibition", "list")
-      }
-      result
+      deprecate_compound_category_accessor("inhibition")
+      legacy_category_named_list(private$.data$Processes, "inhibition")
     },
 
-    #' @field induction The induction data of the compound
+    #' @field induction Deprecated. See `$protein_binding_partners`.
     induction = function() {
-      result <- private$.induction
-      if (!is.null(result)) {
-        class(result) <- c("induction", "list")
-      }
-      result
+      deprecate_compound_category_accessor("induction")
+      legacy_category_named_list(private$.data$Processes, "induction")
     }
   )
 )
+
+# Shared empty tibble used by Compound$to_df() and the snapshot exporter.
+empty_compound_property_tibble <- function() {
+  tibble::tibble(
+    compound = character(),
+    category = character(),
+    type = character(),
+    parameter = character(),
+    value = character(),
+    unit = character(),
+    data_source = character(),
+    source = character()
+  )
+}
+
+# Internal: derive the human-readable source string from a raw
+# `ValueOrigin` dict. Hoisted out of `Compound` so it can be shared by the
+# process tibble helpers in `R/process_dataframes.R`.
+compound_value_origin_source <- function(value_origin) {
+  if (is.null(value_origin)) {
+    return(NA_character_)
+  }
+  if (identical(value_origin$Source, "ParameterIdentification")) {
+    return("Parameter optimization")
+  }
+  if (is.null(value_origin$Description) || value_origin$Description == "") {
+    return(NA_character_)
+  }
+  value_origin$Description
+}
+
+deprecate_compound_category_accessor <- function(name) {
+  lifecycle::deprecate_soft(
+    when = "0.3.0",
+    what = I(glue::glue("Compound${name}")),
+    details = paste0(
+      "Use `compound$processes` (a flat named list of `Process` objects, ",
+      "filtered by `$category`) or the long-form `processes` tibble ",
+      "returned by `get_compounds_dfs()` instead."
+    )
+  )
+}

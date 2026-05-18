@@ -1,76 +1,67 @@
 #' Get all compounds in a snapshot as data frames
 #'
 #' @description
-#' This function extracts all compounds from a snapshot and converts them to
-#' data frames for easier analysis and visualization, following the same format
-#' as the legacy compound dataframe functions.
+#' Walks every compound in a snapshot and returns its physicochemical
+#' properties and processes as a pair of tidy tibbles.
 #'
-#' @param snapshot A Snapshot object
-#' @return A data frame with compound parameter data including:
-#' \itemize{
-#'   \item compound: Compound name
-#'   \item category: Broad parameter category - "physicochemical_property" for basic properties,
-#'         or descriptive categories like "protein_binding_partners", "metabolizing_enzymes",
-#'         "hepatic_clearance", "transporter_proteins", "renal_clearance", "biliary_clearance",
-#'         "inhibition", "induction" for process-related data
-#'   \item type: Specific type within category - for physicochemical properties: property type
-#'         (e.g., "lipophilicity", "fraction_unbound", "molecular_weight"); for processes:
-#'         the InternalName from process data (e.g., "SpecificBinding", "Metabolization", "ActiveTransport")
-#'   \item parameter: Specific parameter details (e.g., parameter names, molecule names)
-#'   \item value: Parameter value (raw values from data)
-#'   \item unit: Parameter unit
-#'   \item data_source: Data source information from the snapshot
-#'   \item source: Original source information
+#' The return shape is a list with two elements:
+#'
+#' \describe{
+#'   \item{`properties`}{One row per (compound, physicochemical property)
+#'     pair, in the legacy combined shape: `compound`, `category`, `type`,
+#'     `parameter`, `value`, `unit`, `data_source`, `source`. Process rows
+#'     are also folded in (with `category` taking the eight legacy values
+#'     such as `"protein_binding_partners"`) for backwards compatibility;
+#'     this folded shape is [`lifecycle::deprecate_soft()`]-warned and will
+#'     be removed in a later major version. Use the `processes` element
+#'     below instead.}
+#'   \item{`processes`}{Long form, one row per (compound, process,
+#'     parameter) triple. Columns: `compound`, `category`, `process_name`,
+#'     `parameter`, `value`, `unit`, `data_source`, `source`, plus the
+#'     optional `molecule`, `metabolite`, `species` columns (NA where the
+#'     process does not carry that field).}
 #' }
+#'
+#' @param snapshot A Snapshot object.
+#' @return A list with elements `properties` and `processes`, each a
+#'   tibble.
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Load a snapshot
 #' snapshot <- load_snapshot("path/to/snapshot.json")
-#'
-#' # Get all compound data as a data frame
-#' compounds_df <- get_compounds_dfs(snapshot)
-#'
+#' dfs <- get_compounds_dfs(snapshot)
+#' dfs$properties
+#' dfs$processes
 #' }
 get_compounds_dfs <- function(snapshot) {
-  # Check if input is a snapshot
   validate_snapshot(snapshot)
 
-  # Get all compounds from the snapshot
   compounds <- snapshot$compounds
 
-  # Initialize empty result dataframe
-  result <- tibble::tibble(
-    compound = character(0),
-    category = character(0),
-    type = character(0),
-    parameter = character(0),
-    value = character(0),
-    unit = character(0),
-    data_source = character(0),
-    source = character(0)
+  result <- list(
+    properties = empty_compound_property_tibble(),
+    processes = empty_processes_tibble()
   )
 
-  # If there are no compounds, return the empty tibble
   if (length(compounds) == 0) {
     return(result)
   }
 
-  # Get data frames for each compound and combine them
-  compound_dfs <- lapply(compounds, function(compound) {
-    compound$to_df()
-  })
+  property_dfs <- lapply(compounds, function(compound) compound$to_df())
+  result$properties <- dplyr::bind_rows(property_dfs)
+  result$properties <- result$properties[order(result$properties$compound), ]
 
-  # Combine all compound data frames
-  if (length(compound_dfs) > 0) {
-    result <- dplyr::bind_rows(compound_dfs)
+  process_dfs <- lapply(compounds, function(compound) {
+    compound_processes_to_long_df(compound$name, compound$data$Processes)
+  })
+  result$processes <- dplyr::bind_rows(process_dfs)
+  if (nrow(result$processes) > 0) {
+    result$processes <- result$processes[order(result$processes$compound), ]
   }
 
-  # Sort compounds by compound name
-  result <- result[order(result$compound), ]
-  return(result)
+  result
 }
 
 #' Get all individuals in a snapshot as data frames

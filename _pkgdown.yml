@@ -51,6 +51,7 @@ reference:
   - Snapshot
   - Individual
   - Compound
+  - Process
   - Formulation
   - Population
   - Protocol
@@ -78,6 +79,7 @@ reference:
   - create_observed_data
   - create_parameter
   - create_population
+  - create_process
   - create_protocol
 
 - title: "Manage Building Blocks"

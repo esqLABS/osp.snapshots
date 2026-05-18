@@ -215,6 +215,35 @@ drug <- create_compound(
 drug
 ```
 
+## Creating Compound Processes
+
+`create_process()` builds a [Process] (a PK-Sim `CompoundProcess`) from named arguments. The `internal_name` identifies the process template in PK-Sim's compound process repository (e.g. `"SpecificBinding"` for plasma protein binding, `"MetabolizationSpecific_MM"` for Michaelis-Menten metabolism, `"GlomerularFiltration"` for renal clearance), and `data_source` labels the data origin.
+
+```{r}
+# A minimal protein-binding process
+binding <- create_process(
+  internal_name = "SpecificBinding",
+  data_source = "Buhr 1997",
+  molecule = "GABRG2"
+)
+
+# A metabolizing enzyme with kinetic parameters
+metabolism <- create_process(
+  internal_name = "MetabolizationSpecific_MM",
+  data_source = "Optimized",
+  molecule = "CYP3A4",
+  metabolite = "Hydroxy-Drug",
+  parameters = list(
+    create_parameter(name = "Km", value = 1.2, unit = "µmol/l"),
+    create_parameter(name = "kcat", value = 9.865, unit = "1/min")
+  )
+)
+
+metabolism$category
+```
+
+The `$category` active binding derives a domain label (`"protein_binding_partners"`, `"metabolizing_enzymes"`, `"hepatic_clearance"`, `"transporter_proteins"`, `"renal_clearance"`, `"biliary_clearance"`, `"inhibition"`, or `"induction"`) from the `internal_name`. Compound processes from a loaded snapshot are exposed as a flat named list of [Process] objects via `compound$processes`, and the long-form `processes` tibble returned by [get_compounds_dfs()] surfaces every (process, parameter) pair as a row.
+
 ## Creating Populations
 
 `create_population()` builds a [Population] recipe: settings used by PK-Sim to sample a cohort at simulation time. Use [range()] for age, weight, height, and BMI bounds.

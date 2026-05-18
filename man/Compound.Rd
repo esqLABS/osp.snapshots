@@ -7,6 +7,14 @@
 An R6 class that represents a compound in an OSP snapshot.
 This class provides methods to access different properties of a compound
 and display a summary of its information.
+
+Compound processes are exposed via `$processes`, a flat named list of
+[Process] objects. The per-category tibble accessors
+(`$protein_binding_partners`, `$metabolizing_enzymes`,
+`$hepatic_clearance`, `$transporter_proteins`, `$renal_clearance`,
+`$biliary_clearance`, `$inhibition`, `$induction`) are
+[`lifecycle::deprecate_soft()`]-warned in favour of `$processes` and the
+long-form `processes` tibble returned by [get_compounds_dfs()].
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -35,28 +43,33 @@ the export payload.}
 
     \item{\code{pka_types}}{The pKa types of the compound}
 
-    \item{\code{processes}}{The processes of the compound}
+    \item{\code{processes}}{A flat named list of [Process] objects, one per
+entry in the compound's `Processes` array. Duplicate names are
+disambiguated with a numeric suffix (`_1`, `_2`, ...).}
 
     \item{\code{calculation_methods}}{A [CalculationMethodCache] holding the
 compound's calculation methods.}
 
     \item{\code{parameters}}{The additional parameters of the compound (excluding molecular weight)}
 
-    \item{\code{protein_binding_partners}}{The protein binding partners data of the compound}
+    \item{\code{protein_binding_partners}}{Deprecated. Filter
+[get_compounds_dfs()]`$processes` on `category ==
+"protein_binding_partners"`, or iterate `self$processes` and check
+`process$category`.}
 
-    \item{\code{metabolizing_enzymes}}{The metabolizing enzymes data of the compound}
+    \item{\code{metabolizing_enzymes}}{Deprecated. See `$protein_binding_partners`.}
 
-    \item{\code{hepatic_clearance}}{The hepatic clearance data of the compound}
+    \item{\code{hepatic_clearance}}{Deprecated. See `$protein_binding_partners`.}
 
-    \item{\code{transporter_proteins}}{The transporter proteins data of the compound}
+    \item{\code{transporter_proteins}}{Deprecated. See `$protein_binding_partners`.}
 
-    \item{\code{renal_clearance}}{The renal clearance data of the compound}
+    \item{\code{renal_clearance}}{Deprecated. See `$protein_binding_partners`.}
 
-    \item{\code{biliary_clearance}}{The biliary clearance data of the compound}
+    \item{\code{biliary_clearance}}{Deprecated. See `$protein_binding_partners`.}
 
-    \item{\code{inhibition}}{The inhibition data of the compound}
+    \item{\code{inhibition}}{Deprecated. See `$protein_binding_partners`.}
 
-    \item{\code{induction}}{The induction data of the compound}
+    \item{\code{induction}}{Deprecated. See `$protein_binding_partners`.}
   }
   \if{html}{\out{</div>}}
 }
@@ -117,14 +130,22 @@ compound's calculation methods.}
 \if{html}{\out{<a id="method-Compound-to_df"></a>}}
 \if{latex}{\out{\hypertarget{method-Compound-to_df}{}}}
 \subsection{\code{Compound$to_df()}}{
-  Convert compound data to tibbles for analysis
+  Convert this compound's physicochemical properties and process
+parameters to a single long-form tibble (legacy shape).
+
+Used by [get_compounds_dfs()] to assemble the compound-wide
+`properties` tibble. The process-derived rows produced here are
+[`lifecycle::deprecate_soft()`]-warned at the
+[get_compounds_dfs()] entry point; prefer the long-form
+`processes` tibble returned alongside.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Compound$to_df()}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    A tibble containing compound parameter data in the same format as legacy code
+    A tibble with columns `compound`, `category`, `type`,
+  `parameter`, `value`, `unit`, `data_source`, `source`.
   }
 }
 
