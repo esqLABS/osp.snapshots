@@ -22,12 +22,18 @@
 
 - Building-block collections now share a `snapshot_collection` S3 class with a single generic `print()` method, replacing the eight per-kind methods. The existing per-kind classes (`compound_collection`, `individual_collection`, etc.) are preserved as marker classes (#34).
 
+- `export_snapshot()` now documents that mutations to a `DataSet` after load (e.g. changing `xUnit` on an entry in `Snapshot$observed_data`) are not preserved on export. The exported `ObservedData` section is replayed verbatim from the original snapshot JSON, filtered to entries that still exist after `remove_observed_data()`. This matches the previous behaviour; only the documentation is new (#35).
+
 ## Bug fixes
 
 - Fixed `Snapshot$data` so observed data removed via `remove_observed_data()`
   is also dropped from the exported snapshot. Previously the export reused the
   full original `ObservedData` list whenever the lazy cache had been touched,
-  re-introducing the removed entries on round-trip.
+  re-introducing the removed entries on round-trip. The same fix applies to
+  every building-block section: clearing a collection via `remove_individual()`,
+  `remove_formulation()`, `remove_population()`, or
+  `remove_expression_profile()` now writes an empty section on export instead
+  of falling back to the original entries (#35).
 
 - Fixed snapshot export/import so single-element JSON arrays remain arrays,
   allowing exported snapshots to load in PK-Sim (#23).
