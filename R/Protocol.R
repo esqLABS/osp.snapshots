@@ -393,11 +393,10 @@ Protocol <- R6::R6Class(
 
     # Initialize parameters for simple protocols
     initialize_parameters = function() {
-      raw <- lapply(private$.data$Parameters %||% list(), ensure_path_from_name)
       private$.parameters <- build_parameters_from_raw(
-        raw,
+        private$.data$Parameters,
         key_by = "none",
-        collection_class = FALSE
+        name_as_path = TRUE
       )
     },
 
@@ -408,14 +407,6 @@ Protocol <- R6::R6Class(
         return(invisible())
       }
 
-      build_schema_parameters <- function(raw) {
-        build_parameters_from_raw(
-          lapply(raw %||% list(), ensure_path_from_name),
-          key_by = "none",
-          collection_class = FALSE
-        )
-      }
-
       private$.schemas <- lapply(private$.data$Schemas, function(schema_data) {
         schema_items <- lapply(
           schema_data$SchemaItems %||% list(),
@@ -424,7 +415,7 @@ Protocol <- R6::R6Class(
               name = item_data$Name,
               application_type = item_data$ApplicationType,
               formulation_key = item_data$FormulationKey,
-              parameters = build_schema_parameters(item_data$Parameters)
+              parameters = private$build_schema_parameters(item_data$Parameters)
             )
           }
         )
@@ -432,9 +423,18 @@ Protocol <- R6::R6Class(
         list(
           name = schema_data$Name,
           schema_items = schema_items,
-          parameters = build_schema_parameters(schema_data$Parameters)
+          parameters = private$build_schema_parameters(schema_data$Parameters)
         )
       })
+    },
+
+    # Build parameters for a schema or schema item from raw snapshot data
+    build_schema_parameters = function(raw) {
+      build_parameters_from_raw(
+        raw,
+        key_by = "none",
+        name_as_path = TRUE
+      )
     },
 
     # Helper function to extract a parameter from a list of Parameter objects

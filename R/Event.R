@@ -150,11 +150,10 @@ Event <- R6::R6Class(
     .data = NULL,
     .parameters = NULL,
     initialize_parameters = function() {
-      raw <- private$.data$Parameters
       private$.parameters <- build_parameters_from_raw(
-        lapply(raw %||% list(), ensure_path_from_name),
+        private$.data$Parameters,
         key_by = "none",
-        collection_class = length(raw) > 0
+        name_as_path = TRUE
       )
     }
   )
