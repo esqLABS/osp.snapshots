@@ -55,8 +55,8 @@ Observer <- R6::R6Class(
         if (!is.null(self$formula)) {
           cli::cli_li("Formula: {self$formula}")
         }
-        if (!is.null(self$container_path)) {
-          cli::cli_li("Container path: {self$container_path}")
+        if (!is.null(self$container_tags)) {
+          cli::cli_li("Container tags: {self$container_tags}")
         }
       })
       cat(output, sep = "\n")
@@ -66,7 +66,7 @@ Observer <- R6::R6Class(
     #' @description
     #' Convert the observer to a single-row tibble suitable for the
     #' tibble-layer exporter. Columns are `name`, `type`, `dimension`,
-    #' `formula`, and `container_path`.
+    #' `formula`, and `container_tags`.
     #' @return A tibble with one row.
     to_df = function() {
       tibble::tibble(
@@ -74,7 +74,7 @@ Observer <- R6::R6Class(
         type = self$type %||% NA_character_,
         dimension = self$dimension %||% NA_character_,
         formula = self$formula %||% NA_character_,
-        container_path = self$container_path %||% NA_character_
+        container_tags = self$container_tags %||% NA_character_
       )
     }
   ),
@@ -130,13 +130,14 @@ Observer <- R6::R6Class(
       private$.data$Formula$Formula <- value
     },
 
-    #' @field container_path The container path the observer attaches to.
-    #'   Built by joining the `Tag` values found in `ContainerCriteria`
-    #'   with `|`. `NULL` when the observer carries no container
-    #'   criteria.
-    container_path = function(value) {
+    #' @field container_tags The `Tag` values from the observer's
+    #'   `ContainerCriteria`, joined with `|`. There is no `ContainerPath`
+    #'   field in the snapshot JSON; this binding is synthesized from the
+    #'   tags found in `ContainerCriteria`. `NULL` when the observer
+    #'   carries no container criteria.
+    container_tags = function(value) {
       if (!missing(value)) {
-        cli::cli_abort("container_path is read-only")
+        cli::cli_abort("container_tags is read-only")
       }
       criteria <- private$.data$ContainerCriteria
       if (is.null(criteria) || length(criteria) == 0) {
@@ -176,31 +177,6 @@ build_observers_from_raw <- function(raw_observers) {
     character(1)
   )
 
-  if (!anyDuplicated(keys)) {
-    names(observers) <- keys
-    return(observers)
-  }
-
-  named <- list()
-  key_counts <- table(keys)
-  key_indices <- list()
-
-  for (i in seq_along(observers)) {
-    key <- keys[i]
-
-    if (is.null(key_indices[[key]])) {
-      key_indices[[key]] <- 0
-    }
-    key_indices[[key]] <- key_indices[[key]] + 1
-
-    if (key_counts[key] > 1) {
-      final_name <- paste0(key, "_", key_indices[[key]])
-    } else {
-      final_name <- key
-    }
-
-    named[[final_name]] <- observers[[i]]
-  }
-
-  named
+  names(observers) <- disambiguate_names(keys)
+  observers
 }

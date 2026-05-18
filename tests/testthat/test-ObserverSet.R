@@ -117,22 +117,20 @@ test_that("ObserverSets round-trip byte-equivalently through export", {
   expect_equal(reloaded$ObserverSets, snapshot$data$ObserverSets)
 })
 
-test_that("Observer mutations survive export and reload", {
-  snapshot <- test_snapshot$clone(deep = TRUE)
-  os_id <- names(snapshot$observer_sets)[[1]]
-  observer_id <- names(snapshot$observer_sets[[os_id]]$observers)[[1]]
-  observer <- snapshot$observer_sets[[os_id]]$observers[[observer_id]]
+test_that("Observer name mutation survives a load-mutate-export-reload cycle", {
+  expect_observer_field_roundtrip("name", "renamed_observer")
+})
 
-  observer$dimension <- "Time"
-  observer$formula <- "2*Conc"
+test_that("Observer type mutation survives a load-mutate-export-reload cycle", {
+  expect_observer_field_roundtrip("type", "Amount")
+})
 
-  tmp <- withr::local_tempfile(fileext = ".json")
-  snapshot$export(tmp)
-  reloaded <- Snapshot$new(tmp)
+test_that("Observer dimension mutation survives a load-mutate-export-reload cycle", {
+  expect_observer_field_roundtrip("dimension", "Concentration (molar)")
+})
 
-  reloaded_observer <- reloaded$observer_sets[[os_id]]$observers[[observer_id]]
-  expect_equal(reloaded_observer$dimension, "Time")
-  expect_equal(reloaded_observer$formula, "2*Conc")
+test_that("Observer formula mutation survives a load-mutate-export-reload cycle", {
+  expect_observer_field_roundtrip("formula", "3*Conc_Br")
 })
 
 # ---- Mutators ----
@@ -238,7 +236,7 @@ test_that("get_observer_sets_dfs() returns observer_sets and observers", {
       "type",
       "dimension",
       "formula",
-      "container_path"
+      "container_tags"
     )
   )
   expected_n <- sum(vapply(
@@ -285,7 +283,7 @@ test_that("get_observer_sets_dfs() returns empty tibbles for empty snapshot", {
       "type",
       "dimension",
       "formula",
-      "container_path"
+      "container_tags"
     )
   )
 })

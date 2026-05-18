@@ -46,10 +46,11 @@ object; this binding does not expose \code{References} or \code{Dimension}.
 Setting this field writes back to \code{Formula$Formula} only. To
 access the full \code{ExplicitFormula}, use \code{observer$data$Formula}.}
 
-    \item{\code{container_path}}{The container path the observer attaches to.
-Built by joining the \code{Tag} values found in \code{ContainerCriteria}
-with \code{|}. \code{NULL} when the observer carries no container
-criteria.}
+    \item{\code{container_tags}}{The \code{Tag} values from the observer's
+\code{ContainerCriteria}, joined with \code{|}. There is no \code{ContainerPath}
+field in the snapshot JSON; this binding is synthesized from the
+tags found in \code{ContainerCriteria}. \code{NULL} when the observer
+carries no container criteria.}
   }
   \if{html}{\out{</div>}}
 }
@@ -113,7 +114,7 @@ an empty list, both of which create an empty observer.}
 \subsection{\code{Observer$to_df()}}{
   Convert the observer to a single-row tibble suitable for the
 tibble-layer exporter. Columns are \code{name}, \code{type}, \code{dimension},
-\code{formula}, and \code{container_path}.
+\code{formula}, and \code{container_tags}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Observer$to_df()}

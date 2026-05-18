@@ -14,7 +14,7 @@ A list with two tibbles. \code{observer_sets} has one row per
 \code{ObserverSet} with columns \code{observer_set_id}, \code{name},
 \code{n_observers}. \code{observers} has one row per \code{Observer} with columns
 \code{observer_set_id}, \code{observer_set_name}, \code{name}, \code{type},
-\code{dimension}, \code{formula}, \code{container_path}; rows join back to their
+\code{dimension}, \code{formula}, \code{container_tags}; rows join back to their
 parent \code{ObserverSet} by \code{observer_set_id} or \code{observer_set_name}.
 }
 \description{

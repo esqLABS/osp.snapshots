@@ -176,3 +176,52 @@ convert_ospsuite_time_to_duration <- function(value, unit) {
   lubridate_unit <- convert_ospsuite_time_unit_to_lubridate(unit)
   return(lubridate::duration(value, units = lubridate_unit))
 }
+
+# Internal: disambiguate duplicated keys in a character vector by appending
+# `_{n}` suffixes. Each occurrence of a duplicated key is numbered from 1 in
+# order of appearance; unique keys are returned unchanged. The function also
+# guarantees overall uniqueness of the output: when a generated suffix would
+# collide with an existing key (e.g. an input that already contains
+# `"a_1"`), the counter advances until a free slot is found. Used by the
+# building-block collection builders to keep list names unique while
+# preserving the original ordering.
+disambiguate_names <- function(names) {
+  if (length(names) == 0) {
+    return(character(0))
+  }
+
+  if (!anyDuplicated(names)) {
+    return(names)
+  }
+
+  key_counts <- table(names)
+  key_indices <- list()
+  result <- character(length(names))
+
+  # Reserve the input names that will be kept as-is (singletons), so that
+  # generated `_{n}` suffixes never collide with an existing input name.
+  singletons <- names(key_counts)[key_counts == 1]
+  seen <- as.character(singletons)
+
+  for (i in seq_along(names)) {
+    key <- names[i]
+
+    if (key_counts[key] > 1) {
+      n <- if (is.null(key_indices[[key]])) 0L else key_indices[[key]]
+      repeat {
+        n <- n + 1L
+        candidate <- paste0(key, "_", n)
+        if (!(candidate %in% seen)) {
+          break
+        }
+      }
+      key_indices[[key]] <- n
+      result[i] <- candidate
+      seen <- c(seen, candidate)
+    } else {
+      result[i] <- key
+    }
+  }
+
+  result
+}

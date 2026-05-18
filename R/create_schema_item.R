@@ -94,19 +94,9 @@ create_schema_item <- function(
 }
 
 # Canonical PK-Sim application types accepted by `create_schema_item()` and
-# `Schema/SchemaItem` JSON. PK-Sim resolves these via `ApplicationTypes.ByName()`
-# (see `snapshot-spec.md`). This is the curated public list from PK-Sim; if
-# PK-Sim adds new application types this list must be updated in lockstep.
+# `Schema/SchemaItem` JSON. Reads from the single source of truth declared in
+# `R/Protocol.R` so the validator, `Protocol$get_human_application_type()`,
+# and the reverse lookup all stay in sync.
 schema_item_application_types <- function() {
-  c(
-    "Oral",
-    "IntravenousBolus",
-    "IntravenousInfusion",
-    "Intramuscular",
-    "Subcutaneous",
-    "Dermal",
-    "Rectal",
-    "Inhalation",
-    "Intraperitoneal"
-  )
+  names(PKSIM_APPLICATION_TYPES)
 }
