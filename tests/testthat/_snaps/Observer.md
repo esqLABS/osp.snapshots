@@ -1,10 +1,10 @@
-# Observer container_path is read-only
+# Observer container_tags is read-only
 
     Code
-      observer$container_path <- "x"
+      observer$container_tags <- "x"
     Condition
       Error:
-      ! container_path is read-only
+      ! container_tags is read-only
 
 # Observer data is read-only
 
@@ -24,5 +24,5 @@
       * Type: Container
       * Dimension: Concentration (molar)
       * Formula: Conc_Br
-      * Container path: Brain
+      * Container tags: Brain
 

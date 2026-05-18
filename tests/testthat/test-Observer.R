@@ -15,7 +15,7 @@ test_that("Observer class initialization works", {
   expect_equal(observer$type, "Container")
   expect_equal(observer$dimension, "Concentration (molar)")
   expect_equal(observer$formula, "Conc_Br")
-  expect_equal(observer$container_path, "Brain")
+  expect_equal(observer$container_tags, "Brain")
   expect_equal(observer$data, data)
 })
 
@@ -25,7 +25,7 @@ test_that("Observer handles empty and NULL data", {
   expect_null(empty$type)
   expect_null(empty$dimension)
   expect_null(empty$formula)
-  expect_null(empty$container_path)
+  expect_null(empty$container_tags)
 
   null_data <- Observer$new(NULL)
   expect_null(null_data$name)
@@ -80,7 +80,7 @@ test_that("Observer formula setter preserves existing Formula fields", {
   expect_equal(observer$data$Formula$Dimension, "D")
 })
 
-test_that("Observer container_path joins multiple tags", {
+test_that("Observer container_tags joins multiple tags", {
   observer <- Observer$new(list(
     Name = "x",
     ContainerCriteria = list(
@@ -89,12 +89,12 @@ test_that("Observer container_path joins multiple tags", {
     )
   ))
 
-  expect_equal(observer$container_path, "Organism|Liver")
+  expect_equal(observer$container_tags, "Organism|Liver")
 })
 
-test_that("Observer container_path is read-only", {
+test_that("Observer container_tags is read-only", {
   observer <- Observer$new(list(Name = "x"))
-  expect_snapshot(observer$container_path <- "x", error = TRUE)
+  expect_snapshot(observer$container_tags <- "x", error = TRUE)
 })
 
 test_that("Observer data is read-only", {
@@ -117,11 +117,11 @@ test_that("Observer to_df returns a single-row tibble", {
   expect_equal(nrow(df), 1)
   expect_named(
     df,
-    c("name", "type", "dimension", "formula", "container_path")
+    c("name", "type", "dimension", "formula", "container_tags")
   )
   expect_equal(df$name, "obs")
   expect_equal(df$type, "Amount")
-  expect_equal(df$container_path, "Brain")
+  expect_equal(df$container_tags, "Brain")
 })
 
 test_that("Observer to_df fills NA for missing fields", {
@@ -133,7 +133,7 @@ test_that("Observer to_df fills NA for missing fields", {
   expect_equal(df$type, NA_character_)
   expect_equal(df$dimension, NA_character_)
   expect_equal(df$formula, NA_character_)
-  expect_equal(df$container_path, NA_character_)
+  expect_equal(df$container_tags, NA_character_)
 })
 
 test_that("Observer round-trips raw data verbatim", {

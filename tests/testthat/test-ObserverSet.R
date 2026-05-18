@@ -236,7 +236,7 @@ test_that("get_observer_sets_dfs() returns observer_sets and observers", {
       "type",
       "dimension",
       "formula",
-      "container_path"
+      "container_tags"
     )
   )
   expected_n <- sum(vapply(
@@ -283,7 +283,7 @@ test_that("get_observer_sets_dfs() returns empty tibbles for empty snapshot", {
       "type",
       "dimension",
       "formula",
-      "container_path"
+      "container_tags"
     )
   )
 })
