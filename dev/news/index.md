@@ -175,6 +175,15 @@
 
 ### Bug fixes
 
+- `as_tibbles(snapshot, "protocols")` (and the legacy
+  [`get_protocols_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_protocols_dfs.md)
+  wrapper) now returns the same 13 columns whether the snapshot has any
+  protocols or not, matching the populated shape emitted by
+  `Protocol$to_df()`. Previously the empty-state path returned an
+  18-column tibble that disagreed with the populated path, breaking
+  [`bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html)
+  across mixed snapshots (#56).
+
 - [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md),
   [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md),
   [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md),

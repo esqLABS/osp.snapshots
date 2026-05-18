@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9018</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9019</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,7 +112,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
-<ul><li><p><code><a href="../reference/remove_expression_profile.html">remove_expression_profile()</a></code>, <code><a href="../reference/remove_formulation.html">remove_formulation()</a></code>, <code><a href="../reference/remove_individual.html">remove_individual()</a></code>, <code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code>, and <code><a href="../reference/remove_population.html">remove_population()</a></code> now report the actual number of entries removed instead of the length of the input vector, so the success message reads correctly when a requested name is not present in the snapshot (#66).</p></li>
+<ul><li><p><code>as_tibbles(snapshot, "protocols")</code> (and the legacy <code><a href="../reference/get_protocols_dfs.html">get_protocols_dfs()</a></code> wrapper) now returns the same 13 columns whether the snapshot has any protocols or not, matching the populated shape emitted by <code>Protocol$to_df()</code>. Previously the empty-state path returned an 18-column tibble that disagreed with the populated path, breaking <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows()</a></code> across mixed snapshots (#56).</p></li>
+<li><p><code><a href="../reference/remove_expression_profile.html">remove_expression_profile()</a></code>, <code><a href="../reference/remove_formulation.html">remove_formulation()</a></code>, <code><a href="../reference/remove_individual.html">remove_individual()</a></code>, <code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code>, and <code><a href="../reference/remove_population.html">remove_population()</a></code> now report the actual number of entries removed instead of the length of the input vector, so the success message reads correctly when a requested name is not present in the snapshot (#66).</p></li>
 <li><p>Fixed <code>Snapshot$data</code> so observed data removed via <code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code> is also dropped from the exported snapshot. Previously the export reused the full original <code>ObservedData</code> list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip. The same fix applies to every building-block section: clearing a collection via <code><a href="../reference/remove_individual.html">remove_individual()</a></code>, <code><a href="../reference/remove_formulation.html">remove_formulation()</a></code>, <code><a href="../reference/remove_population.html">remove_population()</a></code>, or <code><a href="../reference/remove_expression_profile.html">remove_expression_profile()</a></code> now writes an empty section on export instead of falling back to the original entries (#35, #59).</p></li>
 <li><p>Fixed snapshot export/import so single-element JSON arrays remain arrays, allowing exported snapshots to load in PK-Sim (#23).</p></li>
 </ul></div>
