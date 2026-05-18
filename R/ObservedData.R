@@ -179,8 +179,14 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
   return(dataset)
 }
 
-# Compatibility alias for backward compatibility
-# Will be deprecated when function moves to ospsuite
+#' @rdname loadDataSetFromSnapshot
+#' @usage NULL
+#' @format NULL
+#' @details
+#' `ObservedData` is a backwards-compatible alias for
+#' [loadDataSetFromSnapshot()] and may be retired in a future release if this
+#' functionality migrates to the `ospsuite` package. Prefer the
+#' `loadDataSetFromSnapshot()` name in new code.
 #' @export
 ObservedData <- loadDataSetFromSnapshot
 

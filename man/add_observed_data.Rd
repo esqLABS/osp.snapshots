@@ -7,16 +7,16 @@
 add_observed_data(snapshot, observed_data)
 }
 \arguments{
-\item{snapshot}{A [Snapshot] object.}
+\item{snapshot}{A \link{Snapshot} object.}
 
-\item{observed_data}{A `DataSet` object, typically created with
-[create_observed_data()] or [loadDataSetFromSnapshot()].}
+\item{observed_data}{A \code{DataSet} object, typically created with
+\code{\link[=create_observed_data]{create_observed_data()}} or \code{\link[=loadDataSetFromSnapshot]{loadDataSetFromSnapshot()}}.}
 }
 \value{
-The updated [Snapshot] object, returned invisibly.
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add an `ospsuite::DataSet` (observed data) to a [Snapshot].
+Add an \code{ospsuite::DataSet} (observed data) to a \link{Snapshot}.
 }
 \examples{
 \dontrun{

@@ -7,15 +7,15 @@
 remove_compound(snapshot, compound_name)
 }
 \arguments{
-\item{snapshot}{A [Snapshot] object.}
+\item{snapshot}{A \link{Snapshot} object.}
 
 \item{compound_name}{Character vector of compound names to remove.}
 }
 \value{
-The updated [Snapshot] object, returned invisibly.
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Remove one or more compounds from a [Snapshot] by name.
+Remove one or more compounds from a \link{Snapshot} by name.
 }
 \examples{
 \dontrun{

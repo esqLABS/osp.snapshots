@@ -134,7 +134,7 @@ OriginData <- R6::R6Class(
       }
     },
 
-    #' @field age_unit Unit string for [age].
+    #' @field age_unit Unit string for `age`.
     age_unit = function(value) {
       if (missing(value)) {
         return(private$.data$Age$Unit)
@@ -159,7 +159,7 @@ OriginData <- R6::R6Class(
       }
     },
 
-    #' @field gestational_age_unit Unit string for [gestational_age].
+    #' @field gestational_age_unit Unit string for `gestational_age`.
     gestational_age_unit = function(value) {
       if (missing(value)) {
         return(private$.data$GestationalAge$Unit)
@@ -184,7 +184,7 @@ OriginData <- R6::R6Class(
       }
     },
 
-    #' @field weight_unit Unit string for [weight].
+    #' @field weight_unit Unit string for `weight`.
     weight_unit = function(value) {
       if (missing(value)) {
         return(private$.data$Weight$Unit)
@@ -209,7 +209,7 @@ OriginData <- R6::R6Class(
       }
     },
 
-    #' @field height_unit Unit string for [height].
+    #' @field height_unit Unit string for `height`.
     height_unit = function(value) {
       if (missing(value)) {
         return(private$.data$Height$Unit)

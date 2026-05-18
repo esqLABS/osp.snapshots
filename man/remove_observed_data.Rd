@@ -7,16 +7,16 @@
 remove_observed_data(snapshot, observed_data_name)
 }
 \arguments{
-\item{snapshot}{A [Snapshot] object.}
+\item{snapshot}{A \link{Snapshot} object.}
 
 \item{observed_data_name}{Character vector of observed-data names to
 remove.}
 }
 \value{
-The updated [Snapshot] object, returned invisibly.
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Remove one or more observed-data entries from a [Snapshot] by name.
+Remove one or more observed-data entries from a \link{Snapshot} by name.
 }
 \examples{
 \dontrun{

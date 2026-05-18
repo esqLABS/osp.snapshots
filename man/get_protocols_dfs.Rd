@@ -7,15 +7,15 @@
 get_protocols_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
 A tibble with one row per protocol parameter (or per schema
-  item parameter for advanced protocols).
+item parameter for advanced protocols).
 }
 \description{
-Thin wrapper around [as_tibbles()] with `kind = "protocols"`.
-Prefer [as_tibbles()] in new code.
+Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "protocols"}.
+Prefer \code{\link[=as_tibbles]{as_tibbles()}} in new code.
 }
 \examples{
 \dontrun{

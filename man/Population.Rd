@@ -105,8 +105,8 @@ and display a summary of its information.
   \subsection{Returns}{
     A list containing data frames with population information:
 \itemize{
-  \item characteristics: Population characteristics including basic information and physiological parameters
-  \item parameters: Advanced parameters information
+\item characteristics: Population characteristics including basic information and physiological parameters
+\item parameters: Advanced parameters information
 }
   }
 }

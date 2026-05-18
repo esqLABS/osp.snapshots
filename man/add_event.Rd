@@ -7,15 +7,15 @@
 add_event(snapshot, event)
 }
 \arguments{
-\item{snapshot}{A [Snapshot] object.}
+\item{snapshot}{A \link{Snapshot} object.}
 
-\item{event}{An [Event] object created with [create_event()].}
+\item{event}{An \link{Event} object created with \code{\link[=create_event]{create_event()}}.}
 }
 \value{
-The updated [Snapshot] object, returned invisibly.
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add an [Event] object to a [Snapshot].
+Add an \link{Event} object to a \link{Snapshot}.
 }
 \examples{
 \dontrun{

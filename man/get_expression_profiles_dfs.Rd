@@ -7,15 +7,15 @@
 get_expression_profiles_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
-A list with `expression_profiles` and
-  `expression_profiles_parameters` tibbles.
+A list with \code{expression_profiles} and
+\code{expression_profiles_parameters} tibbles.
 }
 \description{
-Thin wrapper around [as_tibbles()] with
-`kind = "expression_profiles"`. Prefer [as_tibbles()] in new code.
+Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with
+\code{kind = "expression_profiles"}. Prefer \code{\link[=as_tibbles]{as_tibbles()}} in new code.
 }
 \examples{
 \dontrun{

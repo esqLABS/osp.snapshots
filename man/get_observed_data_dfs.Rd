@@ -7,16 +7,16 @@
 get_observed_data_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
-A tibble in long format with columns `name`, `xValues`,
-  `yValues`, `yErrorValues`, `xDimension`, `xUnit`, `yDimension`,
-  `yUnit`, `yErrorType`, `yErrorUnit`, `molWeight`, `lloq`.
+A tibble in long format with columns \code{name}, \code{xValues},
+\code{yValues}, \code{yErrorValues}, \code{xDimension}, \code{xUnit}, \code{yDimension},
+\code{yUnit}, \code{yErrorType}, \code{yErrorUnit}, \code{molWeight}, \code{lloq}.
 }
 \description{
-Thin wrapper around [as_tibbles()] with `kind = "observed_data"`.
-Prefer [as_tibbles()] in new code.
+Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "observed_data"}.
+Prefer \code{\link[=as_tibbles]{as_tibbles()}} in new code.
 }
 \examples{
 \dontrun{

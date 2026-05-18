@@ -10,13 +10,15 @@ create_formulation(name, type, parameters = NULL)
 \item{name}{Character. Name of the formulation}
 
 \item{type}{Character. Type of formulation, one of:
-* "Dissolved" - Immediate release solution
-* "Weibull" - Weibull tablet formulation
-* "Lint80" - Lint80 tablet formulation
-* "Particle" - Particle formulation
-* "Table" - Custom release profile table
-* "ZeroOrder" - Zero-order release formulation
-* "FirstOrder" - First-order release formulation}
+\itemize{
+\item "Dissolved" - Immediate release solution
+\item "Weibull" - Weibull tablet formulation
+\item "Lint80" - Lint80 tablet formulation
+\item "Particle" - Particle formulation
+\item "Table" - Custom release profile table
+\item "ZeroOrder" - Zero-order release formulation
+\item "FirstOrder" - First-order release formulation
+}}
 
 \item{parameters}{List. A named list of parameters for the formulation. The valid parameters
 depend on the formulation type. Invalid parameters will result in an error.}
@@ -30,60 +32,74 @@ All arguments are optional except for name and type.
 }
 \section{Weibull formulation parameters}{
 
-* dissolution_time - Time to achieve 50% dissolution (numeric, default: 240)
-* dissolution_time_unit - Unit for dissolution time (character, default: "min")
-* lag_time - Lag time before dissolution starts (numeric, default: 0)
-* lag_time_unit - Unit for lag time (character, default: "min")
-* dissolution_shape - Dissolution shape parameter (numeric, default: 0.92)
-* suspension - Whether to use as suspension (logical, default: TRUE)
+\itemize{
+\item dissolution_time - Time to achieve 50\% dissolution (numeric, default: 240)
+\item dissolution_time_unit - Unit for dissolution time (character, default: "min")
+\item lag_time - Lag time before dissolution starts (numeric, default: 0)
+\item lag_time_unit - Unit for lag time (character, default: "min")
+\item dissolution_shape - Dissolution shape parameter (numeric, default: 0.92)
+\item suspension - Whether to use as suspension (logical, default: TRUE)
+}
 }
 
 \section{Lint80 formulation parameters}{
 
-* dissolution_time - Time to achieve 80% dissolution (numeric, default: 240)
-* dissolution_time_unit - Unit for dissolution time (character, default: "min")
-* lag_time - Lag time before dissolution starts (numeric, default: 0)
-* lag_time_unit - Unit for lag time (character, default: "min")
-* suspension - Whether to use as suspension (logical, default: TRUE)
+\itemize{
+\item dissolution_time - Time to achieve 80\% dissolution (numeric, default: 240)
+\item dissolution_time_unit - Unit for dissolution time (character, default: "min")
+\item lag_time - Lag time before dissolution starts (numeric, default: 0)
+\item lag_time_unit - Unit for lag time (character, default: "min")
+\item suspension - Whether to use as suspension (logical, default: TRUE)
+}
 }
 
 \section{Particle formulation parameters}{
 
-* thickness - Thickness of unstirred water layer (numeric, default: 30)
-* thickness_unit - Unit for thickness (character, default: "\\u00b5m")
-* distribution_type - Type of distribution, "mono" or "poly" (character, default: "mono")
-* radius - Particle radius (mean or geometric mean) (numeric, default: 10)
-* radius_unit - Unit for radius (character, default: "\\u00b5m")
+\itemize{
+\item thickness - Thickness of unstirred water layer (numeric, default: 30)
+\item thickness_unit - Unit for thickness (character, default: "\\u00b5m")
+\item distribution_type - Type of distribution, "mono" or "poly" (character, default: "mono")
+\item radius - Particle radius (mean or geometric mean) (numeric, default: 10)
+\item radius_unit - Unit for radius (character, default: "\\u00b5m")
+}
 
 Parameters for polydisperse distribution (when distribution_type = "poly"):
-* particle_size_distribution - "normal" or "lognormal" (character, default: "normal")
-* radius_sd - Radius standard deviation, for normal distribution (numeric, default: 3)
-* radius_sd_unit - Unit for radius SD (character, default: "\\u00b5m")
-* radius_cv - Coefficient of variation, for lognormal distribution (numeric, default: 1.5)
-* radius_min - Minimum particle radius (numeric, default: 1)
-* radius_min_unit - Unit for minimum radius (character, default: "\\u00b5m")
-* radius_max - Maximum particle radius (numeric, default: 19)
-* radius_max_unit - Unit for maximum radius (character, default: "\\u00b5m")
-* n_bins - Number of bins (integer, default: 3)
+\itemize{
+\item particle_size_distribution - "normal" or "lognormal" (character, default: "normal")
+\item radius_sd - Radius standard deviation, for normal distribution (numeric, default: 3)
+\item radius_sd_unit - Unit for radius SD (character, default: "\\u00b5m")
+\item radius_cv - Coefficient of variation, for lognormal distribution (numeric, default: 1.5)
+\item radius_min - Minimum particle radius (numeric, default: 1)
+\item radius_min_unit - Unit for minimum radius (character, default: "\\u00b5m")
+\item radius_max - Maximum particle radius (numeric, default: 19)
+\item radius_max_unit - Unit for maximum radius (character, default: "\\u00b5m")
+\item n_bins - Number of bins (integer, default: 3)
+}
 }
 
 \section{Table formulation parameters}{
 
-* tableX - Vector of time points for release profile in hours (numeric vector, required)
-* tableY - Vector of fraction of dose at each time point (numeric vector, required)
-* suspension - Whether to use as suspension (logical, default: TRUE)
+\itemize{
+\item tableX - Vector of time points for release profile in hours (numeric vector, required)
+\item tableY - Vector of fraction of dose at each time point (numeric vector, required)
+\item suspension - Whether to use as suspension (logical, default: TRUE)
+}
 }
 
 \section{ZeroOrder formulation parameters}{
 
-* end_time - Time of administration end (numeric, default: 60)
-* end_time_unit - Unit for end time (character, default: "min")
+\itemize{
+\item end_time - Time of administration end (numeric, default: 60)
+\item end_time_unit - Unit for end time (character, default: "min")
+}
 }
 
 \section{FirstOrder formulation parameters}{
 
-* thalf - Half-life of the drug release (numeric, default: 0.01)
-* thalf_unit - Unit for half-life (character, default: "min")
+\itemize{
+\item thalf - Half-life of the drug release (numeric, default: 0.01)
+\item thalf_unit - Unit for half-life (character, default: "min")
+}
 }
 
 \examples{

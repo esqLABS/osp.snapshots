@@ -9,16 +9,16 @@ This class provides methods to access different properties of a protocol
 and display a summary of its information. Protocols can be either simple
 (with dosing intervals) or advanced (with schemas and schema items).
 
-An Advanced Protocol's schemas are exposed as a named list of [Schema]
-objects, each of which owns a list of [SchemaItem] objects. Simple
+An Advanced Protocol's schemas are exposed as a named list of \link{Schema}
+objects, each of which owns a list of \link{SchemaItem} objects. Simple
 Protocols expose their single application directly through the
-`application_type`, `dosing_interval`, and `parameters` fields.
+\code{application_type}, \code{dosing_interval}, and \code{parameters} fields.
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
     \item{\code{data}}{The raw data of the protocol, refreshed from the
-wrapped [Schema] objects so mutations through the R6 surface
+wrapped \link{Schema} objects so mutations through the R6 surface
 flow back into the snapshot payload (read-only).}
 
     \item{\code{name}}{The name of the protocol}
@@ -33,9 +33,9 @@ flow back into the snapshot payload (read-only).}
 
     \item{\code{parameters}}{The parameters of the protocol (for simple protocols)}
 
-    \item{\code{schemas}}{A named list of [Schema] objects for advanced
-protocols. Names are taken from each schema's `name` field
-(duplicates are disambiguated by `make.unique`). Simple protocols
+    \item{\code{schemas}}{A named list of \link{Schema} objects for advanced
+protocols. Names are taken from each schema's \code{name} field
+(duplicates are disambiguated by \code{make.unique}). Simple protocols
 return an empty list.}
   }
   \if{html}{\out{</div>}}
@@ -100,8 +100,8 @@ return an empty list.}
 \if{latex}{\out{\hypertarget{method-Protocol-to_df}{}}}
 \subsection{\code{Protocol$to_df()}}{
   Convert protocol data to a single consolidated tibble. Advanced
-protocols emit one row per [SchemaItem] and join back to the
-protocol via `protocol_name`. Simple protocols emit a single row.
+protocols emit one row per \link{SchemaItem} and join back to the
+protocol via \code{protocol_name}. Simple protocols emit a single row.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Protocol$to_df()}

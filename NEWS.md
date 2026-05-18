@@ -51,6 +51,8 @@
 
 - `as_tibbles(snapshot, "protocols")` (and the legacy `get_protocols_dfs()` wrapper) now returns the same 13 columns whether the snapshot has any protocols or not, matching the populated shape emitted by `Protocol$to_df()`. Previously the empty-state path returned an 18-column tibble that disagreed with the populated path, breaking `bind_rows()` across mixed snapshots (#56).
 
+- `remove_expression_profile()`, `remove_formulation()`, `remove_individual()`, `remove_observed_data()`, and `remove_population()` now report the actual number of entries removed instead of the length of the input vector, so the success message reads correctly when a requested name is not present in the snapshot (#66).
+
 - Fixed `Snapshot$data` so observed data removed via `remove_observed_data()`
   is also dropped from the exported snapshot. Previously the export reused the
   full original `ObservedData` list whenever the lazy cache had been touched,

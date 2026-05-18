@@ -7,16 +7,16 @@
 get_formulations_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
-A list with `formulations` and `formulations_parameters`
-  tibbles. Table parameter points have `is_table_point = TRUE` and
-  carry `x_value`, `y_value`, and `table_name`.
+A list with \code{formulations} and \code{formulations_parameters}
+tibbles. Table parameter points have \code{is_table_point = TRUE} and
+carry \code{x_value}, \code{y_value}, and \code{table_name}.
 }
 \description{
-Thin wrapper around [as_tibbles()] with `kind = "formulations"`.
-Prefer [as_tibbles()] in new code.
+Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "formulations"}.
+Prefer \code{\link[=as_tibbles]{as_tibbles()}} in new code.
 }
 \examples{
 \dontrun{
