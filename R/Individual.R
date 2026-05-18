@@ -274,12 +274,14 @@ Individual <- R6::R6Class(
     .data = NULL,
     .parameters = NULL,
     initialize_parameters = function() {
-      if (is.null(private$.data$Parameters)) {
-        return(invisible())
-      }
+      # Individual parameters are LocalizedParameter[] per the snapshot spec;
+      # routing through the shared helper preserves the lazy-init shape while
+      # forcing path validation and the v11+ Applications-to-Events migration
+      # at construction.
       private$.parameters <- build_parameters_from_raw(
         private$.data$Parameters,
-        key_by = "path"
+        key_by = "path",
+        ctor = function(data) LocalizedParameter$new(data)
       )
     }
   ),

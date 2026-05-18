@@ -1,5 +1,13 @@
 # osp.snapshots (development version)
 
+## New features
+
+- New `LocalizedParameter` R6 class for path-bearing parameters used in
+  Individual, ExpressionProfile, and Simulation parameter trees. Inherits
+  from `Parameter` and migrates legacy `Applications` path segments to
+  `Events` for v11+ snapshots. `create_parameter()` now routes to
+  `LocalizedParameter` when called with a `path` argument (#31).
+
 ## Minor improvements
 
 - Building-block collections now share a `snapshot_collection` S3 class with a single generic `print()` method, replacing the eight per-kind methods. The existing per-kind classes (`compound_collection`, `individual_collection`, etc.) are preserved as marker classes (#34).

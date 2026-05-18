@@ -87,7 +87,7 @@ A named value with a unit, optional **Value origin** (provenance), and optional 
 _Avoid_: setting, property, attribute (when the snapshot-level Parameter shape is meant).
 
 **Localized parameter**:
-A **Parameter** identified by its full path within a target's parameter tree (typically a **Simulation** or **Individual**). The path locates where the override applies. In v11+ snapshots, path segments named `Applications` are migrated to `Events`.
+A **Parameter** identified by its full path within a target's parameter tree (typically a **Simulation** or **Individual**). The path locates where the override applies. In v11+ snapshots, path segments named `Applications` are migrated to `Events`. Exported by `osp.snapshots` as the R6 class `LocalizedParameter`, which inherits from `Parameter`; `create_parameter(path = ...)` routes to it. `inherits(x, "Parameter")` is `TRUE` for `LocalizedParameter` instances.
 _Avoid_: pathed parameter, parameter override (too generic).
 
 **Advanced parameter**:
