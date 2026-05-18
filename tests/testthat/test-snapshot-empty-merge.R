@@ -8,11 +8,9 @@
 # exported section must be empty (the user's clear intent), not the original
 # items resurrected.
 
-test_that("remove_compound clearing all entries drops the Compounds section on export", {
+test_that("remove_compound clearing all entries empties the Compounds section on export", {
   snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
-  for (name in names(snapshot$compounds)) {
-    snapshot$remove_compound(name)
-  }
+  snapshot$remove_compound(names(snapshot$compounds))
 
   out <- withr::local_tempfile(fileext = ".json")
   export_snapshot(snapshot, out)
@@ -28,11 +26,9 @@ test_that("remove_compound clearing all entries drops the Compounds section on e
   expect_length(parsed$Compounds, 0)
 })
 
-test_that("remove_individual clearing all entries drops the Individuals section on export", {
+test_that("remove_individual clearing all entries empties the Individuals section on export", {
   snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
-  for (name in names(snapshot$individuals)) {
-    snapshot$remove_individual(name)
-  }
+  snapshot$remove_individual(names(snapshot$individuals))
 
   out <- withr::local_tempfile(fileext = ".json")
   export_snapshot(snapshot, out)
