@@ -10,7 +10,7 @@ get_compounds_dfs(snapshot)
 \item{snapshot}{A `Snapshot` object.}
 }
 \value{
-A tibble with one row per compound parameter; see
+A list with `properties` and `processes` tibbles; see
   [as_tibbles()] for the column contract.
 }
 \description{
@@ -20,6 +20,8 @@ Prefer [as_tibbles()] in new code.
 \examples{
 \dontrun{
 snapshot <- load_snapshot("path/to/snapshot.json")
-compounds_df <- get_compounds_dfs(snapshot)
+dfs <- get_compounds_dfs(snapshot)
+dfs$properties
+dfs$processes
 }
 }

@@ -1,9 +1,11 @@
-test_that("as_tibbles() returns the compounds tibble", {
+test_that("as_tibbles() returns the compounds list", {
   result <- as_tibbles(test_snapshot, "compounds")
 
-  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("properties", "processes"))
+  expect_s3_class(result$properties, "tbl_df")
+  expect_s3_class(result$processes, "tbl_df")
   expect_named(
-    result,
+    result$properties,
     c(
       "compound",
       "category",
@@ -15,7 +17,7 @@ test_that("as_tibbles() returns the compounds tibble", {
       "source"
     )
   )
-  expect_gt(nrow(result), 0)
+  expect_gt(nrow(result$properties), 0)
 })
 
 test_that("as_tibbles() returns the individuals list", {

@@ -14,7 +14,12 @@
 #'
 #' @return A tibble or a named list of tibbles, depending on `kind`:
 #' \itemize{
-#'   \item `"compounds"`, `"protocols"`, `"observer_sets"`,
+#'   \item `"compounds"`: a list with `properties` and `processes`
+#'     tibbles. `properties` carries one row per (compound,
+#'     physicochemical property) pair (plus folded process rows
+#'     for backwards compatibility); `processes` is the long-form,
+#'     one row per (compound, process, parameter) triple.
+#'   \item `"protocols"`, `"observer_sets"`,
 #'     `"observed_data"`: a single tibble.
 #'   \item `"individuals"`: a list with `individuals`,
 #'     `individuals_parameters`, `individuals_expressions`.
@@ -33,8 +38,10 @@
 #' \dontrun{
 #' snapshot <- load_snapshot("Midazolam")
 #'
-#' # Single tibble
+#' # List of tibbles (compounds returns properties + processes)
 #' compounds <- as_tibbles(snapshot, "compounds")
+#' compounds$properties
+#' compounds$processes
 #'
 #' # List of tibbles
 #' individuals <- as_tibbles(snapshot, "individuals")
@@ -74,24 +81,28 @@ as_tibbles <- function(snapshot, kind) {
 as_tibbles_compounds <- function(snapshot) {
   compounds <- snapshot$compounds
 
-  result <- tibble::tibble(
-    compound = character(0),
-    category = character(0),
-    type = character(0),
-    parameter = character(0),
-    value = character(0),
-    unit = character(0),
-    data_source = character(0),
-    source = character(0)
+  result <- list(
+    properties = empty_compound_property_tibble(),
+    processes = empty_processes_tibble()
   )
 
   if (length(compounds) == 0) {
     return(result)
   }
 
-  compound_dfs <- lapply(compounds, \(compound) compound$to_df())
-  result <- dplyr::bind_rows(compound_dfs)
-  result[order(result$compound), ]
+  property_dfs <- lapply(compounds, \(compound) compound$to_df())
+  result$properties <- dplyr::bind_rows(property_dfs)
+  result$properties <- result$properties[order(result$properties$compound), ]
+
+  process_dfs <- lapply(compounds, \(compound) {
+    compound_processes_to_long_df(compound$name, compound$data$Processes)
+  })
+  result$processes <- dplyr::bind_rows(process_dfs)
+  if (nrow(result$processes) > 0) {
+    result$processes <- result$processes[order(result$processes$compound), ]
+  }
+
+  result
 }
 
 as_tibbles_individuals <- function(snapshot) {
@@ -439,7 +450,7 @@ as_tibbles_observed_data <- function(snapshot) {
 #' Prefer [as_tibbles()] in new code.
 #'
 #' @inheritParams as_tibbles
-#' @return A tibble with one row per compound parameter; see
+#' @return A list with `properties` and `processes` tibbles; see
 #'   [as_tibbles()] for the column contract.
 #'
 #' @export
@@ -447,7 +458,9 @@ as_tibbles_observed_data <- function(snapshot) {
 #' @examples
 #' \dontrun{
 #' snapshot <- load_snapshot("path/to/snapshot.json")
-#' compounds_df <- get_compounds_dfs(snapshot)
+#' dfs <- get_compounds_dfs(snapshot)
+#' dfs$properties
+#' dfs$processes
 #' }
 get_compounds_dfs <- function(snapshot) {
   as_tibbles(snapshot, "compounds")

@@ -41,7 +41,8 @@ A `Snapshot` is the root container. It holds eight kinds of building-block colle
 | Class | File | Represents | Key relationships |
 |-------|------|------------|-------------------|
 | `Snapshot` | `R/Snapshot.R` | Root document (a PKSIM project export). | Owns all building-block collections; only class that touches `jsonlite` directly. |
-| `Compound` | `R/Compound.R` | A drug molecule, including physicochemical properties, calculation methods, and processes (clearance, binding, transport, induction, inhibition). | Contains `Parameter` objects; printed via several `compound_*` S3 print methods. |
+| `Compound` | `R/Compound.R` | A drug molecule, including physicochemical properties, calculation methods, and processes (clearance, binding, transport, induction, inhibition). | Contains `Parameter` objects and a flat named list of `Process` objects via `$processes`; printed via several `compound_*` S3 print methods. |
+| `Process` | `R/Process.R` | A single compound process (PK-Sim `CompoundProcess`): `internal_name`, `data_source`, optional `molecule`, `metabolite`, `species`, `parameters`, derived `category`. | Owned by `Compound`; one per entry of the raw `Processes` array. Contains `Parameter` objects keyed by name. |
 | `Individual` | `R/Individual.R` | A simulated subject: demographic traits, origin data, expression-profile references, physiological parameters. | References `ExpressionProfile` by name; contains `LocalizedParameter`. |
 | `Population` | `R/Population.R` | A population sampling specification: seed, settings, advanced parameters, individual-count range. | Contains `AdvancedParameter` (exported) and `Range`. |
 | `ExpressionProfile` | `R/ExpressionProfile.R` | Enzyme/transporter expression: molecule, type, species, category, localization. | Loaded before `Individual` (spec ordering); contains `Parameter`. |
@@ -167,6 +168,8 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 |------|----------|
 | `Snapshot.R` | `Snapshot` R6 class, `load_snapshot`, `export_snapshot`, snapshot mutators (`add_*` / `remove_*`), `osp_models`, template helpers. |
 | `Compound.R` | `Compound` R6 class (compound metadata, properties, calculation methods, processes). |
+| `Process.R` | `Process` R6 class (single compound process) and `create_process` factory. |
+| `process_dataframes.R` | Tibble-layer helpers for compound processes: the long-form `processes` tibble emitter used by `get_compounds_dfs()` and the legacy per-category formatters used by the deprecated `Compound$<category>` accessors. |
 | `Individual.R` | `Individual` R6 class and `create_individual` factory. |
 | `Population.R` | `Population` R6 class and `AdvancedParameter` (exported). |
 | `ExpressionProfile.R` | `ExpressionProfile` R6 class. |
@@ -206,6 +209,7 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 | Load dispatcher | `R/Snapshot.R` | `load_snapshot`, `.get_templates_data` |
 | Templates and mutators | `R/Snapshot.R` | `osp_models`, `add_individual`, `remove_individual`, `add_formulation`, `remove_formulation`, `add_expression_profile`, `remove_expression_profile`, `remove_population`, `export_snapshot` |
 | Compounds | `R/Compound.R` | `Compound` |
+| Processes | `R/Process.R`, `R/create_process.R`, `R/process_dataframes.R` | `Process`, `create_process`, `process_category`, `compound_processes_to_long_df` |
 | Individuals | `R/Individual.R` | `Individual`, `create_individual` |
 | Populations | `R/Population.R` | `Population`, `AdvancedParameter` |
 | Expression profiles | `R/ExpressionProfile.R` | `ExpressionProfile` |

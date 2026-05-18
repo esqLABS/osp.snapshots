@@ -26,7 +26,6 @@ test_that("Compounds sections can be accessed and are correctly printed", {
     snapshot$compounds[[1]]$molecular_weight_unit
   })
   expect_snapshot(snapshot$compounds[[1]]$lipophilicity)
-  expect_snapshot(snapshot$compounds[[1]]$processes)
   expect_snapshot(snapshot$compounds[[2]]$parameters)
   expect_snapshot(snapshot$compounds[[1]]$calculation_methods)
 })
@@ -72,11 +71,69 @@ test_that("Compounds active binding data are of the same size than the raw data"
 # Dataframe representation -----------------------------------------------
 
 test_that("Compounds can be converted to dataframes", {
-  # Generate snapshot with legacy code
   snapshot <- test_snapshot$clone()
 
-  # expect_snapshot(print(get_compound_df(c_data, 5),n=Inf, width = Inf))
-  expect_snapshot(print(get_compounds_dfs(snapshot), n = Inf))
+  dfs <- get_compounds_dfs(snapshot)
+  expect_named(dfs, c("properties", "processes"))
+  expect_s3_class(dfs$properties, "tbl_df")
+  expect_s3_class(dfs$processes, "tbl_df")
+
+  expect_snapshot(print(dfs$properties, n = Inf))
+  expect_snapshot(print(dfs$processes, n = Inf))
+})
+
+
+# Process accessor -------------------------------------------------------
+
+test_that("$processes returns a flat named list of Process objects", {
+  compound <- test_snapshot$compounds[[1]]
+  processes <- compound$processes
+
+  expect_type(processes, "list")
+  expect_equal(length(processes), length(compound$data$Processes))
+  expect_named(processes)
+  for (p in processes) {
+    expect_s3_class(p, "Process")
+  }
+})
+
+test_that("Compound round-trips Processes byte-for-byte through $data", {
+  snap <- Snapshot$new(testthat::test_path("data", "test_snapshot.json"))
+  original <- jsonlite::fromJSON(
+    txt = testthat::test_path("data", "test_snapshot.json"),
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
+
+  for (i in seq_along(snap$compounds)) {
+    # Force every active binding that exercises the Processes path.
+    procs <- snap$compounds[[i]]$processes
+    for (p in procs) {
+      invisible(p$category)
+      invisible(p$internal_name)
+      invisible(p$parameters)
+    }
+    expect_identical(
+      snap$compounds[[i]]$data$Processes,
+      original$Compounds[[i]]$Processes
+    )
+  }
+})
+
+
+# Deprecated category accessors ------------------------------------------
+
+test_that("Deprecated category accessors warn", {
+  compound <- test_snapshot$compounds[[1]]
+  rlang::local_options(lifecycle_verbosity = "warning")
+  expect_snapshot(invisible(compound$protein_binding_partners))
+  expect_snapshot(invisible(compound$metabolizing_enzymes))
+  expect_snapshot(invisible(compound$hepatic_clearance))
+  expect_snapshot(invisible(compound$transporter_proteins))
+  expect_snapshot(invisible(compound$renal_clearance))
+  expect_snapshot(invisible(compound$biliary_clearance))
+  expect_snapshot(invisible(compound$inhibition))
+  expect_snapshot(invisible(compound$induction))
 })
 
 

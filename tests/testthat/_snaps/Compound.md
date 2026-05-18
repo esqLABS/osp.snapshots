@@ -419,44 +419,6 @@
 ---
 
     Code
-      snapshot$compounds[[1]]$processes
-    Message
-      Processes (21 total):
-        * Metabolism:
-          * MetabolizationSpecific_MM (AADAC): Enzyme concentration=1 µmol/l, Vmax=12
-          µmol/l/min, Km=195.1 µmol/l, kcat=9.865 1/min [Nakajima 2011]
-        * Transport:
-          * ActiveTransportSpecific_MM (P-gp): Transporter concentration=1 nmol/l,
-          Vmax=0 µmol/l/min, Km=55 µmol/l, kcat=0.6088 1/min [Collett 2004]
-          * ActiveTransportSpecific_MM (OATP1B1): Transporter concentration=1 µmol/l,
-          Vmax=0 µmol/l/min, Km=1.5 µmol/l, kcat=7.796 1/min [Tirona 2003]
-        * Clearance:
-          * BiliaryClearance [BCL]
-          * LiverClearance: Specific clearance=666 1/h [test123]
-          * TubularSecretion_FirstOrder: Tubular secretion=33 l/min, TSspec=55 1/min
-          [RenCL_rif]
-        * Inhibition:
-          * CompetitiveInhibition (CYP3A4): Ki=18.5 µmol/l [Kajosaari 2005]
-          * CompetitiveInhibition (P-gp): Ki=169 µmol/l [Reitman 2011]
-          * CompetitiveInhibition (CYP2C8): Ki=30.2 µmol/l [Kajosaari 2005]
-          * CompetitiveInhibition (OATP1B1): Ki=0.477 µmol/l [Hirano 2006]
-          * CompetitiveInhibition (OATP1B3): Ki=0.9 µmol/l [Annaert 2010]
-          * CompetitiveInhibition (CYP3A4): Ki=23 µmol/l [Comp]
-          * MixedInhibition (CYP3A4): Ki_c=23 µmol/l, Ki_u=3 µmol/l [Mixed]
-          * IrreversibleInhibition (CYP3A4): kinact=2 1/min, K_kinact_half=22 µmol/l
-          [Irreversible]
-        * Induction:
-          * Induction (CYP3A4): EC50=0.34 µmol/l, Emax=9 [Templeton 2011]
-          * Induction (P-gp): EC50=0.34 µmol/l, Emax=2.5 [Greiner 1999]
-          * Induction (OATP1B1): EC50=0.34 µmol/l, Emax=0.383 [Dixit 2007]
-          * Induction (AADAC): EC50=0.34 µmol/l, Emax=0.985 [Assumed]
-          * Induction (CYP2C8): EC50=0.34 µmol/l, Emax=3.2 [Buckley 2014]
-          * Induction (CYP1A2): EC50=0.34 µmol/l, Emax=0.65 [Chen 2010]
-          * Induction (CYP2E1): EC50=0.34 µmol/l, Emax=0.8 [Rae 2001]
-
----
-
-    Code
       snapshot$compounds[[2]]$parameters
     Message
       • Additional Parameters (2 total):
@@ -475,7 +437,7 @@
 # Compounds can be converted to dataframes
 
     Code
-      print(get_compounds_dfs(snapshot), n = Inf)
+      print(dfs$properties, n = Inf)
     Output
       # A tibble: 237 x 8
           compound             category type  parameter value unit  data_source source
@@ -717,4 +679,268 @@
       235 test                 physico~ pKa   "base"    "2"   <NA>  <NA>         <NA> 
       236 test                 physico~ solu~ "Measure~ "3"   mg/l  <NA>        "Para~
       237 test                 physico~ solu~ "test, p~ "5"   mg/l  <NA>         <NA> 
+
+---
+
+    Code
+      print(dfs$processes, n = Inf)
+    Output
+      # A tibble: 182 x 11
+          compound      category process_name parameter value unit  data_source source
+          <chr>         <chr>    <chr>        <chr>     <chr> <chr> <chr>       <chr> 
+        1 100777        protein~ SpecificBin~ koff      1     1/min in-vitro    "Para~
+        2 100777        protein~ SpecificBin~ Kd        2.81  nmol~ in-vitro    "Para~
+        3 100777        metabol~ Metabolizat~ In vitro~ 12    pmol~ Optimized   "n002~
+        4 100777        metabol~ Metabolizat~ Content ~ 109   pmol~ Optimized   "n002~
+        5 100777        metabol~ Metabolizat~ Km        40.23 µmol~ Optimized   "Para~
+        6 100777        metabol~ Metabolizat~ kcat      0.11~ 1/min Optimized   "PK-S~
+        7 100777        biliary~ BiliaryClea~ Fraction~ 0.031 <NA>  n45678       <NA> 
+        8 100777        biliary~ BiliaryClea~ Lipophil~ 2.89~ Log ~ n45678       <NA> 
+        9 100777        biliary~ BiliaryClea~ Plasma c~ 34    ml/m~ n45678      "Assu~
+       10 100777        biliary~ BiliaryClea~ Specific~ 32.88 1/min n45678      "Para~
+       11 100777        metabol~ Metabolizat~ Intrinsi~ 888   l/min Int_FO       <NA> 
+       12 100777        metabol~ Metabolizat~ Specific~ 234   1/min Int_FO      "n002~
+       13 100777        transpo~ ActiveTrans~ Transpor~ 12    µmol~ Spec_H       <NA> 
+       14 100777        transpo~ ActiveTrans~ Vmax      0     µmol~ Spec_H       <NA> 
+       15 100777        transpo~ ActiveTrans~ Km        1     µmol~ Spec_H      "n002~
+       16 100777        transpo~ ActiveTrans~ kcat      222   1/min Spec_H      "n002~
+       17 100777        transpo~ ActiveTrans~ Hill coe~ 2     <NA>  Spec_H       <NA> 
+       18 100777        renal_c~ TubularSecr~ TSmax     12    µmol~ TuSec_MM     <NA> 
+       19 100777        renal_c~ TubularSecr~ Km        33    µmol~ TuSec_MM    "n002~
+       20 100777        renal_c~ TubularSecr~ TSmax_sp~ 22.65 µmol~ TuSec_MM    "Para~
+       21 100777        inhibit~ Competitive~ Ki        2     µmol~ comp_inh    "n002~
+       22 100777        inducti~ Induction    EC50      1     µmol~ induction   "n002~
+       23 100777        inducti~ Induction    Emax      65.1~ <NA>  induction   "Para~
+       24 100777        hepatic~ LiverMicros~ Lipophil~ 3.233 Log ~ In vitro_m~  <NA> 
+       25 100777        hepatic~ LiverMicros~ Measurin~ 345   min   In vitro_m~ "R24-~
+       26 100777        hepatic~ LiverMicros~ Residual~ 34    %     In vitro_m~ "R24-~
+       27 100777- init~ protein~ SpecificBin~ koff      1     1/min in-vitro    "Assu~
+       28 100777- init~ protein~ SpecificBin~ Kd        1.8   nmol~ in-vitro     <NA> 
+       29 100777- init~ metabol~ Metabolizat~ In vitro~ 0     pmol~ Optimized    <NA> 
+       30 100777- init~ metabol~ Metabolizat~ Km        37.8  µmol~ Optimized   "Assu~
+       31 100777- init~ metabol~ Metabolizat~ kcat      3.59~ 1/min Optimized   "n002~
+       32 100777- init~ biliary~ BiliaryClea~ Fraction~ 0.031 <NA>  n45678       <NA> 
+       33 100777- init~ biliary~ BiliaryClea~ Lipophil~ 2.89~ Log ~ n45678       <NA> 
+       34 100777- init~ biliary~ BiliaryClea~ Plasma c~ 0     ml/m~ n45678       <NA> 
+       35 100777- init~ biliary~ BiliaryClea~ Specific~ 34    1/min n45678      "Assu~
+       36 100777- init~ metabol~ Metabolizat~ Intrinsi~ 342   l/min Int_FO      "n002~
+       37 100777- init~ metabol~ Metabolizat~ Specific~ 234   1/min Int_FO      "Calc~
+       38 100777- init~ transpo~ ActiveTrans~ Transpor~ 1     µmol~ Spec_H       <NA> 
+       39 100777- init~ transpo~ ActiveTrans~ Vmax      0     µmol~ Spec_H       <NA> 
+       40 100777- init~ transpo~ ActiveTrans~ Km        1     µmol~ Spec_H      "n002~
+       41 100777- init~ transpo~ ActiveTrans~ kcat      222   1/min Spec_H      "n002~
+       42 100777- init~ transpo~ ActiveTrans~ Hill coe~ 2     <NA>  Spec_H       <NA> 
+       43 100777- init~ renal_c~ TubularSecr~ TSmax     0     µmol~ TuSec_MM     <NA> 
+       44 100777- init~ renal_c~ TubularSecr~ Km        33    µmol~ TuSec_MM    "n002~
+       45 100777- init~ renal_c~ TubularSecr~ TSmax_sp~ 23    µmol~ TuSec_MM    "Assu~
+       46 100777- init~ inhibit~ Competitive~ Ki        2     µmol~ comp_inh    "n002~
+       47 100777- init~ inducti~ Induction    EC50      1     µmol~ induction   "n002~
+       48 100777- init~ inducti~ Induction    Emax      67    <NA>  induction   "n002~
+       49 100777- init~ hepatic~ LiverMicros~ Lipophil~ 2.89~ Log ~ In vitro_m~  <NA> 
+       50 100777- init~ hepatic~ LiverMicros~ Measurin~ 345   min   In vitro_m~ "R24-~
+       51 100777- init~ hepatic~ LiverMicros~ Residual~ 34    %     In vitro_m~ "R24-~
+       52 123456        protein~ SpecificBin~ koff      1     1/min Buhr 1997   "Para~
+       53 123456        protein~ SpecificBin~ Kd        1.8   nmol~ Buhr 1997   "Para~
+       54 123456        metabol~ Metabolizat~ In vitro~ 0     pmol~ Optimized    <NA> 
+       55 123456        metabol~ Metabolizat~ Km        37.8  µmol~ Optimized   "Para~
+       56 123456        metabol~ Metabolizat~ kcat      3.59~ 1/min Optimized   "Para~
+       57 123456        metabol~ Metabolizat~ Enzyme c~ 1     µmol~ Kim et al,~  <NA> 
+       58 123456        metabol~ Metabolizat~ Vmax      0     µmol~ Kim et al,~  <NA> 
+       59 123456        metabol~ Metabolizat~ Km        1     µmol~ Kim et al,~ "R07-~
+       60 123456        metabol~ Metabolizat~ kcat      2     1/min Kim et al,~ "R07-~
+       61 123456        metabol~ Metabolizat~ Hill coe~ 1     <NA>  Kim et al,~ "Assu~
+       62 123456        biliary~ BiliaryClea~ Fraction~ 0.031 <NA>  n45678       <NA> 
+       63 123456        biliary~ BiliaryClea~ Lipophil~ 2.89~ Log ~ n45678       <NA> 
+       64 123456        biliary~ BiliaryClea~ Plasma c~ 12    ml/m~ n45678       <NA> 
+       65 123456        biliary~ BiliaryClea~ Specific~ 34    1/min n45678      "Para~
+       66 123456        metabol~ Metabolizat~ Fraction~ 0.45  <NA>  Int-MM      "Assu~
+       67 123456        metabol~ Metabolizat~ Vmax (li~ 12    µmol~ Int-MM      "c443~
+       68 123456        metabol~ Metabolizat~ Km        1     µmol~ Int-MM      "Assu~
+       69 123456        metabol~ Metabolizat~ Vmax      14.93 µmol~ Int-MM      "PK-S~
+       70 123456        metabol~ Metabolizat~ Fraction~ 0.8   <NA>  Int_FO      "Assu~
+       71 123456        metabol~ Metabolizat~ Intrinsi~ 800   l/min Int_FO      "c123~
+       72 123456        metabol~ Metabolizat~ Specific~ 234   1/min Int_FO      "PK-S~
+       73 123456        metabol~ Metabolizat~ Enzyme c~ 1     µmol~ In vitro_FO  <NA> 
+       74 123456        metabol~ Metabolizat~ Specific~ 330   1/min In vitro_FO  <NA> 
+       75 123456        metabol~ Metabolizat~ CLspec/[~ 12    l/µm~ In vitro_FO "Para~
+       76 123456        metabol~ Metabolizat~ Enzyme c~ 1     µmol~ In vitro_MM  <NA> 
+       77 123456        metabol~ Metabolizat~ Vmax      0     µmol~ In vitro_MM  <NA> 
+       78 123456        metabol~ Metabolizat~ Km        1     µmol~ In vitro_MM "Para~
+       79 123456        metabol~ Metabolizat~ kcat      56    1/min In vitro_MM "c264~
+       80 123456        metabol~ Metabolizat~ Enzyme c~ 1     µmol~ In vitro_H   <NA> 
+       81 123456        metabol~ Metabolizat~ Vmax      0     µmol~ In vitro_H   <NA> 
+       82 123456        metabol~ Metabolizat~ Km        12    µmol~ In vitro_H  "c443~
+       83 123456        metabol~ Metabolizat~ kcat      211   1/min In vitro_H  "c443~
+       84 123456        metabol~ Metabolizat~ Hill coe~ 8     <NA>  In vitro_H  "Assu~
+       85 123456        metabol~ rCYP450_Fir~ In vitro~ 0     µl/m~ In vitro_r~  <NA> 
+       86 123456        metabol~ rCYP450_Fir~ CLspec/[~ 45    l/µm~ In vitro_r~ "c264~
+       87 123456        hepatic~ LiverMicros~ Lipophil~ 2.89~ Log ~ In vitro_m~ "PK-S~
+       88 123456        hepatic~ LiverMicros~ t1/2 (mi~ 23    min   In vitro_m~ "R24-~
+       89 123456        hepatic~ LiverMicros~ Specific~ 19.49 1/min In vitro_m~ "PK-S~
+       90 123456        transpo~ ActiveTrans~ Vmax (li~ 23    µmol~ Int _ MM     <NA> 
+       91 123456        transpo~ ActiveTrans~ Km        1     µmol~ Int _ MM    "c264~
+       92 123456        transpo~ ActiveTrans~ Vmax      26    µmol~ Int _ MM    "c264~
+       93 123456        transpo~ ActiveTrans~ Transpor~ 3     µmol~ Spec_MM     "c264~
+       94 123456        transpo~ ActiveTrans~ Vmax      100   µmol~ Spec_MM     "c264~
+       95 123456        transpo~ ActiveTrans~ Km        2     µmol~ Spec_MM     "c443~
+       96 123456        transpo~ ActiveTrans~ kcat      33.3~ 1/min Spec_MM     "PK-S~
+       97 123456        transpo~ ActiveTrans~ Transpor~ 1     µmol~ Spec_H       <NA> 
+       98 123456        transpo~ ActiveTrans~ Vmax      12    µmol~ Spec_H       <NA> 
+       99 123456        transpo~ ActiveTrans~ Km        1     µmol~ Spec_H      "c443~
+      100 123456        transpo~ ActiveTrans~ kcat      222   1/min Spec_H      "c443~
+      101 123456        transpo~ ActiveTrans~ Hill coe~ 2     <NA>  Spec_H      "Assu~
+      102 123456        transpo~ ActiveTrans~ In vitro~ 56    nmol~ In vitro_MM  <NA> 
+      103 123456        transpo~ ActiveTrans~ Km        1     µmol~ In vitro_MM "Para~
+      104 123456        transpo~ ActiveTrans~ kcat      45    1/min In vitro_MM "Para~
+      105 123456        renal_c~ KidneyClear~ Fraction~ 0.031 <NA>  Kidney_pla~  <NA> 
+      106 123456        renal_c~ KidneyClear~ Plasma c~ 24    ml/m~ Kidney_pla~  <NA> 
+      107 123456        renal_c~ KidneyClear~ Specific~ 66    1/min Kidney_pla~ "Para~
+      108 123456        inhibit~ Competitive~ Ki        2     µmol~ comp_inh    "c264~
+      109 123456        inhibit~ Uncompetiti~ Ki        1.667 µmol~ uncomp_inh  "Para~
+      110 123456        inhibit~ Noncompetit~ Ki        3     µmol~ non-comp_i~ "c443~
+      111 123456        inhibit~ MixedInhibi~ Ki_c      1     µmol~ mixed_inh   "c443~
+      112 123456        inhibit~ MixedInhibi~ Ki_u      1     µmol~ mixed_inh   "Para~
+      113 123456        inducti~ Induction    EC50      1     µmol~ induction   "Para~
+      114 123456        inducti~ Induction    Emax      67    <NA>  induction   "c443~
+      115 123456        inhibit~ Irreversibl~ kinact    2     1/min irr_ing_2   "Para~
+      116 123456        inhibit~ Irreversibl~ K_kinact~ 1     µmol~ irr_ing_2   "R24-~
+      117 123456        inhibit~ Irreversibl~ Ki        2     µmol~ irr_ing_2   "c264~
+      118 123456        metabol~ rCYP450_MM   In vitro~ 59    nmol~ In vitro_r~ "c443~
+      119 123456        metabol~ rCYP450_MM   Km        3     µmol~ In vitro_r~ "c443~
+      120 123456        metabol~ rCYP450_MM   kcat      13    1/min In vitro_r~ "Para~
+      121 123456        metabol~ Metabolizat~ In vitro~ 56    µl/m~ liv_micros~ "c443~
+      122 123456        metabol~ Metabolizat~ Content ~ 120   pmol~ liv_micros~ "c443~
+      123 123456        metabol~ Metabolizat~ CLspec/[~ 0.467 l/µm~ liv_micros~ "PK-S~
+      124 123456        metabol~ Metabolizat~ In vitro~ 0     pmol~ liv_micros~  <NA> 
+      125 123456        metabol~ Metabolizat~ Km        3     µmol~ liv_micros~ "c319~
+      126 123456        metabol~ Metabolizat~ kcat      44    1/min liv_micros~ "Para~
+      127 123456        protein~ SpecificBin~ koff      3     1/min wer         "c443~
+      128 123456        protein~ SpecificBin~ Kd        4     µmol~ wer         "c443~
+      129 123456        inhibit~ Competitive~ Ki        23    µmol~ test        "Para~
+      130 123456        inducti~ Induction    EC50      1     µmol~ GABRG2-ind  "Para~
+      131 123456        inducti~ Induction    Emax      200   <NA>  GABRG2-ind  "Para~
+      132 123456        inhibit~ Irreversibl~ kinact    1.67  1/min irr_3       "c319~
+      133 123456        inhibit~ Irreversibl~ K_kinact~ 6     µmol~ irr_3       "c319~
+      134 123456        metabol~ Metabolizat~ Intrinsi~ 78.6  l/min test        "c443~
+      135 Perpetrator_2 renal_c~ GlomerularF~ GFR frac~ 1     <NA>  GFR         "R20-~
+      136 Perpetrator_2 hepatic~ Hepatocytes~ Measurin~ 12    min   In vitro h~ "c319~
+      137 Perpetrator_2 hepatic~ Hepatocytes~ Residual~ 23    %     In vitro h~ "c319~
+      138 Rifampicin    metabol~ Metabolizat~ Enzyme c~ 1     µmol~ Nakajima 2~  <NA> 
+      139 Rifampicin    metabol~ Metabolizat~ Vmax      12    µmol~ Nakajima 2~  <NA> 
+      140 Rifampicin    metabol~ Metabolizat~ Km        195.1 µmol~ Nakajima 2~ "Para~
+      141 Rifampicin    metabol~ Metabolizat~ kcat      9.865 1/min Nakajima 2~ "R24-~
+      142 Rifampicin    transpo~ ActiveTrans~ Transpor~ 1     nmol~ Collett 20~  <NA> 
+      143 Rifampicin    transpo~ ActiveTrans~ Vmax      0     µmol~ Collett 20~  <NA> 
+      144 Rifampicin    transpo~ ActiveTrans~ Km        55    µmol~ Collett 20~ "Para~
+      145 Rifampicin    transpo~ ActiveTrans~ kcat      0.60~ 1/min Collett 20~ "R20-~
+      146 Rifampicin    transpo~ ActiveTrans~ Transpor~ 1     µmol~ Tirona 2003  <NA> 
+      147 Rifampicin    transpo~ ActiveTrans~ Vmax      0     µmol~ Tirona 2003  <NA> 
+      148 Rifampicin    transpo~ ActiveTrans~ Km        1.5   µmol~ Tirona 2003 "Para~
+      149 Rifampicin    transpo~ ActiveTrans~ kcat      7.796 1/min Tirona 2003 "R20-~
+      150 Rifampicin    inhibit~ Competitive~ Ki        18.5  µmol~ Kajosaari ~ "R18-~
+      151 Rifampicin    inhibit~ Competitive~ Ki        169   µmol~ Reitman 20~ "R24-~
+      152 Rifampicin    inducti~ Induction    EC50      0.34  µmol~ Templeton ~ "R24-~
+      153 Rifampicin    inducti~ Induction    Emax      9     <NA>  Templeton ~ "R24-~
+      154 Rifampicin    inducti~ Induction    EC50      0.34  µmol~ Greiner 19~ "R20-~
+      155 Rifampicin    inducti~ Induction    Emax      2.5   <NA>  Greiner 19~ "R20-~
+      156 Rifampicin    inducti~ Induction    EC50      0.34  µmol~ Dixit 2007  "Para~
+      157 Rifampicin    inducti~ Induction    Emax      0.383 <NA>  Dixit 2007  "Para~
+      158 Rifampicin    inducti~ Induction    EC50      0.34  µmol~ Assumed     "R20-~
+      159 Rifampicin    inducti~ Induction    Emax      0.985 <NA>  Assumed     "Para~
+      160 Rifampicin    inhibit~ Competitive~ Ki        30.2  µmol~ Kajosaari ~ "R18-~
+      161 Rifampicin    inhibit~ Competitive~ Ki        0.477 µmol~ Hirano 2006 "R24-~
+      162 Rifampicin    inducti~ Induction    EC50      0.34  µmol~ Buckley 20~ "Para~
+      163 Rifampicin    inducti~ Induction    Emax      3.2   <NA>  Buckley 20~ "R20-~
+      164 Rifampicin    inducti~ Induction    EC50      0.34  µmol~ Chen 2010   "P07-~
+      165 Rifampicin    inducti~ Induction    Emax      0.65  <NA>  Chen 2010   "Para~
+      166 Rifampicin    inducti~ Induction    EC50      0.34  µmol~ Rae 2001    "P07-~
+      167 Rifampicin    inducti~ Induction    Emax      0.8   <NA>  Rae 2001    "R24-~
+      168 Rifampicin    inhibit~ Competitive~ Ki        0.9   µmol~ Annaert 20~ "R24-~
+      169 Rifampicin    inhibit~ Competitive~ Ki        23    µmol~ Comp        "Para~
+      170 Rifampicin    inhibit~ MixedInhibi~ Ki_c      23    µmol~ Mixed       "R18-~
+      171 Rifampicin    inhibit~ MixedInhibi~ Ki_u      3     µmol~ Mixed       "Para~
+      172 Rifampicin    inhibit~ Irreversibl~ kinact    2     1/min Irreversib~ "R24-~
+      173 Rifampicin    inhibit~ Irreversibl~ K_kinact~ 22    µmol~ Irreversib~ "R24-~
+      174 Rifampicin    biliary~ BiliaryClea~ Fraction~ 0.17  <NA>  BCL         "PK-S~
+      175 Rifampicin    biliary~ BiliaryClea~ Lipophil~ 2.5   Log ~ BCL         "PK-S~
+      176 Rifampicin    biliary~ BiliaryClea~ Plasma c~ 12    ml/m~ BCL         "Assu~
+      177 Rifampicin    hepatic~ LiverCleara~ Fraction~ 0.17  <NA>  test123      <NA> 
+      178 Rifampicin    hepatic~ LiverCleara~ Lipophil~ 2.5   Log ~ test123      <NA> 
+      179 Rifampicin    hepatic~ LiverCleara~ Plasma c~ 12    ml/m~ test123      <NA> 
+      180 Rifampicin    hepatic~ LiverCleara~ Specific~ 666   1/h   test123     "c443~
+      181 Rifampicin    renal_c~ TubularSecr~ Tubular ~ 33    l/min RenCL_rif    <NA> 
+      182 Rifampicin    renal_c~ TubularSecr~ TSspec    55    1/min RenCL_rif   "Assu~
+      # i 3 more variables: molecule <chr>, metabolite <chr>, species <chr>
+
+# Deprecated category accessors warn
+
+    Code
+      invisible(compound$protein_binding_partners)
+    Condition
+      Warning:
+      Compound$protein_binding_partners was deprecated in osp.snapshots 0.3.0.
+      i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
+
+---
+
+    Code
+      invisible(compound$metabolizing_enzymes)
+    Condition
+      Warning:
+      Compound$metabolizing_enzymes was deprecated in osp.snapshots 0.3.0.
+      i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
+
+---
+
+    Code
+      invisible(compound$hepatic_clearance)
+    Condition
+      Warning:
+      Compound$hepatic_clearance was deprecated in osp.snapshots 0.3.0.
+      i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
+
+---
+
+    Code
+      invisible(compound$transporter_proteins)
+    Condition
+      Warning:
+      Compound$transporter_proteins was deprecated in osp.snapshots 0.3.0.
+      i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
+
+---
+
+    Code
+      invisible(compound$renal_clearance)
+    Condition
+      Warning:
+      Compound$renal_clearance was deprecated in osp.snapshots 0.3.0.
+      i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
+
+---
+
+    Code
+      invisible(compound$biliary_clearance)
+    Condition
+      Warning:
+      Compound$biliary_clearance was deprecated in osp.snapshots 0.3.0.
+      i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
+
+---
+
+    Code
+      invisible(compound$inhibition)
+    Condition
+      Warning:
+      Compound$inhibition was deprecated in osp.snapshots 0.3.0.
+      i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
+
+---
+
+    Code
+      invisible(compound$induction)
+    Condition
+      Warning:
+      Compound$induction was deprecated in osp.snapshots 0.3.0.
+      i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
 
