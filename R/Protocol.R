@@ -283,14 +283,7 @@ Protocol <- R6::R6Class(
       if (is.null(self$application_type)) {
         return(NA_character_)
       }
-
-      switch(
-        self$application_type,
-        "Oral" = "Oral",
-        "IntravenousBolus" = "Intravenous bolus",
-        "IntravenousInfusion" = "Intravenous infusion",
-        self$application_type
-      )
+      human_application_type(self$application_type)
     },
 
     #' @description
@@ -462,14 +455,7 @@ Protocol <- R6::R6Class(
       if (is.null(application_type)) {
         return(NA_character_)
       }
-
-      switch(
-        application_type,
-        "Oral" = "Oral",
-        "IntravenousBolus" = "Intravenous bolus",
-        "IntravenousInfusion" = "Intravenous infusion",
-        application_type
-      )
+      human_application_type(application_type)
     },
 
     get_dosing_interval_from_reps = function(rep_num_param, rep_time_param) {
@@ -509,6 +495,36 @@ Protocol <- R6::R6Class(
     }
   )
 )
+
+# Canonical PK-Sim application types accepted by `create_schema_item()` and
+# `Schema/SchemaItem` JSON, paired with their human-readable labels. PK-Sim
+# resolves the enum values via `ApplicationTypes.ByName()` (see
+# `snapshot-spec.md`). This is the single source of truth for the enum;
+# `schema_item_application_types()` (in `R/create_schema_item.R`) and
+# `human_application_type()` both read from it.
+#
+# Names are the enum values; values are the labels used by
+# `Protocol$get_human_application_type()`. Entries whose label matches the
+# name simply round-trip the enum value as its own label.
+PKSIM_APPLICATION_TYPES <- c(
+  Oral = "Oral",
+  IntravenousBolus = "Intravenous bolus",
+  IntravenousInfusion = "Intravenous infusion",
+  Intramuscular = "Intramuscular",
+  Subcutaneous = "Subcutaneous",
+  Dermal = "Dermal",
+  Rectal = "Rectal",
+  Inhalation = "Inhalation",
+  Intraperitoneal = "Intraperitoneal"
+)
+
+# Look up the human-readable label for a PK-Sim application type. Falls back
+# to the raw enum value when no entry exists, mirroring the previous
+# `switch()` default arm.
+human_application_type <- function(application_type) {
+  label <- PKSIM_APPLICATION_TYPES[application_type]
+  if (is.na(label)) application_type else unname(label)
+}
 
 # Shared empty tibble used by Protocol$to_df() and as_tibbles_protocols(), so
 # the empty-state and populated shapes cannot drift (#56).
