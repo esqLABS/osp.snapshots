@@ -17,14 +17,16 @@ get_compounds_dfs(snapshot)
 
 ## Value
 
-A tibble with one row per compound parameter; see \[as_tibbles()\] for
-the column contract.
+A list with \`properties\` and \`processes\` tibbles; see
+\[as_tibbles()\] for the column contract.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
 snapshot <- load_snapshot("path/to/snapshot.json")
-compounds_df <- get_compounds_dfs(snapshot)
+dfs <- get_compounds_dfs(snapshot)
+dfs$properties
+dfs$processes
 } # }
 ```

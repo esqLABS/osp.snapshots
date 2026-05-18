@@ -21,6 +21,8 @@ Main classes for working with snapshots and building blocks
   : Individual class for OSP snapshot individuals
 - [`Compound`](https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.md)
   : Compound class for OSP snapshot compounds
+- [`Process`](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
+  : Process class for OSP snapshot compound processes
 - [`Formulation`](https://esqlabs.github.io/osp.snapshots/dev/reference/Formulation.md)
   : Formulation class for OSP snapshot formulations
 - [`Population`](https://esqlabs.github.io/osp.snapshots/dev/reference/Population.md)
@@ -75,6 +77,8 @@ Functions to create new building blocks from scratch
   : Create a new parameter
 - [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
   : Create a new population
+- [`create_process()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_process.md)
+  : Create a new compound process
 - [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
   : Create a new protocol
 

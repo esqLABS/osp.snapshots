@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9014</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9015</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,15 +43,18 @@
 <h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
 <ul><li>
 <code>Compound$calculation_methods</code> now returns a <code>CalculationMethodCache</code> R6 object instead of a plain list with class <code>compound_calculation_methods</code>. The old list-shape accessors (<code>compound$calculation_methods$partition_coef</code>, <code>compound$calculation_methods$permeability</code>) no longer work; use the new R6 surface (<code>$methods</code>, <code>$add()</code>, <code>$remove()</code>, <code>$length</code>) on <code>CalculationMethodCache</code> instead (#30).</li>
+<li>
+<code>Compound$processes</code> now returns a flat named list of <code>Process</code> R6 objects (with duplicate names disambiguated via <code>_{n}</code> suffixes), replacing the raw <code>compound_processes</code> list it returned before. Filter by <code>process$category</code> to recover the equivalent of the deprecated per-category accessors (#40).</li>
+<li>
+<code><a href="../reference/get_compounds_dfs.html">get_compounds_dfs()</a></code> now returns a list with two tibbles, <code>properties</code> and <code>processes</code>, instead of the single combined tibble it returned before. Update callers from <code>df &lt;- get_compounds_dfs(snap)</code> to <code>dfs &lt;- get_compounds_dfs(snap); df &lt;- dfs$properties</code>, or switch to the new long-form <code>dfs$processes</code> (#40).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li>
-<code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> is the new unified entry point for converting any building-block collection in a snapshot to a tibble (or list of tibbles), dispatched on a <code>kind</code> argument. The eight existing <code>get_*_dfs()</code> functions remain available as thin wrappers (#36).</li>
-<li>New <code>CalculationMethodCache</code> R6 class wrapping the array of calculation method names stored on a <code>Compound</code> and inside an <code>Individual</code>’s <code>OriginData</code>. <code>Compound$calculation_methods</code> and <code>Individual$origin_data$calculation_methods</code> now return this class (#30).</li>
+<ul><li>New <code>CalculationMethodCache</code> R6 class wrapping the array of calculation method names stored on a <code>Compound</code> and inside an <code>Individual</code>’s <code>OriginData</code>. <code>Compound$calculation_methods</code> and <code>Individual$origin_data$calculation_methods</code> now return this class (#30).</li>
 <li>New <code>LocalizedParameter</code> R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from <code>Parameter</code> and migrates legacy <code>Applications</code> path segments to <code>Events</code> for v11+ snapshots. <code><a href="../reference/create_parameter.html">create_parameter()</a></code> now routes to <code>LocalizedParameter</code> when called with a <code>path</code> argument (#31).</li>
 <li>New <code>ObserverSet</code> R6 class wrapping the <code>ObserverSets</code> building blocks of a snapshot, accessible through <code>snapshot$observer_sets</code> and exported on round-trip. Observers inside a set are exposed as a raw list until the <code>Observer</code> leaf class lands (#38).</li>
 <li>New <code>OriginData</code> R6 class wrapping the demographic starting point of an <code>Individual</code> (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via <code>Individual$origin_data</code> (#30).</li>
+<li>New <code>Process</code> R6 class representing one compound process (PK-Sim <code>CompoundProcess</code>). Exposes <code>internal_name</code>, <code>data_source</code>, <code>molecule</code>, <code>metabolite</code>, <code>species</code>, <code>parameters</code> (a named list of <code>Parameter</code> R6 objects), and a derived <code>category</code> (one of <code>protein_binding_partners</code>, <code>metabolizing_enzymes</code>, <code>hepatic_clearance</code>, <code>transporter_proteins</code>, <code>renal_clearance</code>, <code>biliary_clearance</code>, <code>inhibition</code>, <code>induction</code>). <code>Compound$processes</code> now returns a flat named list of these objects, built once at construction so process state changes persist across accesses (#40).</li>
 <li>New <code>Schema</code> and <code>SchemaItem</code> R6 classes wrapping the repeatable blocks and individual applications inside an Advanced <code>Protocol</code>. <code>Protocol$schemas</code> now returns a named list of <code>Schema</code> objects, each exposing <code>$items</code> as a list of <code>SchemaItem</code> objects with fields for application type, formulation key, target organ and compartment, and parameters (#29).</li>
 <li>
 <code><a href="../reference/add_compound.html">add_compound()</a></code> attaches a <code>Compound</code> building block to a <code>Snapshot</code> (#39).</li>
@@ -66,6 +69,8 @@
 <li>
 <code><a href="../reference/add_protocol.html">add_protocol()</a></code> attaches a <code>Protocol</code> building block to a <code>Snapshot</code> (#39).</li>
 <li>
+<code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> is the new unified entry point for converting any building-block collection in a snapshot to a tibble (or list of tibbles), dispatched on a <code>kind</code> argument. The eight existing <code>get_*_dfs()</code> functions remain available as thin wrappers (#36).</li>
+<li>
 <code><a href="../reference/create_compound.html">create_compound()</a></code> builds a Compound building block from named arguments, wrapping <code>Compound$new()</code> with validation of common fields (#27). <code>molecular_weight_unit</code> is now validated against <code>ospsuite::ospUnits$"Molecular weight"</code> when <code>molecular_weight</code> is supplied (#48).</li>
 <li>
 <code><a href="../reference/create_event.html">create_event()</a></code> builds an Event building block from named arguments and a template name, wrapping <code>Event$new()</code> (#27).</li>
@@ -75,6 +80,8 @@
 <code><a href="../reference/create_observed_data.html">create_observed_data()</a></code> builds an <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">ospsuite::DataSet</a></code> from named arguments for time, values, units, and optional error series (#27). <code>value_dimension</code> is now required (previously defaulted silently to <code>"Concentration (mass)"</code>); <code>time_unit</code> and <code>value_unit</code> are validated against the corresponding dimension (#48).</li>
 <li>
 <code><a href="../reference/create_population.html">create_population()</a></code> builds a Population building block from named arguments and <code>Range</code> objects for age, weight, height, and BMI bounds (#27). <code>number_of_individuals</code> must be a positive integer; <code>proportion_of_females</code> must be a length-1 number (#48).</li>
+<li>
+<code><a href="../reference/create_process.html">create_process()</a></code> builds a <code>Process</code> from named arguments, wrapping <code>Process$new()</code> with validation of <code>internal_name</code> and <code>data_source</code> (#40).</li>
 <li>
 <code><a href="../reference/create_protocol.html">create_protocol()</a></code> builds a Simple or Advanced Protocol building block from named arguments, wrapping <code>Protocol$new()</code> (#27). Passing <code>schemas</code> now errors if any Simple Protocol field (<code>application_type</code>, <code>dosing_interval</code>, <code>target_organ</code>, <code>target_compartment</code>, <code>parameters</code>) is also supplied (#48).</li>
 <li>
@@ -87,6 +94,10 @@
 <code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code> removes observed-data entries from a <code>Snapshot</code> by name as an exported function wrapping the existing R6 method (#39).</li>
 <li>
 <code><a href="../reference/remove_protocol.html">remove_protocol()</a></code> removes protocols from a <code>Snapshot</code> by name (#39).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="deprecated-development-version">Deprecated<a class="anchor" aria-label="anchor" href="#deprecated-development-version"></a></h3>
+<ul><li>The eight category-keyed <code>Compound</code> accessors (<code>$protein_binding_partners</code>, <code>$metabolizing_enzymes</code>, <code>$hepatic_clearance</code>, <code>$transporter_proteins</code>, <code>$renal_clearance</code>, <code>$biliary_clearance</code>, <code>$inhibition</code>, <code>$induction</code>) are soft-deprecated. Use <code>compound$processes</code> (filter by <code>process$category</code>) or the long-form <code>processes</code> tibble returned by <code><a href="../reference/get_compounds_dfs.html">get_compounds_dfs()</a></code> instead (#40).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-development-version">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-development-version"></a></h3>

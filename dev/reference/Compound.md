@@ -4,13 +4,22 @@ An R6 class that represents a compound in an OSP snapshot. This class
 provides methods to access different properties of a compound and
 display a summary of its information.
 
+Compound processes are exposed via \`\$processes\`, a flat named list of
+\[Process\] objects. The per-category tibble accessors
+(\`\$protein_binding_partners\`, \`\$metabolizing_enzymes\`,
+\`\$hepatic_clearance\`, \`\$transporter_proteins\`,
+\`\$renal_clearance\`, \`\$biliary_clearance\`, \`\$inhibition\`,
+\`\$induction\`) are \[\`lifecycle::deprecate_soft()\`\]-warned in
+favour of \`\$processes\` and the long-form \`processes\` tibble
+returned by \[get_compounds_dfs()\].
+
 ## Active bindings
 
 - `data`:
 
   The raw data of the compound (read-only). Refreshed from the embedded
-  \[CalculationMethodCache\] so that mutations flow back to the export
-  payload.
+  \[CalculationMethodCache\] and the cached \[Process\] objects so that
+  mutations flow back to the export payload.
 
 - `name`:
 
@@ -54,7 +63,11 @@ display a summary of its information.
 
 - `processes`:
 
-  The processes of the compound
+  A flat named list of \[Process\] objects, one per entry in the
+  compound's \`Processes\` array. Duplicate names are disambiguated with
+  a numeric suffix (\`\_1\`, \`\_2\`, ...). The list is built once at
+  construction so that state changes made on a \[Process\] persist
+  across accesses.
 
 - `calculation_methods`:
 
@@ -67,35 +80,37 @@ display a summary of its information.
 
 - `protein_binding_partners`:
 
-  The protein binding partners data of the compound
+  Deprecated. Filter \[get_compounds_dfs()\]\`\$processes\` on
+  \`category == "protein_binding_partners"\`, or iterate
+  \`self\$processes\` and check \`process\$category\`.
 
 - `metabolizing_enzymes`:
 
-  The metabolizing enzymes data of the compound
+  Deprecated. See \`\$protein_binding_partners\`.
 
 - `hepatic_clearance`:
 
-  The hepatic clearance data of the compound
+  Deprecated. See \`\$protein_binding_partners\`.
 
 - `transporter_proteins`:
 
-  The transporter proteins data of the compound
+  Deprecated. See \`\$protein_binding_partners\`.
 
 - `renal_clearance`:
 
-  The renal clearance data of the compound
+  Deprecated. See \`\$protein_binding_partners\`.
 
 - `biliary_clearance`:
 
-  The biliary clearance data of the compound
+  Deprecated. See \`\$protein_binding_partners\`.
 
 - `inhibition`:
 
-  The inhibition data of the compound
+  Deprecated. See \`\$protein_binding_partners\`.
 
 - `induction`:
 
-  The induction data of the compound
+  Deprecated. See \`\$protein_binding_partners\`.
 
 ## Methods
 
@@ -153,7 +168,14 @@ Invisibly returns the Compound object for method chaining
 
 ### `Compound$to_df()`
 
-Convert compound data to tibbles for analysis
+Convert this compound's physicochemical properties and process
+parameters to a single long-form tibble (legacy shape).
+
+Used by \[get_compounds_dfs()\] to assemble the compound-wide
+\`properties\` tibble. The process-derived rows produced here are
+\[\`lifecycle::deprecate_soft()\`\]-warned at the
+\[get_compounds_dfs()\] entry point; prefer the long-form \`processes\`
+tibble returned alongside.
 
 #### Usage
 
@@ -161,8 +183,8 @@ Convert compound data to tibbles for analysis
 
 #### Returns
 
-A tibble containing compound parameter data in the same format as legacy
-code
+A tibble with columns \`compound\`, \`category\`, \`type\`,
+\`parameter\`, \`value\`, \`unit\`, \`data_source\`, \`source\`.
 
 ------------------------------------------------------------------------
 

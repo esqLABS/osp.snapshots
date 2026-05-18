@@ -19,6 +19,7 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/OriginData.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Population.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Process.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Range.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.html</loc></url>
@@ -46,6 +47,7 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_process.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.html</loc></url>

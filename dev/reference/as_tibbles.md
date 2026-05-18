@@ -28,8 +28,14 @@ as_tibbles(snapshot, kind)
 
 A tibble or a named list of tibbles, depending on \`kind\`:
 
-- \`"compounds"\`, \`"protocols"\`, \`"observer_sets"\`,
-  \`"observed_data"\`: a single tibble.
+- \`"compounds"\`: a list with \`properties\` and \`processes\` tibbles.
+  \`properties\` carries one row per (compound, physicochemical
+  property) pair (plus folded process rows for backwards compatibility);
+  \`processes\` is the long-form, one row per (compound, process,
+  parameter) triple.
+
+- \`"protocols"\`, \`"observer_sets"\`, \`"observed_data"\`: a single
+  tibble.
 
 - \`"individuals"\`: a list with \`individuals\`,
   \`individuals_parameters\`, \`individuals_expressions\`.
@@ -51,8 +57,10 @@ A tibble or a named list of tibbles, depending on \`kind\`:
 if (FALSE) { # \dontrun{
 snapshot <- load_snapshot("Midazolam")
 
-# Single tibble
+# List of tibbles (compounds returns properties + processes)
 compounds <- as_tibbles(snapshot, "compounds")
+compounds$properties
+compounds$processes
 
 # List of tibbles
 individuals <- as_tibbles(snapshot, "individuals")

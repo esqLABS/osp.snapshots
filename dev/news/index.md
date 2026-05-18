@@ -11,14 +11,20 @@
   `compound$calculation_methods$permeability`) no longer work; use the
   new R6 surface (`$methods`, `$add()`, `$remove()`, `$length`) on
   `CalculationMethodCache` instead (#30).
+- `Compound$processes` now returns a flat named list of `Process` R6
+  objects (with duplicate names disambiguated via `_{n}` suffixes),
+  replacing the raw `compound_processes` list it returned before. Filter
+  by `process$category` to recover the equivalent of the deprecated
+  per-category accessors (#40).
+- [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
+  now returns a list with two tibbles, `properties` and `processes`,
+  instead of the single combined tibble it returned before. Update
+  callers from `df <- get_compounds_dfs(snap)` to
+  `dfs <- get_compounds_dfs(snap); df <- dfs$properties`, or switch to
+  the new long-form `dfs$processes` (#40).
 
 ### New features
 
-- [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
-  is the new unified entry point for converting any building-block
-  collection in a snapshot to a tibble (or list of tibbles), dispatched
-  on a `kind` argument. The eight existing `get_*_dfs()` functions
-  remain available as thin wrappers (#36).
 - New `CalculationMethodCache` R6 class wrapping the array of
   calculation method names stored on a `Compound` and inside an
   `Individual`’s `OriginData`. `Compound$calculation_methods` and
@@ -39,6 +45,15 @@
   an `Individual` (species, population, gender, age, weight, height,
   gestational age, calculation methods, optional disease state).
   Available via `Individual$origin_data` (#30).
+- New `Process` R6 class representing one compound process (PK-Sim
+  `CompoundProcess`). Exposes `internal_name`, `data_source`,
+  `molecule`, `metabolite`, `species`, `parameters` (a named list of
+  `Parameter` R6 objects), and a derived `category` (one of
+  `protein_binding_partners`, `metabolizing_enzymes`,
+  `hepatic_clearance`, `transporter_proteins`, `renal_clearance`,
+  `biliary_clearance`, `inhibition`, `induction`). `Compound$processes`
+  now returns a flat named list of these objects, built once at
+  construction so process state changes persist across accesses (#40).
 - New `Schema` and `SchemaItem` R6 classes wrapping the repeatable
   blocks and individual applications inside an Advanced `Protocol`.
   `Protocol$schemas` now returns a named list of `Schema` objects, each
@@ -64,6 +79,11 @@
   attaches a `Population` building block to a `Snapshot` (#39).
 - [`add_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_protocol.md)
   attaches a `Protocol` building block to a `Snapshot` (#39).
+- [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+  is the new unified entry point for converting any building-block
+  collection in a snapshot to a tibble (or list of tibbles), dispatched
+  on a `kind` argument. The eight existing `get_*_dfs()` functions
+  remain available as thin wrappers (#36).
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   builds a Compound building block from named arguments, wrapping
   `Compound$new()` with validation of common fields (#27).
@@ -88,6 +108,9 @@
   objects for age, weight, height, and BMI bounds (#27).
   `number_of_individuals` must be a positive integer;
   `proportion_of_females` must be a length-1 number (#48).
+- [`create_process()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_process.md)
+  builds a `Process` from named arguments, wrapping `Process$new()` with
+  validation of `internal_name` and `data_source` (#40).
 - [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
   builds a Simple or Advanced Protocol building block from named
   arguments, wrapping `Protocol$new()` (#27). Passing `schemas` now
@@ -106,6 +129,17 @@
   function wrapping the existing R6 method (#39).
 - [`remove_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_protocol.md)
   removes protocols from a `Snapshot` by name (#39).
+
+### Deprecated
+
+- The eight category-keyed `Compound` accessors
+  (`$protein_binding_partners`, `$metabolizing_enzymes`,
+  `$hepatic_clearance`, `$transporter_proteins`, `$renal_clearance`,
+  `$biliary_clearance`, `$inhibition`, `$induction`) are
+  soft-deprecated. Use `compound$processes` (filter by
+  `process$category`) or the long-form `processes` tibble returned by
+  [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
+  instead (#40).
 
 ### Minor improvements
 

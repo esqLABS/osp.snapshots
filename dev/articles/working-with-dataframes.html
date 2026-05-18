@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9014</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9015</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -170,15 +170,37 @@ for collections that need to be split into related tables).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">compounds_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"compounds"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">compounds_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
-<span><span class="co">#&gt;   compound  category              type  parameter value unit  data_source source</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Midazolam physicochemical_prop… lipo… Optimized 2.89… Log … <span style="color: #BB0000;">NA</span>          Param…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Midazolam physicochemical_prop… frac… Gertz et… 0.031 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          Param…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Midazolam physicochemical_prop… mole… <span style="color: #BB0000;">NA</span>        325.… g/mol <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Midazolam physicochemical_prop… halo… Cl        1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Midazolam physicochemical_prop… halo… F         1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Midazolam physicochemical_prop… pKa   base      6.2   <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
+<span><span class="co">#&gt; $properties</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 21 × 8</span></span></span>
+<span><span class="co">#&gt;    compound  category             type  parameter value unit  data_source source</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Midazolam physicochemical_pro… lipo… Optimized 2.89… Log … <span style="color: #BB0000;">NA</span>          Param…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Midazolam physicochemical_pro… frac… Gertz et… 0.031 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          Param…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Midazolam physicochemical_pro… mole… <span style="color: #BB0000;">NA</span>        325.… g/mol <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Midazolam physicochemical_pro… halo… Cl        1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Midazolam physicochemical_pro… halo… F         1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Midazolam physicochemical_pro… pKa   base      6.2   <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Midazolam physicochemical_pro… pKa   acid      10.95 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Midazolam physicochemical_pro… solu… Aqueous … 0.13  mg/ml <span style="color: #BB0000;">NA</span>          Heikk…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Midazolam physicochemical_pro… solu… FaSSIF, … 0.049 mg/ml <span style="color: #BB0000;">NA</span>          Heikk…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Midazolam physicochemical_pro… solu… FeSSIF, … 0.09  mg/ml <span style="color: #BB0000;">NA</span>          Heikk…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 11 more rows</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $processes</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 11</span></span></span>
+<span><span class="co">#&gt;    compound  category      process_name parameter value unit  data_source source</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Midazolam protein_bind… SpecificBin… koff      1     1/min Buhr 1997   Param…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Midazolam protein_bind… SpecificBin… Kd        1.8   nmol… Buhr 1997   <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Midazolam renal_cleara… GlomerularF… GFR frac… 0.64… <span style="color: #BB0000;">NA</span>    Optimized   Param…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Midazolam metabolizing… Metabolizat… In vitro… 850   pmol… Optimized   <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Midazolam metabolizing… Metabolizat… Km        4     µmol… Optimized   aggre…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Midazolam metabolizing… Metabolizat… kcat      8.76… 1/min Optimized   Param…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Midazolam metabolizing… Metabolizat… In vitro… 276   pmol… Optimized   Klieb…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Midazolam metabolizing… Metabolizat… Content … 58    pmol… Optimized   Achou…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Midazolam metabolizing… Metabolizat… Km        37.8  µmol… Optimized   Klieb…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Midazolam metabolizing… Metabolizat… kcat      3.59… 1/min Optimized   Param…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: molecule &lt;chr&gt;, metabolite &lt;chr&gt;, species &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="converting-formulations">Converting Formulations<a class="anchor" aria-label="anchor" href="#converting-formulations"></a>
