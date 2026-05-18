@@ -45,9 +45,6 @@ create_schema <- function(name, parameters = NULL, items = NULL) {
   if (!is.null(parameters) && !is.list(parameters)) {
     cli::cli_abort("{.arg parameters} must be a list")
   }
-  if (!is.null(items) && !is.list(items)) {
-    cli::cli_abort("{.arg items} must be a list")
-  }
 
   data <- list(Name = name)
 

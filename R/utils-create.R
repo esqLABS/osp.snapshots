@@ -19,19 +19,31 @@ check_required_string <- function(value, arg_name) {
   invisible(value)
 }
 
-# Internal: validate that every entry of `items` is either an R6 instance of
-# `r6_class` or a raw list, then return a list of raw shapes (`x$data` for
-# R6 entries, `x` as-is for lists). Outer names are dropped so the JSON
-# shape stays an array when a caller supplies a named list.
+# Internal: validate that `items` is a bare list whose every entry is
+# either an R6 instance of `r6_class` or a raw list, then return a list
+# of raw shapes (`x$data` for R6 entries, `x` as-is for lists). Outer
+# names are dropped so the JSON shape stays an array when a caller
+# supplies a named list. `is.object()` guards reject R6 objects and
+# other classed lists (e.g. data frames) at both levels: a bare R6
+# passed as the outer collection, and a wrong-class R6 (or a data
+# frame) passed as an entry.
 to_raw_r6_or_list <- function(
   items,
   r6_class,
   arg_name,
   call = parent.frame()
 ) {
+  if (!is.list(items) || is.object(items)) {
+    cli::cli_abort(
+      "{.arg {arg_name}} must be a list",
+      call = call
+    )
+  }
   valid <- vapply(
     items,
-    function(item) inherits(item, r6_class) || is.list(item),
+    function(item) {
+      inherits(item, r6_class) || (is.list(item) && !is.object(item))
+    },
     logical(1)
   )
   if (!all(valid)) {

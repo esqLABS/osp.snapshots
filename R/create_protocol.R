@@ -109,9 +109,6 @@ create_protocol <- function(
   if (!is.null(parameters) && !is.list(parameters)) {
     cli::cli_abort("{.arg parameters} must be a list")
   }
-  if (!is.null(schemas) && !is.list(schemas)) {
-    cli::cli_abort("{.arg schemas} must be a list")
-  }
 
   data <- list(Name = name)
 
