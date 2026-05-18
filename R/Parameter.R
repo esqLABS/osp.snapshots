@@ -387,5 +387,5 @@ create_parameter <- function(
   if (!is.null(path)) {
     return(LocalizedParameter$new(data))
   }
-  Parameter$new(data)
+  return(Parameter$new(data))
 }

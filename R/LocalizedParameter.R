@@ -35,9 +35,14 @@ LocalizedParameter <- R6::R6Class(
     #' @return A new LocalizedParameter object.
     initialize = function(data) {
       path <- data$Path %||% data$Name
-      if (is.null(path) || !nzchar(path)) {
+      if (
+        is.null(path) ||
+          length(path) != 1 ||
+          is.na(path) ||
+          !nzchar(path)
+      ) {
         cli::cli_abort(
-          "{.cls LocalizedParameter} requires a non-empty {.field path}."
+          "{.cls LocalizedParameter} requires a single non-empty {.field path}."
         )
       }
       data$Path <- migrate_applications_to_events(path)
@@ -48,9 +53,11 @@ LocalizedParameter <- R6::R6Class(
 
 # Rewrite `Applications` path segments to `Events` for v11+ compatibility.
 # Operates on the pipe-separated segments so we never touch substrings that
-# merely contain the word "Applications".
+# merely contain the word "Applications". Uses `%in%` rather than `==` so that
+# any unexpected NA segment is left untouched instead of silently corrupting
+# the whole path (because `x[NA] <- value` assigns to every element in R).
 migrate_applications_to_events <- function(path) {
   segments <- strsplit(path, "|", fixed = TRUE)[[1]]
-  segments[segments == "Applications"] <- "Events"
+  segments[segments %in% "Applications"] <- "Events"
   paste(segments, collapse = "|")
 }

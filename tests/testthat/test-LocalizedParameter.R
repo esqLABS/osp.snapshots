@@ -35,6 +35,30 @@ test_that("LocalizedParameter errors when path is empty", {
   )
 })
 
+test_that("LocalizedParameter errors when path is NA", {
+  expect_snapshot(
+    LocalizedParameter$new(list(Path = NA_character_, Value = 1.5)),
+    error = TRUE
+  )
+})
+
+test_that("LocalizedParameter errors when path is zero-length", {
+  expect_snapshot(
+    LocalizedParameter$new(list(Path = character(0), Value = 1.5)),
+    error = TRUE
+  )
+})
+
+test_that("LocalizedParameter errors when path is a multi-element vector", {
+  expect_snapshot(
+    LocalizedParameter$new(list(
+      Path = c("Organism|A", "Organism|B"),
+      Value = 1.5
+    )),
+    error = TRUE
+  )
+})
+
 test_that("LocalizedParameter migrates Applications path segments to Events", {
   param <- LocalizedParameter$new(list(
     Path = "Applications|Schedule|Application_1|Volume",
@@ -57,6 +81,38 @@ test_that("LocalizedParameter does not migrate Applications inside other segment
   ))
 
   expect_equal(param$path, "MyApplicationsX|Sub|Item")
+})
+
+test_that("LocalizedParameter migrates Applications in any segment position", {
+  middle <- LocalizedParameter$new(list(
+    Path = "Organism|Applications|Foo",
+    Value = 1
+  ))
+  expect_equal(middle$path, "Organism|Events|Foo")
+
+  trailing <- LocalizedParameter$new(list(
+    Path = "Organism|Foo|Applications",
+    Value = 1
+  ))
+  expect_equal(trailing$path, "Organism|Foo|Events")
+})
+
+test_that("LocalizedParameter migrates multiple Applications segments", {
+  param <- LocalizedParameter$new(list(
+    Path = "Applications|Sub|Applications|Leaf",
+    Value = 1
+  ))
+  expect_equal(param$path, "Events|Sub|Events|Leaf")
+})
+
+test_that("LocalizedParameter instances still satisfy inherits(x, 'Parameter')", {
+  # Pins the backward-compatibility contract: any code that already dispatches
+  # on `Parameter` must keep working when handed a LocalizedParameter.
+  param <- LocalizedParameter$new(list(
+    Path = "Organism|Liver|Volume",
+    Value = 1
+  ))
+  expect_s3_class(param, "Parameter")
 })
 
 test_that("create_parameter routes to LocalizedParameter when path is given", {
@@ -123,9 +179,12 @@ test_that("Snapshot round-trip preserves localized parameters in Individuals", {
   }
 })
 
-test_that("Snapshot round-trip preserves localized parameters in Simulations", {
-  # Simulations are passed through as raw data; round-trip fidelity is the
-  # cross-cutting guarantee we rely on for path-bearing simulation parameters.
+test_that("Snapshot round-trip preserves raw Simulation parameter data", {
+  # Note: Simulations are currently passed through as raw list data; Snapshot
+  # does not yet wrap them with a Simulation class, so this test exercises
+  # JSON round-trip only, not LocalizedParameter behaviour. Once Simulations
+  # are wrapped and their Parameters become LocalizedParameter instances,
+  # extend this test to assert on class identity as well.
   snapshot <- test_snapshot$clone()
   temp_file <- withr::local_tempfile(fileext = ".json")
   snapshot$export(temp_file)
