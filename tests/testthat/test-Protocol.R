@@ -179,6 +179,22 @@ test_that("Protocol handles different types correctly", {
     "Intravenous infusion"
   )
 
+  # Application types without a dedicated label round-trip the enum value
+  # (locks in the fallback behavior of PKSIM_APPLICATION_TYPES).
+  sc_data <- simple_protocol_data
+  sc_data$ApplicationType <- "Subcutaneous"
+  sc_protocol <- Protocol$new(sc_data)
+  expect_equal(sc_protocol$get_human_application_type(), "Subcutaneous")
+
+  # Unknown application types fall back to the raw enum value.
+  unknown_data <- simple_protocol_data
+  unknown_data$ApplicationType <- "FutureRouteOfAdministration"
+  unknown_protocol <- Protocol$new(unknown_data)
+  expect_equal(
+    unknown_protocol$get_human_application_type(),
+    "FutureRouteOfAdministration"
+  )
+
   # Test different dosing intervals
   daily_data <- simple_protocol_data
   daily_data$DosingInterval <- "DI_24"
