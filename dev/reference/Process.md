@@ -3,15 +3,14 @@
 An R6 class that represents a single compound process in an OSP
 snapshot.
 
-A \`Process\` wraps one entry of a \`Compound\`'s \`Processes\` array
-(PK-Sim \`CompoundProcess\`). The PK-Sim JSON does not bucket processes
-by subtype; subtypes are inferred from \`internal_name\`. The derived
-\`category\` field surfaces that bucketing for R consumers:
-\`"protein_binding_partners"\`, \`"metabolizing_enzymes"\`,
-\`"hepatic_clearance"\`, \`"transporter_proteins"\`,
-\`"renal_clearance"\`, \`"biliary_clearance"\`, \`"inhibition"\`,
-\`"induction"\`, or \`NA\` when the \`internal_name\` does not match any
-known pattern.
+A `Process` wraps one entry of a `Compound`'s `Processes` array (PK-Sim
+`CompoundProcess`). The PK-Sim JSON does not bucket processes by
+subtype; subtypes are inferred from `internal_name`. The derived
+`category` field surfaces that bucketing for R consumers:
+`"protein_binding_partners"`, `"metabolizing_enzymes"`,
+`"hepatic_clearance"`, `"transporter_proteins"`, `"renal_clearance"`,
+`"biliary_clearance"`, `"inhibition"`, `"induction"`, or `NA` when the
+`internal_name` does not match any known pattern.
 
 ## Active bindings
 
@@ -21,38 +20,41 @@ known pattern.
 
 - `internal_name`:
 
-  The PK-Sim \`InternalName\` (process template key).
+  The PK-Sim `InternalName` (process template key).
 
 - `data_source`:
 
-  The \`DataSource\` string identifying the process.
+  The `DataSource` string identifying the process.
 
 - `molecule`:
 
-  Optional \`Molecule\` field (for partial processes).
+  Optional `Molecule` field (for partial processes).
 
 - `metabolite`:
 
-  Optional \`Metabolite\` field (for enzymatic processes).
+  Optional `Metabolite` field (for enzymatic processes).
 
 - `species`:
 
-  Optional \`Species\` field (for species-dependent processes).
+  Optional `Species` field (for species-dependent processes).
 
 - `parameters`:
 
-  A named list of \[Parameter\] objects (one entry per \`Parameter\` in
-  the snapshot JSON), keyed by parameter name. Assigning accepts either
-  a list of \[Parameter\] objects or raw parameter dicts; the underlying
-  raw data and the \[Parameter\] cache are kept in sync.
+  A named list of
+  [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  objects (one entry per `Parameter` in the snapshot JSON), keyed by
+  parameter name. Assigning accepts either a list of
+  [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  objects or raw parameter dicts; the underlying raw data and the
+  [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  cache are kept in sync.
 
 - `category`:
 
-  Derived category string. One of \`"protein_binding_partners"\`,
-  \`"metabolizing_enzymes"\`, \`"hepatic_clearance"\`,
-  \`"transporter_proteins"\`, \`"renal_clearance"\`,
-  \`"biliary_clearance"\`, \`"inhibition"\`, \`"induction"\`, or
-  \`NA_character\_\`.
+  Derived category string. One of `"protein_binding_partners"`,
+  `"metabolizing_enzymes"`, `"hepatic_clearance"`,
+  `"transporter_proteins"`, `"renal_clearance"`, `"biliary_clearance"`,
+  `"inhibition"`, `"induction"`, or `NA_character_`.
 
 ## Methods
 
@@ -78,7 +80,7 @@ Create a new Process object.
 
 - `data`:
 
-  Raw process data (a \`CompoundProcess\` entry from a snapshot).
+  Raw process data (a `CompoundProcess` entry from a snapshot).
 
 #### Returns
 

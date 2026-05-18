@@ -1,6 +1,9 @@
 # Add a population to a snapshot
 
-Add a \[Population\] object to a \[Snapshot\].
+Add a
+[Population](https://esqlabs.github.io/osp.snapshots/dev/reference/Population.md)
+object to a
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md).
 
 ## Usage
 
@@ -12,15 +15,22 @@ add_population(snapshot, population)
 
 - snapshot:
 
-  A \[Snapshot\] object.
+  A
+  [Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+  object.
 
 - population:
 
-  A \[Population\] object created with \[create_population()\].
+  A
+  [Population](https://esqlabs.github.io/osp.snapshots/dev/reference/Population.md)
+  object created with
+  [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md).
 
 ## Value
 
-The updated \[Snapshot\] object, returned invisibly.
+The updated
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+object, returned invisibly.
 
 ## Examples
 

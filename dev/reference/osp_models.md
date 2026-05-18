@@ -3,7 +3,7 @@
 Browse and display all available building block templates from the
 OSPSuite.BuildingBlockTemplates repository. This function helps users
 discover what templates are available for loading with
-\`load_snapshot()\`.
+[`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md).
 
 ## Usage
 

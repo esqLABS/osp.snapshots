@@ -59,14 +59,14 @@ All arguments are optional except for name and type.</p>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>Character. Type of formulation, one of:
-* "Dissolved" - Immediate release solution
-* "Weibull" - Weibull tablet formulation
-* "Lint80" - Lint80 tablet formulation
-* "Particle" - Particle formulation
-* "Table" - Custom release profile table
-* "ZeroOrder" - Zero-order release formulation
-* "FirstOrder" - First-order release formulation</p></dd>
+<dd><p>Character. Type of formulation, one of:</p><ul><li><p>"Dissolved" - Immediate release solution</p></li>
+<li><p>"Weibull" - Weibull tablet formulation</p></li>
+<li><p>"Lint80" - Lint80 tablet formulation</p></li>
+<li><p>"Particle" - Particle formulation</p></li>
+<li><p>"Table" - Custom release profile table</p></li>
+<li><p>"ZeroOrder" - Zero-order release formulation</p></li>
+<li><p>"FirstOrder" - First-order release formulation</p></li>
+</ul></dd>
 
 
 <dt id="arg-parameters">parameters<a class="anchor" aria-label="anchor" href="#arg-parameters"></a></dt>
@@ -82,65 +82,64 @@ depend on the formulation type. Invalid parameters will result in an error.</p><
     <h2 id="weibull-formulation-parameters">Weibull formulation parameters<a class="anchor" aria-label="anchor" href="#weibull-formulation-parameters"></a></h2>
 
 
-<p>* dissolution_time - Time to achieve 50<!-- % dissolution (numeric, default: 240) -->
-* dissolution_time_unit - Unit for dissolution time (character, default: "min")
-* lag_time - Lag time before dissolution starts (numeric, default: 0)
-* lag_time_unit - Unit for lag time (character, default: "min")
-* dissolution_shape - Dissolution shape parameter (numeric, default: 0.92)
-* suspension - Whether to use as suspension (logical, default: TRUE)</p>
-    </div>
+<ul><li><p>dissolution_time - Time to achieve 50% dissolution (numeric, default: 240)</p></li>
+<li><p>dissolution_time_unit - Unit for dissolution time (character, default: "min")</p></li>
+<li><p>lag_time - Lag time before dissolution starts (numeric, default: 0)</p></li>
+<li><p>lag_time_unit - Unit for lag time (character, default: "min")</p></li>
+<li><p>dissolution_shape - Dissolution shape parameter (numeric, default: 0.92)</p></li>
+<li><p>suspension - Whether to use as suspension (logical, default: TRUE)</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="lint-formulation-parameters">Lint80 formulation parameters<a class="anchor" aria-label="anchor" href="#lint-formulation-parameters"></a></h2>
 
 
-<p>* dissolution_time - Time to achieve 80<!-- % dissolution (numeric, default: 240) -->
-* dissolution_time_unit - Unit for dissolution time (character, default: "min")
-* lag_time - Lag time before dissolution starts (numeric, default: 0)
-* lag_time_unit - Unit for lag time (character, default: "min")
-* suspension - Whether to use as suspension (logical, default: TRUE)</p>
-    </div>
+<ul><li><p>dissolution_time - Time to achieve 80% dissolution (numeric, default: 240)</p></li>
+<li><p>dissolution_time_unit - Unit for dissolution time (character, default: "min")</p></li>
+<li><p>lag_time - Lag time before dissolution starts (numeric, default: 0)</p></li>
+<li><p>lag_time_unit - Unit for lag time (character, default: "min")</p></li>
+<li><p>suspension - Whether to use as suspension (logical, default: TRUE)</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="particle-formulation-parameters">Particle formulation parameters<a class="anchor" aria-label="anchor" href="#particle-formulation-parameters"></a></h2>
 
 
-<p>* thickness - Thickness of unstirred water layer (numeric, default: 30)
-* thickness_unit - Unit for thickness (character, default: "\u00b5m")
-* distribution_type - Type of distribution, "mono" or "poly" (character, default: "mono")
-* radius - Particle radius (mean or geometric mean) (numeric, default: 10)
-* radius_unit - Unit for radius (character, default: "\u00b5m")</p>
-<p>Parameters for polydisperse distribution (when distribution_type = "poly"):
-* particle_size_distribution - "normal" or "lognormal" (character, default: "normal")
-* radius_sd - Radius standard deviation, for normal distribution (numeric, default: 3)
-* radius_sd_unit - Unit for radius SD (character, default: "\u00b5m")
-* radius_cv - Coefficient of variation, for lognormal distribution (numeric, default: 1.5)
-* radius_min - Minimum particle radius (numeric, default: 1)
-* radius_min_unit - Unit for minimum radius (character, default: "\u00b5m")
-* radius_max - Maximum particle radius (numeric, default: 19)
-* radius_max_unit - Unit for maximum radius (character, default: "\u00b5m")
-* n_bins - Number of bins (integer, default: 3)</p>
-    </div>
+<ul><li><p>thickness - Thickness of unstirred water layer (numeric, default: 30)</p></li>
+<li><p>thickness_unit - Unit for thickness (character, default: "\u00b5m")</p></li>
+<li><p>distribution_type - Type of distribution, "mono" or "poly" (character, default: "mono")</p></li>
+<li><p>radius - Particle radius (mean or geometric mean) (numeric, default: 10)</p></li>
+<li><p>radius_unit - Unit for radius (character, default: "\u00b5m")</p></li>
+</ul><p>Parameters for polydisperse distribution (when distribution_type = "poly"):</p><ul><li><p>particle_size_distribution - "normal" or "lognormal" (character, default: "normal")</p></li>
+<li><p>radius_sd - Radius standard deviation, for normal distribution (numeric, default: 3)</p></li>
+<li><p>radius_sd_unit - Unit for radius SD (character, default: "\u00b5m")</p></li>
+<li><p>radius_cv - Coefficient of variation, for lognormal distribution (numeric, default: 1.5)</p></li>
+<li><p>radius_min - Minimum particle radius (numeric, default: 1)</p></li>
+<li><p>radius_min_unit - Unit for minimum radius (character, default: "\u00b5m")</p></li>
+<li><p>radius_max - Maximum particle radius (numeric, default: 19)</p></li>
+<li><p>radius_max_unit - Unit for maximum radius (character, default: "\u00b5m")</p></li>
+<li><p>n_bins - Number of bins (integer, default: 3)</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="table-formulation-parameters">Table formulation parameters<a class="anchor" aria-label="anchor" href="#table-formulation-parameters"></a></h2>
 
 
-<p>* tableX - Vector of time points for release profile in hours (numeric vector, required)
-* tableY - Vector of fraction of dose at each time point (numeric vector, required)
-* suspension - Whether to use as suspension (logical, default: TRUE)</p>
-    </div>
+<ul><li><p>tableX - Vector of time points for release profile in hours (numeric vector, required)</p></li>
+<li><p>tableY - Vector of fraction of dose at each time point (numeric vector, required)</p></li>
+<li><p>suspension - Whether to use as suspension (logical, default: TRUE)</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="zeroorder-formulation-parameters">ZeroOrder formulation parameters<a class="anchor" aria-label="anchor" href="#zeroorder-formulation-parameters"></a></h2>
 
 
-<p>* end_time - Time of administration end (numeric, default: 60)
-* end_time_unit - Unit for end time (character, default: "min")</p>
-    </div>
+<ul><li><p>end_time - Time of administration end (numeric, default: 60)</p></li>
+<li><p>end_time_unit - Unit for end time (character, default: "min")</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="firstorder-formulation-parameters">FirstOrder formulation parameters<a class="anchor" aria-label="anchor" href="#firstorder-formulation-parameters"></a></h2>
 
 
-<p>* thalf - Half-life of the drug release (numeric, default: 0.01)
-* thalf_unit - Unit for half-life (character, default: "min")</p>
-    </div>
+<ul><li><p>thalf - Half-life of the drug release (numeric, default: 0.01)</p></li>
+<li><p>thalf_unit - Unit for half-life (character, default: "min")</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

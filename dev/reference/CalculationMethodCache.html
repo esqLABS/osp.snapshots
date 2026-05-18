@@ -3,13 +3,13 @@
 compound quantities (e.g. partition coefficient method, cellular
 permeability method, body surface area method). In an OSP snapshot, the
 calculation method cache is serialised as an array of method name strings.
-It appears in two places: directly on a [Compound] and inside an
-[OriginData] of an [Individual]."><meta property="og:description" content="An R6 class that wraps the set of calculation methods PK-Sim uses to derive
+It appears in two places: directly on a Compound and inside an
+OriginData of an Individual."><meta property="og:description" content="An R6 class that wraps the set of calculation methods PK-Sim uses to derive
 compound quantities (e.g. partition coefficient method, cellular
 permeability method, body surface area method). In an OSP snapshot, the
 calculation method cache is serialised as an array of method name strings.
-It appears in two places: directly on a [Compound] and inside an
-[OriginData] of an [Individual]."><meta name="robots" content="noindex"></head><body>
+It appears in two places: directly on a Compound and inside an
+OriginData of an Individual."><meta name="robots" content="noindex"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -53,8 +53,8 @@ It appears in two places: directly on a [Compound] and inside an
 compound quantities (e.g. partition coefficient method, cellular
 permeability method, body surface area method). In an OSP snapshot, the
 calculation method cache is serialised as an array of method name strings.
-It appears in two places: directly on a [Compound] and inside an
-[OriginData] of an [Individual].</p>
+It appears in two places: directly on a <a href="Compound.html">Compound</a> and inside an
+<a href="OriginData.html">OriginData</a> of an <a href="Individual.html">Individual</a>.</p>
     </div>
 
 
@@ -89,7 +89,7 @@ It appears in two places: directly on a [Compound] and inside an
 </div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>methods</code></dt>
-<dd><p>Character vector of method names. May be `NULL` or an
+<dd><p>Character vector of method names. May be <code>NULL</code> or an
 empty vector, both of which result in an empty cache.</p></dd>
 
 
@@ -142,10 +142,10 @@ snapshot's raw representation.</p><div class="section">
 
 <p></p><hr><a id="method-CalculationMethodCache-remove"></a><div class="section">
 <h3 id="calculationmethodcache-remove-"><code>CalculationMethodCache$remove()</code><a class="anchor" aria-label="anchor" href="#calculationmethodcache-remove-"></a></h3>
-<p>Remove a method name from the cache. If `method` is not present, the
-cache is unchanged. Note the asymmetry with `$add()`: `$add()` keeps
+<p>Remove a method name from the cache. If <code>method</code> is not present, the
+cache is unchanged. Note the asymmetry with <code>$add()</code>: <code>$add()</code> keeps
 duplicates to mirror the snapshot's raw representation, whereas
-`$remove()` deletes every occurrence of `method` in a single call.</p><div class="section">
+<code>$remove()</code> deletes every occurrence of <code>method</code> in a single call.</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">CalculationMethodCache</span><span class="op">$</span><span class="fu">remove</span><span class="op">(</span><span class="va">method</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
@@ -165,14 +165,14 @@ duplicates to mirror the snapshot's raw representation, whereas
 <p></p><hr><a id="method-CalculationMethodCache-to_list"></a><div class="section">
 <h3 id="calculationmethodcache-to-list-"><code>CalculationMethodCache$to_list()</code><a class="anchor" aria-label="anchor" href="#calculationmethodcache-to-list-"></a></h3>
 <p>Convert the cache back to its raw snapshot representation: a list of
-method-name strings, or `NULL` when the cache is empty. A list is used
+method-name strings, or <code>NULL</code> when the cache is empty. A list is used
 (rather than a character vector) so that single-method caches round-trip
 as JSON arrays.</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">CalculationMethodCache</span><span class="op">$</span><span class="fu">to_list</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
-<p>A list of method-name strings, or `NULL` when empty.</p>
+<p>A list of method-name strings, or <code>NULL</code> when empty.</p>
 </div>
 
 </div>

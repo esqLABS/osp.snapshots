@@ -20,8 +20,10 @@ display a summary of its information.
 
 - `origin_data`:
 
-  The \[OriginData\] object holding species, population, gender,
-  physiological parameters, and calculation methods.
+  The
+  [OriginData](https://esqlabs.github.io/osp.snapshots/dev/reference/OriginData.md)
+  object holding species, population, gender, physiological parameters,
+  and calculation methods.
 
 - `species`:
 
@@ -83,8 +85,9 @@ display a summary of its information.
 
   The calculation methods of the individual, returned as a character
   vector for backwards compatibility. Use
-  \`\$origin_data\$calculation_methods\` to access the
-  \[CalculationMethodCache\] directly.
+  `$origin_data$calculation_methods` to access the
+  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
+  directly.
 
 - `expression_profiles`:
 

@@ -1,6 +1,6 @@
 # Add an observer set to a snapshot
 
-Add an \`ObserverSet\` building block to a \`Snapshot\`. The exported
+Add an `ObserverSet` building block to a `Snapshot`. The exported
 function is the canonical, pipeable surface for the mutation; it
 validates the snapshot before delegating to the underlying R6 method.
 
@@ -14,15 +14,15 @@ add_observer_set(snapshot, observer_set)
 
 - snapshot:
 
-  A \`Snapshot\` object.
+  A `Snapshot` object.
 
 - observer_set:
 
-  An \`ObserverSet\` object.
+  An `ObserverSet` object.
 
 ## Value
 
-The updated \`Snapshot\` object, invisibly.
+The updated `Snapshot` object, invisibly.
 
 ## Examples
 

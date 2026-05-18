@@ -5,16 +5,20 @@ provides methods to access different properties of a protocol and
 display a summary of its information. Protocols can be either simple
 (with dosing intervals) or advanced (with schemas and schema items).
 
-An Advanced Protocol's schemas are exposed as a named list of \[Schema\]
-objects, each of which owns a list of \[SchemaItem\] objects. Simple
-Protocols expose their single application directly through the
-\`application_type\`, \`dosing_interval\`, and \`parameters\` fields.
+An Advanced Protocol's schemas are exposed as a named list of
+[Schema](https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.md)
+objects, each of which owns a list of
+[SchemaItem](https://esqlabs.github.io/osp.snapshots/dev/reference/SchemaItem.md)
+objects. Simple Protocols expose their single application directly
+through the `application_type`, `dosing_interval`, and `parameters`
+fields.
 
 ## Active bindings
 
 - `data`:
 
-  The raw data of the protocol, refreshed from the wrapped \[Schema\]
+  The raw data of the protocol, refreshed from the wrapped
+  [Schema](https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.md)
   objects so mutations through the R6 surface flow back into the
   snapshot payload (read-only).
 
@@ -44,9 +48,11 @@ Protocols expose their single application directly through the
 
 - `schemas`:
 
-  A named list of \[Schema\] objects for advanced protocols. Names are
-  taken from each schema's \`name\` field (duplicates are disambiguated
-  by \`make.unique\`). Simple protocols return an empty list.
+  A named list of
+  [Schema](https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.md)
+  objects for advanced protocols. Names are taken from each schema's
+  `name` field (duplicates are disambiguated by `make.unique`). Simple
+  protocols return an empty list.
 
 ## Methods
 
@@ -109,8 +115,10 @@ Invisibly returns the Protocol object for method chaining
 ### `Protocol$to_df()`
 
 Convert protocol data to a single consolidated tibble. Advanced
-protocols emit one row per \[SchemaItem\] and join back to the protocol
-via \`protocol_name\`. Simple protocols emit a single row.
+protocols emit one row per
+[SchemaItem](https://esqlabs.github.io/osp.snapshots/dev/reference/SchemaItem.md)
+and join back to the protocol via `protocol_name`. Simple protocols emit
+a single row.
 
 #### Usage
 

@@ -17,12 +17,21 @@ create_formulation(name, type, parameters = NULL)
 
 - type:
 
-  Character. Type of formulation, one of: \* "Dissolved" - Immediate
-  release solution \* "Weibull" - Weibull tablet formulation \*
-  "Lint80" - Lint80 tablet formulation \* "Particle" - Particle
-  formulation \* "Table" - Custom release profile table \* "ZeroOrder" -
-  Zero-order release formulation \* "FirstOrder" - First-order release
-  formulation
+  Character. Type of formulation, one of:
+
+  - "Dissolved" - Immediate release solution
+
+  - "Weibull" - Weibull tablet formulation
+
+  - "Lint80" - Lint80 tablet formulation
+
+  - "Particle" - Particle formulation
+
+  - "Table" - Custom release profile table
+
+  - "ZeroOrder" - Zero-order release formulation
+
+  - "FirstOrder" - First-order release formulation
 
 - parameters:
 
@@ -36,58 +45,96 @@ A Formulation object
 
 ## Weibull formulation parameters
 
-\* dissolution_time - Time to achieve 50 \* dissolution_time_unit - Unit
-for dissolution time (character, default: "min") \* lag_time - Lag time
-before dissolution starts (numeric, default: 0) \* lag_time_unit - Unit
-for lag time (character, default: "min") \* dissolution_shape -
-Dissolution shape parameter (numeric, default: 0.92) \* suspension -
-Whether to use as suspension (logical, default: TRUE)
+- dissolution_time - Time to achieve 50% dissolution (numeric, default:
+  240)
+
+- dissolution_time_unit - Unit for dissolution time (character, default:
+  "min")
+
+- lag_time - Lag time before dissolution starts (numeric, default: 0)
+
+- lag_time_unit - Unit for lag time (character, default: "min")
+
+- dissolution_shape - Dissolution shape parameter (numeric, default:
+  0.92)
+
+- suspension - Whether to use as suspension (logical, default: TRUE)
 
 ## Lint80 formulation parameters
 
-\* dissolution_time - Time to achieve 80 \* dissolution_time_unit - Unit
-for dissolution time (character, default: "min") \* lag_time - Lag time
-before dissolution starts (numeric, default: 0) \* lag_time_unit - Unit
-for lag time (character, default: "min") \* suspension - Whether to use
-as suspension (logical, default: TRUE)
+- dissolution_time - Time to achieve 80% dissolution (numeric, default:
+  240)
+
+- dissolution_time_unit - Unit for dissolution time (character, default:
+  "min")
+
+- lag_time - Lag time before dissolution starts (numeric, default: 0)
+
+- lag_time_unit - Unit for lag time (character, default: "min")
+
+- suspension - Whether to use as suspension (logical, default: TRUE)
 
 ## Particle formulation parameters
 
-\* thickness - Thickness of unstirred water layer (numeric, default: 30)
-\* thickness_unit - Unit for thickness (character, default: "\u00b5m")
-\* distribution_type - Type of distribution, "mono" or "poly"
-(character, default: "mono") \* radius - Particle radius (mean or
-geometric mean) (numeric, default: 10) \* radius_unit - Unit for radius
-(character, default: "\u00b5m")
+- thickness - Thickness of unstirred water layer (numeric, default: 30)
+
+- thickness_unit - Unit for thickness (character, default: "\u00b5m")
+
+- distribution_type - Type of distribution, "mono" or "poly" (character,
+  default: "mono")
+
+- radius - Particle radius (mean or geometric mean) (numeric, default:
+  10)
+
+- radius_unit - Unit for radius (character, default: "\u00b5m")
 
 Parameters for polydisperse distribution (when distribution_type =
-"poly"): \* particle_size_distribution - "normal" or "lognormal"
-(character, default: "normal") \* radius_sd - Radius standard deviation,
-for normal distribution (numeric, default: 3) \* radius_sd_unit - Unit
-for radius SD (character, default: "\u00b5m") \* radius_cv - Coefficient
-of variation, for lognormal distribution (numeric, default: 1.5) \*
-radius_min - Minimum particle radius (numeric, default: 1) \*
-radius_min_unit - Unit for minimum radius (character, default:
-"\u00b5m") \* radius_max - Maximum particle radius (numeric, default:
-19) \* radius_max_unit - Unit for maximum radius (character, default:
-"\u00b5m") \* n_bins - Number of bins (integer, default: 3)
+"poly"):
+
+- particle_size_distribution - "normal" or "lognormal" (character,
+  default: "normal")
+
+- radius_sd - Radius standard deviation, for normal distribution
+  (numeric, default: 3)
+
+- radius_sd_unit - Unit for radius SD (character, default: "\u00b5m")
+
+- radius_cv - Coefficient of variation, for lognormal distribution
+  (numeric, default: 1.5)
+
+- radius_min - Minimum particle radius (numeric, default: 1)
+
+- radius_min_unit - Unit for minimum radius (character, default:
+  "\u00b5m")
+
+- radius_max - Maximum particle radius (numeric, default: 19)
+
+- radius_max_unit - Unit for maximum radius (character, default:
+  "\u00b5m")
+
+- n_bins - Number of bins (integer, default: 3)
 
 ## Table formulation parameters
 
-\* tableX - Vector of time points for release profile in hours (numeric
-vector, required) \* tableY - Vector of fraction of dose at each time
-point (numeric vector, required) \* suspension - Whether to use as
-suspension (logical, default: TRUE)
+- tableX - Vector of time points for release profile in hours (numeric
+  vector, required)
+
+- tableY - Vector of fraction of dose at each time point (numeric
+  vector, required)
+
+- suspension - Whether to use as suspension (logical, default: TRUE)
 
 ## ZeroOrder formulation parameters
 
-\* end_time - Time of administration end (numeric, default: 60) \*
-end_time_unit - Unit for end time (character, default: "min")
+- end_time - Time of administration end (numeric, default: 60)
+
+- end_time_unit - Unit for end time (character, default: "min")
 
 ## FirstOrder formulation parameters
 
-\* thalf - Half-life of the drug release (numeric, default: 0.01) \*
-thalf_unit - Unit for half-life (character, default: "min")
+- thalf - Half-life of the drug release (numeric, default: 0.01)
+
+- thalf_unit - Unit for half-life (character, default: "min")
 
 ## Examples
 

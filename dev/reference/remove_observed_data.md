@@ -1,6 +1,8 @@
 # Remove observed data from a snapshot
 
-Remove one or more observed-data entries from a \[Snapshot\] by name.
+Remove one or more observed-data entries from a
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+by name.
 
 ## Usage
 
@@ -12,7 +14,9 @@ remove_observed_data(snapshot, observed_data_name)
 
 - snapshot:
 
-  A \[Snapshot\] object.
+  A
+  [Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+  object.
 
 - observed_data_name:
 
@@ -20,7 +24,9 @@ remove_observed_data(snapshot, observed_data_name)
 
 ## Value
 
-The updated \[Snapshot\] object, returned invisibly.
+The updated
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+object, returned invisibly.
 
 ## Examples
 

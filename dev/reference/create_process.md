@@ -1,8 +1,9 @@
 # Create a new compound process
 
-Create a \[Process\] (a PK-Sim \`CompoundProcess\`) from named
-arguments. This is a thin factory around \`Process\$new()\` that builds
-the raw list shape for you.
+Create a
+[Process](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
+(a PK-Sim `CompoundProcess`) from named arguments. This is a thin
+factory around `Process$new()` that builds the raw list shape for you.
 
 For richer process structures (such as parameters with full value
 origins), build the raw list directly or load a snapshot and copy the
@@ -25,14 +26,13 @@ create_process(
 
 - internal_name:
 
-  Character. The PK-Sim \`InternalName\` for the process template (e.g.
-  \`"SpecificBinding"\`, \`"MetabolizationSpecific_MM"\`,
-  \`"GlomerularFiltration"\`). Required.
+  Character. The PK-Sim `InternalName` for the process template (e.g.
+  `"SpecificBinding"`, `"MetabolizationSpecific_MM"`,
+  `"GlomerularFiltration"`). Required.
 
 - data_source:
 
-  Character. The \`DataSource\` string identifying the process.
-  Required.
+  Character. The `DataSource` string identifying the process. Required.
 
 - molecule:
 
@@ -49,12 +49,17 @@ create_process(
 
 - parameters:
 
-  List of \[Parameter\] objects (created with \[create_parameter()\]) or
-  raw parameter lists to attach to the process.
+  List of
+  [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  objects (created with
+  [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md))
+  or raw parameter lists to attach to the process.
 
 ## Value
 
-A \[Process\] object.
+A
+[Process](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
+object.
 
 ## Examples
 

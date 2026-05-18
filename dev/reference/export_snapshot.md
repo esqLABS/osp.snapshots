@@ -1,7 +1,7 @@
 # Export a snapshot to a JSON file
 
 Export a Snapshot object to a JSON file. This is a convenient wrapper
-around the \`\$export()\` method of the Snapshot class.
+around the `$export()` method of the Snapshot class.
 
 ## Usage
 

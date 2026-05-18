@@ -157,8 +157,11 @@ Main classes for working with snapshots and building blocks
   : LocalizedParameter class for path-bearing OSP snapshot parameters
 - [`AdvancedParameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/AdvancedParameter.md)
   : AdvancedParameter class for Population advanced parameters
-- [`range()`](https://esqlabs.github.io/osp.snapshots/dev/reference/Range.md)
+- [`range()`](https://esqlabs.github.io/osp.snapshots/dev/reference/range.md)
   : Create a range object for physiological parameters
+- [`Range-class`](https://esqlabs.github.io/osp.snapshots/dev/reference/Range-class.md)
+  [`Range`](https://esqlabs.github.io/osp.snapshots/dev/reference/Range-class.md)
+  : Range class for physiological parameters
 
 ## Domain Types
 

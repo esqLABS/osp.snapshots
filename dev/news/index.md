@@ -175,6 +175,16 @@
 
 ### Bug fixes
 
+- [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md),
+  [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md),
+  [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md),
+  [`remove_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observed_data.md),
+  and
+  [`remove_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_population.md)
+  now report the actual number of entries removed instead of the length
+  of the input vector, so the success message reads correctly when a
+  requested name is not present in the snapshot (#66).
+
 - Fixed `Snapshot$data` so observed data removed via
   [`remove_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observed_data.md)
   is also dropped from the exported snapshot. Previously the export

@@ -1,19 +1,21 @@
 # SchemaItem class for OSP advanced protocols
 
-An R6 class that represents one application inside a \[Schema\] of an
-Advanced \[Protocol\]. A schema item carries an application type, an
-optional formulation key, target organ and compartment, and the
-application-level parameters (dose, start time, ...).
+An R6 class that represents one application inside a
+[Schema](https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.md)
+of an Advanced
+[Protocol](https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.md).
+A schema item carries an application type, an optional formulation key,
+target organ and compartment, and the application-level parameters
+(dose, start time, ...).
 
-In an OSP snapshot, each schema item is one entry of the \`SchemaItems\`
-array nested inside a \`Schemas\` entry of a \`Protocols\` building
-block.
+In an OSP snapshot, each schema item is one entry of the `SchemaItems`
+array nested inside a `Schemas` entry of a `Protocols` building block.
 
 ## Active bindings
 
 - `data`:
 
-  The raw \`SchemaItem\` list as it appears in the snapshot JSON,
+  The raw `SchemaItem` list as it appears in the snapshot JSON,
   refreshed from the wrapped parameters (read-only).
 
 - `name`:
@@ -22,8 +24,8 @@ block.
 
 - `application_type`:
 
-  The application type of the schema item (for example \`"Oral"\`,
-  \`"IntravenousBolus"\`).
+  The application type of the schema item (for example `"Oral"`,
+  `"IntravenousBolus"`).
 
 - `formulation_key`:
 
@@ -40,8 +42,9 @@ block.
 
 - `parameters`:
 
-  The schema item's application-level \[Parameter\] objects (dose, start
-  time, ...).
+  The schema item's application-level
+  [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  objects (dose, start time, ...).
 
 ## Methods
 
@@ -67,8 +70,8 @@ Create a new SchemaItem object.
 
 - `data`:
 
-  Raw \`SchemaItem\` list from a snapshot. May be \`NULL\` or an empty
-  list, both of which create an empty schema item.
+  Raw `SchemaItem` list from a snapshot. May be `NULL` or an empty list,
+  both of which create an empty schema item.
 
 #### Returns
 

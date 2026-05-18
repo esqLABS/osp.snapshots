@@ -1,6 +1,8 @@
 # Remove events from a snapshot
 
-Remove one or more events from a \[Snapshot\] by name.
+Remove one or more events from a
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+by name.
 
 ## Usage
 
@@ -12,7 +14,9 @@ remove_event(snapshot, event_name)
 
 - snapshot:
 
-  A \[Snapshot\] object.
+  A
+  [Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+  object.
 
 - event_name:
 
@@ -20,7 +24,9 @@ remove_event(snapshot, event_name)
 
 ## Value
 
-The updated \[Snapshot\] object, returned invisibly.
+The updated
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+object, returned invisibly.
 
 ## Examples
 

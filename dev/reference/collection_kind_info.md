@@ -1,7 +1,8 @@
 # Per-kind header info for a snapshot collection
 
 Internal S3 generic. Returns a list describing how
-\`print.snapshot_collection()\` should label the collection.
+[`print.snapshot_collection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.snapshot_collection.md)
+should label the collection.
 
 ## Usage
 
@@ -17,13 +18,18 @@ collection_kind_info(x)
 
 ## Value
 
-A list with \`title\`, \`empty_message\`, and optionally \`truncate\`.
+A list with `title`, `empty_message`, and optionally `truncate`.
 
 ## Details
 
-Required return shape: \* \`title\`: length-1 character. Header title
-(e.g. "Compounds"). \* \`empty_message\`: length-1 character. Message
-shown when the collection has no items. \* \`truncate\` (optional):
-length-1 logical. When \`TRUE\`, \`print.snapshot_collection()\`
-truncates the listing at its \`n\` argument. Defaults to \`FALSE\` (show
-every item) when absent.
+Required return shape:
+
+- `title`: length-1 character. Header title (e.g. "Compounds").
+
+- `empty_message`: length-1 character. Message shown when the collection
+  has no items.
+
+- `truncate` (optional): length-1 logical. When `TRUE`,
+  [`print.snapshot_collection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/print.snapshot_collection.md)
+  truncates the listing at its `n` argument. Defaults to `FALSE` (show
+  every item) when absent.

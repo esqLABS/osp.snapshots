@@ -1,7 +1,10 @@
 # Get all expression profiles in a snapshot as data frames
 
-Thin wrapper around \[as_tibbles()\] with \`kind =
-"expression_profiles"\`. Prefer \[as_tibbles()\] in new code.
+Thin wrapper around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+with `kind = "expression_profiles"`. Prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+in new code.
 
 ## Usage
 
@@ -13,12 +16,12 @@ get_expression_profiles_dfs(snapshot)
 
 - snapshot:
 
-  A \`Snapshot\` object.
+  A `Snapshot` object.
 
 ## Value
 
-A list with \`expression_profiles\` and
-\`expression_profiles_parameters\` tibbles.
+A list with `expression_profiles` and `expression_profiles_parameters`
+tibbles.
 
 ## Examples
 

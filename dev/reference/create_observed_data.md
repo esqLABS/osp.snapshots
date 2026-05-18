@@ -1,11 +1,15 @@
 # Create a new observed data set
 
-Create an \`ospsuite::DataSet\` from named arguments. This is a thin
-factory around \[loadDataSetFromSnapshot()\] that builds the raw
-snapshot observed-data shape for you and converts it into a \`DataSet\`.
+Create an
+[`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
+from named arguments. This is a thin factory around
+[`loadDataSetFromSnapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/loadDataSetFromSnapshot.md)
+that builds the raw snapshot observed-data shape for you and converts it
+into a `DataSet`.
 
 An observed data entry is the time + value (+ optional error) series
-attached to a snapshot. It is referenced by name from a \[Snapshot\]'s
+attached to a snapshot. It is referenced by name from a
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)'s
 simulations.
 
 ## Usage
@@ -39,43 +43,43 @@ create_observed_data(
 
 - values:
 
-  Numeric vector. Measurement y-values, same length as \`time\`
+  Numeric vector. Measurement y-values, same length as `time`
   (required).
 
 - time_unit:
 
-  Character. Unit for \`time\` (for example \`"h"\`, \`"min"\`,
-  \`"day(s)"\`). Validated against \`ospsuite::ospUnits\$Time\`.
-  Defaults to \`"h"\`.
+  Character. Unit for `time` (for example `"h"`, `"min"`, `"day(s)"`).
+  Validated against `ospsuite::ospUnits$Time`. Defaults to `"h"`.
 
 - value_unit:
 
-  Character. Unit for \`values\` (for example \`"mg/l"\`). When supplied
-  alongside \`value_dimension\`, the unit is validated against the
-  dimension via \[validate_unit()\].
+  Character. Unit for `values` (for example `"mg/l"`). When supplied
+  alongside `value_dimension`, the unit is validated against the
+  dimension via
+  [`validate_unit()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_unit.md).
 
 - value_dimension:
 
-  Character. Dimension for \`values\` (for example \`"Concentration
-  (mass)"\`). Required (no default): pass one of the names of
-  \`ospsuite::ospDimensions\`. Previously defaulted silently to
-  \`"Concentration (mass)"\`, which was wrong for non-concentration
-  data.
+  Character. Dimension for `values` (for example
+  `"Concentration (mass)"`). Required (no default): pass one of the
+  names of
+  [`ospsuite::ospDimensions`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/ospDimensions.html).
+  Previously defaulted silently to `"Concentration (mass)"`, which was
+  wrong for non-concentration data.
 
 - error:
 
-  Numeric vector. Optional error y-values, same length as \`values\`.
+  Numeric vector. Optional error y-values, same length as `values`.
 
 - error_type:
 
-  Character. Auxiliary type for \`error\`, typically one of
-  \`"ArithmeticStdDev"\`, \`"GeometricStdDev"\`, or
-  \`"ArithmeticStdErr"\`. Defaults to \`"ArithmeticStdDev"\` when
-  \`error\` is provided.
+  Character. Auxiliary type for `error`, typically one of
+  `"ArithmeticStdDev"`, `"GeometricStdDev"`, or `"ArithmeticStdErr"`.
+  Defaults to `"ArithmeticStdDev"` when `error` is provided.
 
 - error_unit:
 
-  Character. Unit for \`error\`. Defaults to \`value_unit\`.
+  Character. Unit for `error`. Defaults to `value_unit`.
 
 - molecular_weight:
 
@@ -92,7 +96,9 @@ create_observed_data(
 
 ## Value
 
-An \`ospsuite::DataSet\` object.
+An
+[`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
+object.
 
 ## Examples
 

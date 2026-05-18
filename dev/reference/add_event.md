@@ -1,6 +1,9 @@
 # Add an event to a snapshot
 
-Add an \[Event\] object to a \[Snapshot\].
+Add an
+[Event](https://esqlabs.github.io/osp.snapshots/dev/reference/Event.md)
+object to a
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md).
 
 ## Usage
 
@@ -12,15 +15,22 @@ add_event(snapshot, event)
 
 - snapshot:
 
-  A \[Snapshot\] object.
+  A
+  [Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+  object.
 
 - event:
 
-  An \[Event\] object created with \[create_event()\].
+  An
+  [Event](https://esqlabs.github.io/osp.snapshots/dev/reference/Event.md)
+  object created with
+  [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md).
 
 ## Value
 
-The updated \[Snapshot\] object, returned invisibly.
+The updated
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+object, returned invisibly.
 
 ## Examples
 

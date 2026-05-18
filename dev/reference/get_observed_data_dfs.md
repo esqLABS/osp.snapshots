@@ -1,7 +1,10 @@
 # Get all observed data in a snapshot as a tibble
 
-Thin wrapper around \[as_tibbles()\] with \`kind = "observed_data"\`.
-Prefer \[as_tibbles()\] in new code.
+Thin wrapper around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+with `kind = "observed_data"`. Prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+in new code.
 
 ## Usage
 
@@ -13,13 +16,13 @@ get_observed_data_dfs(snapshot)
 
 - snapshot:
 
-  A \`Snapshot\` object.
+  A `Snapshot` object.
 
 ## Value
 
-A tibble in long format with columns \`name\`, \`xValues\`, \`yValues\`,
-\`yErrorValues\`, \`xDimension\`, \`xUnit\`, \`yDimension\`, \`yUnit\`,
-\`yErrorType\`, \`yErrorUnit\`, \`molWeight\`, \`lloq\`.
+A tibble in long format with columns `name`, `xValues`, `yValues`,
+`yErrorValues`, `xDimension`, `xUnit`, `yDimension`, `yUnit`,
+`yErrorType`, `yErrorUnit`, `molWeight`, `lloq`.
 
 ## Examples
 

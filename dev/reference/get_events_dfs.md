@@ -1,7 +1,10 @@
 # Get all events in a snapshot as data frames
 
-Thin wrapper around \[as_tibbles()\] with \`kind = "events"\`. Prefer
-\[as_tibbles()\] in new code.
+Thin wrapper around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+with `kind = "events"`. Prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+in new code.
 
 ## Usage
 
@@ -13,11 +16,11 @@ get_events_dfs(snapshot)
 
 - snapshot:
 
-  A \`Snapshot\` object.
+  A `Snapshot` object.
 
 ## Value
 
-A list with \`events\` and \`events_parameters\` tibbles.
+A list with `events` and `events_parameters` tibbles.
 
 ## Examples
 

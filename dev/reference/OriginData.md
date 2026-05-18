@@ -1,21 +1,26 @@
 # OriginData class for OSP snapshot individuals
 
 An R6 class that represents the demographic starting point of an
-\[Individual\]: species, population, gender, and the physiological
-parameters (age, gestational age, weight, height) that PK-Sim uses when
-creating the subject. The set of calculation methods used while deriving
-the individual is exposed as a \[CalculationMethodCache\]. Optional
-disease state metadata is preserved as-is for round-trip fidelity.
+[Individual](https://esqlabs.github.io/osp.snapshots/dev/reference/Individual.md):
+species, population, gender, and the physiological parameters (age,
+gestational age, weight, height) that PK-Sim uses when creating the
+subject. The set of calculation methods used while deriving the
+individual is exposed as a
+[CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md).
+Optional disease state metadata is preserved as-is for round-trip
+fidelity.
 
-In an OSP snapshot, the JSON object is named \`OriginData\` and lives
-under each entry of the \`Individuals\` array.
+In an OSP snapshot, the JSON object is named `OriginData` and lives
+under each entry of the `Individuals` array.
 
 ## Active bindings
 
 - `data`:
 
-  The raw \`OriginData\` list as it appears in the snapshot JSON,
-  refreshed from the embedded \[CalculationMethodCache\] (read-only).
+  The raw `OriginData` list as it appears in the snapshot JSON,
+  refreshed from the embedded
+  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
+  (read-only).
 
 - `species`:
 
@@ -31,41 +36,43 @@ under each entry of the \`Individuals\` array.
 
 - `age`:
 
-  Numeric age value of the individual (in \`age_unit\`).
+  Numeric age value of the individual (in `age_unit`).
 
 - `age_unit`:
 
-  Unit string for \[age\].
+  Unit string for `age`.
 
 - `gestational_age`:
 
-  Numeric gestational age value (in \`gestational_age_unit\`), used for
+  Numeric gestational age value (in `gestational_age_unit`), used for
   preterm individuals.
 
 - `gestational_age_unit`:
 
-  Unit string for \[gestational_age\].
+  Unit string for `gestational_age`.
 
 - `weight`:
 
-  Numeric weight value of the individual (in \`weight_unit\`).
+  Numeric weight value of the individual (in `weight_unit`).
 
 - `weight_unit`:
 
-  Unit string for \[weight\].
+  Unit string for `weight`.
 
 - `height`:
 
-  Numeric height value of the individual (in \`height_unit\`).
+  Numeric height value of the individual (in `height_unit`).
 
 - `height_unit`:
 
-  Unit string for \[height\].
+  Unit string for `height`.
 
 - `calculation_methods`:
 
-  A \[CalculationMethodCache\] holding the calculation methods PK-Sim
-  applies while creating the individual.
+  A
+  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
+  holding the calculation methods PK-Sim applies while creating the
+  individual.
 
 - `disease_state`:
 
@@ -100,8 +107,8 @@ Create a new OriginData object
 
 - `data`:
 
-  Raw \`OriginData\` list from a snapshot. May be \`NULL\` or an empty
-  list, both of which create an empty OriginData.
+  Raw `OriginData` list from a snapshot. May be `NULL` or an empty list,
+  both of which create an empty OriginData.
 
 #### Returns
 

@@ -1,12 +1,15 @@
 # Create a new population
 
-Create a \[Population\] building block from named arguments. This is a
-thin factory around \`Population\$new()\` that builds the raw
-\`Settings\` shape for you.
+Create a
+[Population](https://esqlabs.github.io/osp.snapshots/dev/reference/Population.md)
+building block from named arguments. This is a thin factory around
+`Population$new()` that builds the raw `Settings` shape for you.
 
-A \[Population\] is a recipe for generating subjects: it owns the
-settings PK-Sim uses to sample a cohort at simulation time. Subjects
-themselves are not stored in the snapshot.
+A
+[Population](https://esqlabs.github.io/osp.snapshots/dev/reference/Population.md)
+is a recipe for generating subjects: it owns the settings PK-Sim uses to
+sample a cohort at simulation time. Subjects themselves are not stored
+in the snapshot.
 
 ## Usage
 
@@ -41,38 +44,48 @@ create_population(
 - proportion_of_females:
 
   Numeric. Percentage of females in the population, between 0 and 100.
-  Defaults to \`50\`.
+  Defaults to `50`.
 
 - individual_name:
 
-  Character. Name of the base \[Individual\] building block the
-  population samples from.
+  Character. Name of the base
+  [Individual](https://esqlabs.github.io/osp.snapshots/dev/reference/Individual.md)
+  building block the population samples from.
 
 - species:
 
-  Character. Species used for the base individual when
-  \`individual_name\` is not provided.
+  Character. Species used for the base individual when `individual_name`
+  is not provided.
 
 - source_population:
 
   Character. Population name used for the base individual (for example
-  \`"European_ICRP_2002"\`).
+  `"European_ICRP_2002"`).
 
 - age_range:
 
-  A \[Range\] object describing the age bounds (see \[range()\]).
+  A
+  [Range](https://esqlabs.github.io/osp.snapshots/dev/reference/Range-class.md)
+  object describing the age bounds (see
+  [`range()`](https://esqlabs.github.io/osp.snapshots/dev/reference/range.md)).
 
 - weight_range:
 
-  A \[Range\] object describing the weight bounds.
+  A
+  [Range](https://esqlabs.github.io/osp.snapshots/dev/reference/Range-class.md)
+  object describing the weight bounds.
 
 - height_range:
 
-  A \[Range\] object describing the height bounds.
+  A
+  [Range](https://esqlabs.github.io/osp.snapshots/dev/reference/Range-class.md)
+  object describing the height bounds.
 
 - bmi_range:
 
-  A \[Range\] object describing the BMI bounds.
+  A
+  [Range](https://esqlabs.github.io/osp.snapshots/dev/reference/Range-class.md)
+  object describing the BMI bounds.
 
 - seed:
 
@@ -80,12 +93,16 @@ create_population(
 
 - advanced_parameters:
 
-  List of \[AdvancedParameter\] objects or raw advanced-parameter lists
-  that override default variability distributions.
+  List of
+  [AdvancedParameter](https://esqlabs.github.io/osp.snapshots/dev/reference/AdvancedParameter.md)
+  objects or raw advanced-parameter lists that override default
+  variability distributions.
 
 ## Value
 
-A \[Population\] object.
+A
+[Population](https://esqlabs.github.io/osp.snapshots/dev/reference/Population.md)
+object.
 
 ## Examples
 

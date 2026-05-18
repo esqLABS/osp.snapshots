@@ -1,7 +1,10 @@
 # Get all compounds in a snapshot as data frames
 
-Thin wrapper around \[as_tibbles()\] with \`kind = "compounds"\`. Prefer
-\[as_tibbles()\] in new code.
+Thin wrapper around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+with `kind = "compounds"`. Prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+in new code.
 
 ## Usage
 
@@ -13,12 +16,13 @@ get_compounds_dfs(snapshot)
 
 - snapshot:
 
-  A \`Snapshot\` object.
+  A `Snapshot` object.
 
 ## Value
 
-A list with \`properties\` and \`processes\` tibbles; see
-\[as_tibbles()\] for the column contract.
+A list with `properties` and `processes` tibbles; see
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+for the column contract.
 
 ## Examples
 

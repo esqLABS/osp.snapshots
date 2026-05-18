@@ -4,22 +4,26 @@ An R6 class that represents a compound in an OSP snapshot. This class
 provides methods to access different properties of a compound and
 display a summary of its information.
 
-Compound processes are exposed via \`\$processes\`, a flat named list of
-\[Process\] objects. The per-category tibble accessors
-(\`\$protein_binding_partners\`, \`\$metabolizing_enzymes\`,
-\`\$hepatic_clearance\`, \`\$transporter_proteins\`,
-\`\$renal_clearance\`, \`\$biliary_clearance\`, \`\$inhibition\`,
-\`\$induction\`) are \[\`lifecycle::deprecate_soft()\`\]-warned in
-favour of \`\$processes\` and the long-form \`processes\` tibble
-returned by \[get_compounds_dfs()\].
+Compound processes are exposed via `$processes`, a flat named list of
+[Process](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
+objects. The per-category tibble accessors (`$protein_binding_partners`,
+`$metabolizing_enzymes`, `$hepatic_clearance`, `$transporter_proteins`,
+`$renal_clearance`, `$biliary_clearance`, `$inhibition`, `$induction`)
+are
+[`lifecycle::deprecate_soft()`](https://lifecycle.r-lib.org/reference/deprecate_soft.html)-warned
+in favour of `$processes` and the long-form `processes` tibble returned
+by
+[`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md).
 
 ## Active bindings
 
 - `data`:
 
   The raw data of the compound (read-only). Refreshed from the embedded
-  \[CalculationMethodCache\] and the cached \[Process\] objects so that
-  mutations flow back to the export payload.
+  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
+  and the cached
+  [Process](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
+  objects so that mutations flow back to the export payload.
 
 - `name`:
 
@@ -63,16 +67,19 @@ returned by \[get_compounds_dfs()\].
 
 - `processes`:
 
-  A flat named list of \[Process\] objects, one per entry in the
-  compound's \`Processes\` array. Duplicate names are disambiguated with
-  a numeric suffix (\`\_1\`, \`\_2\`, ...). The list is built once at
-  construction so that state changes made on a \[Process\] persist
-  across accesses.
+  A flat named list of
+  [Process](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
+  objects, one per entry in the compound's `Processes` array. Duplicate
+  names are disambiguated with a numeric suffix (`_1`, `_2`, ...). The
+  list is built once at construction so that state changes made on a
+  [Process](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
+  persist across accesses.
 
 - `calculation_methods`:
 
-  A \[CalculationMethodCache\] holding the compound's calculation
-  methods.
+  A
+  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
+  holding the compound's calculation methods.
 
 - `parameters`:
 
@@ -80,37 +87,38 @@ returned by \[get_compounds_dfs()\].
 
 - `protein_binding_partners`:
 
-  Deprecated. Filter \[get_compounds_dfs()\]\`\$processes\` on
-  \`category == "protein_binding_partners"\`, or iterate
-  \`self\$processes\` and check \`process\$category\`.
+  Deprecated. Filter
+  [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)`$processes`
+  on `category == "protein_binding_partners"`, or iterate
+  `self$processes` and check `process$category`.
 
 - `metabolizing_enzymes`:
 
-  Deprecated. See \`\$protein_binding_partners\`.
+  Deprecated. See `$protein_binding_partners`.
 
 - `hepatic_clearance`:
 
-  Deprecated. See \`\$protein_binding_partners\`.
+  Deprecated. See `$protein_binding_partners`.
 
 - `transporter_proteins`:
 
-  Deprecated. See \`\$protein_binding_partners\`.
+  Deprecated. See `$protein_binding_partners`.
 
 - `renal_clearance`:
 
-  Deprecated. See \`\$protein_binding_partners\`.
+  Deprecated. See `$protein_binding_partners`.
 
 - `biliary_clearance`:
 
-  Deprecated. See \`\$protein_binding_partners\`.
+  Deprecated. See `$protein_binding_partners`.
 
 - `inhibition`:
 
-  Deprecated. See \`\$protein_binding_partners\`.
+  Deprecated. See `$protein_binding_partners`.
 
 - `induction`:
 
-  Deprecated. See \`\$protein_binding_partners\`.
+  Deprecated. See `$protein_binding_partners`.
 
 ## Methods
 
@@ -171,11 +179,14 @@ Invisibly returns the Compound object for method chaining
 Convert this compound's physicochemical properties and process
 parameters to a single long-form tibble (legacy shape).
 
-Used by \[get_compounds_dfs()\] to assemble the compound-wide
-\`properties\` tibble. The process-derived rows produced here are
-\[\`lifecycle::deprecate_soft()\`\]-warned at the
-\[get_compounds_dfs()\] entry point; prefer the long-form \`processes\`
-tibble returned alongside.
+Used by
+[`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
+to assemble the compound-wide `properties` tibble. The process-derived
+rows produced here are
+[`lifecycle::deprecate_soft()`](https://lifecycle.r-lib.org/reference/deprecate_soft.html)-warned
+at the
+[`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
+entry point; prefer the long-form `processes` tibble returned alongside.
 
 #### Usage
 
@@ -183,8 +194,8 @@ tibble returned alongside.
 
 #### Returns
 
-A tibble with columns \`compound\`, \`category\`, \`type\`,
-\`parameter\`, \`value\`, \`unit\`, \`data_source\`, \`source\`.
+A tibble with columns `compound`, `category`, `type`, `parameter`,
+`value`, `unit`, `data_source`, `source`.
 
 ------------------------------------------------------------------------
 

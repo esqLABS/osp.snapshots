@@ -1,7 +1,10 @@
 # Get all formulations in a snapshot as data frames
 
-Thin wrapper around \[as_tibbles()\] with \`kind = "formulations"\`.
-Prefer \[as_tibbles()\] in new code.
+Thin wrapper around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+with `kind = "formulations"`. Prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+in new code.
 
 ## Usage
 
@@ -13,13 +16,13 @@ get_formulations_dfs(snapshot)
 
 - snapshot:
 
-  A \`Snapshot\` object.
+  A `Snapshot` object.
 
 ## Value
 
-A list with \`formulations\` and \`formulations_parameters\` tibbles.
-Table parameter points have \`is_table_point = TRUE\` and carry
-\`x_value\`, \`y_value\`, and \`table_name\`.
+A list with `formulations` and `formulations_parameters` tibbles. Table
+parameter points have `is_table_point = TRUE` and carry `x_value`,
+`y_value`, and `table_name`.
 
 ## Examples
 

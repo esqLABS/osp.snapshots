@@ -1,6 +1,9 @@
 # Add a protocol to a snapshot
 
-Add a \[Protocol\] object to a \[Snapshot\].
+Add a
+[Protocol](https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.md)
+object to a
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md).
 
 ## Usage
 
@@ -12,15 +15,22 @@ add_protocol(snapshot, protocol)
 
 - snapshot:
 
-  A \[Snapshot\] object.
+  A
+  [Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+  object.
 
 - protocol:
 
-  A \[Protocol\] object created with \[create_protocol()\].
+  A
+  [Protocol](https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.md)
+  object created with
+  [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md).
 
 ## Value
 
-The updated \[Snapshot\] object, returned invisibly.
+The updated
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+object, returned invisibly.
 
 ## Examples
 

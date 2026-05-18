@@ -23,21 +23,31 @@ A DataSet object from the ospsuite package
 ## Details
 
 This function follows the same pattern as other DataSet loading
-functions in ospsuite: - \`ospsuite::loadDataSetFromPKML()\` -
-\`ospsuite::loadDataSetFromExcel()\` -
-\`osp.snapshots::loadDataSetFromSnapshot()\` (this function)
+functions in ospsuite:
+
+- [`ospsuite::loadDataSetFromPKML()`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/loadDataSetFromPKML.html)
+
+- `ospsuite::loadDataSetFromExcel()`
+
+- `osp.snapshots::loadDataSetFromSnapshot()` (this function)
+
+`ObservedData` is a backwards-compatible alias for
+`loadDataSetFromSnapshot()` and may be retired in a future release if
+this functionality migrates to the `ospsuite` package. Prefer the
+`loadDataSetFromSnapshot()` name in new code.
 
 ## Migration Plan
 
 This function is designed for eventual migration to the ospsuite
 package. When migrated, the usage pattern will be:
 
-“\`r \# Future usage (when moved to ospsuite): dataset \<-
-ospsuite::loadDataSetFromSnapshot(observedDataStructure)
+    # Future usage (when moved to ospsuite):
+    dataset <- ospsuite::loadDataSetFromSnapshot(observedDataStructure)
 
-\# Current usage: dataset \<-
-osp.snapshots::loadDataSetFromSnapshot(observedDataStructure)
+    # Current usage:
+    dataset <- osp.snapshots::loadDataSetFromSnapshot(observedDataStructure)
 
-\# Migration steps: \# 1. Copy this function to ospsuite package \# 2.
-Update osp.snapshots to import from ospsuite \# 3. Eventually remove
-from osp.snapshots “\`
+    # Migration steps:
+    # 1. Copy this function to ospsuite package
+    # 2. Update osp.snapshots to import from ospsuite
+    # 3. Eventually remove from osp.snapshots

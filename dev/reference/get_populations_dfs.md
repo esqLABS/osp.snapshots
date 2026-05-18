@@ -1,7 +1,10 @@
 # Get all populations in a snapshot as data frames
 
-Thin wrapper around \[as_tibbles()\] with \`kind = "populations"\`.
-Prefer \[as_tibbles()\] in new code.
+Thin wrapper around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+with `kind = "populations"`. Prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+in new code.
 
 ## Usage
 
@@ -13,11 +16,11 @@ get_populations_dfs(snapshot)
 
 - snapshot:
 
-  A \`Snapshot\` object.
+  A `Snapshot` object.
 
 ## Value
 
-A list with \`populations\` and \`populations_parameters\` tibbles.
+A list with `populations` and `populations_parameters` tibbles.
 
 ## Examples
 

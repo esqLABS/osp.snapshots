@@ -4,8 +4,12 @@ An R6 class that wraps the set of calculation methods PK-Sim uses to
 derive compound quantities (e.g. partition coefficient method, cellular
 permeability method, body surface area method). In an OSP snapshot, the
 calculation method cache is serialised as an array of method name
-strings. It appears in two places: directly on a \[Compound\] and inside
-an \[OriginData\] of an \[Individual\].
+strings. It appears in two places: directly on a
+[Compound](https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.md)
+and inside an
+[OriginData](https://esqlabs.github.io/osp.snapshots/dev/reference/OriginData.md)
+of an
+[Individual](https://esqlabs.github.io/osp.snapshots/dev/reference/Individual.md).
 
 ## Active bindings
 
@@ -47,7 +51,7 @@ Create a new CalculationMethodCache object
 
 - `methods`:
 
-  Character vector of method names. May be \`NULL\` or an empty vector,
+  Character vector of method names. May be `NULL` or an empty vector,
   both of which result in an empty cache.
 
 #### Returns
@@ -99,10 +103,10 @@ Invisibly returns the CalculationMethodCache object
 
 ### `CalculationMethodCache$remove()`
 
-Remove a method name from the cache. If \`method\` is not present, the
-cache is unchanged. Note the asymmetry with \`\$add()\`: \`\$add()\`
-keeps duplicates to mirror the snapshot's raw representation, whereas
-\`\$remove()\` deletes every occurrence of \`method\` in a single call.
+Remove a method name from the cache. If `method` is not present, the
+cache is unchanged. Note the asymmetry with `$add()`: `$add()` keeps
+duplicates to mirror the snapshot's raw representation, whereas
+`$remove()` deletes every occurrence of `method` in a single call.
 
 #### Usage
 
@@ -123,7 +127,7 @@ Invisibly returns the CalculationMethodCache object
 ### `CalculationMethodCache$to_list()`
 
 Convert the cache back to its raw snapshot representation: a list of
-method-name strings, or \`NULL\` when the cache is empty. A list is used
+method-name strings, or `NULL` when the cache is empty. A list is used
 (rather than a character vector) so that single-method caches round-trip
 as JSON arrays.
 
@@ -133,7 +137,7 @@ as JSON arrays.
 
 #### Returns
 
-A list of method-name strings, or \`NULL\` when empty.
+A list of method-name strings, or `NULL` when empty.
 
 ------------------------------------------------------------------------
 

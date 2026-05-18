@@ -1,12 +1,14 @@
 # Create a new expression profile
 
-Create an \[ExpressionProfile\] building block from named arguments.
-This is a thin factory around \`ExpressionProfile\$new()\` that builds
-the raw list shape for you.
+Create an
+[ExpressionProfile](https://esqlabs.github.io/osp.snapshots/dev/reference/ExpressionProfile.md)
+building block from named arguments. This is a thin factory around
+`ExpressionProfile$new()` that builds the raw list shape for you.
 
-An \[ExpressionProfile\]'s identity is the composite
-\`Molecule\|Species\|Category\`, so all three of \`molecule\`,
-\`species\`, and \`category\` are required.
+An
+[ExpressionProfile](https://esqlabs.github.io/osp.snapshots/dev/reference/ExpressionProfile.md)'s
+identity is the composite `Molecule|Species|Category`, so all three of
+`molecule`, `species`, and `category` are required.
 
 ## Usage
 
@@ -28,21 +30,21 @@ create_expression_profile(
 
 - molecule:
 
-  Character. Name of the molecule (for example \`"CYP3A4"\`). Required.
+  Character. Name of the molecule (for example `"CYP3A4"`). Required.
 
 - species:
 
-  Character. Species (for example \`"Human"\`). Required.
+  Character. Species (for example `"Human"`). Required.
 
 - category:
 
-  Character. Category disambiguator (for example \`"Healthy"\` or
-  \`"Variability"\`). Required.
+  Character. Category disambiguator (for example `"Healthy"` or
+  `"Variability"`). Required.
 
 - type:
 
-  Character. Molecule type, typically one of \`"Enzyme"\`,
-  \`"Transporter"\`, or \`"OtherProtein"\`. Required.
+  Character. Molecule type, typically one of `"Enzyme"`,
+  `"Transporter"`, or `"OtherProtein"`. Required.
 
 - localization:
 
@@ -51,18 +53,21 @@ create_expression_profile(
 - transport_type:
 
   Character. Transporter type (for transporter profiles), for example
-  \`"Efflux"\` or \`"Influx"\`.
+  `"Efflux"` or `"Influx"`.
 
 - ontogeny:
 
   Character or list. Ontogeny name, or a raw ontogeny list. If a string
-  is supplied it is wrapped as \`list(Name = ontogeny)\`.
+  is supplied it is wrapped as `list(Name = ontogeny)`.
 
 - parameters:
 
-  List of \[Parameter\] objects (created with \[create_parameter()\]) or
-  raw parameter lists describing relative expression and other per-organ
-  values.
+  List of
+  [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  objects (created with
+  [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md))
+  or raw parameter lists describing relative expression and other
+  per-organ values.
 
 - description:
 
@@ -70,7 +75,9 @@ create_expression_profile(
 
 ## Value
 
-An \[ExpressionProfile\] object.
+An
+[ExpressionProfile](https://esqlabs.github.io/osp.snapshots/dev/reference/ExpressionProfile.md)
+object.
 
 ## Examples
 

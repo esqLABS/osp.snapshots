@@ -3,18 +3,12 @@
 Create a new parameter with the specified properties. All arguments
 except name and value are optional.
 
-Returns a \[LocalizedParameter\] when a non-NULL \`path\` is supplied
-(i.e. the parameter is identified by its position within a target's
-parameter tree); otherwise returns a plain \[Parameter\].
-
-\# Data shape
-
-Plain \`Parameter\` objects carry the identifier in \`data\$Name\`,
-matching the JSON shape used by \`Parameter\` slots in \`Compound\`,
-\`Formulation\`, \`Protocol\`, and \`Event\` (per \`snapshot-spec.md\`).
-\`LocalizedParameter\` objects carry the identifier in \`data\$Path\`.
-The factory writes whichever field matches the returned class so the raw
-\`data\` shape reflects the kind of parameter unambiguously.
+Returns a
+[LocalizedParameter](https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.md)
+when a non-NULL `path` is supplied (i.e. the parameter is identified by
+its position within a target's parameter tree); otherwise returns a
+plain
+[Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md).
 
 ## Usage
 
@@ -50,8 +44,10 @@ create_parameter(
 - path:
 
   Character. Full container path of the parameter within its parameter
-  tree. Supply this to obtain a \[LocalizedParameter\] (used in
-  Individual, ExpressionProfile, and Simulation parameter sections).
+  tree. Supply this to obtain a
+  [LocalizedParameter](https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.md)
+  (used in Individual, ExpressionProfile, and Simulation parameter
+  sections).
 
 - unit:
 
@@ -99,8 +95,20 @@ create_parameter(
 
 ## Value
 
-A \[Parameter\] object, or a \[LocalizedParameter\] when \`path\` is
-supplied.
+A
+[Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+object, or a
+[LocalizedParameter](https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.md)
+when `path` is supplied.
+
+## Data shape
+
+Plain `Parameter` objects carry the identifier in `data$Name`, matching
+the JSON shape used by `Parameter` slots in `Compound`, `Formulation`,
+`Protocol`, and `Event` (per `snapshot-spec.md`). `LocalizedParameter`
+objects carry the identifier in `data$Path`. The factory writes
+whichever field matches the returned class so the raw `data` shape
+reflects the kind of parameter unambiguously.
 
 ## Examples
 

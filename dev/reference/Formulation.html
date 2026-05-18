@@ -131,21 +131,20 @@ and display a summary of its information.</p>
 </dl><p></p></div>
 </div><p></p><div class="section">
 <h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
-<p>A list of tibbles containing the requested data:
-  * formulations: Basic formulation information (ID, name, type)
-  * formulations_parameters: All parameters including table parameter points</p>
-<p>The formulations_parameters tibble includes the following columns:
-  * formulation_id: ID of the formulation
-  * name: Name of the parameter
-  * value: Value of the parameter (NA for table points)
-  * unit: Unit of the parameter (NA for table points)
-  * is_table_point: TRUE for table parameter points, FALSE for regular parameters
-  * x_value: X-axis value for table points (NA for regular parameters)
-  * y_value: Y-axis value for table points (NA for regular parameters)
-  * table_name: Name of the table (usually "Time" for release profiles)
-  * source: Source of the parameter (NA if not available)
-  * description: Description of the parameter (NA if not available)
-  * source_id: ID of the source (NA if not available)</p>
+<p>A list of tibbles containing the requested data:</p><ul><li><p>formulations: Basic formulation information (ID, name, type)</p></li>
+<li><p>formulations_parameters: All parameters including table parameter points</p></li>
+</ul><p>The formulations_parameters tibble includes the following columns:</p><ul><li><p>formulation_id: ID of the formulation</p></li>
+<li><p>name: Name of the parameter</p></li>
+<li><p>value: Value of the parameter (NA for table points)</p></li>
+<li><p>unit: Unit of the parameter (NA for table points)</p></li>
+<li><p>is_table_point: TRUE for table parameter points, FALSE for regular parameters</p></li>
+<li><p>x_value: X-axis value for table points (NA for regular parameters)</p></li>
+<li><p>y_value: Y-axis value for table points (NA for regular parameters)</p></li>
+<li><p>table_name: Name of the table (usually "Time" for release profiles)</p></li>
+<li><p>source: Source of the parameter (NA if not available)</p></li>
+<li><p>description: Description of the parameter (NA if not available)</p></li>
+<li><p>source_id: ID of the source (NA if not available)</p></li>
+</ul><p></p>
 </div>
 
 </div>

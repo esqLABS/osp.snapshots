@@ -1,9 +1,9 @@
 # ObserverSet class for OSP snapshot observer sets
 
-An R6 class that represents an \`ObserverSet\` building block in an OSP
-snapshot. An \`ObserverSet\` is a named bundle of observers that
+An R6 class that represents an `ObserverSet` building block in an OSP
+snapshot. An `ObserverSet` is a named bundle of observers that
 simulations can reference by name. The class exposes the set's name and
-its raw \`Observers\` list; richer wrapping of individual observers is
+its raw `Observers` list; richer wrapping of individual observers is
 deferred to a follow-up.
 
 ## Active bindings

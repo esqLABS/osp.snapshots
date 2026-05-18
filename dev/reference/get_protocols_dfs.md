@@ -1,7 +1,10 @@
 # Get all protocols in a snapshot as a single consolidated data frame
 
-Thin wrapper around \[as_tibbles()\] with \`kind = "protocols"\`. Prefer
-\[as_tibbles()\] in new code.
+Thin wrapper around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+with `kind = "protocols"`. Prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+in new code.
 
 ## Usage
 
@@ -13,7 +16,7 @@ get_protocols_dfs(snapshot)
 
 - snapshot:
 
-  A \`Snapshot\` object.
+  A `Snapshot` object.
 
 ## Value
 

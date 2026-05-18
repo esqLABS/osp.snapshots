@@ -1,11 +1,15 @@
 # Create a new event
 
-Create an \[Event\] building block from named arguments. This is a thin
-factory around \`Event\$new()\` that builds the raw list shape for you.
+Create an
+[Event](https://esqlabs.github.io/osp.snapshots/dev/reference/Event.md)
+building block from named arguments. This is a thin factory around
+`Event$new()` that builds the raw list shape for you.
 
-An \[Event\] is a discrete non-administration perturbation that fires at
-a specific simulation time (for example a meal, gallbladder emptying, or
-organ removal). PK-Sim creates events by cloning a named template and
+An
+[Event](https://esqlabs.github.io/osp.snapshots/dev/reference/Event.md)
+is a discrete non-administration perturbation that fires at a specific
+simulation time (for example a meal, gallbladder emptying, or organ
+removal). PK-Sim creates events by cloning a named template and
 overriding parameters, so a template name is required.
 
 ## Usage
@@ -27,12 +31,17 @@ create_event(name, template, parameters = NULL)
 
 - parameters:
 
-  List of \[Parameter\] objects (created with \[create_parameter()\]) or
-  raw parameter lists overriding values on the cloned template.
+  List of
+  [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  objects (created with
+  [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md))
+  or raw parameter lists overriding values on the cloned template.
 
 ## Value
 
-An \[Event\] object.
+An
+[Event](https://esqlabs.github.io/osp.snapshots/dev/reference/Event.md)
+object.
 
 ## Examples
 

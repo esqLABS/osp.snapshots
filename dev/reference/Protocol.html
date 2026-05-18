@@ -3,17 +3,17 @@
 This class provides methods to access different properties of a protocol
 and display a summary of its information. Protocols can be either simple
 (with dosing intervals) or advanced (with schemas and schema items).
-An Advanced Protocol's schemas are exposed as a named list of [Schema]
-objects, each of which owns a list of [SchemaItem] objects. Simple
+An Advanced Protocol's schemas are exposed as a named list of Schema
+objects, each of which owns a list of SchemaItem objects. Simple
 Protocols expose their single application directly through the
-`application_type`, `dosing_interval`, and `parameters` fields."><meta property="og:description" content="An R6 class that represents a protocol in an OSP snapshot.
+application_type, dosing_interval, and parameters fields."><meta property="og:description" content="An R6 class that represents a protocol in an OSP snapshot.
 This class provides methods to access different properties of a protocol
 and display a summary of its information. Protocols can be either simple
 (with dosing intervals) or advanced (with schemas and schema items).
-An Advanced Protocol's schemas are exposed as a named list of [Schema]
-objects, each of which owns a list of [SchemaItem] objects. Simple
+An Advanced Protocol's schemas are exposed as a named list of Schema
+objects, each of which owns a list of SchemaItem objects. Simple
 Protocols expose their single application directly through the
-`application_type`, `dosing_interval`, and `parameters` fields."><meta name="robots" content="noindex"></head><body>
+application_type, dosing_interval, and parameters fields."><meta name="robots" content="noindex"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -57,10 +57,10 @@ Protocols expose their single application directly through the
 This class provides methods to access different properties of a protocol
 and display a summary of its information. Protocols can be either simple
 (with dosing intervals) or advanced (with schemas and schema items).</p>
-<p>An Advanced Protocol's schemas are exposed as a named list of [Schema]
-objects, each of which owns a list of [SchemaItem] objects. Simple
+<p>An Advanced Protocol's schemas are exposed as a named list of <a href="Schema.html">Schema</a>
+objects, each of which owns a list of <a href="SchemaItem.html">SchemaItem</a> objects. Simple
 Protocols expose their single application directly through the
-`application_type`, `dosing_interval`, and `parameters` fields.</p>
+<code>application_type</code>, <code>dosing_interval</code>, and <code>parameters</code> fields.</p>
     </div>
 
 
@@ -68,7 +68,7 @@ Protocols expose their single application directly through the
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
     <p></p><div class="r6-active-bindings"><dl><dt><code>data</code></dt>
 <dd><p>The raw data of the protocol, refreshed from the
-wrapped [Schema] objects so mutations through the R6 surface
+wrapped <a href="Schema.html">Schema</a> objects so mutations through the R6 surface
 flow back into the snapshot payload (read-only).</p></dd>
 
 
@@ -97,9 +97,9 @@ flow back into the snapshot payload (read-only).</p></dd>
 
 
     <dt><code>schemas</code></dt>
-<dd><p>A named list of [Schema] objects for advanced
-protocols. Names are taken from each schema's `name` field
-(duplicates are disambiguated by `make.unique`). Simple protocols
+<dd><p>A named list of <a href="Schema.html">Schema</a> objects for advanced
+protocols. Names are taken from each schema's <code>name</code> field
+(duplicates are disambiguated by <code>make.unique</code>). Simple protocols
 return an empty list.</p></dd>
 
 
@@ -157,8 +157,8 @@ return an empty list.</p></dd>
 <p></p><hr><a id="method-Protocol-to_df"></a><div class="section">
 <h3 id="protocol-to-df-"><code>Protocol$to_df()</code><a class="anchor" aria-label="anchor" href="#protocol-to-df-"></a></h3>
 <p>Convert protocol data to a single consolidated tibble. Advanced
-protocols emit one row per [SchemaItem] and join back to the
-protocol via `protocol_name`. Simple protocols emit a single row.</p><div class="section">
+protocols emit one row per <a href="SchemaItem.html">SchemaItem</a> and join back to the
+protocol via <code>protocol_name</code>. Simple protocols emit a single row.</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Protocol</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">

@@ -1,8 +1,9 @@
 # Create a new compound
 
-Create a minimally populated \[Compound\] building block from named
-arguments. This is a thin factory around \`Compound\$new()\` that builds
-the raw list shape for you.
+Create a minimally populated
+[Compound](https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.md)
+building block from named arguments. This is a thin factory around
+`Compound$new()` that builds the raw list shape for you.
 
 For richer compound structures (full lipophilicity alternatives,
 processes, calculation methods, and so on), build the raw list directly
@@ -35,13 +36,13 @@ create_compound(
 
 - is_small_molecule:
 
-  Logical. Whether the compound is a small molecule. Defaults to
-  \`TRUE\` in PK-Sim when omitted.
+  Logical. Whether the compound is a small molecule. Defaults to `TRUE`
+  in PK-Sim when omitted.
 
 - plasma_protein_binding_partner:
 
   Character. Name of the plasma protein binding partner (for example
-  \`"Albumin"\`).
+  `"Albumin"`).
 
 - molecular_weight:
 
@@ -49,7 +50,7 @@ create_compound(
 
 - molecular_weight_unit:
 
-  Character. Unit for molecular weight. Defaults to \`"g/mol"\`.
+  Character. Unit for molecular weight. Defaults to `"g/mol"`.
 
 - calculation_methods:
 
@@ -58,12 +59,17 @@ create_compound(
 
 - parameters:
 
-  List of \[Parameter\] objects (created with \[create_parameter()\]) or
-  raw parameter lists to attach to the compound.
+  List of
+  [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  objects (created with
+  [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md))
+  or raw parameter lists to attach to the compound.
 
 ## Value
 
-A \[Compound\] object.
+A
+[Compound](https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.md)
+object.
 
 ## Examples
 

@@ -1,7 +1,10 @@
 # Get all individuals in a snapshot as data frames
 
-Thin wrapper around \[as_tibbles()\] with \`kind = "individuals"\`.
-Prefer \[as_tibbles()\] in new code.
+Thin wrapper around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+with `kind = "individuals"`. Prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+in new code.
 
 ## Usage
 
@@ -13,12 +16,12 @@ get_individuals_dfs(snapshot)
 
 - snapshot:
 
-  A \`Snapshot\` object.
+  A `Snapshot` object.
 
 ## Value
 
-A list with \`individuals\`, \`individuals_parameters\`, and
-\`individuals_expressions\` tibbles.
+A list with `individuals`, `individuals_parameters`, and
+`individuals_expressions` tibbles.
 
 ## Examples
 

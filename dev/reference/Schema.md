@@ -1,19 +1,21 @@
 # Schema class for OSP advanced protocols
 
 An R6 class that represents a repeatable block inside an Advanced
-\[Protocol\]. A schema has its own name, schema-level parameters
-(typically \`Start time\`, \`NumberOfRepetitions\`,
-\`TimeBetweenRepetitions\`), and an ordered list of \[SchemaItem\]
+[Protocol](https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.md).
+A schema has its own name, schema-level parameters (typically
+`Start time`, `NumberOfRepetitions`, `TimeBetweenRepetitions`), and an
+ordered list of
+[SchemaItem](https://esqlabs.github.io/osp.snapshots/dev/reference/SchemaItem.md)
 applications.
 
-In an OSP snapshot, each schema is one entry of the \`Schemas\` array
-inside a \`Protocols\` building block.
+In an OSP snapshot, each schema is one entry of the `Schemas` array
+inside a `Protocols` building block.
 
 ## Active bindings
 
 - `data`:
 
-  The raw \`Schema\` list as it appears in the snapshot JSON, refreshed
+  The raw `Schema` list as it appears in the snapshot JSON, refreshed
   from the wrapped schema items and parameters (read-only).
 
 - `name`:
@@ -22,12 +24,15 @@ inside a \`Protocols\` building block.
 
 - `parameters`:
 
-  The schema-level \[Parameter\] objects (number of repetitions, time
-  between repetitions, ...).
+  The schema-level
+  [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  objects (number of repetitions, time between repetitions, ...).
 
 - `items`:
 
-  List of \[SchemaItem\] objects in the schema, in declaration order.
+  List of
+  [SchemaItem](https://esqlabs.github.io/osp.snapshots/dev/reference/SchemaItem.md)
+  objects in the schema, in declaration order.
 
 ## Methods
 
@@ -53,7 +58,7 @@ Create a new Schema object.
 
 - `data`:
 
-  Raw \`Schema\` list from a snapshot. May be \`NULL\` or an empty list,
+  Raw `Schema` list from a snapshot. May be `NULL` or an empty list,
   both of which create an empty schema.
 
 #### Returns
