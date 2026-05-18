@@ -117,6 +117,24 @@ test_that("ObserverSets round-trip byte-equivalently through export", {
   expect_equal(reloaded$ObserverSets, snapshot$data$ObserverSets)
 })
 
+test_that("Observer mutations survive export and reload", {
+  snapshot <- test_snapshot$clone(deep = TRUE)
+  os_id <- names(snapshot$observer_sets)[[1]]
+  observer_id <- names(snapshot$observer_sets[[os_id]]$observers)[[1]]
+  observer <- snapshot$observer_sets[[os_id]]$observers[[observer_id]]
+
+  observer$dimension <- "Time"
+  observer$formula <- "2*Conc"
+
+  tmp <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(tmp)
+  reloaded <- Snapshot$new(tmp)
+
+  reloaded_observer <- reloaded$observer_sets[[os_id]]$observers[[observer_id]]
+  expect_equal(reloaded_observer$dimension, "Time")
+  expect_equal(reloaded_observer$formula, "2*Conc")
+})
+
 # ---- Mutators ----
 test_that("add_observer_set() appends an observer set", {
   snapshot <- empty_snapshot$clone()
