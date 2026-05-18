@@ -5,19 +5,23 @@
 \title{ObserverSet class for OSP snapshot observer sets}
 \description{
 An R6 class that represents an \code{ObserverSet} building block in an OSP
-snapshot. An \code{ObserverSet} is a named bundle of observers that simulations
-can reference by name. The class exposes the set's name and its raw
-\code{Observers} list; richer wrapping of individual observers is deferred to
-a follow-up.
+snapshot. An \code{ObserverSet} is a named bundle of \link{Observer} objects
+that simulations can reference by name.
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{data}}{The raw data of the observer set (read-only)}
+    \item{\code{data}}{The raw data of the observer set, refreshed from the
+wrapped \link{Observer} objects so mutations through the R6 surface
+flow back into the snapshot payload (read-only).}
 
     \item{\code{name}}{The name of the observer set}
 
-    \item{\code{observers}}{The raw list of observers in the set}
+    \item{\code{observers}}{A named list of \link{Observer} objects keyed by
+each observer's \verb{$name}. Duplicate names are disambiguated with
+\verb{_\{n\}} suffixes. Assigning accepts either a list of \link{Observer}
+objects or a list of raw observer dicts; both are normalised to
+\link{Observer} objects and the underlying raw data is kept in sync.}
   }
   \if{html}{\out{</div>}}
 }

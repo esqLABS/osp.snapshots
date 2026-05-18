@@ -2,7 +2,7 @@
 % Please edit documentation in R/snapshot_dataframes.R
 \name{get_observer_sets_dfs}
 \alias{get_observer_sets_dfs}
-\title{Get all observer sets in a snapshot as a tibble}
+\title{Get all observer sets in a snapshot as data frames}
 \usage{
 get_observer_sets_dfs(snapshot)
 }
@@ -10,9 +10,12 @@ get_observer_sets_dfs(snapshot)
 \item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
-A tibble with one row per \code{ObserverSet}, with columns
-\code{observer_set_id}, \code{name}, \code{n_observers}. Richer per-observer
-detail is deferred until the \code{Observer} leaf class lands.
+A list with two tibbles. \code{observer_sets} has one row per
+\code{ObserverSet} with columns \code{observer_set_id}, \code{name},
+\code{n_observers}. \code{observers} has one row per \code{Observer} with columns
+\code{observer_set_id}, \code{observer_set_name}, \code{name}, \code{type},
+\code{dimension}, \code{formula}, \code{container_path}; rows join back to their
+parent \code{ObserverSet} by \code{observer_set_id} or \code{observer_set_name}.
 }
 \description{
 Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "observer_sets"}.

@@ -36,7 +36,33 @@ test_that("ObserverSet observers setter round-trips through data", {
   os$observers <- list(list(Name = "obs"))
 
   expect_length(os$observers, 1)
+  expect_s3_class(os$observers[[1]], "Observer")
   expect_equal(os$data$Observers[[1]]$Name, "obs")
+})
+
+test_that("ObserverSet wraps raw observers as Observer objects", {
+  data <- list(
+    Name = "Set",
+    Observers = list(
+      list(Name = "a", Type = "Container"),
+      list(Name = "b", Type = "Amount")
+    )
+  )
+  os <- ObserverSet$new(data)
+
+  expect_named(os$observers, c("a", "b"))
+  expect_s3_class(os$observers[["a"]], "Observer")
+  expect_equal(os$observers[["a"]]$type, "Container")
+})
+
+test_that("ObserverSet observers names disambiguate duplicates", {
+  data <- list(
+    Name = "Set",
+    Observers = list(list(Name = "obs"), list(Name = "obs"))
+  )
+  os <- ObserverSet$new(data)
+
+  expect_named(os$observers, c("obs_1", "obs_2"))
 })
 
 test_that("ObserverSet data is read-only", {
@@ -171,24 +197,79 @@ test_that("remove_observer_set() deduplicates warnings and reports actual count"
 })
 
 # ---- Tibble exporter ----
-test_that("get_observer_sets_dfs() returns one row per set", {
+test_that("get_observer_sets_dfs() returns observer_sets and observers", {
   snapshot <- test_snapshot$clone()
 
-  df <- get_observer_sets_dfs(snapshot)
+  dfs <- get_observer_sets_dfs(snapshot)
 
-  expect_s3_class(df, "tbl_df")
-  expect_named(df, c("observer_set_id", "name", "n_observers"))
-  expect_equal(nrow(df), length(snapshot$observer_sets))
+  expect_named(dfs, c("observer_sets", "observers"))
+  expect_s3_class(dfs$observer_sets, "tbl_df")
+  expect_named(
+    dfs$observer_sets,
+    c("observer_set_id", "name", "n_observers")
+  )
+  expect_equal(nrow(dfs$observer_sets), length(snapshot$observer_sets))
+
+  expect_s3_class(dfs$observers, "tbl_df")
+  expect_named(
+    dfs$observers,
+    c(
+      "observer_set_id",
+      "observer_set_name",
+      "name",
+      "type",
+      "dimension",
+      "formula",
+      "container_path"
+    )
+  )
+  expected_n <- sum(vapply(
+    snapshot$observer_sets,
+    function(os) length(os$observers),
+    integer(1)
+  ))
+  expect_equal(nrow(dfs$observers), expected_n)
 })
 
-test_that("get_observer_sets_dfs() returns empty tibble for empty snapshot", {
+test_that("get_observer_sets_dfs() observers join back to parent", {
+  snapshot <- test_snapshot$clone()
+
+  dfs <- get_observer_sets_dfs(snapshot)
+
+  expect_setequal(
+    unique(dfs$observers$observer_set_id),
+    names(snapshot$observer_sets)[vapply(
+      snapshot$observer_sets,
+      function(os) length(os$observers) > 0,
+      logical(1)
+    )]
+  )
+})
+
+test_that("get_observer_sets_dfs() returns empty tibbles for empty snapshot", {
   snapshot <- empty_snapshot$clone()
 
-  df <- get_observer_sets_dfs(snapshot)
+  dfs <- get_observer_sets_dfs(snapshot)
 
-  expect_s3_class(df, "tbl_df")
-  expect_named(df, c("observer_set_id", "name", "n_observers"))
-  expect_equal(nrow(df), 0)
+  expect_named(dfs, c("observer_sets", "observers"))
+  expect_equal(nrow(dfs$observer_sets), 0)
+  expect_equal(nrow(dfs$observers), 0)
+  expect_named(
+    dfs$observer_sets,
+    c("observer_set_id", "name", "n_observers")
+  )
+  expect_named(
+    dfs$observers,
+    c(
+      "observer_set_id",
+      "observer_set_name",
+      "name",
+      "type",
+      "dimension",
+      "formula",
+      "container_path"
+    )
+  )
 })
 
 # ---- Print methods ----

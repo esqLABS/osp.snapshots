@@ -8,11 +8,13 @@
 - `Snapshot$new()` (and therefore `load_snapshot()`) now refuses snapshots that lack a `Version` field or whose `Version` is below 79 (v11.2). Earlier versions used pre-v11 conventions (notably `Applications|...` path segments) that this package does not model (#52).
 - `create_parameter()` now writes the identifier to `data$Name` when called without `path` (plain `Parameter`) and to `data$Path` only when called with `path` (`LocalizedParameter`). Previously every result carried `data$Path`, hiding which kind of parameter the factory had produced (#52).
 - `get_compounds_dfs()` now returns a list with two tibbles, `properties` and `processes`, instead of the single combined tibble it returned before. Update callers from `df <- get_compounds_dfs(snap)` to `dfs <- get_compounds_dfs(snap); df <- dfs$properties`, or switch to the new long-form `dfs$processes` (#40).
+- `get_observer_sets_dfs()` now returns a list with two tibbles, `observer_sets` (one row per `ObserverSet`) and `observers` (one row per `Observer`, joinable back to its parent via `observer_set_id` / `observer_set_name`), instead of the single combined tibble it returned before. Use the `observers` element to access per-Observer rows (#38, #42).
 
 ## New features
 
 - New `CalculationMethodCache` R6 class wrapping the array of calculation method names stored on a `Compound` and inside an `Individual`'s `OriginData`. `Compound$calculation_methods` and `Individual$origin_data$calculation_methods` now return this class (#30).
 - New `LocalizedParameter` R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from `Parameter` and migrates legacy `Applications` path segments to `Events` for v11+ snapshots. `create_parameter()` now routes to `LocalizedParameter` when called with a `path` argument (#31).
+- New `Observer` R6 class representing one observer (a simulation-time formula that computes a derived quantity from the underlying model) inside an `ObserverSet`. `observer_set$observers` now returns a named list of `Observer` objects exposing `name`, `type`, `dimension`, `formula`, and `container_path` (#42).
 - New `ObserverSet` R6 class wrapping the `ObserverSets` building blocks of a snapshot, accessible through `snapshot$observer_sets` and exported on round-trip. Observers inside a set are exposed as a raw list until the `Observer` leaf class lands (#38).
 - New `OriginData` R6 class wrapping the demographic starting point of an `Individual` (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via `Individual$origin_data` (#30).
 - New `Process` R6 class representing one compound process (PK-Sim `CompoundProcess`). Exposes `internal_name`, `data_source`, `molecule`, `metabolite`, `species`, `parameters` (a named list of `Parameter` R6 objects), and a derived `category` (one of `protein_binding_partners`, `metabolizing_enzymes`, `hepatic_clearance`, `transporter_proteins`, `renal_clearance`, `biliary_clearance`, `inhibition`, `induction`). `Compound$processes` now returns a flat named list of these objects, built once at construction so process state changes persist across accesses (#40).
@@ -31,7 +33,6 @@
 - `create_population()` builds a Population building block from named arguments and `Range` objects for age, weight, height, and BMI bounds (#27). `number_of_individuals` must be a positive integer; `proportion_of_females` must be a length-1 number (#48).
 - `create_process()` builds a `Process` from named arguments, wrapping `Process$new()` with validation of `internal_name` and `data_source` (#40).
 - `create_protocol()` builds a Simple or Advanced Protocol building block from named arguments, wrapping `Protocol$new()` (#27). Passing `schemas` now errors if any Simple Protocol field (`application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `parameters`) is also supplied (#48).
-- `get_observer_sets_dfs()` returns a tibble with one row per `ObserverSet` and a count of its observers (#38).
 - `remove_compound()` removes compounds from a `Snapshot` by name (#39).
 - `remove_event()` removes events from a `Snapshot` by name (#39).
 - `remove_observed_data()` removes observed-data entries from a `Snapshot` by name as an exported function wrapping the existing R6 method (#39).
