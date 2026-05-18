@@ -83,13 +83,22 @@ reference:
 - title: "Manage Building Blocks"
   desc: "Add and remove building blocks from snapshots"
   contents:
-  - add_individual
-  - add_formulation
+  - add_compound
+  - add_event
   - add_expression_profile
-  - remove_individual
-  - remove_formulation
-  - remove_population
+  - add_formulation
+  - add_individual
+  - add_observed_data
+  - add_population
+  - add_protocol
+  - remove_compound
+  - remove_event
   - remove_expression_profile
+  - remove_formulation
+  - remove_individual
+  - remove_observed_data
+  - remove_population
+  - remove_protocol
 
 - title: "Data Frame Conversion"
   desc: "Convert building blocks to data frames for analysis"

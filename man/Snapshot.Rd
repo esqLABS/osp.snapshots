@@ -130,6 +130,13 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     \item \href{#method-Snapshot-remove_expression_profile}{\code{Snapshot$remove_expression_profile()}}
     \item \href{#method-Snapshot-add_observed_data}{\code{Snapshot$add_observed_data()}}
     \item \href{#method-Snapshot-remove_observed_data}{\code{Snapshot$remove_observed_data()}}
+    \item \href{#method-Snapshot-add_compound}{\code{Snapshot$add_compound()}}
+    \item \href{#method-Snapshot-remove_compound}{\code{Snapshot$remove_compound()}}
+    \item \href{#method-Snapshot-add_population}{\code{Snapshot$add_population()}}
+    \item \href{#method-Snapshot-add_protocol}{\code{Snapshot$add_protocol()}}
+    \item \href{#method-Snapshot-remove_protocol}{\code{Snapshot$remove_protocol()}}
+    \item \href{#method-Snapshot-add_event}{\code{Snapshot$add_event()}}
+    \item \href{#method-Snapshot-remove_event}{\code{Snapshot$remove_event()}}
     \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
   }
 }
@@ -459,6 +466,83 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
   }
   \subsection{Returns}{
     Invisibly returns the object
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_compound"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_compound}{}}}
+\subsection{\code{Snapshot$add_compound()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_compound(compound)}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_compound"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_compound}{}}}
+\subsection{\code{Snapshot$remove_compound()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_compound(compound_name)}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_population"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_population}{}}}
+\subsection{\code{Snapshot$add_population()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_population(population)}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_protocol"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_protocol}{}}}
+\subsection{\code{Snapshot$add_protocol()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_protocol(protocol)}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_protocol"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_protocol}{}}}
+\subsection{\code{Snapshot$remove_protocol()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_protocol(protocol_name)}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_event"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_event}{}}}
+\subsection{\code{Snapshot$add_event()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_event(event)}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_event"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_event}{}}}
+\subsection{\code{Snapshot$remove_event()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_event(event_name)}
+    \if{html}{\out{</div>}}
   }
 }
 
