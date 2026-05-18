@@ -36,109 +36,8 @@ Snapshot <- R6::R6Class(
         cli::cli_abort("Input must be either a path to a JSON file or a list")
       }
 
-      # Initialize compounds list during snapshot initialization
-      if (is.null(private$.original_data$Compounds)) {
-        private$.compounds <- list()
-      } else {
-        # Create compound objects and store in an unnamed list
-        private$.compounds <- lapply(
-          private$.original_data$Compounds,
-          function(compound_data) {
-            Compound$new(compound_data)
-          }
-        )
-      }
-
-      # Initialize expression profiles list during snapshot initialization
-      if (is.null(private$.original_data$ExpressionProfiles)) {
-        private$.expression_profiles <- list()
-      } else {
-        # Create expression profile objects and store in an unnamed list
-        private$.expression_profiles <- lapply(
-          private$.original_data$ExpressionProfiles,
-          function(expression_profile_data) {
-            ExpressionProfile$new(expression_profile_data)
-          }
-        )
-      }
-
-      # Initialize individuals list during snapshot initialization
-      if (is.null(private$.original_data$Individuals)) {
-        private$.individuals <- list()
-      } else {
-        # Create individual objects and store in an unnamed list
-        private$.individuals <- lapply(
-          private$.original_data$Individuals,
-          function(individual_data) {
-            Individual$new(individual_data)
-          }
-        )
-      }
-
-      # Initialize formulations list during snapshot initialization
-      if (is.null(private$.original_data$Formulations)) {
-        private$.formulations <- list()
-      } else {
-        # Create formulation objects and store in an unnamed list
-        private$.formulations <- lapply(
-          private$.original_data$Formulations,
-          function(formulation_data) {
-            Formulation$new(formulation_data)
-          }
-        )
-      }
-
-      # Initialize populations list during snapshot initialization
-      if (is.null(private$.original_data$Populations)) {
-        private$.populations <- list()
-      } else {
-        # Create population objects and store in an unnamed list
-        private$.populations <- lapply(
-          private$.original_data$Populations,
-          function(population_data) {
-            Population$new(population_data)
-          }
-        )
-      }
-
-      # Initialize events list during snapshot initialization
-      if (is.null(private$.original_data$Events)) {
-        private$.events <- list()
-      } else {
-        # Create event objects and store in an unnamed list
-        private$.events <- lapply(
-          private$.original_data$Events,
-          function(event_data) {
-            Event$new(event_data)
-          }
-        )
-      }
-
-      # Initialize protocols list during snapshot initialization
-      if (is.null(private$.original_data$Protocols)) {
-        private$.protocols <- list()
-      } else {
-        # Create protocol objects and store in an unnamed list
-        private$.protocols <- lapply(
-          private$.original_data$Protocols,
-          function(protocol_data) {
-            Protocol$new(protocol_data)
-          }
-        )
-      }
-
-      # Initialize observed data list during snapshot initialization
-      if (is.null(private$.original_data$ObservedData)) {
-        private$.observed_data <- list()
-      } else {
-        # Create DataSet objects and store in an unnamed list
-        private$.observed_data <- lapply(
-          private$.original_data$ObservedData,
-          function(observed_data_item) {
-            loadDataSetFromSnapshot(observed_data_item)
-          }
-        )
-      }
+      # Building-block collections are constructed lazily on first access via
+      # their active bindings; all `private$.<kind>` caches stay NULL here.
 
       cli::cli_alert_success("Snapshot loaded successfully")
     },
@@ -228,6 +127,9 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Force lazy construction of any existing individuals before mutating
+      private$.ensure_individuals()
+
       # Add the individual to the list
       private$.individuals <- c(private$.individuals, list(individual))
 
@@ -253,6 +155,9 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_individual("Subject_001")
     #' }
     remove_individual = function(individual_name) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_individuals()
+
       if (length(private$.individuals) == 0) {
         cli::cli_warn("No individuals to remove")
         return(invisible(self))
@@ -309,6 +214,9 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Force lazy construction of any existing formulations before mutating
+      private$.ensure_formulations()
+
       # Add the formulation to the list
       private$.formulations <- c(private$.formulations, list(formulation))
 
@@ -334,6 +242,9 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_formulation("Tablet")
     #' }
     remove_formulation = function(formulation_name) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_formulations()
+
       if (length(private$.formulations) == 0) {
         cli::cli_warn("No formulations to remove")
         return(invisible(self))
@@ -380,6 +291,9 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_population("pop_1")
     #' }
     remove_population = function(population_name) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_populations()
+
       if (length(private$.populations) == 0) {
         cli::cli_warn("No populations to remove")
         return(invisible(self))
@@ -443,6 +357,9 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Force lazy construction of any existing expression profiles before mutating
+      private$.ensure_expression_profiles()
+
       # Add the expression profile to the list
       private$.expression_profiles <- c(
         private$.expression_profiles,
@@ -469,9 +386,12 @@ Snapshot <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' # Remove an expression profile from the snapshot
-    #' snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
+    #' snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     #' }
     remove_expression_profile = function(profile_id) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_expression_profiles()
+
       if (length(private$.expression_profiles) == 0) {
         cli::cli_warn("No expression profiles to remove")
         return(invisible(self))
@@ -526,6 +446,9 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Force lazy construction of any existing observed data before mutating
+      private$.ensure_observed_data()
+
       # Add the observed data to the list
       private$.observed_data <- c(private$.observed_data, list(observed_data))
 
@@ -546,6 +469,9 @@ Snapshot <- R6::R6Class(
     #' @param observed_data_name Character vector of observed data names to remove
     #' @return Invisibly returns the object
     remove_observed_data = function(observed_data_name) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_observed_data()
+
       if (length(private$.observed_data) == 0) {
         cli::cli_warn("No observed data to remove")
         return(invisible(self))
@@ -653,14 +579,36 @@ Snapshot <- R6::R6Class(
       }
 
       # Update with current observed data
-      # Note: DataSet objects don't have $data property, so we return the original data
-      # This preserves the original snapshot format for export/reimport
-      if (length(private$.observed_data) > 0) {
-        # Return original observed data to maintain snapshot format compatibility
-        result$ObservedData <- private$.original_data$ObservedData
-      } else {
-        # Remove ObservedData section if no data exists
-        result$ObservedData <- NULL
+      # Note: DataSet objects have no $data accessor so the raw JSON entries in
+      # `.original_data$ObservedData` are the source of truth on export. When
+      # the lazy cache has been touched, filter the original entries down to
+      # the names that still survive in the cache so removals and re-orderings
+      # are honored. Items added at runtime (whose backing JSON is not in
+      # `.original_data`) cannot be serialized here and are dropped with a
+      # warning.
+      if (!is.null(private$.observed_data)) {
+        if (length(private$.observed_data) == 0) {
+          result$ObservedData <- NULL
+        } else {
+          surviving_names <- vapply(
+            private$.observed_data,
+            function(od) od$name,
+            character(1)
+          )
+          original <- private$.original_data$ObservedData
+          original_names <- vapply(
+            original,
+            function(od) od$Name %||% od$name,
+            character(1)
+          )
+          result$ObservedData <- original[original_names %in% surviving_names]
+          if (length(private$.observed_data) > length(result$ObservedData)) {
+            cli::cli_warn(c(
+              "Some observed data added at runtime cannot be serialized.",
+              i = "DataSet objects have no $data accessor; only original entries are exported."
+            ))
+          }
+        }
       }
 
       return(result)
@@ -696,6 +644,7 @@ Snapshot <- R6::R6Class(
         private$.compounds <- value
         private$.compounds_named <- NULL
       }
+      private$.ensure_compounds()
       if (is.null(private$.compounds_named)) {
         private$.compounds_named <- private$.build_named_list(
           private$.compounds,
@@ -711,6 +660,7 @@ Snapshot <- R6::R6Class(
         private$.expression_profiles <- value
         private$.expression_profiles_named <- NULL
       }
+      private$.ensure_expression_profiles()
       if (is.null(private$.expression_profiles_named)) {
         private$.expression_profiles_named <- private$.build_named_list(
           private$.expression_profiles,
@@ -725,11 +675,15 @@ Snapshot <- R6::R6Class(
     individuals = function(value = NULL) {
       if (!is.null(value)) {
         private$.individuals <- value
+        private$.individuals_named <- NULL
       }
-      private$.individuals_named <- private$.build_named_list(
-        private$.individuals,
-        "individual_collection"
-      )
+      private$.ensure_individuals()
+      if (is.null(private$.individuals_named)) {
+        private$.individuals_named <- private$.build_named_list(
+          private$.individuals,
+          "individual_collection"
+        )
+      }
       private$.individuals_named
     },
 
@@ -737,11 +691,15 @@ Snapshot <- R6::R6Class(
     formulations = function(value = NULL) {
       if (!is.null(value)) {
         private$.formulations <- value
+        private$.formulations_named <- NULL
       }
-      private$.formulations_named <- private$.build_named_list(
-        private$.formulations,
-        "formulation_collection"
-      )
+      private$.ensure_formulations()
+      if (is.null(private$.formulations_named)) {
+        private$.formulations_named <- private$.build_named_list(
+          private$.formulations,
+          "formulation_collection"
+        )
+      }
       private$.formulations_named
     },
 
@@ -749,11 +707,15 @@ Snapshot <- R6::R6Class(
     populations = function(value = NULL) {
       if (!is.null(value)) {
         private$.populations <- value
+        private$.populations_named <- NULL
       }
-      private$.populations_named <- private$.build_named_list(
-        private$.populations,
-        "population_collection"
-      )
+      private$.ensure_populations()
+      if (is.null(private$.populations_named)) {
+        private$.populations_named <- private$.build_named_list(
+          private$.populations,
+          "population_collection"
+        )
+      }
       private$.populations_named
     },
 
@@ -761,11 +723,15 @@ Snapshot <- R6::R6Class(
     events = function(value = NULL) {
       if (!is.null(value)) {
         private$.events <- value
+        private$.events_named <- NULL
       }
-      private$.events_named <- private$.build_named_list(
-        private$.events,
-        "event_collection"
-      )
+      private$.ensure_events()
+      if (is.null(private$.events_named)) {
+        private$.events_named <- private$.build_named_list(
+          private$.events,
+          "event_collection"
+        )
+      }
       private$.events_named
     },
 
@@ -773,11 +739,15 @@ Snapshot <- R6::R6Class(
     protocols = function(value = NULL) {
       if (!is.null(value)) {
         private$.protocols <- value
+        private$.protocols_named <- NULL
       }
-      private$.protocols_named <- private$.build_named_list(
-        private$.protocols,
-        "protocol_collection"
-      )
+      private$.ensure_protocols()
+      if (is.null(private$.protocols_named)) {
+        private$.protocols_named <- private$.build_named_list(
+          private$.protocols,
+          "protocol_collection"
+        )
+      }
       private$.protocols_named
     },
 
@@ -785,11 +755,15 @@ Snapshot <- R6::R6Class(
     observed_data = function(value = NULL) {
       if (!is.null(value)) {
         private$.observed_data <- value
+        private$.observed_data_named <- NULL
       }
-      private$.observed_data_named <- private$.build_named_list(
-        private$.observed_data,
-        "observed_data_collection"
-      )
+      private$.ensure_observed_data()
+      if (is.null(private$.observed_data_named)) {
+        private$.observed_data_named <- private$.build_named_list(
+          private$.observed_data,
+          "observed_data_collection"
+        )
+      }
       private$.observed_data_named
     }
   ),
@@ -814,6 +788,88 @@ Snapshot <- R6::R6Class(
 
       return(pksim_version)
     },
+
+    # Lazily build the unnamed object list for a building-block collection.
+    # On first call, walks the matching section of `private$.original_data`
+    # and wraps each item with `ctor`; the cache slot stays an empty list
+    # when the section is absent or empty. Idempotent on the cache.
+    .ensure_collection = function(cache_name, section_name, ctor) {
+      if (!is.null(private[[cache_name]])) {
+        return(invisible(NULL))
+      }
+      section <- private$.original_data[[section_name]]
+      if (is.null(section)) {
+        private[[cache_name]] <- list()
+      } else {
+        private[[cache_name]] <- lapply(section, ctor)
+      }
+      invisible(NULL)
+    },
+
+    .ensure_compounds = function() {
+      private$.ensure_collection(
+        ".compounds",
+        "Compounds",
+        function(d) Compound$new(d)
+      )
+    },
+
+    .ensure_expression_profiles = function() {
+      private$.ensure_collection(
+        ".expression_profiles",
+        "ExpressionProfiles",
+        function(d) ExpressionProfile$new(d)
+      )
+    },
+
+    .ensure_individuals = function() {
+      private$.ensure_collection(
+        ".individuals",
+        "Individuals",
+        function(d) Individual$new(d)
+      )
+    },
+
+    .ensure_formulations = function() {
+      private$.ensure_collection(
+        ".formulations",
+        "Formulations",
+        function(d) Formulation$new(d)
+      )
+    },
+
+    .ensure_populations = function() {
+      private$.ensure_collection(
+        ".populations",
+        "Populations",
+        function(d) Population$new(d)
+      )
+    },
+
+    .ensure_events = function() {
+      private$.ensure_collection(
+        ".events",
+        "Events",
+        function(d) Event$new(d)
+      )
+    },
+
+    .ensure_protocols = function() {
+      private$.ensure_collection(
+        ".protocols",
+        "Protocols",
+        function(d) Protocol$new(d)
+      )
+    },
+
+    .ensure_observed_data = function() {
+      private$.ensure_collection(
+        ".observed_data",
+        "ObservedData",
+        function(d) loadDataSetFromSnapshot(d)
+      )
+    },
+
     # Store compound objects in an unnamed list
     .compounds = NULL,
 
@@ -856,7 +912,14 @@ Snapshot <- R6::R6Class(
     # Cache for the named protocols list with disambiguated names
     .protocols_named = NULL,
 
-    # Store observed data objects in an unnamed list
+    # Store observed data objects in an unnamed list.
+    # Tri-state sentinel used by the export path in `$data`:
+    #   NULL          = lazy cache untouched, export from `.original_data`.
+    #   list()        = cleared by the user, drop ObservedData from export.
+    #   non-empty     = filter `.original_data` down to surviving names.
+    # Only the first and third states are reachable from the public API today;
+    # the cleared state is reachable via `remove_observed_data()` removing all
+    # entries.
     .observed_data = NULL,
 
     # Cache for the named observed data list with disambiguated names
