@@ -226,32 +226,12 @@ Compound <- R6::R6Class(
     .induction = NULL,
 
     initialize_parameters = function() {
-      if (
-        !is.null(private$.data$Parameters) &&
-          length(private$.data$Parameters) > 0
-      ) {
-        # Create parameters list
-        private$.parameters <- lapply(
-          private$.data$Parameters,
-          function(param_data) Parameter$new(param_data)
-        )
-        # Name the parameters by their paths for easier access
-        if (length(private$.parameters) > 0) {
-          names(private$.parameters) <- vapply(
-            private$.parameters,
-            function(p) p$path %||% "Unknown",
-            character(1)
-          )
-        }
-        # Add collection class for custom printing
-        class(private$.parameters) <- c("parameter_collection", "list")
-      } else {
-        # Initialize empty parameter list
-        private$.parameters <- list()
-        class(private$.parameters) <- c("parameter_collection", "list")
-      }
+      private$.parameters <- build_parameters_from_raw(
+        private$.data$Parameters,
+        key_by = "path"
+      )
 
-      # Initialize processed data
+      # Sub-structure extraction (compound processes) stays on this class.
       if (!is.null(private$.data$Processes)) {
         private$.extract_process_data()
       }
