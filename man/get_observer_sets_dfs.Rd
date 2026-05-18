@@ -2,7 +2,7 @@
 % Please edit documentation in R/snapshot_dataframes.R
 \name{get_observer_sets_dfs}
 \alias{get_observer_sets_dfs}
-\title{Get all observer sets in a snapshot as a data frame}
+\title{Get all observer sets in a snapshot as a tibble}
 \usage{
 get_observer_sets_dfs(snapshot)
 }
@@ -10,24 +10,17 @@ get_observer_sets_dfs(snapshot)
 \item{snapshot}{A `Snapshot` object.}
 }
 \value{
-A tibble with one row per `ObserverSet`, with columns:
-\itemize{
-  \item `observer_set_id`: name used to look up the set in
-    `snapshot$observer_sets` (the building block name, with `_N`
-    disambiguation when duplicates collide).
-  \item `name`: the observer set's `Name` field as stored in the snapshot.
-  \item `n_observers`: number of observers in the set.
-}
+A tibble with one row per `ObserverSet`, with columns
+  `observer_set_id`, `name`, `n_observers`. Richer per-observer
+  detail is deferred until the `Observer` leaf class lands.
 }
 \description{
-Extracts all observer sets from a snapshot and returns them as a tibble
-with one row per `ObserverSet`. The shape is intentionally flat; richer
-per-observer detail is deferred until the `Observer` leaf class lands.
+Thin wrapper around [as_tibbles()] with `kind = "observer_sets"`.
+Prefer [as_tibbles()] in new code.
 }
 \examples{
 \dontrun{
 snapshot <- load_snapshot("path/to/snapshot.json")
-
 observer_sets_df <- get_observer_sets_dfs(snapshot)
 }
 }

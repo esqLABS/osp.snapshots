@@ -102,9 +102,9 @@ test_that("add_observed_data method works", {
   # Use a DataSet from test snapshot
   dataset <- test_snapshot$observed_data[[1]]
 
-  # Add to empty snapshot
+  # Add to empty snapshot (warning about runtime-only DataSet is expected)
   initial_count <- length(empty_snapshot$observed_data)
-  empty_snapshot$add_observed_data(dataset)
+  suppressWarnings(empty_snapshot$add_observed_data(dataset))
 
   expect_equal(length(empty_snapshot$observed_data), initial_count + 1)
   expect_true(dataset$name %in% names(empty_snapshot$observed_data))
@@ -117,7 +117,7 @@ test_that("remove_observed_data method works", {
   # First add a DataSet to test removal
   dataset <- test_snapshot$observed_data[[1]]
 
-  empty_snapshot$add_observed_data(dataset)
+  suppressWarnings(empty_snapshot$add_observed_data(dataset))
   initial_count <- length(empty_snapshot$observed_data)
 
   # Remove the added observed data
@@ -155,6 +155,19 @@ test_that("Snapshot export includes observed data", {
   expect_true(length(data$ObservedData) > 0)
 })
 
+test_that("Snapshot export replays the original ObservedData slice verbatim", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  original <- snapshot$.__enclos_env__$private$.original_data$ObservedData
+
+  # Touch the lazy cache (forces the export adapter onto the "filter by
+  # surviving names" path) and mutate a DataSet in place.
+  dataset <- snapshot$observed_data[[1]]
+  dataset$xUnit <- ospsuite::ospUnits$Time$min
+
+  exported <- snapshot$data
+  expect_identical(exported$ObservedData, original)
+})
+
 test_that("Snapshot export drops removed observed data on round-trip", {
   snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
   initial_count <- length(snapshot$observed_data)
@@ -177,6 +190,55 @@ test_that("Snapshot export drops removed observed data on round-trip", {
   reloaded <- load_snapshot(out)
   expect_equal(length(reloaded$observed_data), initial_count - 1)
   expect_false(to_remove %in% names(reloaded$observed_data))
+})
+
+test_that("Snapshot export drops every observed data entry when all are removed", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  all_names <- names(snapshot$observed_data)
+  expect_gt(length(all_names), 0)
+
+  snapshot$remove_observed_data(all_names)
+  # Use `[[` rather than `$` to avoid partial matching against
+  # `ObservedDataClassifications`.
+  expect_null(snapshot$data[["ObservedData"]])
+})
+
+test_that("Snapshot export preserves the user's ordering of observed data", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  expect_gt(length(snapshot$observed_data), 2)
+
+  # Reverse the cache so the user-facing order differs from the original.
+  reversed <- rev(snapshot$observed_data)
+  expect_gt(length(reversed), 2)
+  expect_equal(
+    reversed[[1]]$name,
+    snapshot$observed_data[[length(snapshot$observed_data)]]$name
+  )
+
+  # Inject the reversed list into the private cache so the export adapter
+  # exercises the surviving-names + match() path.
+  snapshot$.__enclos_env__$private$.observed_data <- unname(reversed)
+  exported_names <- vapply(
+    snapshot$data$ObservedData,
+    function(od) od$Name %||% od$name,
+    character(1)
+  )
+  cache_names <- unname(vapply(reversed, function(od) od$name, character(1)))
+  expect_equal(exported_names, cache_names)
+})
+
+test_that("add_observed_data warns when the dataset has no backing snapshot slice", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  dataset <- test_snapshot$observed_data[[1]]
+  expect_snapshot(snapshot$add_observed_data(dataset))
+})
+
+test_that("Snapshot$print stays quiet when runtime DataSet entries are present", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  dataset <- test_snapshot$observed_data[[1]]
+  suppressWarnings(suppressMessages(snapshot$add_observed_data(dataset)))
+  expect_no_warning(snapshot$data)
+  expect_no_warning(capture.output(print(snapshot)))
 })
 
 test_that("DataSet handles complex real data structure", {
@@ -244,8 +306,8 @@ test_that("DataSet handles duplicate names correctly", {
   dataset1 <- test_snapshot$observed_data[[1]]
   dataset2 <- test_snapshot$observed_data[[1]] # Same DataSet
 
-  temp_empty$add_observed_data(dataset1)
-  temp_empty$add_observed_data(dataset2)
+  suppressWarnings(temp_empty$add_observed_data(dataset1))
+  suppressWarnings(temp_empty$add_observed_data(dataset2))
 
   # Check that both are added with disambiguated names
   expect_equal(length(temp_empty$observed_data), 2)
@@ -307,7 +369,7 @@ test_that("add/remove observed data updates export data", {
 
   # Add a DataSet
   dataset <- test_snapshot$observed_data[[1]]
-  temp_empty$add_observed_data(dataset)
+  suppressWarnings(temp_empty$add_observed_data(dataset))
 
   # Check export data is updated (note: export functionality may be different now)
   updated_data <- temp_empty$data
@@ -331,7 +393,7 @@ test_that("Convenience functions work correctly", {
 
   # Use method calls directly
   initial_count <- length(temp_empty$observed_data)
-  temp_empty$add_observed_data(dataset)
+  suppressWarnings(temp_empty$add_observed_data(dataset))
   expect_equal(length(temp_empty$observed_data), initial_count + 1)
 
   # Test remove_observed_data method
