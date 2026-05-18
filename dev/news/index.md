@@ -188,7 +188,7 @@
   or
   [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md)
   now writes an empty section on export instead of falling back to the
-  original entries (#35).
+  original entries (#35, \#59).
 
 - Fixed snapshot export/import so single-element JSON arrays remain
   arrays, allowing exported snapshots to load in PK-Sim (#23).
