@@ -15,11 +15,16 @@
 #' @param values Numeric vector. Measurement y-values, same length as
 #'   `time` (required).
 #' @param time_unit Character. Unit for `time` (for example `"h"`,
-#'   `"min"`, `"day"`). Defaults to `"h"`.
+#'   `"min"`, `"day(s)"`). Validated against
+#'   `ospsuite::ospUnits$Time`. Defaults to `"h"`.
 #' @param value_unit Character. Unit for `values` (for example
-#'   `"mg/l"`).
+#'   `"mg/l"`). When supplied alongside `value_dimension`, the unit is
+#'   validated against the dimension via [validate_unit()].
 #' @param value_dimension Character. Dimension for `values` (for
-#'   example `"Concentration (mass)"`).
+#'   example `"Concentration (mass)"`). Required (no default): pass one
+#'   of the names of `ospsuite::ospDimensions`. Previously defaulted
+#'   silently to `"Concentration (mass)"`, which was wrong for
+#'   non-concentration data.
 #' @param error Numeric vector. Optional error y-values, same length as
 #'   `values`.
 #' @param error_type Character. Auxiliary type for `error`, typically
@@ -42,7 +47,8 @@
 #' obs <- create_observed_data(
 #'   name = "Subject 001",
 #'   time = c(0, 1, 2, 4, 8),
-#'   values = c(0, 12, 18, 11, 5)
+#'   values = c(0, 12, 18, 11, 5),
+#'   value_dimension = "Concentration (mass)"
 #' )
 #'
 #' # Create observed data with units and error
@@ -82,6 +88,18 @@ create_observed_data <- function(
       "{.arg time} and {.arg values} must have the same length, got {length(time)} and {length(values)}"
     )
   }
+  if (is.null(value_dimension)) {
+    cli::cli_abort(
+      c(
+        "{.arg value_dimension} is required.",
+        "i" = "Pass one of: {toString(names(ospsuite::ospDimensions))}."
+      )
+    )
+  }
+  validate_unit(time_unit, "Time")
+  if (!is.null(value_unit)) {
+    validate_unit(value_unit, value_dimension)
+  }
   if (!is.null(error)) {
     if (!is.numeric(error) || length(error) != length(values)) {
       cli::cli_abort(
@@ -103,7 +121,7 @@ create_observed_data <- function(
 
   column <- list(
     Values = as.list(values),
-    Dimension = value_dimension %||% "Concentration (mass)"
+    Dimension = value_dimension
   )
   if (!is.null(value_unit)) {
     column$Unit <- value_unit

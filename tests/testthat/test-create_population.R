@@ -39,6 +39,14 @@ test_that("create_population validates required arguments", {
   )
   expect_snapshot(
     error = TRUE,
+    create_population(name = "P", number_of_individuals = NA_integer_)
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_population(name = "P", number_of_individuals = 1.5)
+  )
+  expect_snapshot(
+    error = TRUE,
     create_population(
       name = "P",
       number_of_individuals = 10,
@@ -50,7 +58,22 @@ test_that("create_population validates required arguments", {
     create_population(
       name = "P",
       number_of_individuals = 10,
+      proportion_of_females = c(30, 70)
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_population(
+      name = "P",
+      number_of_individuals = 10,
       age_range = list(min = 20, max = 60, unit = "year(s)")
     )
+  )
+})
+
+test_that("create_population rejects NA name", {
+  expect_snapshot(
+    error = TRUE,
+    create_population(name = NA_character_, number_of_individuals = 10)
   )
 })

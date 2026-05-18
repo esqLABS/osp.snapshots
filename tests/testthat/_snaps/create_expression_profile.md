@@ -21,5 +21,5 @@
         type = "Enzyme", ontogeny = 1)
     Condition
       Error in `create_expression_profile()`:
-      ! `ontogeny` must be a string or a list
+      ! `ontogeny` must be a scalar character or a list
 

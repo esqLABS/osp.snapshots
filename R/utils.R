@@ -9,7 +9,11 @@
 #' @return TRUE if valid, throws an error if invalid
 #' @export
 validate_unit <- function(unit, dimension) {
-  valid_units <- ospsuite::ospUnits[[dimension]]
+  valid_units <- tryCatch(
+    ospsuite::getUnitsForDimension(dimension),
+    error = function(e)
+      unlist(ospsuite::ospUnits[[dimension]], use.names = FALSE)
+  )
   if (!(unit %in% valid_units)) {
     cli::cli_abort(
       c(
@@ -171,49 +175,4 @@ convert_ospsuite_time_to_duration <- function(value, unit) {
   # Convert unit and create duration
   lubridate_unit <- convert_ospsuite_time_unit_to_lubridate(unit)
   return(lubridate::duration(value, units = lubridate_unit))
-}
-
-# Internal: assert that `value` is a non-empty scalar character.
-# Used by the create_* factories to validate required string arguments.
-# Captures a missing promise so callers can pass a possibly-unsupplied
-# argument without R signalling its default "argument is missing" error.
-check_required_string <- function(value, arg_name) {
-  is_missing <- tryCatch(
-    {
-      force(value)
-      FALSE
-    },
-    error = function(e) TRUE
-  )
-  if (
-    is_missing ||
-      is.null(value) ||
-      !is.character(value) ||
-      length(value) != 1 ||
-      !nzchar(value)
-  ) {
-    cli::cli_abort(
-      "{.arg {arg_name}} must be a non-empty string",
-      call = parent.frame()
-    )
-  }
-  invisible(value)
-}
-
-# Internal: convert a list of Parameter R6 objects (or raw parameter lists)
-# into the raw list-of-lists shape used in snapshot JSON.
-# When `name_key = "Name"`, any `Path` field is renamed to `Name` (used by
-# Compound, Event, and Protocol parameter arrays which key on `Name`).
-to_raw_parameters <- function(parameters, name_key = c("Path", "Name")) {
-  name_key <- match.arg(name_key)
-  lapply(parameters, function(param) {
-    raw <- if (inherits(param, "Parameter")) param$data else param
-    if (identical(name_key, "Name")) {
-      if (is.null(raw$Name) && !is.null(raw$Path)) {
-        raw$Name <- raw$Path
-      }
-      raw$Path <- NULL
-    }
-    raw
-  })
 }

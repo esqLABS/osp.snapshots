@@ -58,6 +58,15 @@ test_that("create_protocol validates required arguments", {
   )
   expect_snapshot(
     error = TRUE,
+    create_protocol(
+      name = "P",
+      dosing_interval = "Single",
+      target_organ = "Liver",
+      schemas = list()
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
     create_protocol(name = "P", parameters = "not a list")
   )
 })

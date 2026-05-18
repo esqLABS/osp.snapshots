@@ -63,11 +63,24 @@ create_protocol <- function(
   time_unit = NULL
 ) {
   check_required_string(name, "name")
-  if (!is.null(schemas) && !is.null(application_type)) {
-    cli::cli_abort(c(
-      "{.arg schemas} and {.arg application_type} are mutually exclusive",
-      "i" = "A protocol is either Simple (use {.arg application_type}) or Advanced (use {.arg schemas})."
-    ))
+  if (!is.null(schemas)) {
+    simple_fields <- list(
+      application_type = application_type,
+      dosing_interval = dosing_interval,
+      target_organ = target_organ,
+      target_compartment = target_compartment,
+      parameters = parameters
+    )
+    conflicting <- names(simple_fields)[
+      !vapply(simple_fields, is.null, logical(1))
+    ]
+    if (length(conflicting) > 0) {
+      cli::cli_abort(c(
+        "{.arg schemas} is mutually exclusive with Simple Protocol fields.",
+        "i" = "A protocol is either Simple (use {.arg application_type}, {.arg dosing_interval}, {.arg target_organ}, {.arg target_compartment}, {.arg parameters}) or Advanced (use {.arg schemas}).",
+        "x" = "Conflicting argument{?s}: {.arg {conflicting}}."
+      ))
+    }
   }
   if (!is.null(parameters) && !is.list(parameters)) {
     cli::cli_abort("{.arg parameters} must be a list")

@@ -51,4 +51,12 @@ test_that("create_compound validates required arguments", {
     error = TRUE,
     create_compound(name = "Drug", parameters = "not a list")
   )
+  expect_snapshot(
+    error = TRUE,
+    create_compound(
+      name = "Drug",
+      molecular_weight = 250,
+      molecular_weight_unit = "not-a-unit"
+    )
+  )
 })

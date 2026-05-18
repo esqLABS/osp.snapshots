@@ -63,6 +63,9 @@ create_compound <- function(
   if (!is.null(molecular_weight) && !is.numeric(molecular_weight)) {
     cli::cli_abort("{.arg molecular_weight} must be a numeric value")
   }
+  if (!is.null(molecular_weight)) {
+    validate_unit(molecular_weight_unit, "Molecular weight")
+  }
 
   data <- list(Name = name)
 

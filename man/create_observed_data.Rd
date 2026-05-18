@@ -28,13 +28,18 @@ create_observed_data(
 `time` (required).}
 
 \item{time_unit}{Character. Unit for `time` (for example `"h"`,
-`"min"`, `"day"`). Defaults to `"h"`.}
+`"min"`, `"day(s)"`). Validated against
+`ospsuite::ospUnits$Time`. Defaults to `"h"`.}
 
 \item{value_unit}{Character. Unit for `values` (for example
-`"mg/l"`).}
+`"mg/l"`). When supplied alongside `value_dimension`, the unit is
+validated against the dimension via [validate_unit()].}
 
 \item{value_dimension}{Character. Dimension for `values` (for
-example `"Concentration (mass)"`).}
+example `"Concentration (mass)"`). Required (no default): pass one
+of the names of `ospsuite::ospDimensions`. Previously defaulted
+silently to `"Concentration (mass)"`, which was wrong for
+non-concentration data.}
 
 \item{error}{Numeric vector. Optional error y-values, same length as
 `values`.}
@@ -73,7 +78,8 @@ simulations.
 obs <- create_observed_data(
   name = "Subject 001",
   time = c(0, 1, 2, 4, 8),
-  values = c(0, 12, 18, 11, 5)
+  values = c(0, 12, 18, 11, 5),
+  value_dimension = "Concentration (mass)"
 )
 
 # Create observed data with units and error

@@ -11,7 +11,7 @@
 #'
 #' @param name Character. Name of the population (required).
 #' @param number_of_individuals Integer. Number of subjects to generate
-#'   (required, must be positive).
+#'   (required, must be a positive integer).
 #' @param proportion_of_females Numeric. Percentage of females in the
 #'   population, between 0 and 100. Defaults to `50`.
 #' @param individual_name Character. Name of the base [Individual]
@@ -65,23 +65,22 @@ create_population <- function(
   advanced_parameters = NULL
 ) {
   check_required_string(name, "name")
-  is_n_missing <- tryCatch(
-    {
-      force(number_of_individuals)
-      FALSE
-    },
-    error = function(e) TRUE
-  )
   if (
-    is_n_missing ||
+    missing(number_of_individuals) ||
       !is.numeric(number_of_individuals) ||
       length(number_of_individuals) != 1 ||
-      number_of_individuals < 1
+      is.na(number_of_individuals) ||
+      number_of_individuals < 1 ||
+      number_of_individuals != round(number_of_individuals)
   ) {
-    cli::cli_abort("{.arg number_of_individuals} must be a positive number")
+    cli::cli_abort(
+      "{.arg number_of_individuals} must be a positive integer"
+    )
   }
   if (
     !is.numeric(proportion_of_females) ||
+      length(proportion_of_females) != 1 ||
+      is.na(proportion_of_females) ||
       proportion_of_females < 0 ||
       proportion_of_females > 100
   ) {

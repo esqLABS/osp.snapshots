@@ -86,14 +86,14 @@ create_expression_profile <- function(
     } else if (is.list(ontogeny)) {
       data$Ontogeny <- ontogeny
     } else {
-      cli::cli_abort("{.arg ontogeny} must be a string or a list")
+      cli::cli_abort("{.arg ontogeny} must be a scalar character or a list")
     }
   }
   if (!is.null(parameters)) {
     if (!is.list(parameters)) {
       cli::cli_abort("{.arg parameters} must be a list")
     }
-    data$Parameters <- to_raw_parameters(parameters)
+    data$Parameters <- to_raw_parameters(parameters, "Path")
   }
 
   ExpressionProfile$new(data)

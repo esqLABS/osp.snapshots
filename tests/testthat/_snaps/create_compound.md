@@ -38,3 +38,12 @@
       Error in `create_compound()`:
       ! `parameters` must be a list
 
+---
+
+    Code
+      create_compound(name = "Drug", molecular_weight = 250, molecular_weight_unit = "not-a-unit")
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: not-a-unit
+      i Valid units for Molecular weight are: kg/µmol, kg/mol, kDa, g/mol
+
