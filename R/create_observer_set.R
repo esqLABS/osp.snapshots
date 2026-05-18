@@ -49,7 +49,7 @@
 #' )
 create_observer_set <- function(name, observers = NULL) {
   check_required_string(name, "name")
-  if (!is.null(observers) && !is.list(observers)) {
+  if (!is.null(observers) && (!is.list(observers) || is.object(observers))) {
     cli::cli_abort("{.arg observers} must be a list")
   }
 
@@ -61,7 +61,7 @@ create_observer_set <- function(name, observers = NULL) {
       if (inherits(observer, "Observer")) {
         return(observer$data)
       }
-      if (is.list(observer)) {
+      if (is.list(observer) && !is.object(observer)) {
         return(observer)
       }
       cli::cli_abort(

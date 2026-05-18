@@ -78,3 +78,26 @@ test_that("create_observer_set validates required arguments", {
     create_observer_set(name = "S", observers = list(42))
   )
 })
+
+test_that("create_observer_set rejects a bare Observer R6 as `observers`", {
+  observer <- Observer$new(list(
+    Name = "brain_plasma_conc",
+    Type = "Container",
+    Dimension = "Concentration (molar)",
+    Formula = list(Formula = "Conc_Br")
+  ))
+
+  expect_snapshot(
+    error = TRUE,
+    create_observer_set(name = "S", observers = observer)
+  )
+})
+
+test_that("create_observer_set rejects non-Observer R6 entries", {
+  compound <- Compound$new(list(Name = "Aspirin"))
+
+  expect_snapshot(
+    error = TRUE,
+    create_observer_set(name = "S", observers = list(compound))
+  )
+})
