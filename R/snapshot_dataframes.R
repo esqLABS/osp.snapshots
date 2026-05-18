@@ -365,27 +365,10 @@ as_tibbles_expression_profiles <- function(snapshot) {
 as_tibbles_protocols <- function(snapshot) {
   protocols <- snapshot$protocols
 
+  # Reuse the same empty-tibble helper Protocol$to_df() falls back to so the
+  # empty-state and populated shapes cannot diverge (#56).
   if (length(protocols) == 0) {
-    return(tibble::tibble(
-      protocol_id = character(0),
-      protocol_name = character(0),
-      is_advanced = logical(0),
-      protocol_application_type = character(0),
-      protocol_dosing_interval = character(0),
-      protocol_time_unit = character(0),
-      schema_id = character(0),
-      schema_name = character(0),
-      schema_item_id = character(0),
-      schema_item_name = character(0),
-      schema_item_application_type = character(0),
-      schema_item_formulation_key = character(0),
-      parameter_name = character(0),
-      parameter_value = numeric(0),
-      parameter_unit = character(0),
-      parameter_source = character(0),
-      parameter_description = character(0),
-      parameter_source_id = integer(0)
-    ))
+    return(empty_protocol_tibble())
   }
 
   protocol_dfs <- lapply(protocols, \(protocol) protocol$to_df())

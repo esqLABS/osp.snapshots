@@ -77,6 +77,13 @@ test_that("as_tibbles() returns the protocols tibble", {
   expect_gt(nrow(result), 0)
 })
 
+test_that("as_tibbles() protocols tibble shape matches between empty and populated", {
+  empty <- as_tibbles(empty_snapshot, "protocols")
+  populated <- as_tibbles(test_snapshot, "protocols")
+
+  expect_named(empty, names(populated))
+})
+
 test_that("as_tibbles() returns the observed_data tibble", {
   result <- as_tibbles(test_snapshot, "observed_data")
 

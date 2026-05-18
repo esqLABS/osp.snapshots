@@ -272,21 +272,7 @@ Protocol <- R6::R6Class(
         result_data <- do.call(rbind.data.frame, all_protocols)
         return(tibble::as_tibble(result_data))
       } else {
-        return(tibble::tibble(
-          protocol_name = character(0),
-          schema_name = character(0),
-          schema_item_name = character(0),
-          type = character(0),
-          formulation = character(0),
-          dosing_interval = character(0),
-          start_time = numeric(0),
-          start_time_unit = character(0),
-          dose = numeric(0),
-          dose_unit = character(0),
-          rep_number = numeric(0),
-          rep_time = character(0),
-          rep_time_unit = character(0)
-        ))
+        return(empty_protocol_tibble())
       }
     },
 
@@ -523,3 +509,23 @@ Protocol <- R6::R6Class(
     }
   )
 )
+
+# Shared empty tibble used by Protocol$to_df() and as_tibbles_protocols(), so
+# the empty-state and populated shapes cannot drift (#56).
+empty_protocol_tibble <- function() {
+  tibble::tibble(
+    protocol_name = character(0),
+    schema_name = character(0),
+    schema_item_name = character(0),
+    type = character(0),
+    formulation = character(0),
+    dosing_interval = character(0),
+    start_time = numeric(0),
+    start_time_unit = character(0),
+    dose = numeric(0),
+    dose_unit = character(0),
+    rep_number = numeric(0),
+    rep_time = character(0),
+    rep_time_unit = character(0)
+  )
+}
