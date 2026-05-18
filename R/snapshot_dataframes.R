@@ -164,14 +164,14 @@ get_individuals_dfs <- function(snapshot) {
     if (length(individuals_dfs) > 0) {
       result$individuals <- dplyr::bind_rows(individuals_dfs)
     }
-    
+
     # Combine parameters data
     param_dfs <- lapply(ind_dfs, function(df) df$individuals_parameters)
     param_dfs <- param_dfs[!sapply(param_dfs, is.null)]
     if (length(param_dfs) > 0) {
       result$individuals_parameters <- dplyr::bind_rows(param_dfs)
     }
-    
+
     # Combine expression profiles data
     expr_dfs <- lapply(ind_dfs, function(df) df$individuals_expressions)
     expr_dfs <- expr_dfs[!sapply(expr_dfs, is.null)]
@@ -262,7 +262,7 @@ get_formulations_dfs <- function(snapshot) {
     if (length(formulations_dfs) > 0) {
       result$formulations <- dplyr::bind_rows(formulations_dfs)
     }
-    
+
     # Combine parameters data
     param_dfs <- lapply(form_dfs, function(df) df$formulations_parameters)
     param_dfs <- param_dfs[!sapply(param_dfs, is.null)]

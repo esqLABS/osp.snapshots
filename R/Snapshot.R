@@ -386,7 +386,7 @@ Snapshot <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' # Remove an expression profile from the snapshot
-    #' snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
+    #' snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     #' }
     remove_expression_profile = function(profile_id) {
       # Force lazy construction so we can inspect the current set
@@ -579,15 +579,35 @@ Snapshot <- R6::R6Class(
       }
 
       # Update with current observed data
-      # Note: DataSet objects don't have $data property, so we return the original data
-      # This preserves the original snapshot format for export/reimport. We
-      # only override the original when the lazy cache has been touched, so
-      # untouched snapshots round-trip their ObservedData section as-is.
+      # Note: DataSet objects have no $data accessor so the raw JSON entries in
+      # `.original_data$ObservedData` are the source of truth on export. When
+      # the lazy cache has been touched, filter the original entries down to
+      # the names that still survive in the cache so removals and re-orderings
+      # are honored. Items added at runtime (whose backing JSON is not in
+      # `.original_data`) cannot be serialized here and are dropped with a
+      # warning.
       if (!is.null(private$.observed_data)) {
-        if (length(private$.observed_data) > 0) {
-          result$ObservedData <- private$.original_data$ObservedData
-        } else {
+        if (length(private$.observed_data) == 0) {
           result$ObservedData <- NULL
+        } else {
+          surviving_names <- vapply(
+            private$.observed_data,
+            function(od) od$name,
+            character(1)
+          )
+          original <- private$.original_data$ObservedData
+          original_names <- vapply(
+            original,
+            function(od) od$Name %||% od$name,
+            character(1)
+          )
+          result$ObservedData <- original[original_names %in% surviving_names]
+          if (length(private$.observed_data) > length(result$ObservedData)) {
+            cli::cli_warn(c(
+              "Some observed data added at runtime cannot be serialized.",
+              i = "DataSet objects have no $data accessor; only original entries are exported."
+            ))
+          }
         }
       }
 
@@ -892,7 +912,14 @@ Snapshot <- R6::R6Class(
     # Cache for the named protocols list with disambiguated names
     .protocols_named = NULL,
 
-    # Store observed data objects in an unnamed list
+    # Store observed data objects in an unnamed list.
+    # Tri-state sentinel used by the export path in `$data`:
+    #   NULL          = lazy cache untouched, export from `.original_data`.
+    #   list()        = cleared by the user, drop ObservedData from export.
+    #   non-empty     = filter `.original_data` down to surviving names.
+    # Only the first and third states are reachable from the public API today;
+    # the cleared state is reachable via `remove_observed_data()` removing all
+    # entries.
     .observed_data = NULL,
 
     # Cache for the named observed data list with disambiguated names

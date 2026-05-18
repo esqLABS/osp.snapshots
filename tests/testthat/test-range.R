@@ -75,7 +75,11 @@ test_that("Snapshot handles different types of range values in populations", {
   snapshot$export(temp_file)
 
   # Re-import and check for errors
-  imported_data <- jsonlite::fromJSON(temp_file, simplifyDataFrame = FALSE, simplifyVector = FALSE)
+  imported_data <- jsonlite::fromJSON(
+    temp_file,
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
 
   # Check the structure of the imported data
   cat("Age field structure:\n")
