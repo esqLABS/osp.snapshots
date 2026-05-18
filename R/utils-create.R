@@ -19,6 +19,32 @@ check_required_string <- function(value, arg_name) {
   invisible(value)
 }
 
+# Internal: validate that every entry of `items` is either an R6 instance of
+# `r6_class` or a raw list, then return a list of raw shapes (`x$data` for
+# R6 entries, `x` as-is for lists). Outer names are dropped so the JSON
+# shape stays an array when a caller supplies a named list.
+to_raw_r6_or_list <- function(
+  items,
+  r6_class,
+  arg_name,
+  call = parent.frame()
+) {
+  valid <- vapply(
+    items,
+    function(item) inherits(item, r6_class) || is.list(item),
+    logical(1)
+  )
+  if (!all(valid)) {
+    cli::cli_abort(
+      "Every entry of {.arg {arg_name}} must be a {.cls {r6_class}} or a raw list",
+      call = call
+    )
+  }
+  unname(lapply(items, function(item) {
+    if (inherits(item, r6_class)) item$data else item
+  }))
+}
+
 # Internal: convert a list of Parameter R6 objects (or raw parameter lists)
 # into the raw list-of-lists shape used in snapshot JSON.
 # `name_key` must be supplied explicitly and selects which field the target
