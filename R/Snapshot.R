@@ -935,11 +935,8 @@ Snapshot <- R6::R6Class(
       collection_class,
       key_fn = \(x) x$name
     ) {
-      named <- list()
-      class(named) <- c(collection_class, "list")
-
       if (length(items) == 0) {
-        return(named)
+        return(as_snapshot_collection(list(), collection_class))
       }
 
       keys <- vapply(items, key_fn, character(1))
@@ -947,10 +944,10 @@ Snapshot <- R6::R6Class(
       if (!anyDuplicated(keys)) {
         named <- items
         names(named) <- keys
-        class(named) <- c(collection_class, "list")
-        return(named)
+        return(as_snapshot_collection(named, collection_class))
       }
 
+      named <- list()
       key_counts <- table(keys)
       key_indices <- list()
 
@@ -971,7 +968,7 @@ Snapshot <- R6::R6Class(
         named[[final_name]] <- items[[i]]
       }
 
-      named
+      as_snapshot_collection(named, collection_class)
     }
   )
 )
