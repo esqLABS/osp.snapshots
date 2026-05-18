@@ -618,6 +618,179 @@ Snapshot <- R6::R6Class(
         "Removed {length(observed_data_name)} observed data item(s)"
       )
       invisible(self)
+    },
+
+    add_compound = function(compound) {
+      if (!inherits(compound, "Compound")) {
+        cli::cli_abort(
+          "Expected a Compound object, but got {.cls {class(compound)[1]}}"
+        )
+      }
+
+      private$.ensure_compounds()
+      private$.compounds <- c(private$.compounds, list(compound))
+      private$.compounds_named <- private$.build_named_list(
+        private$.compounds,
+        "compound_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added compound '{compound$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    remove_compound = function(compound_name) {
+      private$.ensure_compounds()
+
+      if (length(private$.compounds) == 0) {
+        cli::cli_warn("No compounds to remove")
+        return(invisible(self))
+      }
+
+      current_names <- sapply(private$.compounds, function(c) c$name)
+
+      for (name in compound_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Compound '{name}' not found in snapshot")
+        }
+      }
+
+      keep_indices <- which(!(current_names %in% compound_name))
+      num_removed <- length(private$.compounds) - length(keep_indices)
+      private$.compounds <- private$.compounds[keep_indices]
+
+      private$.compounds_named <- private$.build_named_list(
+        private$.compounds,
+        "compound_collection"
+      )
+
+      cli::cli_alert_success(
+        "Removed {num_removed} compound(s)"
+      )
+      invisible(self)
+    },
+
+    add_population = function(population) {
+      if (!inherits(population, "Population")) {
+        cli::cli_abort(
+          "Expected a Population object, but got {.cls {class(population)[1]}}"
+        )
+      }
+
+      private$.ensure_populations()
+      private$.populations <- c(private$.populations, list(population))
+      private$.populations_named <- private$.build_named_list(
+        private$.populations,
+        "population_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added population '{population$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    add_protocol = function(protocol) {
+      if (!inherits(protocol, "Protocol")) {
+        cli::cli_abort(
+          "Expected a Protocol object, but got {.cls {class(protocol)[1]}}"
+        )
+      }
+
+      private$.ensure_protocols()
+      private$.protocols <- c(private$.protocols, list(protocol))
+      private$.protocols_named <- private$.build_named_list(
+        private$.protocols,
+        "protocol_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added protocol '{protocol$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    remove_protocol = function(protocol_name) {
+      private$.ensure_protocols()
+
+      if (length(private$.protocols) == 0) {
+        cli::cli_warn("No protocols to remove")
+        return(invisible(self))
+      }
+
+      current_names <- sapply(private$.protocols, function(p) p$name)
+
+      for (name in protocol_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Protocol '{name}' not found in snapshot")
+        }
+      }
+
+      keep_indices <- which(!(current_names %in% protocol_name))
+      num_removed <- length(private$.protocols) - length(keep_indices)
+      private$.protocols <- private$.protocols[keep_indices]
+
+      private$.protocols_named <- private$.build_named_list(
+        private$.protocols,
+        "protocol_collection"
+      )
+
+      cli::cli_alert_success(
+        "Removed {num_removed} protocol(s)"
+      )
+      invisible(self)
+    },
+
+    add_event = function(event) {
+      if (!inherits(event, "Event")) {
+        cli::cli_abort(
+          "Expected an Event object, but got {.cls {class(event)[1]}}"
+        )
+      }
+
+      private$.ensure_events()
+      private$.events <- c(private$.events, list(event))
+      private$.events_named <- private$.build_named_list(
+        private$.events,
+        "event_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added event '{event$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    remove_event = function(event_name) {
+      private$.ensure_events()
+
+      if (length(private$.events) == 0) {
+        cli::cli_warn("No events to remove")
+        return(invisible(self))
+      }
+
+      current_names <- sapply(private$.events, function(e) e$name)
+
+      for (name in event_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Event '{name}' not found in snapshot")
+        }
+      }
+
+      keep_indices <- which(!(current_names %in% event_name))
+      num_removed <- length(private$.events) - length(keep_indices)
+      private$.events <- private$.events[keep_indices]
+
+      private$.events_named <- private$.build_named_list(
+        private$.events,
+        "event_collection"
+      )
+
+      cli::cli_alert_success(
+        "Removed {num_removed} event(s)"
+      )
+      invisible(self)
     }
   ),
   active = list(
@@ -1553,6 +1726,213 @@ osp_models <- function(pattern = NULL) {
       )
     }
   )
+}
+
+#' Add a compound to a snapshot
+#'
+#' @description
+#' Add a [Compound] object to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param compound A [Compound] object created with [create_compound()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_compound(create_compound(name = "Drug X"))
+#' }
+add_compound <- function(snapshot, compound) {
+  validate_snapshot(snapshot)
+  snapshot$add_compound(compound)
+  invisible(snapshot)
+}
+
+#' Remove compounds from a snapshot
+#'
+#' @description
+#' Remove one or more compounds from a [Snapshot] by name.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param compound_name Character vector of compound names to remove.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   remove_compound("Midazolam")
+#' }
+remove_compound <- function(snapshot, compound_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_compound(compound_name)
+  invisible(snapshot)
+}
+
+#' Add a population to a snapshot
+#'
+#' @description
+#' Add a [Population] object to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param population A [Population] object created with [create_population()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' pop <- create_population(name = "Adults", number_of_individuals = 100)
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_population(pop)
+#' }
+add_population <- function(snapshot, population) {
+  validate_snapshot(snapshot)
+  snapshot$add_population(population)
+  invisible(snapshot)
+}
+
+#' Add a protocol to a snapshot
+#'
+#' @description
+#' Add a [Protocol] object to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param protocol A [Protocol] object created with [create_protocol()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' prot <- create_protocol(
+#'   name = "Single oral dose",
+#'   application_type = "Oral",
+#'   dosing_interval = "Single"
+#' )
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_protocol(prot)
+#' }
+add_protocol <- function(snapshot, protocol) {
+  validate_snapshot(snapshot)
+  snapshot$add_protocol(protocol)
+  invisible(snapshot)
+}
+
+#' Remove protocols from a snapshot
+#'
+#' @description
+#' Remove one or more protocols from a [Snapshot] by name.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param protocol_name Character vector of protocol names to remove.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   remove_protocol("IV bolus 1mg")
+#' }
+remove_protocol <- function(snapshot, protocol_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_protocol(protocol_name)
+  invisible(snapshot)
+}
+
+#' Add an event to a snapshot
+#'
+#' @description
+#' Add an [Event] object to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param event An [Event] object created with [create_event()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' evt <- create_event(
+#'   name = "Breakfast",
+#'   template = "Meal: Standard (Human)"
+#' )
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_event(evt)
+#' }
+add_event <- function(snapshot, event) {
+  validate_snapshot(snapshot)
+  snapshot$add_event(event)
+  invisible(snapshot)
+}
+
+#' Remove events from a snapshot
+#'
+#' @description
+#' Remove one or more events from a [Snapshot] by name.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param event_name Character vector of event names to remove.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   remove_event("Breakfast")
+#' }
+remove_event <- function(snapshot, event_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_event(event_name)
+  invisible(snapshot)
+}
+
+#' Add observed data to a snapshot
+#'
+#' @description
+#' Add an `ospsuite::DataSet` (observed data) to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param observed_data A `DataSet` object, typically created with
+#'   [create_observed_data()] or [loadDataSetFromSnapshot()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' dataset <- create_observed_data(
+#'   name = "Study A",
+#'   time = c(0, 1, 2),
+#'   values = c(0, 5, 8),
+#'   value_dimension = "Concentration (mass)"
+#' )
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_observed_data(dataset)
+#' }
+add_observed_data <- function(snapshot, observed_data) {
+  validate_snapshot(snapshot)
+  snapshot$add_observed_data(observed_data)
+  invisible(snapshot)
+}
+
+#' Remove observed data from a snapshot
+#'
+#' @description
+#' Remove one or more observed-data entries from a [Snapshot] by name.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param observed_data_name Character vector of observed-data names to
+#'   remove.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   remove_observed_data("Study A")
+#' }
+remove_observed_data <- function(snapshot, observed_data_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_observed_data(observed_data_name)
+  invisible(snapshot)
 }
 
 #' Export a snapshot to a JSON file
