@@ -66,6 +66,8 @@ reference:
   contents:
   - OriginData
   - CalculationMethodCache
+  - Schema
+  - SchemaItem
 
 - title: "Create Building Blocks"
   desc: "Functions to create new building blocks from scratch"

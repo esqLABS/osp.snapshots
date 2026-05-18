@@ -6,6 +6,11 @@
 #' and display a summary of its information. Protocols can be either simple
 #' (with dosing intervals) or advanced (with schemas and schema items).
 #'
+#' An Advanced Protocol's schemas are exposed as a named list of [Schema]
+#' objects, each of which owns a list of [SchemaItem] objects. Simple
+#' Protocols expose their single application directly through the
+#' `application_type`, `dosing_interval`, and `parameters` fields.
+#'
 #' @importFrom tibble tibble as_tibble
 #' @importFrom glue glue
 #' @importFrom lubridate duration
@@ -72,13 +77,13 @@ Protocol <- R6::R6Class(
         }
 
         # Display schemas for advanced protocols
-        if (self$is_advanced && length(self$schemas) > 0) {
+        if (self$is_advanced && length(private$.schemas) > 0) {
           cli::cli_h2("Schemas")
-          for (schema in self$schemas) {
+          for (schema in private$.schemas) {
             cli::cli_li("Schema: {schema$name}")
-            if (length(schema$schema_items) > 0) {
+            if (length(schema$items) > 0) {
               indented_list <- cli::cli_ul()
-              for (item in schema$schema_items) {
+              for (item in schema$items) {
                 cli::cli_li(
                   "{item$name}: {item$application_type} - {item$formulation_key}"
                 )
@@ -94,14 +99,16 @@ Protocol <- R6::R6Class(
     },
 
     #' @description
-    #' Convert protocol data to a single consolidated tibble
+    #' Convert protocol data to a single consolidated tibble. Advanced
+    #' protocols emit one row per [SchemaItem] and join back to the
+    #' protocol via `protocol_name`. Simple protocols emit a single row.
     #' @return A tibble containing all protocol data in a single data frame
     to_df = function() {
       all_protocols <- list()
 
       if (self$is_advanced) {
-        for (schema in self$schemas) {
-          for (item in schema$schema_items) {
+        for (schema in private$.schemas) {
+          for (item in schema$items) {
             schema_start_time_param <- private$extract_parameter(
               schema$parameters,
               "Start time"
@@ -321,12 +328,32 @@ Protocol <- R6::R6Class(
     }
   ),
   active = list(
-    #' @field data The raw data of the protocol
+    #' @field data The raw data of the protocol, refreshed from the
+    #'   wrapped [Schema] objects so mutations through the R6 surface
+    #'   flow back into the snapshot payload (read-only).
     data = function(value) {
-      if (missing(value)) {
-        return(private$.data)
+      if (!missing(value)) {
+        cli::cli_abort("data is read-only")
       }
-      private$.data <- value
+      result <- private$.data
+      if (!is.null(private$.data$Schemas)) {
+        if (length(private$.schemas) > 0) {
+          result$Schemas <- unname(lapply(
+            private$.schemas,
+            function(schema) schema$data
+          ))
+        } else {
+          result$Schemas <- list()
+        }
+      }
+      if (
+        !self$is_advanced &&
+          !is.null(private$.data$Parameters) &&
+          length(private$.parameters) > 0
+      ) {
+        result$Parameters <- to_raw_parameters(private$.parameters, "Name")
+      }
+      result
     },
 
     #' @field name The name of the protocol
@@ -378,7 +405,10 @@ Protocol <- R6::R6Class(
       private$.parameters <- value
     },
 
-    #' @field schemas The schemas of the protocol (for advanced protocols)
+    #' @field schemas A named list of [Schema] objects for advanced
+    #'   protocols. Names are taken from each schema's `name` field
+    #'   (duplicates are disambiguated by `make.unique`). Simple protocols
+    #'   return an empty list.
     schemas = function(value) {
       if (missing(value)) {
         return(private$.schemas)
@@ -389,7 +419,15 @@ Protocol <- R6::R6Class(
   private = list(
     .data = NULL,
     .parameters = NULL,
-    .schemas = NULL,
+    .schemas = list(),
+    deep_clone = function(name, value) {
+      if (name == ".schemas" && is.list(value)) {
+        return(lapply(value, function(schema) {
+          if (inherits(schema, "R6")) schema$clone(deep = TRUE) else schema
+        }))
+      }
+      value
+    },
 
     # Initialize parameters for simple protocols
     initialize_parameters = function() {
@@ -407,34 +445,16 @@ Protocol <- R6::R6Class(
         return(invisible())
       }
 
-      private$.schemas <- lapply(private$.data$Schemas, function(schema_data) {
-        schema_items <- lapply(
-          schema_data$SchemaItems %||% list(),
-          function(item_data) {
-            list(
-              name = item_data$Name,
-              application_type = item_data$ApplicationType,
-              formulation_key = item_data$FormulationKey,
-              parameters = private$build_schema_parameters(item_data$Parameters)
-            )
-          }
-        )
-
-        list(
-          name = schema_data$Name,
-          schema_items = schema_items,
-          parameters = private$build_schema_parameters(schema_data$Parameters)
-        )
+      schemas <- lapply(private$.data$Schemas, function(schema_data) {
+        Schema$new(schema_data)
       })
-    },
-
-    # Build parameters for a schema or schema item from raw snapshot data
-    build_schema_parameters = function(raw) {
-      build_parameters_from_raw(
-        raw,
-        key_by = "none",
-        name_as_path = TRUE
+      schema_names <- vapply(
+        schemas,
+        function(schema) schema$name %||% "Schema",
+        character(1)
       )
+      names(schemas) <- make.unique(schema_names, sep = " ")
+      private$.schemas <- schemas
     },
 
     # Helper function to extract a parameter from a list of Parameter objects

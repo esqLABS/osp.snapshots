@@ -209,13 +209,15 @@ test_that("Protocol schema structure is correct", {
   # Test schema structure
   expect_length(advanced_protocol$schemas, 1)
   schema <- advanced_protocol$schemas[[1]]
+  expect_r6_class(schema, "Schema")
 
   expect_equal(schema$name, "Schema 1")
-  expect_length(schema$schema_items, 1)
+  expect_length(schema$items, 1)
   expect_length(schema$parameters, 3)
 
   # Test schema item structure
-  schema_item <- schema$schema_items[[1]]
+  schema_item <- schema$items[[1]]
+  expect_r6_class(schema_item, "SchemaItem")
   expect_equal(schema_item$name, "Schema Item 1")
   expect_equal(schema_item$application_type, "Oral")
   expect_equal(schema_item$formulation_key, "Test Formulation")
