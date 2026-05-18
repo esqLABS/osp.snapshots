@@ -88,7 +88,7 @@ OriginData <- R6::R6Class(
       }
       result <- private$.data
       cm <- private$.calculation_methods$to_list()
-      if (is.null(cm)) {
+      if (is.null(cm) && is.null(private$.data$CalculationMethods)) {
         result$CalculationMethods <- NULL
       } else {
         result$CalculationMethods <- cm
@@ -101,9 +101,7 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$Species)
       }
-      if (!is.null(value)) {
-        validate_species(value)
-      }
+      validate_species(value)
       private$.data$Species <- value
     },
 
@@ -112,9 +110,7 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$Population)
       }
-      if (!is.null(value)) {
-        validate_population(value)
-      }
+      validate_population(value)
       private$.data$Population <- value
     },
 
@@ -123,9 +119,7 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$Gender)
       }
-      if (!is.null(value)) {
-        validate_gender(value)
-      }
+      validate_gender(value)
       private$.data$Gender <- value
     },
 

@@ -221,6 +221,13 @@ Compound <- R6::R6Class(
     .inhibition = NULL,
     .induction = NULL,
 
+    deep_clone = function(name, value) {
+      if (name == ".calculation_methods" && inherits(value, "R6")) {
+        return(value$clone(deep = TRUE))
+      }
+      value
+    },
+
     initialize_parameters = function() {
       if (
         !is.null(private$.data$Parameters) &&

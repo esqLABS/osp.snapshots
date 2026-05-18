@@ -63,3 +63,10 @@ test_that("CalculationMethodCache prints its contents", {
   expect_snapshot(CalculationMethodCache$new())
   expect_snapshot(CalculationMethodCache$new(c("Mosteller", "Rodgers")))
 })
+
+test_that("length() on CalculationMethodCache matches $length", {
+  cache <- CalculationMethodCache$new(c("a", "b", "c"))
+  expect_equal(length(cache), cache$length)
+  expect_equal(length(cache), 3L)
+  expect_equal(length(CalculationMethodCache$new()), 0L)
+})

@@ -59,7 +59,9 @@ CalculationMethodCache <- R6::R6Class(
 
     #' @description
     #' Remove a method name from the cache. If `method` is not present, the
-    #' cache is unchanged.
+    #' cache is unchanged. Note the asymmetry with `$add()`: `$add()` keeps
+    #' duplicates to mirror the snapshot's raw representation, whereas
+    #' `$remove()` deletes every occurrence of `method` in a single call.
     #' @param method Character. Name of the calculation method to remove.
     #' @return Invisibly returns the CalculationMethodCache object
     remove = function(method) {
@@ -110,7 +112,9 @@ CalculationMethodCache <- R6::R6Class(
         return(character())
       }
       if (!is.character(value)) {
-        value <- as.character(value)
+        cli::cli_abort(
+          "Method names must be a character vector, not {.cls {class(value)[1]}}"
+        )
       }
       if (anyNA(value)) {
         cli::cli_abort("Method names must not be `NA`")
@@ -119,3 +123,8 @@ CalculationMethodCache <- R6::R6Class(
     }
   )
 )
+
+#' @export
+length.CalculationMethodCache <- function(x) {
+  x$length
+}

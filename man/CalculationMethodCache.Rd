@@ -104,7 +104,9 @@ snapshot's raw representation.
 \if{latex}{\out{\hypertarget{method-CalculationMethodCache-remove}{}}}
 \subsection{\code{CalculationMethodCache$remove()}}{
   Remove a method name from the cache. If `method` is not present, the
-cache is unchanged.
+cache is unchanged. Note the asymmetry with `$add()`: `$add()` keeps
+duplicates to mirror the snapshot's raw representation, whereas
+`$remove()` deletes every occurrence of `method` in a single call.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CalculationMethodCache$remove(method)}

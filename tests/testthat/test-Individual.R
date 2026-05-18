@@ -943,3 +943,19 @@ test_that("get_individuals_dfs handles mixed individuals correctly - first with,
   )
   expect_true(all(grepl("Human", dfs$individuals_expressions$profile)))
 })
+
+test_that("Individual$clone(deep = TRUE) isolates origin_data from the source", {
+  ind <- Individual$new(complete_individual_data)
+  ind$origin_data$calculation_methods <- c("Mosteller")
+  cloned <- ind$clone(deep = TRUE)
+
+  cloned$origin_data$species <- "Dog"
+  cloned$origin_data$calculation_methods$add("DuBois")
+
+  expect_equal(ind$origin_data$species, "Human")
+  expect_equal(ind$origin_data$calculation_methods$methods, "Mosteller")
+  expect_equal(
+    cloned$origin_data$calculation_methods$methods,
+    c("Mosteller", "DuBois")
+  )
+})

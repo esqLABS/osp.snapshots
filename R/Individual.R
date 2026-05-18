@@ -275,6 +275,12 @@ Individual <- R6::R6Class(
     .data = NULL,
     .parameters = NULL,
     .origin_data = NULL,
+    deep_clone = function(name, value) {
+      if (name == ".origin_data" && inherits(value, "R6")) {
+        return(value$clone(deep = TRUE))
+      }
+      value
+    },
     initialize_parameters = function() {
       if (!is.null(private$.data$Parameters)) {
         # Create parameters list
