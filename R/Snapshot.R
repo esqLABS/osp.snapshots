@@ -814,7 +814,11 @@ Snapshot <- R6::R6Class(
 
       # Handle empty compound list
       if (length(private$.compounds) == 0) {
-        class(compounds_named) <- c("compound_collection", "list")
+        class(compounds_named) <- c(
+          "compound_collection",
+          "snapshot_collection",
+          "list"
+        )
         private$.compounds_named <- compounds_named
         return()
       }
@@ -846,7 +850,11 @@ Snapshot <- R6::R6Class(
         compounds_named[[final_name]] <- private$.compounds[[i]]
       }
 
-      class(compounds_named) <- c("compound_collection", "list")
+      class(compounds_named) <- c(
+        "compound_collection",
+        "snapshot_collection",
+        "list"
+      )
       private$.compounds_named <- compounds_named
     },
 
@@ -857,7 +865,11 @@ Snapshot <- R6::R6Class(
 
       # Handle empty individuals list
       if (length(private$.individuals) == 0) {
-        class(individuals_named) <- c("individual_collection", "list")
+        class(individuals_named) <- c(
+          "individual_collection",
+          "snapshot_collection",
+          "list"
+        )
         private$.individuals_named <- individuals_named
         return()
       }
@@ -889,7 +901,11 @@ Snapshot <- R6::R6Class(
         individuals_named[[final_name]] <- private$.individuals[[i]]
       }
 
-      class(individuals_named) <- c("individual_collection", "list")
+      class(individuals_named) <- c(
+        "individual_collection",
+        "snapshot_collection",
+        "list"
+      )
       private$.individuals_named <- individuals_named
     },
 
@@ -900,7 +916,11 @@ Snapshot <- R6::R6Class(
 
       # Handle empty formulations list
       if (length(private$.formulations) == 0) {
-        class(formulations_named) <- c("formulation_collection", "list")
+        class(formulations_named) <- c(
+          "formulation_collection",
+          "snapshot_collection",
+          "list"
+        )
         private$.formulations_named <- formulations_named
         return()
       }
@@ -932,7 +952,11 @@ Snapshot <- R6::R6Class(
         formulations_named[[final_name]] <- private$.formulations[[i]]
       }
 
-      class(formulations_named) <- c("formulation_collection", "list")
+      class(formulations_named) <- c(
+        "formulation_collection",
+        "snapshot_collection",
+        "list"
+      )
       private$.formulations_named <- formulations_named
     },
 
@@ -943,7 +967,11 @@ Snapshot <- R6::R6Class(
 
       # Handle empty populations list
       if (length(private$.populations) == 0) {
-        class(populations_named) <- c("population_collection", "list")
+        class(populations_named) <- c(
+          "population_collection",
+          "snapshot_collection",
+          "list"
+        )
         private$.populations_named <- populations_named
         return()
       }
@@ -975,7 +1003,11 @@ Snapshot <- R6::R6Class(
         populations_named[[final_name]] <- private$.populations[[i]]
       }
 
-      class(populations_named) <- c("population_collection", "list")
+      class(populations_named) <- c(
+        "population_collection",
+        "snapshot_collection",
+        "list"
+      )
       private$.populations_named <- populations_named
     },
 
@@ -1034,7 +1066,11 @@ Snapshot <- R6::R6Class(
 
       # Handle empty events list
       if (length(private$.events) == 0) {
-        class(events_named) <- c("event_collection", "list")
+        class(events_named) <- c(
+          "event_collection",
+          "snapshot_collection",
+          "list"
+        )
         private$.events_named <- events_named
         return()
       }
@@ -1066,7 +1102,11 @@ Snapshot <- R6::R6Class(
         events_named[[final_name]] <- private$.events[[i]]
       }
 
-      class(events_named) <- c("event_collection", "list")
+      class(events_named) <- c(
+        "event_collection",
+        "snapshot_collection",
+        "list"
+      )
       private$.events_named <- events_named
     },
 
@@ -1079,6 +1119,7 @@ Snapshot <- R6::R6Class(
       if (length(private$.expression_profiles) == 0) {
         class(expression_profiles_named) <- c(
           "expression_profile_collection",
+          "snapshot_collection",
           "list"
         )
         private$.expression_profiles_named <- expression_profiles_named
@@ -1117,6 +1158,7 @@ Snapshot <- R6::R6Class(
 
       class(expression_profiles_named) <- c(
         "expression_profile_collection",
+        "snapshot_collection",
         "list"
       )
       private$.expression_profiles_named <- expression_profiles_named
@@ -1129,7 +1171,11 @@ Snapshot <- R6::R6Class(
 
       # Handle empty protocol list
       if (length(private$.protocols) == 0) {
-        class(protocols_named) <- c("protocol_collection", "list")
+        class(protocols_named) <- c(
+          "protocol_collection",
+          "snapshot_collection",
+          "list"
+        )
         private$.protocols_named <- protocols_named
         return()
       }
@@ -1161,7 +1207,11 @@ Snapshot <- R6::R6Class(
         protocols_named[[final_name]] <- private$.protocols[[i]]
       }
 
-      class(protocols_named) <- c("protocol_collection", "list")
+      class(protocols_named) <- c(
+        "protocol_collection",
+        "snapshot_collection",
+        "list"
+      )
       private$.protocols_named <- protocols_named
     },
 
@@ -1172,7 +1222,11 @@ Snapshot <- R6::R6Class(
 
       # Handle empty observed data list
       if (length(private$.observed_data) == 0) {
-        class(observed_data_named) <- c("observed_data_collection", "list")
+        class(observed_data_named) <- c(
+          "observed_data_collection",
+          "snapshot_collection",
+          "list"
+        )
         private$.observed_data_named <- observed_data_named
         return()
       }
@@ -1204,7 +1258,11 @@ Snapshot <- R6::R6Class(
         observed_data_named[[final_name]] <- private$.observed_data[[i]]
       }
 
-      class(observed_data_named) <- c("observed_data_collection", "list")
+      class(observed_data_named) <- c(
+        "observed_data_collection",
+        "snapshot_collection",
+        "list"
+      )
       private$.observed_data_named <- observed_data_named
     }
   )
@@ -1254,7 +1312,11 @@ load_snapshot <- function(source) {
     tryCatch(
       {
         # Download and parse JSON directly without saving to file
-        json_data <- jsonlite::fromJSON(source, simplifyDataFrame = FALSE, simplifyVector = FALSE)
+        json_data <- jsonlite::fromJSON(
+          source,
+          simplifyDataFrame = FALSE,
+          simplifyVector = FALSE
+        )
         return(Snapshot$new(json_data))
       },
       error = function(e) {
@@ -1290,7 +1352,11 @@ load_snapshot <- function(source) {
       cli::cli_alert_info("Found template: {template_url}")
 
       # Download and parse template JSON directly
-      json_data <- jsonlite::fromJSON(template_url, simplifyDataFrame = FALSE, simplifyVector = FALSE)
+      json_data <- jsonlite::fromJSON(
+        template_url,
+        simplifyDataFrame = FALSE,
+        simplifyVector = FALSE
+      )
       return(Snapshot$new(json_data))
     },
     error = function(e) {

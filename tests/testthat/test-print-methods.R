@@ -7,7 +7,11 @@ test_that("print.compound_collection works with compounds", {
 test_that("print.compound_collection works with empty collection", {
   # Create an empty compound collection
   compounds_named <- list()
-  class(compounds_named) <- c("compound_collection", "list")
+  class(compounds_named) <- c(
+    "compound_collection",
+    "snapshot_collection",
+    "list"
+  )
 
   # Test the print method with empty collection
   expect_snapshot(print(compounds_named))
@@ -22,7 +26,11 @@ test_that("print.individual_collection works with individuals", {
 test_that("print.individual_collection works with empty collection", {
   # Create an empty individual collection
   individuals_named <- list()
-  class(individuals_named) <- c("individual_collection", "list")
+  class(individuals_named) <- c(
+    "individual_collection",
+    "snapshot_collection",
+    "list"
+  )
 
   # Test the print method with empty collection
   expect_snapshot(print(individuals_named))
@@ -37,7 +45,11 @@ test_that("print.formulation_collection works with formulations", {
 test_that("print.formulation_collection works with empty collection", {
   # Create an empty formulation collection
   formulations_named <- list()
-  class(formulations_named) <- c("formulation_collection", "list")
+  class(formulations_named) <- c(
+    "formulation_collection",
+    "snapshot_collection",
+    "list"
+  )
 
   # Test the print method with empty collection
   expect_snapshot(print(formulations_named))
@@ -148,7 +160,11 @@ test_that("print.expression_profile_collection works with profiles", {
     "P-gp|Human|Healthy",
     "OATP1B1|Rat|NA"
   )
-  class(profiles) <- c("expression_profile_collection", "list")
+  class(profiles) <- c(
+    "expression_profile_collection",
+    "snapshot_collection",
+    "list"
+  )
 
   # Test the print method
   expect_snapshot(print(profiles))
@@ -157,7 +173,11 @@ test_that("print.expression_profile_collection works with profiles", {
 test_that("print.expression_profile_collection works with empty collection", {
   # Create an empty expression profile collection
   profiles_named <- list()
-  class(profiles_named) <- c("expression_profile_collection", "list")
+  class(profiles_named) <- c(
+    "expression_profile_collection",
+    "snapshot_collection",
+    "list"
+  )
 
   # Test the print method with empty collection
   expect_snapshot(print(profiles_named))

@@ -247,12 +247,20 @@ test_that("Snapshot print method includes observed data", {
 test_that("ObservedData collection print method works", {
   # Test that print methods run without error
   empty_collection <- list()
-  class(empty_collection) <- c("observed_data_collection", "list")
+  class(empty_collection) <- c(
+    "observed_data_collection",
+    "snapshot_collection",
+    "list"
+  )
   expect_invisible(print(empty_collection))
 
   # Test with a non-empty collection
   small_collection <- test_snapshot$observed_data[1:2]
-  class(small_collection) <- c("observed_data_collection", "list")
+  class(small_collection) <- c(
+    "observed_data_collection",
+    "snapshot_collection",
+    "list"
+  )
   expect_invisible(print(small_collection))
 
   # Test that the collection has the right structure
