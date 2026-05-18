@@ -61,7 +61,7 @@
       Warning:
       Compound 'Other' not found in snapshot
     Message
-      v Removed 1 compound(s)
+      v Removed 0 compound(s)
 
 # remove_compound warns on empty collection
 
@@ -95,7 +95,7 @@
       Warning:
       Protocol 'Other' not found in snapshot
     Message
-      v Removed 1 protocol(s)
+      v Removed 0 protocol(s)
 
 # remove_protocol warns on empty collection
 
@@ -121,7 +121,7 @@
       Warning:
       Event 'Other' not found in snapshot
     Message
-      v Removed 1 event(s)
+      v Removed 0 event(s)
 
 # remove_event warns on empty collection
 

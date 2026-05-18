@@ -545,12 +545,8 @@ Snapshot <- R6::R6Class(
       }
 
       keep_indices <- which(!(current_names %in% compound_name))
-
-      if (length(keep_indices) == 0) {
-        private$.compounds <- list()
-      } else {
-        private$.compounds <- private$.compounds[keep_indices]
-      }
+      num_removed <- length(private$.compounds) - length(keep_indices)
+      private$.compounds <- private$.compounds[keep_indices]
 
       private$.compounds_named <- private$.build_named_list(
         private$.compounds,
@@ -558,7 +554,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(compound_name)} compound(s)"
+        "Removed {num_removed} compound(s)"
       )
       invisible(self)
     },
@@ -620,12 +616,8 @@ Snapshot <- R6::R6Class(
       }
 
       keep_indices <- which(!(current_names %in% protocol_name))
-
-      if (length(keep_indices) == 0) {
-        private$.protocols <- list()
-      } else {
-        private$.protocols <- private$.protocols[keep_indices]
-      }
+      num_removed <- length(private$.protocols) - length(keep_indices)
+      private$.protocols <- private$.protocols[keep_indices]
 
       private$.protocols_named <- private$.build_named_list(
         private$.protocols,
@@ -633,7 +625,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(protocol_name)} protocol(s)"
+        "Removed {num_removed} protocol(s)"
       )
       invisible(self)
     },
@@ -675,12 +667,8 @@ Snapshot <- R6::R6Class(
       }
 
       keep_indices <- which(!(current_names %in% event_name))
-
-      if (length(keep_indices) == 0) {
-        private$.events <- list()
-      } else {
-        private$.events <- private$.events[keep_indices]
-      }
+      num_removed <- length(private$.events) - length(keep_indices)
+      private$.events <- private$.events[keep_indices]
 
       private$.events_named <- private$.build_named_list(
         private$.events,
@@ -688,7 +676,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(event_name)} event(s)"
+        "Removed {num_removed} event(s)"
       )
       invisible(self)
     }
