@@ -232,21 +232,35 @@ Parameter <- R6::R6Class(
 #' Create a new parameter with the specified properties.
 #' All arguments except name and value are optional.
 #'
-#' @param name Character. Name of the parameter
-#' @param value Numeric. Value of the parameter
-#' @param unit Character. Unit of the parameter (optional)
-#' @param source Character. Source of the value (optional)
-#' @param description Character. Description of the value origin (optional)
-#' @param source_id Integer. ID of the source (optional)
-#' @param table_formula List. Table formula data for table parameters (optional)
-#' @param table_points List. Points for table parameters, a list of x,y pairs (optional)
-#' @param x_name Character. Name of X axis for table parameters (optional)
-#' @param y_name Character. Name of Y axis for table parameters (optional)
-#' @param x_unit Character. Unit for X axis for table parameters (optional)
-#' @param x_dimension Character. Dimension for X axis for table parameters (optional)
-#' @param y_dimension Character. Dimension for Y axis for table parameters (optional)
+#' Returns a [LocalizedParameter] when a non-NULL `path` is supplied (i.e.
+#' the parameter is identified by its position within a target's parameter
+#' tree); otherwise returns a plain [Parameter]. For backwards compatibility,
+#' `name` is used as the path when `path` is not provided, matching the
+#' historical behaviour of this factory.
 #'
-#' @return A Parameter object
+#' @param name Character. Name of the parameter.
+#' @param value Numeric. Value of the parameter.
+#' @param path Character. Full container path of the parameter within its
+#'   parameter tree. Supply this to obtain a [LocalizedParameter] (used in
+#'   Individual, ExpressionProfile, and Simulation parameter sections).
+#' @param unit Character. Unit of the parameter (optional).
+#' @param source Character. Source of the value (optional).
+#' @param description Character. Description of the value origin (optional).
+#' @param source_id Integer. ID of the source (optional).
+#' @param table_formula List. Table formula data for table parameters
+#'   (optional).
+#' @param table_points List. Points for table parameters, a list of x,y pairs
+#'   (optional).
+#' @param x_name Character. Name of X axis for table parameters (optional).
+#' @param y_name Character. Name of Y axis for table parameters (optional).
+#' @param x_unit Character. Unit for X axis for table parameters (optional).
+#' @param x_dimension Character. Dimension for X axis for table parameters
+#'   (optional).
+#' @param y_dimension Character. Dimension for Y axis for table parameters
+#'   (optional).
+#'
+#' @return A [Parameter] object, or a [LocalizedParameter] when `path` is
+#'   supplied.
 #' @export
 #'
 #' @examples
@@ -272,6 +286,13 @@ Parameter <- R6::R6Class(
 #'   description = "Reference XYZ"
 #' )
 #'
+#' # Create a localized parameter (path-bearing)
+#' localized <- create_parameter(
+#'   path = "Organism|Liver|Volume",
+#'   value = 1.5,
+#'   unit = "L"
+#' )
+#'
 #' # Create a table parameter
 #' param <- create_parameter(
 #'   name = "Fraction (dose)",
@@ -291,6 +312,7 @@ Parameter <- R6::R6Class(
 create_parameter <- function(
   name,
   value,
+  path = NULL,
   unit = NULL,
   source = NULL,
   description = NULL,
@@ -303,9 +325,9 @@ create_parameter <- function(
   x_dimension = NULL,
   y_dimension = NULL
 ) {
-  # Create the data structure
+  # For legacy callers, `name` doubles as the path when no `path` is given.
   data <- list(
-    Path = name,
+    Path = path %||% name,
     Value = value
   )
 
@@ -362,6 +384,8 @@ create_parameter <- function(
     }
   }
 
-  # Create and return the Parameter object
+  if (!is.null(path)) {
+    return(LocalizedParameter$new(data))
+  }
   Parameter$new(data)
 }

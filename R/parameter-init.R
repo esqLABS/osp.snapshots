@@ -17,6 +17,10 @@
 #     before constructing the `Parameter` objects. Used by blocks (Protocol,
 #     Event, Formulation) whose snapshot parameters carry `Name` rather than
 #     `Path`.
+#   ctor: constructor used for each entry. Defaults to `Parameter$new`. Blocks
+#     whose parameters are localized (Individual, and the Simulation tree once
+#     it is wrapped) pass `LocalizedParameter$new` so path validation and the
+#     `Applications` to `Events` migration run at construction.
 #
 # Returns a list of `Parameter` objects, always tagged with the
 # `parameter_collection` class for custom printing. When `raw_params` is empty
@@ -24,7 +28,8 @@
 build_parameters_from_raw <- function(
   raw_params,
   key_by = c("none", "path", "name"),
-  name_as_path = FALSE
+  name_as_path = FALSE,
+  ctor = function(data) Parameter$new(data)
 ) {
   key_by <- match.arg(key_by)
 
@@ -33,10 +38,7 @@ build_parameters_from_raw <- function(
     raw_params <- lapply(raw_params, ensure_path_from_name)
   }
 
-  result <- lapply(
-    raw_params,
-    \(param_data) Parameter$new(param_data)
-  )
+  result <- lapply(raw_params, ctor)
 
   if (length(result) > 0) {
     if (key_by == "path") {
