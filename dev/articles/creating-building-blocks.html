@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9022</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9023</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -325,7 +325,7 @@ data</li>
 <h2 id="creating-compounds">Creating Compounds<a class="anchor" aria-label="anchor" href="#creating-compounds"></a>
 </h2>
 <p><code><a href="../reference/create_compound.html">create_compound()</a></code> wraps <code>Compound$new()</code> so
-you can build a [Compound] from named arguments instead of a raw
+you can build a <em>Compound</em> from named arguments instead of a raw
 list.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a minimal compound</span></span>
@@ -362,7 +362,7 @@ list.</p>
 <div class="section level2">
 <h2 id="creating-compound-processes">Creating Compound Processes<a class="anchor" aria-label="anchor" href="#creating-compound-processes"></a>
 </h2>
-<p><code><a href="../reference/create_process.html">create_process()</a></code> builds a [Process] (a PK-Sim
+<p><code><a href="../reference/create_process.html">create_process()</a></code> builds a <em>Process</em> (a PK-Sim
 <code>CompoundProcess</code>) from named arguments. The
 <code>internal_name</code> identifies the process template in PK-Sim’s
 compound process repository (e.g. <code>"SpecificBinding"</code> for
@@ -399,16 +399,17 @@ origin.</p>
 <code>"biliary_clearance"</code>, <code>"inhibition"</code>, or
 <code>"induction"</code>) from the <code>internal_name</code>. Compound
 processes from a loaded snapshot are exposed as a flat named list of
-[Process] objects via <code>compound$processes</code>, and the long-form
-<code>processes</code> tibble returned by [get_compounds_dfs()] surfaces
-every (process, parameter) pair as a row.</p>
+<em>Process</em> objects via <code>compound$processes</code>, and the
+long-form <code>processes</code> tibble returned by
+<code><a href="../reference/get_compounds_dfs.html">get_compounds_dfs()</a></code> surfaces every (process, parameter)
+pair as a row.</p>
 </div>
 <div class="section level2">
 <h2 id="creating-populations">Creating Populations<a class="anchor" aria-label="anchor" href="#creating-populations"></a>
 </h2>
-<p><code><a href="../reference/create_population.html">create_population()</a></code> builds a [Population] recipe:
+<p><code><a href="../reference/create_population.html">create_population()</a></code> builds a <em>Population</em> recipe:
 settings used by PK-Sim to sample a cohort at simulation time. Use
-[range()] for age, weight, height, and BMI bounds.</p>
+<code><a href="../reference/range.html">range()</a></code> for age, weight, height, and BMI bounds.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">adults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_population.html">create_population</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"Healthy Adults"</span>,</span>
@@ -434,7 +435,7 @@ settings used by PK-Sim to sample a cohort at simulation time. Use
 <h2 id="creating-expression-profiles">Creating Expression Profiles<a class="anchor" aria-label="anchor" href="#creating-expression-profiles"></a>
 </h2>
 <p><code><a href="../reference/create_expression_profile.html">create_expression_profile()</a></code> builds an
-[ExpressionProfile]. The identity of a profile is the composite
+<em>ExpressionProfile</em>. The identity of a profile is the composite
 <code>Molecule|Species|Category</code>, so all three are required, along
 with the molecule <code>type</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -456,8 +457,8 @@ with the molecule <code>type</code>.</p>
 <div class="section level2">
 <h2 id="creating-protocols">Creating Protocols<a class="anchor" aria-label="anchor" href="#creating-protocols"></a>
 </h2>
-<p><code><a href="../reference/create_protocol.html">create_protocol()</a></code> builds a [Protocol]. By default it
-creates a Simple Protocol; pass <code>schemas</code> to create an
+<p><code><a href="../reference/create_protocol.html">create_protocol()</a></code> builds a <em>Protocol</em>. By default
+it creates a Simple Protocol; pass <code>schemas</code> to create an
 Advanced Protocol.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Simple oral protocol with one dose</span></span>
@@ -486,14 +487,14 @@ Advanced Protocol.</p>
 <h3 id="advanced-protocols">Advanced Protocols<a class="anchor" aria-label="anchor" href="#advanced-protocols"></a>
 </h3>
 <p>For dosing schedules that do not fit the Simple Protocol pattern,
-build an Advanced Protocol from one or more [Schema] blocks. Each
-[Schema] owns schema-level parameters (such as
+build an Advanced Protocol from one or more <em>Schema</em> blocks. Each
+<em>Schema</em> owns schema-level parameters (such as
 <code>NumberOfRepetitions</code> and
-<code>TimeBetweenRepetitions</code>) and an ordered list of [SchemaItem]
-applications. <code><a href="../reference/create_schema.html">create_schema()</a></code> and
+<code>TimeBetweenRepetitions</code>) and an ordered list of
+<em>SchemaItem</em> applications. <code><a href="../reference/create_schema.html">create_schema()</a></code> and
 <code><a href="../reference/create_schema_item.html">create_schema_item()</a></code> wrap the R6 constructors so you can
-pass [Parameter] objects directly without hand-rolling the raw JSON
-shape.</p>
+pass <em>Parameter</em> objects directly without hand-rolling the raw
+JSON shape.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build the schema item, the schema, and the protocol from named arguments</span></span>
 <span><span class="va">qd_oral</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_protocol.html">create_protocol</a></span><span class="op">(</span></span>
@@ -541,9 +542,9 @@ the canonical PK-Sim application types (<code>"Oral"</code>,
 <div class="section level2">
 <h2 id="creating-events">Creating Events<a class="anchor" aria-label="anchor" href="#creating-events"></a>
 </h2>
-<p><code><a href="../reference/create_event.html">create_event()</a></code> builds an [Event] from a named template
-(for example a meal). PK-Sim clones the template and applies your
-parameter overrides.</p>
+<p><code><a href="../reference/create_event.html">create_event()</a></code> builds an <em>Event</em> from a named
+template (for example a meal). PK-Sim clones the template and applies
+your parameter overrides.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">breakfast</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_event.html">create_event</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"Breakfast"</span>,</span>

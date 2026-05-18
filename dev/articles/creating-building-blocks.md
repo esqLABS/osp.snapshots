@@ -264,7 +264,7 @@ detailed_param
 ## Creating Compounds
 
 [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
-wraps `Compound$new()` so you can build a \[Compound\] from named
+wraps `Compound$new()` so you can build a *Compound* from named
 arguments instead of a raw list.
 
 ``` r
@@ -304,7 +304,7 @@ drug
 ## Creating Compound Processes
 
 [`create_process()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_process.md)
-builds a \[Process\] (a PK-Sim `CompoundProcess`) from named arguments.
+builds a *Process* (a PK-Sim `CompoundProcess`) from named arguments.
 The `internal_name` identifies the process template in PK-Sim’s compound
 process repository (e.g. `"SpecificBinding"` for plasma protein binding,
 `"MetabolizationSpecific_MM"` for Michaelis-Menten metabolism,
@@ -341,16 +341,18 @@ The `$category` active binding derives a domain label
 `"hepatic_clearance"`, `"transporter_proteins"`, `"renal_clearance"`,
 `"biliary_clearance"`, `"inhibition"`, or `"induction"`) from the
 `internal_name`. Compound processes from a loaded snapshot are exposed
-as a flat named list of \[Process\] objects via `compound$processes`,
-and the long-form `processes` tibble returned by \[get_compounds_dfs()\]
+as a flat named list of *Process* objects via `compound$processes`, and
+the long-form `processes` tibble returned by
+[`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
 surfaces every (process, parameter) pair as a row.
 
 ## Creating Populations
 
 [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
-builds a \[Population\] recipe: settings used by PK-Sim to sample a
-cohort at simulation time. Use \[range()\] for age, weight, height, and
-BMI bounds.
+builds a *Population* recipe: settings used by PK-Sim to sample a cohort
+at simulation time. Use
+[`range()`](https://esqlabs.github.io/osp.snapshots/dev/reference/range.md)
+for age, weight, height, and BMI bounds.
 
 ``` r
 
@@ -378,7 +380,7 @@ adults
 ## Creating Expression Profiles
 
 [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
-builds an \[ExpressionProfile\]. The identity of a profile is the
+builds an *ExpressionProfile*. The identity of a profile is the
 composite `Molecule|Species|Category`, so all three are required, along
 with the molecule `type`.
 
@@ -403,7 +405,7 @@ cyp3a4
 ## Creating Protocols
 
 [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
-builds a \[Protocol\]. By default it creates a Simple Protocol; pass
+builds a *Protocol*. By default it creates a Simple Protocol; pass
 `schemas` to create an Advanced Protocol.
 
 ``` r
@@ -435,14 +437,14 @@ single_dose
 ### Advanced Protocols
 
 For dosing schedules that do not fit the Simple Protocol pattern, build
-an Advanced Protocol from one or more \[Schema\] blocks. Each \[Schema\]
+an Advanced Protocol from one or more *Schema* blocks. Each *Schema*
 owns schema-level parameters (such as `NumberOfRepetitions` and
-`TimeBetweenRepetitions`) and an ordered list of \[SchemaItem\]
+`TimeBetweenRepetitions`) and an ordered list of *SchemaItem*
 applications.
 [`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md)
 and
 [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
-wrap the R6 constructors so you can pass \[Parameter\] objects directly
+wrap the R6 constructors so you can pass *Parameter* objects directly
 without hand-rolling the raw JSON shape.
 
 ``` r
@@ -492,7 +494,7 @@ PK-Sim application types (`"Oral"`, `"IntravenousBolus"`,
 ## Creating Events
 
 [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
-builds an \[Event\] from a named template (for example a meal). PK-Sim
+builds an *Event* from a named template (for example a meal). PK-Sim
 clones the template and applies your parameter overrides.
 
 ``` r
