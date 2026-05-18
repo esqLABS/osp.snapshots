@@ -13,7 +13,7 @@
     Condition
       Error in `as_tibbles()`:
       ! Unknown `kind` "nope".
-      i Must be one of "compounds", "individuals", "formulations", "populations", "events", "expression_profiles", "protocols", and "observed_data".
+      i Must be one of "compounds", "individuals", "formulations", "populations", "events", "expression_profiles", "protocols", "observer_sets", and "observed_data".
 
 # as_tibbles() errors for malformed kind
 

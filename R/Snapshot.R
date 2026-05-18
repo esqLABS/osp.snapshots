@@ -466,6 +466,64 @@ Snapshot <- R6::R6Class(
       invisible(self)
     },
 
+    add_observer_set = function(observer_set) {
+      if (!inherits(observer_set, "ObserverSet")) {
+        cli::cli_abort(
+          "Expected an ObserverSet object, but got {.cls {class(observer_set)[1]}}"
+        )
+      }
+
+      private$.ensure_observer_sets()
+
+      private$.observer_sets <- c(private$.observer_sets, list(observer_set))
+
+      private$.observer_sets_named <- private$.build_named_list(
+        private$.observer_sets,
+        "observer_set_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added observer set '{observer_set$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    remove_observer_set = function(observer_set_name) {
+      private$.ensure_observer_sets()
+
+      if (length(private$.observer_sets) == 0) {
+        cli::cli_warn("No observer sets to remove")
+        return(invisible(self))
+      }
+
+      current_names <- vapply(
+        private$.observer_sets,
+        function(os) os$name,
+        character(1)
+      )
+
+      for (name in unique(observer_set_name)) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Observer set '{name}' not found in snapshot")
+        }
+      }
+
+      keep_indices <- which(!(current_names %in% observer_set_name))
+
+      private$.observer_sets <- private$.observer_sets[keep_indices]
+
+      private$.observer_sets_named <- private$.build_named_list(
+        private$.observer_sets,
+        "observer_set_collection"
+      )
+
+      n_removed <- length(current_names) - length(keep_indices)
+      cli::cli_alert_success(
+        "Removed {n_removed} observer set(s)"
+      )
+      invisible(self)
+    },
+
     #' @description
     #' Add a DataSet object (observed data) to the snapshot
     #' @param observed_data A DataSet object created from snapshot observed data
@@ -697,6 +755,22 @@ Snapshot <- R6::R6Class(
       private$.events_named
     },
 
+    #' @field observer_sets List of ObserverSet objects in the snapshot
+    observer_sets = function(value = NULL) {
+      if (!is.null(value)) {
+        private$.observer_sets <- value
+        private$.observer_sets_named <- NULL
+      }
+      private$.ensure_observer_sets()
+      if (is.null(private$.observer_sets_named)) {
+        private$.observer_sets_named <- private$.build_named_list(
+          private$.observer_sets,
+          "observer_set_collection"
+        )
+      }
+      private$.observer_sets_named
+    },
+
     #' @field protocols List of Protocol objects in the snapshot
     protocols = function(value = NULL) {
       if (!is.null(value)) {
@@ -767,6 +841,10 @@ Snapshot <- R6::R6Class(
       ),
       Protocols = list(
         cache = ".protocols",
+        adapter = .default_export_adapter
+      ),
+      ObserverSets = list(
+        cache = ".observer_sets",
         adapter = .default_export_adapter
       ),
       ObservedData = list(
@@ -865,6 +943,14 @@ Snapshot <- R6::R6Class(
       )
     },
 
+    .ensure_observer_sets = function() {
+      private$.ensure_collection(
+        ".observer_sets",
+        "ObserverSets",
+        function(d) ObserverSet$new(d)
+      )
+    },
+
     .ensure_observed_data = function() {
       private$.ensure_collection(
         ".observed_data",
@@ -914,6 +1000,12 @@ Snapshot <- R6::R6Class(
 
     # Cache for the named protocols list with disambiguated names
     .protocols_named = NULL,
+
+    # Store observer set objects in an unnamed list
+    .observer_sets = NULL,
+
+    # Cache for the named observer sets list with disambiguated names
+    .observer_sets_named = NULL,
 
     # Store observed data objects in an unnamed list.
     # Tri-state sentinel used by the export path in `$data`:
@@ -1334,6 +1426,64 @@ remove_expression_profile <- function(snapshot, profile_id) {
   snapshot$remove_expression_profile(profile_id)
 
   # Return the updated snapshot
+  invisible(snapshot)
+}
+
+#' Add an observer set to a snapshot
+#'
+#' @description
+#' Add an `ObserverSet` building block to a `Snapshot`. The exported function
+#' is the canonical, pipeable surface for the mutation; it validates the
+#' snapshot before delegating to the underlying R6 method.
+#'
+#' @param snapshot A `Snapshot` object.
+#' @param observer_set An `ObserverSet` object.
+#'
+#' @return The updated `Snapshot` object, invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' observer_set <- ObserverSet$new(list(
+#'   Name = "BrainPlasmaConcentration",
+#'   Observers = list()
+#' ))
+#'
+#' snapshot |> add_observer_set(observer_set)
+#' }
+add_observer_set <- function(snapshot, observer_set) {
+  validate_snapshot(snapshot)
+  snapshot$add_observer_set(observer_set)
+  invisible(snapshot)
+}
+
+#' Remove observer sets from a snapshot
+#'
+#' @description
+#' Remove one or more `ObserverSet` building blocks from a `Snapshot` by name.
+#' Names not present in the snapshot trigger a warning rather than an error so
+#' callers can run idempotent cleanup pipelines.
+#'
+#' @param snapshot A `Snapshot` object.
+#' @param observer_set_name Character vector of observer set names to remove.
+#'
+#' @return The updated `Snapshot` object, invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' snapshot |> remove_observer_set("BrainPlasmaConcentration")
+#'
+#' snapshot |>
+#'   remove_observer_set(c("BrainPlasmaConcentration", "LiverObservers"))
+#' }
+remove_observer_set <- function(snapshot, observer_set_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_observer_set(observer_set_name)
   invisible(snapshot)
 }
 

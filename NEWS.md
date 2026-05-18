@@ -9,14 +9,17 @@
 - `as_tibbles()` is the new unified entry point for converting any building-block collection in a snapshot to a tibble (or list of tibbles), dispatched on a `kind` argument. The eight existing `get_*_dfs()` functions remain available as thin wrappers (#36).
 - New `CalculationMethodCache` R6 class wrapping the array of calculation method names stored on a `Compound` and inside an `Individual`'s `OriginData`. `Compound$calculation_methods` and `Individual$origin_data$calculation_methods` now return this class (#30).
 - New `LocalizedParameter` R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from `Parameter` and migrates legacy `Applications` path segments to `Events` for v11+ snapshots. `create_parameter()` now routes to `LocalizedParameter` when called with a `path` argument (#31).
+- New `ObserverSet` R6 class wrapping the `ObserverSets` building blocks of a snapshot, accessible through `snapshot$observer_sets` and exported on round-trip. Observers inside a set are exposed as a raw list until the `Observer` leaf class lands (#38).
 - New `OriginData` R6 class wrapping the demographic starting point of an `Individual` (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via `Individual$origin_data` (#30).
 - New `Schema` and `SchemaItem` R6 classes wrapping the repeatable blocks and individual applications inside an Advanced `Protocol`. `Protocol$schemas` now returns a named list of `Schema` objects, each exposing `$items` as a list of `SchemaItem` objects with fields for application type, formulation key, target organ and compartment, and parameters (#29).
+- `add_observer_set()` and `remove_observer_set()` add and remove `ObserverSet` building blocks on a snapshot. Both are pipeable wrappers around the underlying R6 methods, following the same pattern as the other building-block mutators (#38).
 - `create_compound()` builds a Compound building block from named arguments, wrapping `Compound$new()` with validation of common fields (#27). `molecular_weight_unit` is now validated against `ospsuite::ospUnits$"Molecular weight"` when `molecular_weight` is supplied (#48).
 - `create_event()` builds an Event building block from named arguments and a template name, wrapping `Event$new()` (#27).
 - `create_expression_profile()` builds an ExpressionProfile building block from named arguments, requiring molecule, species, category, and type (#27).
 - `create_observed_data()` builds an `ospsuite::DataSet` from named arguments for time, values, units, and optional error series (#27). `value_dimension` is now required (previously defaulted silently to `"Concentration (mass)"`); `time_unit` and `value_unit` are validated against the corresponding dimension (#48).
 - `create_population()` builds a Population building block from named arguments and `Range` objects for age, weight, height, and BMI bounds (#27). `number_of_individuals` must be a positive integer; `proportion_of_females` must be a length-1 number (#48).
 - `create_protocol()` builds a Simple or Advanced Protocol building block from named arguments, wrapping `Protocol$new()` (#27). Passing `schemas` now errors if any Simple Protocol field (`application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `parameters`) is also supplied (#48).
+- `get_observer_sets_dfs()` returns a tibble with one row per `ObserverSet` and a count of its observers (#38).
 
 ## Minor improvements
 

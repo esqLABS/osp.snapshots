@@ -119,6 +119,11 @@ collection_kind_info.observed_data_collection <- function(x) {
   )
 }
 
+#' @export
+collection_kind_info.observer_set_collection <- function(x) {
+  list(title = "Observer Sets", empty_message = "No observer sets found")
+}
+
 #' Per-item bullet label for a snapshot collection
 #'
 #' Internal S3 generic. Returns the text used for the bullet of a single
@@ -204,6 +209,13 @@ collection_item_label.protocol_collection <- function(x, item, name) {
 #' @export
 collection_item_label.observed_data_collection <- function(x, item, name) {
   name
+}
+
+#' @export
+collection_item_label.observer_set_collection <- function(x, item, name) {
+  n_observers <- length(item$observers)
+  plural <- if (n_observers == 1) "observer" else "observers"
+  glue::glue("{name} ({n_observers} {plural})")
 }
 
 # Helper that tags a list with the snapshot_collection class triplet:

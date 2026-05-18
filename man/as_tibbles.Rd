@@ -12,13 +12,13 @@ as_tibbles(snapshot, kind)
 \item{kind}{Character scalar naming the collection to convert.
 One of `"compounds"`, `"individuals"`, `"formulations"`,
 `"populations"`, `"events"`, `"expression_profiles"`,
-`"protocols"`, `"observed_data"`.}
+`"protocols"`, `"observer_sets"`, `"observed_data"`.}
 }
 \value{
 A tibble or a named list of tibbles, depending on `kind`:
 \itemize{
-  \item `"compounds"`, `"protocols"`, `"observed_data"`: a single
-    tibble.
+  \item `"compounds"`, `"protocols"`, `"observer_sets"`,
+    `"observed_data"`: a single tibble.
   \item `"individuals"`: a list with `individuals`,
     `individuals_parameters`, `individuals_expressions`.
   \item `"formulations"`: a list with `formulations`,

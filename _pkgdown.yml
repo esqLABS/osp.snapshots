@@ -56,6 +56,7 @@ reference:
   - Protocol
   - Event
   - ExpressionProfile
+  - ObserverSet
   - Parameter
   - LocalizedParameter
   - AdvancedParameter
@@ -88,10 +89,12 @@ reference:
   - add_individual
   - add_formulation
   - add_expression_profile
+  - add_observer_set
   - remove_individual
   - remove_formulation
   - remove_population
   - remove_expression_profile
+  - remove_observer_set
 
 - title: "Data Frame Conversion"
   desc: "Convert building blocks to data frames for analysis"
@@ -105,6 +108,7 @@ reference:
   - get_events_dfs
   - get_expression_profiles_dfs
   - get_observed_data_dfs
+  - get_observer_sets_dfs
 
 - title: "Observed Data"
   desc: "Work with clinical and experimental data"

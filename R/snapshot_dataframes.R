@@ -10,12 +10,12 @@
 #' @param kind Character scalar naming the collection to convert.
 #'   One of `"compounds"`, `"individuals"`, `"formulations"`,
 #'   `"populations"`, `"events"`, `"expression_profiles"`,
-#'   `"protocols"`, `"observed_data"`.
+#'   `"protocols"`, `"observer_sets"`, `"observed_data"`.
 #'
 #' @return A tibble or a named list of tibbles, depending on `kind`:
 #' \itemize{
-#'   \item `"compounds"`, `"protocols"`, `"observed_data"`: a single
-#'     tibble.
+#'   \item `"compounds"`, `"protocols"`, `"observer_sets"`,
+#'     `"observed_data"`: a single tibble.
 #'   \item `"individuals"`: a list with `individuals`,
 #'     `individuals_parameters`, `individuals_expressions`.
 #'   \item `"formulations"`: a list with `formulations`,
@@ -51,6 +51,7 @@ as_tibbles <- function(snapshot, kind) {
     events = as_tibbles_events,
     expression_profiles = as_tibbles_expression_profiles,
     protocols = as_tibbles_protocols,
+    observer_sets = as_tibbles_observer_sets,
     observed_data = as_tibbles_observed_data
   )
 
@@ -380,6 +381,31 @@ as_tibbles_protocols <- function(snapshot) {
   dplyr::bind_rows(protocol_dfs)
 }
 
+as_tibbles_observer_sets <- function(snapshot) {
+  observer_sets <- snapshot$observer_sets
+
+  result <- tibble::tibble(
+    observer_set_id = character(0),
+    name = character(0),
+    n_observers = integer(0)
+  )
+
+  if (length(observer_sets) == 0) {
+    return(result)
+  }
+
+  rows <- lapply(names(observer_sets), function(id) {
+    os <- observer_sets[[id]]
+    tibble::tibble(
+      observer_set_id = id,
+      name = os$name %||% NA_character_,
+      n_observers = length(os$observers)
+    )
+  })
+
+  dplyr::bind_rows(rows)
+}
+
 as_tibbles_observed_data <- function(snapshot) {
   observed_data_items <- snapshot$observed_data
 
@@ -551,6 +577,28 @@ get_expression_profiles_dfs <- function(snapshot) {
 #' }
 get_protocols_dfs <- function(snapshot) {
   as_tibbles(snapshot, "protocols")
+}
+
+#' Get all observer sets in a snapshot as a tibble
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "observer_sets"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A tibble with one row per `ObserverSet`, with columns
+#'   `observer_set_id`, `name`, `n_observers`. Richer per-observer
+#'   detail is deferred until the `Observer` leaf class lands.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' observer_sets_df <- get_observer_sets_dfs(snapshot)
+#' }
+get_observer_sets_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "observer_sets")
 }
 
 #' Get all observed data in a snapshot as a tibble
