@@ -57,7 +57,7 @@ compound_processes_to_long_df <- function(compound_name, raw_processes) {
 
     cat <- process_category(p$InternalName)
 
-    purrr::map_dfr(parameters, function(param) {
+    purrr::map(parameters, function(param) {
       tibble::tibble(
         compound = compound_name,
         category = cat %||% NA_character_,
@@ -71,7 +71,8 @@ compound_processes_to_long_df <- function(compound_name, raw_processes) {
         metabolite = p$Metabolite %||% NA_character_,
         species = p$Species %||% NA_character_
       )
-    })
+    }) |>
+      purrr::list_rbind()
   })
 
   rows <- purrr::compact(rows)
@@ -225,9 +226,10 @@ compound_processes_to_legacy_df <- function(compound_name, raw_processes) {
 # values.
 legacy_category_to_df <- function(compound_name, category, by_ds) {
   rows <- purrr::imap(by_ds, function(entries, datasource_name) {
-    purrr::map_dfr(entries, function(entry) {
+    purrr::map(entries, function(entry) {
       legacy_entry_to_df(compound_name, category, datasource_name, entry)
-    })
+    }) |>
+      purrr::list_rbind()
   })
   if (length(rows) == 0) {
     return(empty_compound_processes_legacy_tibble())
@@ -246,7 +248,7 @@ legacy_entry_to_df <- function(
   params <- entry[setdiff(names(entry), metadata_keys)]
   process_internal <- entry$Process
 
-  purrr::map_dfr(seq_along(params), function(i) {
+  purrr::map(seq_along(params), function(i) {
     param <- params[[i]]
     param_name <- names(params)[i]
 
@@ -266,7 +268,8 @@ legacy_entry_to_df <- function(
       data_source = datasource_name,
       source = param$Source %||% NA_character_
     )
-  })
+  }) |>
+    purrr::list_rbind()
 }
 
 format_legacy_parameter_string <- function(category, param_name, entry) {

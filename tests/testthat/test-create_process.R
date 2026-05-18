@@ -33,9 +33,10 @@ test_that("create_process accepts Parameter objects in parameters", {
   )
 
   expect_length(p$parameters, 1)
-  expect_equal(p$parameters[[1]]$Name, "Km")
-  expect_equal(p$parameters[[1]]$Value, 1.2)
-  expect_equal(p$parameters[[1]]$Unit, "µmol/l")
+  expect_s3_class(p$parameters[[1]], "Parameter")
+  expect_equal(p$parameters[[1]]$name, "Km")
+  expect_equal(p$parameters[[1]]$value, 1.2)
+  expect_equal(p$parameters[[1]]$unit, "µmol/l")
 })
 
 test_that("create_process validates required arguments", {

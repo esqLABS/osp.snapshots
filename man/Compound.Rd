@@ -20,8 +20,8 @@ long-form `processes` tibble returned by [get_compounds_dfs()].
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
     \item{\code{data}}{The raw data of the compound (read-only). Refreshed from
-the embedded [CalculationMethodCache] so that mutations flow back to
-the export payload.}
+the embedded [CalculationMethodCache] and the cached [Process]
+objects so that mutations flow back to the export payload.}
 
     \item{\code{name}}{The name of the compound}
 
@@ -45,7 +45,9 @@ the export payload.}
 
     \item{\code{processes}}{A flat named list of [Process] objects, one per
 entry in the compound's `Processes` array. Duplicate names are
-disambiguated with a numeric suffix (`_1`, `_2`, ...).}
+disambiguated with a numeric suffix (`_1`, `_2`, ...). The list is
+built once at construction so that state changes made on a
+[Process] persist across accesses.}
 
     \item{\code{calculation_methods}}{A [CalculationMethodCache] holding the
 compound's calculation methods.}

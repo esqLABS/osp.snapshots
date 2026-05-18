@@ -24,6 +24,10 @@ Process <- R6::R6Class(
     #' @return A new Process object.
     initialize = function(data) {
       private$.data <- data %||% list()
+      private$.parameters <- build_parameters_from_raw(
+        private$.data$Parameters,
+        key_by = "name"
+      )
     },
 
     #' @description
@@ -101,13 +105,20 @@ Process <- R6::R6Class(
       private$.data$Species <- value
     },
 
-    #' @field parameters Raw list of process parameters (one entry per
-    #'   `Parameter` in the snapshot JSON).
+    #' @field parameters A named list of [Parameter] objects (one entry per
+    #'   `Parameter` in the snapshot JSON), keyed by parameter name. Assigning
+    #'   accepts either a list of [Parameter] objects or raw parameter dicts;
+    #'   the underlying raw data and the [Parameter] cache are kept in sync.
     parameters = function(value) {
       if (missing(value)) {
-        return(private$.data$Parameters %||% list())
+        return(private$.parameters)
       }
-      private$.data$Parameters <- value
+      raw <- if (is.null(value)) NULL else to_raw_parameters(value, "Name")
+      private$.data$Parameters <- raw
+      private$.parameters <- build_parameters_from_raw(
+        raw,
+        key_by = "name"
+      )
     },
 
     #' @field category Derived category string. One of
@@ -120,7 +131,8 @@ Process <- R6::R6Class(
     }
   ),
   private = list(
-    .data = NULL
+    .data = NULL,
+    .parameters = NULL
   )
 )
 

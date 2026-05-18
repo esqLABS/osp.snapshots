@@ -31,7 +31,10 @@ Compound <- R6::R6Class(
       )
       private$.parameters <- build_parameters_from_raw(
         private$.data$Parameters,
-        key_by = "path"
+        key_by = "name"
+      )
+      private$.processes <- build_processes_from_raw(
+        private$.data$Processes
       )
     },
 
@@ -163,11 +166,17 @@ Compound <- R6::R6Class(
   private = list(
     .data = NULL,
     .parameters = NULL,
+    .processes = NULL,
     .calculation_methods = NULL,
 
     deep_clone = function(name, value) {
       if (name == ".calculation_methods" && inherits(value, "R6")) {
         return(value$clone(deep = TRUE))
+      }
+      if (name == ".processes" && is.list(value)) {
+        return(lapply(value, function(p) {
+          if (inherits(p, "R6")) p$clone(deep = TRUE) else p
+        }))
       }
       value
     },
@@ -423,8 +432,8 @@ Compound <- R6::R6Class(
 
   active = list(
     #' @field data The raw data of the compound (read-only). Refreshed from
-    #'   the embedded [CalculationMethodCache] so that mutations flow back to
-    #'   the export payload.
+    #'   the embedded [CalculationMethodCache] and the cached [Process]
+    #'   objects so that mutations flow back to the export payload.
     data = function() {
       result <- private$.data
       cm <- private$.calculation_methods$to_list()
@@ -432,6 +441,10 @@ Compound <- R6::R6Class(
         result$CalculationMethods <- NULL
       } else {
         result$CalculationMethods <- cm
+      }
+      if (length(private$.processes) > 0) {
+        result$Processes <- lapply(private$.processes, function(p) p$data)
+        names(result$Processes) <- NULL
       }
       result
     },
@@ -539,9 +552,11 @@ Compound <- R6::R6Class(
 
     #' @field processes A flat named list of [Process] objects, one per
     #'   entry in the compound's `Processes` array. Duplicate names are
-    #'   disambiguated with a numeric suffix (`_1`, `_2`, ...).
+    #'   disambiguated with a numeric suffix (`_1`, `_2`, ...). The list is
+    #'   built once at construction so that state changes made on a
+    #'   [Process] persist across accesses.
     processes = function() {
-      build_processes_from_raw(private$.data$Processes)
+      private$.processes
     },
 
     #' @field calculation_methods A [CalculationMethodCache] holding the

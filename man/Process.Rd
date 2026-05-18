@@ -31,8 +31,10 @@ subtype; subtypes are inferred from `internal_name`. The derived
     \item{\code{species}}{Optional `Species` field (for species-dependent
 processes).}
 
-    \item{\code{parameters}}{Raw list of process parameters (one entry per
-`Parameter` in the snapshot JSON).}
+    \item{\code{parameters}}{A named list of [Parameter] objects (one entry per
+`Parameter` in the snapshot JSON), keyed by parameter name. Assigning
+accepts either a list of [Parameter] objects or raw parameter dicts;
+the underlying raw data and the [Parameter] cache are kept in sync.}
 
     \item{\code{category}}{Derived category string. One of
 `"protein_binding_partners"`, `"metabolizing_enzymes"`,

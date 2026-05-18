@@ -15,7 +15,11 @@ test_that("Process$new() wraps raw data and exposes core fields", {
   expect_null(p$metabolite)
   expect_null(p$species)
   expect_length(p$parameters, 1)
-  expect_equal(p$parameters[[1]]$Name, "Kd")
+  expect_s3_class(p$parameters[[1]], "Parameter")
+  expect_equal(p$parameters[[1]]$name, "Kd")
+  expect_equal(p$parameters[[1]]$value, 1.2)
+  expect_equal(p$parameters[[1]]$unit, "nmol/l")
+  expect_named(p$parameters, "Kd")
 })
 
 test_that("Process$new() copes with empty data", {
@@ -77,6 +81,33 @@ test_that("Process active bindings allow mutation", {
   expect_equal(p$metabolite, "X-OH")
   expect_equal(p$species, "Human")
   expect_length(p$parameters, 1)
+  expect_s3_class(p$parameters[[1]], "Parameter")
+  expect_equal(p$parameters[[1]]$name, "Kd")
+})
+
+test_that("Process parameters setter accepts Parameter R6 objects", {
+  p <- Process$new(list(InternalName = "SpecificBinding"))
+  param <- create_parameter(name = "Kd", value = 1.2, unit = "nmol/l")
+  p$parameters <- list(param)
+
+  expect_length(p$parameters, 1)
+  expect_s3_class(p$parameters[[1]], "Parameter")
+  expect_equal(p$parameters[[1]]$value, 1.2)
+  expect_equal(p$data$Parameters[[1]]$Name, "Kd")
+  expect_equal(p$data$Parameters[[1]]$Value, 1.2)
+})
+
+test_that("Process state persists across $parameters accesses", {
+  p <- Process$new(list(
+    InternalName = "MetabolizationSpecific_MM",
+    DataSource = "Source A",
+    Parameters = list(list(Name = "Km", Value = 1, Unit = "µmol/l"))
+  ))
+
+  param <- p$parameters[[1]]
+  param$value <- 42
+
+  expect_equal(p$parameters[[1]]$value, 42)
 })
 
 test_that("Process print is stable", {
