@@ -9,7 +9,11 @@
 #' @return TRUE if valid, throws an error if invalid
 #' @export
 validate_unit <- function(unit, dimension) {
-  valid_units <- ospsuite::ospUnits[[dimension]]
+  valid_units <- tryCatch(
+    ospsuite::getUnitsForDimension(dimension),
+    error = function(e)
+      unlist(ospsuite::ospUnits[[dimension]], use.names = FALSE)
+  )
   if (!(unit %in% valid_units)) {
     cli::cli_abort(
       c(
