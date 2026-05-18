@@ -195,6 +195,16 @@ test_that("Protocol handles different types correctly", {
     "FutureRouteOfAdministration"
   )
 
+  # `jsonlite::fromJSON(simplifyVector = FALSE)` returns length-1 lists for
+  # scalar JSON values; the helper must still resolve the label.
+  list_data <- simple_protocol_data
+  list_data$ApplicationType <- list("IntravenousBolus")
+  list_protocol <- Protocol$new(list_data)
+  expect_equal(
+    list_protocol$get_human_application_type(),
+    "Intravenous bolus"
+  )
+
   # Test different dosing intervals
   daily_data <- simple_protocol_data
   daily_data$DosingInterval <- "DI_24"

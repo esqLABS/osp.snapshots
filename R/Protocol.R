@@ -520,9 +520,14 @@ PKSIM_APPLICATION_TYPES <- c(
 
 # Look up the human-readable label for a PK-Sim application type. Falls back
 # to the raw enum value when no entry exists, mirroring the previous
-# `switch()` default arm.
+# `switch()` default arm. `unlist()` flattens length-1 lists from
+# `jsonlite::fromJSON(simplifyVector = FALSE)` so subsetting is robust.
 human_application_type <- function(application_type) {
+  application_type <- unlist(application_type)
   label <- PKSIM_APPLICATION_TYPES[application_type]
+  if (length(label) == 0) {
+    return(NA_character_)
+  }
   if (is.na(label)) application_type else unname(label)
 }
 
