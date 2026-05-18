@@ -227,12 +227,8 @@ Snapshot <- R6::R6Class(
 
       # Remove the requested individuals
       keep_indices <- which(!(current_names %in% individual_name))
-
-      if (length(keep_indices) == 0) {
-        private$.individuals <- list()
-      } else {
-        private$.individuals <- private$.individuals[keep_indices]
-      }
+      num_removed <- length(private$.individuals) - length(keep_indices)
+      private$.individuals <- private$.individuals[keep_indices]
 
       # Reset the named list
       private$.individuals_named <- private$.build_named_list(
@@ -241,7 +237,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(individual_name)} individual(s)"
+        "Removed {num_removed} individual(s)"
       )
       invisible(self)
     },
@@ -314,12 +310,8 @@ Snapshot <- R6::R6Class(
 
       # Remove the requested formulations
       keep_indices <- which(!(current_names %in% formulation_name))
-
-      if (length(keep_indices) == 0) {
-        private$.formulations <- list()
-      } else {
-        private$.formulations <- private$.formulations[keep_indices]
-      }
+      num_removed <- length(private$.formulations) - length(keep_indices)
+      private$.formulations <- private$.formulations[keep_indices]
 
       # Reset the named list
       private$.formulations_named <- private$.build_named_list(
@@ -328,7 +320,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(formulation_name)} formulation(s)"
+        "Removed {num_removed} formulation(s)"
       )
       invisible(self)
     },
@@ -363,12 +355,8 @@ Snapshot <- R6::R6Class(
 
       # Remove the requested populations
       keep_indices <- which(!(current_names %in% population_name))
-
-      if (length(keep_indices) == 0) {
-        private$.populations <- list()
-      } else {
-        private$.populations <- private$.populations[keep_indices]
-      }
+      num_removed <- length(private$.populations) - length(keep_indices)
+      private$.populations <- private$.populations[keep_indices]
 
       # Reset the named list
       private$.populations_named <- private$.build_named_list(
@@ -377,7 +365,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(population_name)} population(s)"
+        "Removed {num_removed} population(s)"
       )
       invisible(self)
     },
@@ -464,14 +452,11 @@ Snapshot <- R6::R6Class(
 
       # Remove the requested expression profiles
       keep_indices <- which(!(current_ids %in% profile_id))
-
-      if (length(keep_indices) == 0) {
-        private$.expression_profiles <- list()
-      } else {
-        private$.expression_profiles <- private$.expression_profiles[
-          keep_indices
-        ]
-      }
+      num_removed <- length(private$.expression_profiles) -
+        length(keep_indices)
+      private$.expression_profiles <- private$.expression_profiles[
+        keep_indices
+      ]
 
       # Reset the named list
       private$.expression_profiles_named <- private$.build_named_list(
@@ -481,7 +466,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(profile_id)} expression profile(s)"
+        "Removed {num_removed} expression profile(s)"
       )
       invisible(self)
     },
@@ -621,12 +606,8 @@ Snapshot <- R6::R6Class(
 
       # Remove the requested observed data
       keep_indices <- which(!(current_names %in% observed_data_name))
-
-      if (length(keep_indices) == 0) {
-        private$.observed_data <- list()
-      } else {
-        private$.observed_data <- private$.observed_data[keep_indices]
-      }
+      num_removed <- length(private$.observed_data) - length(keep_indices)
+      private$.observed_data <- private$.observed_data[keep_indices]
 
       # Reset the named list
       private$.observed_data_named <- private$.build_named_list(
@@ -635,7 +616,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(observed_data_name)} observed data item(s)"
+        "Removed {num_removed} observed data item(s)"
       )
       invisible(self)
     },
