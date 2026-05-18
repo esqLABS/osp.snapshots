@@ -17,24 +17,7 @@ Event <- R6::R6Class(
     #' @return A new Event object
     initialize = function(data) {
       private$.data <- data
-
-      # Parse parameters for easier access
-      if (!is.null(data$Parameters) && length(data$Parameters) > 0) {
-        private$.parameters <- lapply(data$Parameters, function(param_data) {
-          # Add Path property for compatibility with Parameter class
-          if (!is.null(param_data$Name) && is.null(param_data$Path)) {
-            param_data$Path <- param_data$Name
-          }
-          Parameter$new(param_data)
-        })
-      } else {
-        private$.parameters <- list()
-      }
-
-      # Set the proper class for parameter collection
-      if (length(private$.parameters) > 0) {
-        class(private$.parameters) <- c("parameter_collection", "list")
-      }
+      private$initialize_parameters()
     },
 
     #' @description
@@ -165,6 +148,14 @@ Event <- R6::R6Class(
 
   private = list(
     .data = NULL,
-    .parameters = NULL
+    .parameters = NULL,
+    initialize_parameters = function() {
+      raw <- private$.data$Parameters
+      private$.parameters <- build_parameters_from_raw(
+        lapply(raw %||% list(), ensure_path_from_name),
+        key_by = "none",
+        collection_class = length(raw) > 0
+      )
+    }
   )
 )

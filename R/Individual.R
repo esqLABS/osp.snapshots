@@ -274,21 +274,13 @@ Individual <- R6::R6Class(
     .data = NULL,
     .parameters = NULL,
     initialize_parameters = function() {
-      if (!is.null(private$.data$Parameters)) {
-        # Create parameters list
-        private$.parameters <- lapply(
-          private$.data$Parameters,
-          function(param_data) Parameter$new(param_data)
-        )
-        # Name the parameters by their paths for easier access
-        names(private$.parameters) <- vapply(
-          private$.parameters,
-          function(p) p$path,
-          character(1)
-        )
-        # Add collection class for custom printing
-        class(private$.parameters) <- c("parameter_collection", "list")
+      if (is.null(private$.data$Parameters)) {
+        return(invisible())
       }
+      private$.parameters <- build_parameters_from_raw(
+        private$.data$Parameters,
+        key_by = "path"
+      )
     }
   ),
   active = list(

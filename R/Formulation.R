@@ -310,51 +310,34 @@ Formulation <- R6::R6Class(
     .data = NULL,
     .parameters = NULL,
     initialize_parameters = function() {
-      if (!is.null(private$.data$Parameters)) {
-        # Convert each parameter to a Parameter object
-        private$.parameters <- lapply(
-          private$.data$Parameters,
-          function(param) {
-            # Map formulation parameter fields to Parameter structure
-            param_data <- list(
-              Path = param$Name, # Use Name as Path for parameters
-              Value = param$Value
-            )
-
-            # Add Unit if present
-            if (!is.null(param$Unit)) {
-              param_data$Unit <- param$Unit
-            }
-
-            # Add ValueOrigin if present
-            if (!is.null(param$ValueOrigin)) {
-              param_data$ValueOrigin <- param$ValueOrigin
-            }
-
-            # Create Parameter object
-            param_obj <- Parameter$new(param_data)
-
-            # Store TableFormula as a custom attribute if present
-            if (!is.null(param$TableFormula)) {
-              param_obj$data$TableFormula <- param$TableFormula
-            }
-
-            param_obj
-          }
-        )
-
-        # Name the parameters by their name
-        names(private$.parameters) <- sapply(
-          private$.parameters,
-          function(p) p$name
-        )
-
-        # Add collection class for custom printing
-        class(private$.parameters) <- c(
-          "parameter_collection",
-          "list"
-        )
+      if (is.null(private$.data$Parameters)) {
+        return(invisible())
       }
+
+      # Formulation parameters carry `Name` rather than `Path`; reshape each
+      # raw dict to the `Parameter` shape, preserving only the fields the
+      # class consumes, before handing the list to the shared helper.
+      reshaped <- lapply(private$.data$Parameters, function(param) {
+        param_data <- list(
+          Path = param$Name,
+          Value = param$Value
+        )
+        if (!is.null(param$Unit)) {
+          param_data$Unit <- param$Unit
+        }
+        if (!is.null(param$ValueOrigin)) {
+          param_data$ValueOrigin <- param$ValueOrigin
+        }
+        if (!is.null(param$TableFormula)) {
+          param_data$TableFormula <- param$TableFormula
+        }
+        param_data
+      })
+
+      private$.parameters <- build_parameters_from_raw(
+        reshaped,
+        key_by = "name"
+      )
     }
   ),
   active = list(
