@@ -307,6 +307,21 @@ test_that("Mutations through OriginData propagate to the snapshot export", {
   expect_equal(reloaded_origin$Species, "Human")
 })
 
+test_that("Snapshot export drops a building-block section when all items are removed", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  individual_names <- names(snapshot$individuals)
+  expect_gt(length(individual_names), 0)
+
+  snapshot$remove_individual(individual_names)
+  expect_length(snapshot$individuals, 0)
+  expect_length(snapshot$data$Individuals, 0)
+
+  out <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(out)
+  reloaded <- load_snapshot(out)
+  expect_length(reloaded$individuals, 0)
+})
+
 test_that("Snapshot print method works", {
   # Create a snapshot object
   snapshot <- test_snapshot$clone()
@@ -763,4 +778,188 @@ test_that(".get_templates_data helper function works", {
       ))
     }
   )
+})
+
+# add_* / remove_* mutators -------------------------------------------------
+
+test_that("add_compound and remove_compound round-trip", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  compound <- create_compound(name = "Drug X", molecular_weight = 250.3)
+
+  snapshot <- add_compound(snapshot, compound)
+  expect_named(snapshot$compounds, "Drug X")
+
+  out <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(snapshot, out)
+  reloaded <- load_snapshot(out)
+  expect_named(reloaded$compounds, "Drug X")
+
+  reloaded <- remove_compound(reloaded, "Drug X")
+  expect_length(reloaded$compounds, 0)
+})
+
+test_that("add_compound errors on wrong class", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(add_compound(snapshot, "not a compound"), error = TRUE)
+})
+
+test_that("remove_compound warns when name is missing", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  snapshot <- add_compound(snapshot, create_compound(name = "Drug X"))
+  expect_snapshot(remove_compound(snapshot, "Other"))
+})
+
+test_that("remove_compound warns on empty collection", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(remove_compound(snapshot, "Drug X"))
+})
+
+test_that("add_compound disambiguates duplicate names", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  snapshot <- add_compound(snapshot, create_compound(name = "Drug X"))
+  snapshot <- add_compound(snapshot, create_compound(name = "Drug X"))
+  expect_named(snapshot$compounds, c("Drug X_1", "Drug X_2"))
+})
+
+test_that("add_population round-trips", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  pop <- create_population(name = "Adults", number_of_individuals = 25)
+
+  snapshot <- add_population(snapshot, pop)
+  expect_named(snapshot$populations, "Adults")
+
+  out <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(snapshot, out)
+  reloaded <- load_snapshot(out)
+  expect_named(reloaded$populations, "Adults")
+})
+
+test_that("add_population errors on wrong class", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(add_population(snapshot, "not a population"), error = TRUE)
+})
+
+test_that("add_population disambiguates duplicate names", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  pop <- create_population(name = "Adults", number_of_individuals = 25)
+  snapshot <- add_population(snapshot, pop)
+  snapshot <- add_population(snapshot, pop)
+  expect_named(snapshot$populations, c("Adults_1", "Adults_2"))
+})
+
+test_that("add_protocol and remove_protocol round-trip", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  prot <- create_protocol(
+    name = "Single oral",
+    application_type = "Oral",
+    dosing_interval = "Single"
+  )
+
+  snapshot <- add_protocol(snapshot, prot)
+  expect_named(snapshot$protocols, "Single oral")
+
+  out <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(snapshot, out)
+  reloaded <- load_snapshot(out)
+  expect_named(reloaded$protocols, "Single oral")
+
+  reloaded <- remove_protocol(reloaded, "Single oral")
+  expect_length(reloaded$protocols, 0)
+})
+
+test_that("add_protocol errors on wrong class", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(add_protocol(snapshot, "not a protocol"), error = TRUE)
+})
+
+test_that("remove_protocol warns when name is missing", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  snapshot <- add_protocol(
+    snapshot,
+    create_protocol(
+      name = "Single oral",
+      application_type = "Oral",
+      dosing_interval = "Single"
+    )
+  )
+  expect_snapshot(remove_protocol(snapshot, "Other"))
+})
+
+test_that("remove_protocol warns on empty collection", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(remove_protocol(snapshot, "Single oral"))
+})
+
+test_that("add_event and remove_event round-trip", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  evt <- create_event(
+    name = "Breakfast",
+    template = "Meal: Standard (Human)"
+  )
+
+  snapshot <- add_event(snapshot, evt)
+  expect_named(snapshot$events, "Breakfast")
+
+  out <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(snapshot, out)
+  reloaded <- load_snapshot(out)
+  expect_named(reloaded$events, "Breakfast")
+
+  reloaded <- remove_event(reloaded, "Breakfast")
+  expect_length(reloaded$events, 0)
+})
+
+test_that("add_event errors on wrong class", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(add_event(snapshot, "not an event"), error = TRUE)
+})
+
+test_that("remove_event warns when name is missing", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  snapshot <- add_event(
+    snapshot,
+    create_event(name = "Breakfast", template = "Meal: Standard (Human)")
+  )
+  expect_snapshot(remove_event(snapshot, "Other"))
+})
+
+test_that("remove_event warns on empty collection", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(remove_event(snapshot, "Breakfast"))
+})
+
+test_that("add_observed_data exported wrapper round-trips", {
+  source_snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  dataset <- source_snapshot$observed_data[[1]]
+
+  empty <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  empty <- add_observed_data(empty, dataset)
+  expect_true(dataset$name %in% names(empty$observed_data))
+
+  empty <- remove_observed_data(empty, dataset$name)
+  expect_false(dataset$name %in% names(empty$observed_data))
+})
+
+test_that("add_observed_data exported wrapper errors on wrong class", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(add_observed_data(snapshot, "not a dataset"), error = TRUE)
+})
+
+test_that("mutators reject non-Snapshot inputs", {
+  compound <- create_compound(name = "X")
+  population <- create_population(name = "P", number_of_individuals = 1)
+  protocol <- create_protocol(
+    name = "S",
+    application_type = "Oral",
+    dosing_interval = "Single"
+  )
+  event <- create_event(name = "E", template = "Meal: Standard (Human)")
+
+  expect_snapshot(add_compound("nope", compound), error = TRUE)
+  expect_snapshot(remove_compound("nope", "X"), error = TRUE)
+  expect_snapshot(add_population("nope", population), error = TRUE)
+  expect_snapshot(add_protocol("nope", protocol), error = TRUE)
+  expect_snapshot(remove_protocol("nope", "S"), error = TRUE)
+  expect_snapshot(add_event("nope", event), error = TRUE)
+  expect_snapshot(remove_event("nope", "E"), error = TRUE)
 })

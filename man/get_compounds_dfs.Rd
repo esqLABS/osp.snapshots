@@ -7,33 +7,15 @@
 get_compounds_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A Snapshot object.}
+\item{snapshot}{A `Snapshot` object.}
 }
 \value{
-A list with elements `properties` and `processes`, each a
-  tibble.
+A list with `properties` and `processes` tibbles; see
+  [as_tibbles()] for the column contract.
 }
 \description{
-Walks every compound in a snapshot and returns its physicochemical
-properties and processes as a pair of tidy tibbles.
-
-The return shape is a list with two elements:
-
-\describe{
-  \item{`properties`}{One row per (compound, physicochemical property)
-    pair, in the legacy combined shape: `compound`, `category`, `type`,
-    `parameter`, `value`, `unit`, `data_source`, `source`. Process rows
-    are also folded in (with `category` taking the eight legacy values
-    such as `"protein_binding_partners"`) for backwards compatibility;
-    this folded shape is [`lifecycle::deprecate_soft()`]-warned and will
-    be removed in a later major version. Use the `processes` element
-    below instead.}
-  \item{`processes`}{Long form, one row per (compound, process,
-    parameter) triple. Columns: `compound`, `category`, `process_name`,
-    `parameter`, `value`, `unit`, `data_source`, `source`, plus the
-    optional `molecule`, `metabolite`, `species` columns (NA where the
-    process does not carry that field).}
-}
+Thin wrapper around [as_tibbles()] with `kind = "compounds"`.
+Prefer [as_tibbles()] in new code.
 }
 \examples{
 \dontrun{

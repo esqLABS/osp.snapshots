@@ -57,6 +57,7 @@ reference:
   - Protocol
   - Event
   - ExpressionProfile
+  - ObserverSet
   - Parameter
   - LocalizedParameter
   - AdvancedParameter
@@ -67,6 +68,8 @@ reference:
   contents:
   - OriginData
   - CalculationMethodCache
+  - Schema
+  - SchemaItem
 
 - title: "Create Building Blocks"
   desc: "Functions to create new building blocks from scratch"
@@ -85,17 +88,29 @@ reference:
 - title: "Manage Building Blocks"
   desc: "Add and remove building blocks from snapshots"
   contents:
-  - add_individual
-  - add_formulation
+  - add_compound
+  - add_event
   - add_expression_profile
-  - remove_individual
-  - remove_formulation
-  - remove_population
+  - add_formulation
+  - add_individual
+  - add_observed_data
+  - add_observer_set
+  - add_population
+  - add_protocol
+  - remove_compound
+  - remove_event
   - remove_expression_profile
+  - remove_formulation
+  - remove_individual
+  - remove_observed_data
+  - remove_observer_set
+  - remove_population
+  - remove_protocol
 
 - title: "Data Frame Conversion"
   desc: "Convert building blocks to data frames for analysis"
   contents:
+  - as_tibbles
   - get_individuals_dfs
   - get_compounds_dfs
   - get_formulations_dfs
@@ -104,6 +119,7 @@ reference:
   - get_events_dfs
   - get_expression_profiles_dfs
   - get_observed_data_dfs
+  - get_observer_sets_dfs
 
 - title: "Observed Data"
   desc: "Work with clinical and experimental data"

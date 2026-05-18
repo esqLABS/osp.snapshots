@@ -2,36 +2,25 @@
 % Please edit documentation in R/snapshot_dataframes.R
 \name{get_observed_data_dfs}
 \alias{get_observed_data_dfs}
-\title{Get all observed data in a snapshot as data frames}
+\title{Get all observed data in a snapshot as a tibble}
 \usage{
 get_observed_data_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A Snapshot object}
+\item{snapshot}{A `Snapshot` object.}
 }
 \value{
-A tibble containing all observed data in long format with columns:
-\itemize{
-  \item observed_data_name: Name of the observed data set
-  \item time: Time values
-  \item time_unit: Unit for time values
-  \item column_name: Name of the measurement column
-  \item value: Measured values
-  \item unit: Unit for the measured values
-  \item path: Full path of the measurement
-  \item auxiliary_type: Type of auxiliary data (e.g., ArithmeticMean, ArithmeticStdDev)
-}
+A tibble in long format with columns `name`, `xValues`,
+  `yValues`, `yErrorValues`, `xDimension`, `xUnit`, `yDimension`,
+  `yUnit`, `yErrorType`, `yErrorUnit`, `molWeight`, `lloq`.
 }
 \description{
-This function extracts all observed data from a snapshot and converts them to
-data frames for easier analysis and visualization.
+Thin wrapper around [as_tibbles()] with `kind = "observed_data"`.
+Prefer [as_tibbles()] in new code.
 }
 \examples{
 \dontrun{
-# Load a snapshot
 snapshot <- load_snapshot("path/to/snapshot.json")
-
-# Get all observed data as data frames
 observed_data_df <- get_observed_data_dfs(snapshot)
 }
 }

@@ -1,3 +1,35 @@
+# Default export adapter for a building-block section. Pairs with the
+# per-section table `Snapshot$private$.export_adapters`; non-default sections
+# (currently only ObservedData) supply their own adapter.
+#
+# Contract:
+#   items     cache slot value: `NULL` (lazy cache untouched, replay original
+#             verbatim), `list()` (cache touched and now empty), or a
+#             non-empty list of R6 wrappers (extract each wrapper's `$data`).
+#   original  the raw slice from `.original_data` (may be NULL).
+#
+# When `items` is `list()`, the cache could be empty either because the user
+# removed every entry or because the lazy loader observed an absent/empty
+# section. In the latter case `original` is also empty (`NULL` or `list()`),
+# so falling through to `list()` faithfully represents the section as empty
+# in both cases. The previously-buggy fallback to `original` re-introduced
+# removed entries when the original slice was non-empty.
+.default_export_adapter <- function(items, original) {
+  if (is.null(items)) {
+    return(original)
+  }
+  if (length(items) == 0) {
+    # Preserve the historical NULL shape when the original slice was already
+    # NULL or empty; only emit `list()` when the user actually cleared a
+    # non-empty section.
+    if (length(original) == 0) {
+      return(original)
+    }
+    return(list())
+  }
+  lapply(items, function(item) item$data)
+}
+
 #' Snapshot class for OSP snapshots
 #'
 #' @description
@@ -434,6 +466,64 @@ Snapshot <- R6::R6Class(
       invisible(self)
     },
 
+    add_observer_set = function(observer_set) {
+      if (!inherits(observer_set, "ObserverSet")) {
+        cli::cli_abort(
+          "Expected an ObserverSet object, but got {.cls {class(observer_set)[1]}}"
+        )
+      }
+
+      private$.ensure_observer_sets()
+
+      private$.observer_sets <- c(private$.observer_sets, list(observer_set))
+
+      private$.observer_sets_named <- private$.build_named_list(
+        private$.observer_sets,
+        "observer_set_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added observer set '{observer_set$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    remove_observer_set = function(observer_set_name) {
+      private$.ensure_observer_sets()
+
+      if (length(private$.observer_sets) == 0) {
+        cli::cli_warn("No observer sets to remove")
+        return(invisible(self))
+      }
+
+      current_names <- vapply(
+        private$.observer_sets,
+        function(os) os$name,
+        character(1)
+      )
+
+      for (name in unique(observer_set_name)) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Observer set '{name}' not found in snapshot")
+        }
+      }
+
+      keep_indices <- which(!(current_names %in% observer_set_name))
+
+      private$.observer_sets <- private$.observer_sets[keep_indices]
+
+      private$.observer_sets_named <- private$.build_named_list(
+        private$.observer_sets,
+        "observer_set_collection"
+      )
+
+      n_removed <- length(current_names) - length(keep_indices)
+      cli::cli_alert_success(
+        "Removed {n_removed} observer set(s)"
+      )
+      invisible(self)
+    },
+
     #' @description
     #' Add a DataSet object (observed data) to the snapshot
     #' @param observed_data A DataSet object created from snapshot observed data
@@ -448,6 +538,28 @@ Snapshot <- R6::R6Class(
 
       # Force lazy construction of any existing observed data before mutating
       private$.ensure_observed_data()
+
+      # Warn once at add time if the new DataSet has no backing JSON slice in
+      # `.original_data`; `ospsuite::DataSet` does not round-trip back to the
+      # snapshot list shape, so such entries are dropped on export. Warning
+      # here (rather than inside the export adapter) keeps `print()` and other
+      # `$data` accesses quiet.
+      original <- private$.original_data$ObservedData
+      original_names <- if (is.null(original)) {
+        character()
+      } else {
+        vapply(
+          original,
+          function(od) od$Name %||% od$name,
+          character(1)
+        )
+      }
+      if (!(observed_data$name %in% original_names)) {
+        cli::cli_warn(c(
+          "Observed data {.val {observed_data$name}} cannot be serialized on export.",
+          i = "{.cls DataSet} objects have no {.code $data} accessor; only entries present in the original snapshot are exported."
+        ))
+      }
 
       # Add the observed data to the list
       private$.observed_data <- c(private$.observed_data, list(observed_data))
@@ -506,112 +618,193 @@ Snapshot <- R6::R6Class(
         "Removed {length(observed_data_name)} observed data item(s)"
       )
       invisible(self)
+    },
+
+    add_compound = function(compound) {
+      if (!inherits(compound, "Compound")) {
+        cli::cli_abort(
+          "Expected a Compound object, but got {.cls {class(compound)[1]}}"
+        )
+      }
+
+      private$.ensure_compounds()
+      private$.compounds <- c(private$.compounds, list(compound))
+      private$.compounds_named <- private$.build_named_list(
+        private$.compounds,
+        "compound_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added compound '{compound$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    remove_compound = function(compound_name) {
+      private$.ensure_compounds()
+
+      if (length(private$.compounds) == 0) {
+        cli::cli_warn("No compounds to remove")
+        return(invisible(self))
+      }
+
+      current_names <- sapply(private$.compounds, function(c) c$name)
+
+      for (name in compound_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Compound '{name}' not found in snapshot")
+        }
+      }
+
+      keep_indices <- which(!(current_names %in% compound_name))
+      num_removed <- length(private$.compounds) - length(keep_indices)
+      private$.compounds <- private$.compounds[keep_indices]
+
+      private$.compounds_named <- private$.build_named_list(
+        private$.compounds,
+        "compound_collection"
+      )
+
+      cli::cli_alert_success(
+        "Removed {num_removed} compound(s)"
+      )
+      invisible(self)
+    },
+
+    add_population = function(population) {
+      if (!inherits(population, "Population")) {
+        cli::cli_abort(
+          "Expected a Population object, but got {.cls {class(population)[1]}}"
+        )
+      }
+
+      private$.ensure_populations()
+      private$.populations <- c(private$.populations, list(population))
+      private$.populations_named <- private$.build_named_list(
+        private$.populations,
+        "population_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added population '{population$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    add_protocol = function(protocol) {
+      if (!inherits(protocol, "Protocol")) {
+        cli::cli_abort(
+          "Expected a Protocol object, but got {.cls {class(protocol)[1]}}"
+        )
+      }
+
+      private$.ensure_protocols()
+      private$.protocols <- c(private$.protocols, list(protocol))
+      private$.protocols_named <- private$.build_named_list(
+        private$.protocols,
+        "protocol_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added protocol '{protocol$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    remove_protocol = function(protocol_name) {
+      private$.ensure_protocols()
+
+      if (length(private$.protocols) == 0) {
+        cli::cli_warn("No protocols to remove")
+        return(invisible(self))
+      }
+
+      current_names <- sapply(private$.protocols, function(p) p$name)
+
+      for (name in protocol_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Protocol '{name}' not found in snapshot")
+        }
+      }
+
+      keep_indices <- which(!(current_names %in% protocol_name))
+      num_removed <- length(private$.protocols) - length(keep_indices)
+      private$.protocols <- private$.protocols[keep_indices]
+
+      private$.protocols_named <- private$.build_named_list(
+        private$.protocols,
+        "protocol_collection"
+      )
+
+      cli::cli_alert_success(
+        "Removed {num_removed} protocol(s)"
+      )
+      invisible(self)
+    },
+
+    add_event = function(event) {
+      if (!inherits(event, "Event")) {
+        cli::cli_abort(
+          "Expected an Event object, but got {.cls {class(event)[1]}}"
+        )
+      }
+
+      private$.ensure_events()
+      private$.events <- c(private$.events, list(event))
+      private$.events_named <- private$.build_named_list(
+        private$.events,
+        "event_collection"
+      )
+
+      cli::cli_alert_success(
+        "Added event '{event$name}' to the snapshot"
+      )
+      invisible(self)
+    },
+
+    remove_event = function(event_name) {
+      private$.ensure_events()
+
+      if (length(private$.events) == 0) {
+        cli::cli_warn("No events to remove")
+        return(invisible(self))
+      }
+
+      current_names <- sapply(private$.events, function(e) e$name)
+
+      for (name in event_name) {
+        if (!(name %in% current_names)) {
+          cli::cli_warn("Event '{name}' not found in snapshot")
+        }
+      }
+
+      keep_indices <- which(!(current_names %in% event_name))
+      num_removed <- length(private$.events) - length(keep_indices)
+      private$.events <- private$.events[keep_indices]
+
+      private$.events_named <- private$.build_named_list(
+        private$.events,
+        "event_collection"
+      )
+
+      cli::cli_alert_success(
+        "Removed {num_removed} event(s)"
+      )
+      invisible(self)
     }
   ),
   active = list(
     #' @field data The aggregated data of the snapshot from all components
     data = function() {
-      # Start with a copy of the original data
       result <- private$.original_data
-
-      # Update with current compound data
-      if (length(private$.compounds) > 0) {
-        # Extract raw data from each compound object
-        compound_data <- lapply(private$.compounds, function(comp) comp$data)
-        result$Compounds <- compound_data
-      }
-
-      # Update with current expression profile data
-      if (length(private$.expression_profiles) > 0) {
-        # Extract raw data from each expression profile object
-        expression_profile_data <- lapply(
-          private$.expression_profiles,
-          function(profile) profile$data
+      for (section in names(private$.export_adapters)) {
+        spec <- private$.export_adapters[[section]]
+        result[[section]] <- spec$adapter(
+          private[[spec$cache]],
+          private$.original_data[[section]]
         )
-        result$ExpressionProfiles <- expression_profile_data
       }
-
-      # Update with current individual data
-      if (length(private$.individuals) > 0) {
-        # Extract raw data from each individual object
-        individual_data <- lapply(private$.individuals, function(ind) ind$data)
-        result$Individuals <- individual_data
-      }
-
-      # Update with current formulation data
-      if (length(private$.formulations) > 0) {
-        # Extract raw data from each formulation object
-        formulation_data <- lapply(
-          private$.formulations,
-          function(form) form$data
-        )
-        result$Formulations <- formulation_data
-      }
-
-      # Update with current population data
-      if (length(private$.populations) > 0) {
-        # Extract raw data from each population object
-        population_data <- lapply(
-          private$.populations,
-          function(pop) pop$data
-        )
-        result$Populations <- population_data
-      }
-
-      # Update with current event data
-      if (length(private$.events) > 0) {
-        # Extract raw data from each event object
-        event_data <- lapply(
-          private$.events,
-          function(evt) evt$data
-        )
-        result$Events <- event_data
-      }
-
-      # Update with current protocol data
-      if (length(private$.protocols) > 0) {
-        # Extract raw data from each protocol object
-        protocol_data <- lapply(
-          private$.protocols,
-          function(protocol) protocol$data
-        )
-        result$Protocols <- protocol_data
-      }
-
-      # Update with current observed data
-      # Note: DataSet objects have no $data accessor so the raw JSON entries in
-      # `.original_data$ObservedData` are the source of truth on export. When
-      # the lazy cache has been touched, filter the original entries down to
-      # the names that still survive in the cache so removals and re-orderings
-      # are honored. Items added at runtime (whose backing JSON is not in
-      # `.original_data`) cannot be serialized here and are dropped with a
-      # warning.
-      if (!is.null(private$.observed_data)) {
-        if (length(private$.observed_data) == 0) {
-          result$ObservedData <- NULL
-        } else {
-          surviving_names <- vapply(
-            private$.observed_data,
-            function(od) od$name,
-            character(1)
-          )
-          original <- private$.original_data$ObservedData
-          original_names <- vapply(
-            original,
-            function(od) od$Name %||% od$name,
-            character(1)
-          )
-          result$ObservedData <- original[original_names %in% surviving_names]
-          if (length(private$.observed_data) > length(result$ObservedData)) {
-            cli::cli_warn(c(
-              "Some observed data added at runtime cannot be serialized.",
-              i = "DataSet objects have no $data accessor; only original entries are exported."
-            ))
-          }
-        }
-      }
-
-      return(result)
+      result
     },
 
     #' @field pksim_version The human-readable PKSIM version corresponding to the snapshot version
@@ -735,6 +928,22 @@ Snapshot <- R6::R6Class(
       private$.events_named
     },
 
+    #' @field observer_sets List of ObserverSet objects in the snapshot
+    observer_sets = function(value = NULL) {
+      if (!is.null(value)) {
+        private$.observer_sets <- value
+        private$.observer_sets_named <- NULL
+      }
+      private$.ensure_observer_sets()
+      if (is.null(private$.observer_sets_named)) {
+        private$.observer_sets_named <- private$.build_named_list(
+          private$.observer_sets,
+          "observer_set_collection"
+        )
+      }
+      private$.observer_sets_named
+    },
+
     #' @field protocols List of Protocol objects in the snapshot
     protocols = function(value = NULL) {
       if (!is.null(value)) {
@@ -771,6 +980,51 @@ Snapshot <- R6::R6Class(
     .original_data = NULL,
     .pksim_version = NULL,
     .abs_path = NULL,
+
+    # Per-section export adapter table used by `$data` to rebuild the export
+    # payload. Each entry pairs a private cache slot with an adapter function
+    # `adapter(items, original)` that turns the lazy cache + the raw slice
+    # from `.original_data` into the value to write back. Most sections use
+    # the default building-block adapter; ObservedData has its own carve-out
+    # co-located with `R/ObservedData.R` (see `.observed_data_export_adapter`).
+    .export_adapters = list(
+      Compounds = list(
+        cache = ".compounds",
+        adapter = .default_export_adapter
+      ),
+      ExpressionProfiles = list(
+        cache = ".expression_profiles",
+        adapter = .default_export_adapter
+      ),
+      Individuals = list(
+        cache = ".individuals",
+        adapter = .default_export_adapter
+      ),
+      Formulations = list(
+        cache = ".formulations",
+        adapter = .default_export_adapter
+      ),
+      Populations = list(
+        cache = ".populations",
+        adapter = .default_export_adapter
+      ),
+      Events = list(
+        cache = ".events",
+        adapter = .default_export_adapter
+      ),
+      Protocols = list(
+        cache = ".protocols",
+        adapter = .default_export_adapter
+      ),
+      ObserverSets = list(
+        cache = ".observer_sets",
+        adapter = .default_export_adapter
+      ),
+      ObservedData = list(
+        cache = ".observed_data",
+        adapter = .observed_data_export_adapter
+      )
+    ),
 
     # Convert the raw version number to a human-readable PKSIM version
     # Returns a string with the human-readable PKSIM version
@@ -862,6 +1116,14 @@ Snapshot <- R6::R6Class(
       )
     },
 
+    .ensure_observer_sets = function() {
+      private$.ensure_collection(
+        ".observer_sets",
+        "ObserverSets",
+        function(d) ObserverSet$new(d)
+      )
+    },
+
     .ensure_observed_data = function() {
       private$.ensure_collection(
         ".observed_data",
@@ -911,6 +1173,12 @@ Snapshot <- R6::R6Class(
 
     # Cache for the named protocols list with disambiguated names
     .protocols_named = NULL,
+
+    # Store observer set objects in an unnamed list
+    .observer_sets = NULL,
+
+    # Cache for the named observer sets list with disambiguated names
+    .observer_sets_named = NULL,
 
     # Store observed data objects in an unnamed list.
     # Tri-state sentinel used by the export path in `$data`:
@@ -1334,6 +1602,64 @@ remove_expression_profile <- function(snapshot, profile_id) {
   invisible(snapshot)
 }
 
+#' Add an observer set to a snapshot
+#'
+#' @description
+#' Add an `ObserverSet` building block to a `Snapshot`. The exported function
+#' is the canonical, pipeable surface for the mutation; it validates the
+#' snapshot before delegating to the underlying R6 method.
+#'
+#' @param snapshot A `Snapshot` object.
+#' @param observer_set An `ObserverSet` object.
+#'
+#' @return The updated `Snapshot` object, invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' observer_set <- ObserverSet$new(list(
+#'   Name = "BrainPlasmaConcentration",
+#'   Observers = list()
+#' ))
+#'
+#' snapshot |> add_observer_set(observer_set)
+#' }
+add_observer_set <- function(snapshot, observer_set) {
+  validate_snapshot(snapshot)
+  snapshot$add_observer_set(observer_set)
+  invisible(snapshot)
+}
+
+#' Remove observer sets from a snapshot
+#'
+#' @description
+#' Remove one or more `ObserverSet` building blocks from a `Snapshot` by name.
+#' Names not present in the snapshot trigger a warning rather than an error so
+#' callers can run idempotent cleanup pipelines.
+#'
+#' @param snapshot A `Snapshot` object.
+#' @param observer_set_name Character vector of observer set names to remove.
+#'
+#' @return The updated `Snapshot` object, invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam")
+#'
+#' snapshot |> remove_observer_set("BrainPlasmaConcentration")
+#'
+#' snapshot |>
+#'   remove_observer_set(c("BrainPlasmaConcentration", "LiverObservers"))
+#' }
+remove_observer_set <- function(snapshot, observer_set_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_observer_set(observer_set_name)
+  invisible(snapshot)
+}
+
 #' Browse available OSPSuite building block templates
 #'
 #' @description
@@ -1400,6 +1726,213 @@ osp_models <- function(pattern = NULL) {
       )
     }
   )
+}
+
+#' Add a compound to a snapshot
+#'
+#' @description
+#' Add a [Compound] object to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param compound A [Compound] object created with [create_compound()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_compound(create_compound(name = "Drug X"))
+#' }
+add_compound <- function(snapshot, compound) {
+  validate_snapshot(snapshot)
+  snapshot$add_compound(compound)
+  invisible(snapshot)
+}
+
+#' Remove compounds from a snapshot
+#'
+#' @description
+#' Remove one or more compounds from a [Snapshot] by name.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param compound_name Character vector of compound names to remove.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   remove_compound("Midazolam")
+#' }
+remove_compound <- function(snapshot, compound_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_compound(compound_name)
+  invisible(snapshot)
+}
+
+#' Add a population to a snapshot
+#'
+#' @description
+#' Add a [Population] object to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param population A [Population] object created with [create_population()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' pop <- create_population(name = "Adults", number_of_individuals = 100)
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_population(pop)
+#' }
+add_population <- function(snapshot, population) {
+  validate_snapshot(snapshot)
+  snapshot$add_population(population)
+  invisible(snapshot)
+}
+
+#' Add a protocol to a snapshot
+#'
+#' @description
+#' Add a [Protocol] object to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param protocol A [Protocol] object created with [create_protocol()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' prot <- create_protocol(
+#'   name = "Single oral dose",
+#'   application_type = "Oral",
+#'   dosing_interval = "Single"
+#' )
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_protocol(prot)
+#' }
+add_protocol <- function(snapshot, protocol) {
+  validate_snapshot(snapshot)
+  snapshot$add_protocol(protocol)
+  invisible(snapshot)
+}
+
+#' Remove protocols from a snapshot
+#'
+#' @description
+#' Remove one or more protocols from a [Snapshot] by name.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param protocol_name Character vector of protocol names to remove.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   remove_protocol("IV bolus 1mg")
+#' }
+remove_protocol <- function(snapshot, protocol_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_protocol(protocol_name)
+  invisible(snapshot)
+}
+
+#' Add an event to a snapshot
+#'
+#' @description
+#' Add an [Event] object to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param event An [Event] object created with [create_event()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' evt <- create_event(
+#'   name = "Breakfast",
+#'   template = "Meal: Standard (Human)"
+#' )
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_event(evt)
+#' }
+add_event <- function(snapshot, event) {
+  validate_snapshot(snapshot)
+  snapshot$add_event(event)
+  invisible(snapshot)
+}
+
+#' Remove events from a snapshot
+#'
+#' @description
+#' Remove one or more events from a [Snapshot] by name.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param event_name Character vector of event names to remove.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   remove_event("Breakfast")
+#' }
+remove_event <- function(snapshot, event_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_event(event_name)
+  invisible(snapshot)
+}
+
+#' Add observed data to a snapshot
+#'
+#' @description
+#' Add an `ospsuite::DataSet` (observed data) to a [Snapshot].
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param observed_data A `DataSet` object, typically created with
+#'   [create_observed_data()] or [loadDataSetFromSnapshot()].
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' dataset <- create_observed_data(
+#'   name = "Study A",
+#'   time = c(0, 1, 2),
+#'   values = c(0, 5, 8),
+#'   value_dimension = "Concentration (mass)"
+#' )
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_observed_data(dataset)
+#' }
+add_observed_data <- function(snapshot, observed_data) {
+  validate_snapshot(snapshot)
+  snapshot$add_observed_data(observed_data)
+  invisible(snapshot)
+}
+
+#' Remove observed data from a snapshot
+#'
+#' @description
+#' Remove one or more observed-data entries from a [Snapshot] by name.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param observed_data_name Character vector of observed-data names to
+#'   remove.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   remove_observed_data("Study A")
+#' }
+remove_observed_data <- function(snapshot, observed_data_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_observed_data(observed_data_name)
+  invisible(snapshot)
 }
 
 #' Export a snapshot to a JSON file

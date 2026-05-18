@@ -7,34 +7,20 @@
 get_formulations_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A Snapshot object}
+\item{snapshot}{A `Snapshot` object.}
 }
 \value{
-A list containing two data frames:
-\itemize{
-  \item formulations: Basic information about each formulation
-  \item formulations_parameters: All parameters for all formulations, including
-        table parameter points. Table parameter points have is_table_point=TRUE
-        and include x_value, y_value, and table_name values.
-}
+A list with `formulations` and `formulations_parameters`
+  tibbles. Table parameter points have `is_table_point = TRUE` and
+  carry `x_value`, `y_value`, and `table_name`.
 }
 \description{
-This function extracts all formulations from a snapshot and converts them to
-data frames for easier analysis and visualization.
+Thin wrapper around [as_tibbles()] with `kind = "formulations"`.
+Prefer [as_tibbles()] in new code.
 }
 \examples{
 \dontrun{
-# Load a snapshot
 snapshot <- load_snapshot("path/to/snapshot.json")
-
-# Get all formulation data as data frames
 dfs <- get_formulations_dfs(snapshot)
-
-# Access specific data frames
-formulations_df <- dfs$formulations
-formulations_parameters_df <- dfs$formulations_parameters
-
-# Filter to get only table points
-table_points <- formulations_parameters_df[formulations_parameters_df$is_table_point, ]
 }
 }

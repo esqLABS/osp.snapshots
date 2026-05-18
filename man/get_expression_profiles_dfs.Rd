@@ -7,29 +7,19 @@
 get_expression_profiles_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A Snapshot object}
+\item{snapshot}{A `Snapshot` object.}
 }
 \value{
-A list containing two data frames:
-\itemize{
-  \item expression_profiles: Basic information about each expression profile
-  \item expression_profiles_parameters: All parameters for all expression profiles
-}
+A list with `expression_profiles` and
+  `expression_profiles_parameters` tibbles.
 }
 \description{
-This function extracts all expression profiles from a snapshot and converts them to
-data frames for easier analysis and visualization.
+Thin wrapper around [as_tibbles()] with
+`kind = "expression_profiles"`. Prefer [as_tibbles()] in new code.
 }
 \examples{
 \dontrun{
-# Load a snapshot
 snapshot <- load_snapshot("path/to/snapshot.json")
-
-# Get all expression profile data as data frames
 dfs <- get_expression_profiles_dfs(snapshot)
-
-# Access specific data frames
-expression_profiles_df <- dfs$expression_profiles
-expression_profiles_parameters_df <- dfs$expression_profiles_parameters
 }
 }
