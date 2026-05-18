@@ -21,7 +21,7 @@ not itself a building block; it lives inside an ObserverSet."><meta name="robots
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9023</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9026</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,11 +94,12 @@ Setting this field writes back to <code>Formula$Formula</code> only. To
 access the full <code>ExplicitFormula</code>, use <code>observer$data$Formula</code>.</p></dd>
 
 
-    <dt><code>container_path</code></dt>
-<dd><p>The container path the observer attaches to.
-Built by joining the <code>Tag</code> values found in <code>ContainerCriteria</code>
-with <code>|</code>. <code>NULL</code> when the observer carries no container
-criteria.</p></dd>
+    <dt><code>container_tags</code></dt>
+<dd><p>The <code>Tag</code> values from the observer's
+<code>ContainerCriteria</code>, joined with <code>|</code>. There is no <code>ContainerPath</code>
+field in the snapshot JSON; this binding is synthesized from the
+tags found in <code>ContainerCriteria</code>. <code>NULL</code> when the observer
+carries no container criteria.</p></dd>
 
 
 </dl><p></p></div>
@@ -155,7 +156,7 @@ an empty list, both of which create an empty observer.</p></dd>
 <h3 id="observer-to-df-"><code>Observer$to_df()</code><a class="anchor" aria-label="anchor" href="#observer-to-df-"></a></h3>
 <p>Convert the observer to a single-row tibble suitable for the
 tibble-layer exporter. Columns are <code>name</code>, <code>type</code>, <code>dimension</code>,
-<code>formula</code>, and <code>container_path</code>.</p><div class="section">
+<code>formula</code>, and <code>container_tags</code>.</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Observer</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">

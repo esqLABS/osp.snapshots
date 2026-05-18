@@ -20,6 +20,11 @@
   falling back to `data$Name` for the path, and drops `Name` from the
   stored data so the resulting shape is unambiguous. The fallback
   continues to work; real v11+ snapshots never hit it (#52).
+- `Observer$container_path` was renamed to `Observer$container_tags`,
+  and the same column renamed in `Observer$to_df()` and
+  `get_observer_sets_dfs()$observers`. The field is synthesized by
+  joining `Tag` values from `ContainerCriteria` with `|`; the previous
+  name implied a `ContainerPath` JSON concept that does not exist (#76).
 - `Snapshot$new()` (and therefore
   [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md))
   now refuses snapshots that lack a `Version` field or whose `Version`
@@ -62,7 +67,7 @@
   formula that computes a derived quantity from the underlying model)
   inside an `ObserverSet`. `observer_set$observers` now returns a named
   list of `Observer` objects exposing `name`, `type`, `dimension`,
-  `formula`, and `container_path` (#42).
+  `formula`, and `container_tags` (#42).
 - New `ObserverSet` R6 class wrapping the `ObserverSets` building blocks
   of a snapshot, accessible through `snapshot$observer_sets` and
   exported on round-trip. Observers inside a set are exposed as a raw

@@ -41,11 +41,12 @@ itself a building block; it lives inside an `ObserverSet`.
   to `Formula$Formula` only. To access the full `ExplicitFormula`, use
   `observer$data$Formula`.
 
-- `container_path`:
+- `container_tags`:
 
-  The container path the observer attaches to. Built by joining the
-  `Tag` values found in `ContainerCriteria` with `|`. `NULL` when the
-  observer carries no container criteria.
+  The `Tag` values from the observer's `ContainerCriteria`, joined with
+  `|`. There is no `ContainerPath` field in the snapshot JSON; this
+  binding is synthesized from the tags found in `ContainerCriteria`.
+  `NULL` when the observer carries no container criteria.
 
 ## Methods
 
@@ -106,7 +107,7 @@ Invisibly returns the Observer object.
 
 Convert the observer to a single-row tibble suitable for the
 tibble-layer exporter. Columns are `name`, `type`, `dimension`,
-`formula`, and `container_path`.
+`formula`, and `container_tags`.
 
 #### Usage
 

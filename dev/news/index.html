@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9023</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9026</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,8 @@
 <li>
 <code>LocalizedParameter$new()</code> now emits a deprecation warning when falling back to <code>data$Name</code> for the path, and drops <code>Name</code> from the stored data so the resulting shape is unambiguous. The fallback continues to work; real v11+ snapshots never hit it (#52).</li>
 <li>
+<code>Observer$container_path</code> was renamed to <code>Observer$container_tags</code>, and the same column renamed in <code>Observer$to_df()</code> and <code>get_observer_sets_dfs()$observers</code>. The field is synthesized by joining <code>Tag</code> values from <code>ContainerCriteria</code> with <code>|</code>; the previous name implied a <code>ContainerPath</code> JSON concept that does not exist (#76).</li>
+<li>
 <code>Snapshot$new()</code> (and therefore <code><a href="../reference/load_snapshot.html">load_snapshot()</a></code>) now refuses snapshots that lack a <code>Version</code> field or whose <code>Version</code> is below 79 (v11.2). Earlier versions used pre-v11 conventions (notably <code>Applications|...</code> path segments) that this package does not model (#52).</li>
 <li>
 <code><a href="../reference/create_parameter.html">create_parameter()</a></code> now writes the identifier to <code>data$Name</code> when called without <code>path</code> (plain <code>Parameter</code>) and to <code>data$Path</code> only when called with <code>path</code> (<code>LocalizedParameter</code>). Previously every result carried <code>data$Path</code>, hiding which kind of parameter the factory had produced (#52).</li>
@@ -60,7 +62,7 @@
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li>New <code>CalculationMethodCache</code> R6 class wrapping the array of calculation method names stored on a <code>Compound</code> and inside an <code>Individual</code>’s <code>OriginData</code>. <code>Compound$calculation_methods</code> and <code>Individual$origin_data$calculation_methods</code> now return this class (#30).</li>
 <li>New <code>LocalizedParameter</code> R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from <code>Parameter</code> and migrates legacy <code>Applications</code> path segments to <code>Events</code> for v11+ snapshots. <code><a href="../reference/create_parameter.html">create_parameter()</a></code> now routes to <code>LocalizedParameter</code> when called with a <code>path</code> argument (#31).</li>
-<li>New <code>Observer</code> R6 class representing one observer (a simulation-time formula that computes a derived quantity from the underlying model) inside an <code>ObserverSet</code>. <code>observer_set$observers</code> now returns a named list of <code>Observer</code> objects exposing <code>name</code>, <code>type</code>, <code>dimension</code>, <code>formula</code>, and <code>container_path</code> (#42).</li>
+<li>New <code>Observer</code> R6 class representing one observer (a simulation-time formula that computes a derived quantity from the underlying model) inside an <code>ObserverSet</code>. <code>observer_set$observers</code> now returns a named list of <code>Observer</code> objects exposing <code>name</code>, <code>type</code>, <code>dimension</code>, <code>formula</code>, and <code>container_tags</code> (#42).</li>
 <li>New <code>ObserverSet</code> R6 class wrapping the <code>ObserverSets</code> building blocks of a snapshot, accessible through <code>snapshot$observer_sets</code> and exported on round-trip. Observers inside a set are exposed as a raw list until the <code>Observer</code> leaf class lands (#38).</li>
 <li>New <code>OriginData</code> R6 class wrapping the demographic starting point of an <code>Individual</code> (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via <code>Individual$origin_data</code> (#30).</li>
 <li>New <code>Process</code> R6 class representing one compound process (PK-Sim <code>CompoundProcess</code>). Exposes <code>internal_name</code>, <code>data_source</code>, <code>molecule</code>, <code>metabolite</code>, <code>species</code>, <code>parameters</code> (a named list of <code>Parameter</code> R6 objects), and a derived <code>category</code> (one of <code>protein_binding_partners</code>, <code>metabolizing_enzymes</code>, <code>hepatic_clearance</code>, <code>transporter_proteins</code>, <code>renal_clearance</code>, <code>biliary_clearance</code>, <code>inhibition</code>, <code>induction</code>). <code>Compound$processes</code> now returns a flat named list of these objects, built once at construction so process state changes persist across accesses (#40).</li>
