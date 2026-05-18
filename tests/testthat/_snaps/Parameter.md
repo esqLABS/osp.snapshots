@@ -134,7 +134,7 @@
       str(table_param$data)
     Output
       List of 3
-       $ Path        : chr "Fraction (dose)"
+       $ Name        : chr "Fraction (dose)"
        $ Value       : num 0
        $ TableFormula:List of 8
         ..$ Name            : chr "Fraction (dose)"

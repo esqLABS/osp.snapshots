@@ -11,13 +11,24 @@ locates where the override applies.
 
 `LocalizedParameter` inherits from [Parameter]; everything that works on a
 `Parameter` also works on a `LocalizedParameter`. The only addition is a
-required `path` field, populated from the `Path` element of the raw data
-(and falling back to `Name` when only a name is supplied, so a
-`LocalizedParameter` can still be created from existing schema-style data).
+required `path` field, populated from the `Path` element of the raw data.
 
-In v11+ snapshots, path segments named `Applications` are migrated to
-`Events`. The migration runs in `initialize()`, so any path read back from
-a `LocalizedParameter` is already normalized.
+# Snapshot version assumption
+
+`osp.snapshots` only supports v11+ snapshots (numeric `Version` >= 79); the
+check is enforced by `Snapshot$new()` at load time. In v11+ snapshots,
+path segments named `Applications` are migrated to `Events`. The migration
+runs in `initialize()`; for v11+ data it is a no-op because PK-Sim already
+uses `Events`, and the constructor itself does not re-check the version.
+
+# Legacy `Name` fallback
+
+A v11+ snapshot's localized parameter always carries `Path`. As a
+convenience for hand-rolled data, `initialize()` falls back to `data$Name`
+when `data$Path` is missing and emits a deprecation warning so the
+substitution is not silent; the resulting object stores the value in
+`data$Path` and drops `data$Name`. Real snapshots never trigger this
+branch.
 }
 \section{Super class}{
 \code{\link[osp.snapshots:Parameter]{Parameter}} -> \code{LocalizedParameter}
@@ -41,9 +52,12 @@ a `LocalizedParameter` is already normalized.
 \subsection{\code{LocalizedParameter$new()}}{
   Create a new LocalizedParameter object.
 
-Requires a non-empty path supplied either through `data$Path` or
-`data$Name`. Path segments named `Applications` are rewritten to
-`Events` (v11+ migration).
+Requires a non-empty path supplied through `data$Path`. If `data$Path`
+is missing but `data$Name` is present, the name is used as the path
+and a deprecation warning is emitted; `data$Name` is then cleared so
+the resulting raw shape is unambiguous. Path segments named
+`Applications` are rewritten to `Events` (legacy migration kept for
+robustness; no-op on v11+ data).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{LocalizedParameter$new(data)}
@@ -52,8 +66,7 @@ Requires a non-empty path supplied either through `data$Path` or
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{data}}{Raw parameter data from a snapshot. Must contain a `Path`
-(or, for legacy data, a `Name` used as the path).}
+      \item{\code{data}}{Raw parameter data from a snapshot. Must contain a `Path`.}
     }
     \if{html}{\out{</div>}}
   }

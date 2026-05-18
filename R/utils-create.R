@@ -21,12 +21,16 @@ check_required_string <- function(value, arg_name) {
 
 # Internal: convert a list of Parameter R6 objects (or raw parameter lists)
 # into the raw list-of-lists shape used in snapshot JSON.
-# `name_key` must be supplied explicitly:
-#   - `"Path"` keeps parameter Path fields untouched (used where the JSON
-#     shape keys on Path, for example ExpressionProfile parameters).
-#   - `"Name"` renames any `Path` field to `Name`, dropping the original
-#     `Path` (used by Compound, Event, and Protocol parameter arrays which
-#     key on `Name`).
+# `name_key` must be supplied explicitly and selects which field the target
+# JSON shape keys on:
+#   - `"Path"` (used by ExpressionProfile, Individual, Simulation parameter
+#     arrays): the result carries `Path`, copying from `Name` when the
+#     incoming parameter only has `Name` (because `create_parameter()`
+#     without a `path` argument returns a plain `Parameter` keyed by Name).
+#     The original `Name` is dropped.
+#   - `"Name"` (used by Compound, Event, Protocol, Formulation parameter
+#     arrays): the result carries `Name`, copying from `Path` when the
+#     incoming parameter only has `Path`. The original `Path` is dropped.
 to_raw_parameters <- function(parameters, name_key) {
   if (!is.list(parameters)) {
     cli::cli_abort(
@@ -42,6 +46,11 @@ to_raw_parameters <- function(parameters, name_key) {
         raw$Name <- raw$Path
       }
       raw$Path <- NULL
+    } else {
+      if (is.null(raw$Path) && !is.null(raw$Name)) {
+        raw$Path <- raw$Name
+      }
+      raw$Name <- NULL
     }
     raw
   })

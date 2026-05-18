@@ -66,9 +66,16 @@ All arguments except name and value are optional.
 
 Returns a [LocalizedParameter] when a non-NULL `path` is supplied (i.e.
 the parameter is identified by its position within a target's parameter
-tree); otherwise returns a plain [Parameter]. For backwards compatibility,
-`name` is used as the path when `path` is not provided, matching the
-historical behaviour of this factory.
+tree); otherwise returns a plain [Parameter].
+
+# Data shape
+
+Plain `Parameter` objects carry the identifier in `data$Name`, matching
+the JSON shape used by `Parameter` slots in `Compound`, `Formulation`,
+`Protocol`, and `Event` (per `snapshot-spec.md`). `LocalizedParameter`
+objects carry the identifier in `data$Path`. The factory writes whichever
+field matches the returned class so the raw `data` shape reflects the
+kind of parameter unambiguously.
 }
 \examples{
 # Create a basic parameter

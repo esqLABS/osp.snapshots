@@ -1,3 +1,13 @@
+# LocalizedParameter accepts Name as a legacy path fallback
+
+    Code
+      param <- LocalizedParameter$new(list(Name = "Dose", Value = 100))
+    Condition
+      Warning:
+      Using Name as a path is deprecated for <LocalizedParameter>.
+      i Supply Path instead. Name will be dropped from the data.
+      This warning is displayed once every 8 hours.
+
 # LocalizedParameter errors when no path is supplied
 
     Code

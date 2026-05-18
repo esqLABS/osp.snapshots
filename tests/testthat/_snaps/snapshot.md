@@ -45,6 +45,39 @@
       * Protocols: 9
       * Simulations: 2
 
+# Snapshot rejects pre-v11 snapshots
+
+    Code
+      Snapshot$new(list(Version = 78))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Unsupported snapshot Version 78.
+      i osp.snapshots requires PK-Sim v11+ snapshots (Version >= 79).
+
+# Snapshot rejects snapshots missing a Version field
+
+    Code
+      Snapshot$new(list(Compounds = list()))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot is missing an integer Version field.
+      i osp.snapshots requires PK-Sim v11+ snapshots (Version >= 79).
+
+# Snapshot rejects snapshots with a non-integer Version
+
+    Code
+      Snapshot$new(list(Version = "v11"))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot is missing an integer Version field.
+      i osp.snapshots requires PK-Sim v11+ snapshots (Version >= 79).
+
 # add_compound errors on wrong class
 
     Code

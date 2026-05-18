@@ -584,12 +584,9 @@ test_that("Snapshot$export creates a valid JSON file", {
 })
 
 test_that("Snapshot correctly handles version mapping for all known versions", {
-  # Test all known version mappings
   versions <- list(
     "80" = "12.0",
-    "79" = "11.2",
-    "78" = "10.0",
-    "77" = "9.1"
+    "79" = "11.2"
   )
 
   for (v in names(versions)) {
@@ -598,10 +595,29 @@ test_that("Snapshot correctly handles version mapping for all known versions", {
     expect_equal(snapshot$pksim_version, versions[[v]])
   }
 
-  # Test unknown version
+  # Newer (unrecognised but supported) version maps to "Unknown".
   snapshot_data <- list(Version = 999)
   snapshot <- Snapshot$new(snapshot_data)
   expect_equal(snapshot$pksim_version, "Unknown")
+})
+
+test_that("Snapshot rejects pre-v11 snapshots", {
+  expect_snapshot(Snapshot$new(list(Version = 78)), error = TRUE)
+})
+
+test_that("Snapshot rejects snapshots missing a Version field", {
+  expect_snapshot(Snapshot$new(list(Compounds = list())), error = TRUE)
+})
+
+test_that("Snapshot rejects snapshots with a non-integer Version", {
+  expect_snapshot(Snapshot$new(list(Version = "v11")), error = TRUE)
+})
+
+test_that("Snapshot accepts a list-wrapped Version (jsonlite shape)", {
+  # `jsonlite::fromJSON(simplifyVector = FALSE)` can return scalars as
+  # length-1 lists; the version validator must unwrap them.
+  snapshot <- Snapshot$new(list(Version = list(80)))
+  expect_equal(snapshot$pksim_version, "12.0")
 })
 
 test_that("skip_if_offline helper works", {
