@@ -62,6 +62,7 @@ reference:
   - LocalizedParameter
   - AdvancedParameter
   - range
+  - Range-class
 
 - title: "Domain Types"
   desc: "Reusable sub-structures shared across building blocks"

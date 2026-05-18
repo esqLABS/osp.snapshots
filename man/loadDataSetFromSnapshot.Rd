@@ -2,6 +2,7 @@
 % Please edit documentation in R/ObservedData.R
 \name{loadDataSetFromSnapshot}
 \alias{loadDataSetFromSnapshot}
+\alias{ObservedData}
 \title{Load DataSet from OSP snapshot observed data}
 \usage{
 loadDataSetFromSnapshot(observedDataStructure)
@@ -22,6 +23,10 @@ This function follows the same pattern as other DataSet loading functions in osp
 - `ospsuite::loadDataSetFromPKML()`
 - `ospsuite::loadDataSetFromExcel()`
 - `osp.snapshots::loadDataSetFromSnapshot()` (this function)
+
+`ObservedData` is a backwards-compatible alias for
+[loadDataSetFromSnapshot()]. It will be deprecated when this functionality
+moves to the `ospsuite` package.
 }
 \section{Migration Plan}{
 

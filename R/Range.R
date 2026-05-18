@@ -1,9 +1,16 @@
 #' Range class for physiological parameters
 #'
 #' @description
-#' An R6 class that represents a range of values with a minimum, maximum and unit.
-#' Used for age, weight, height, and BMI ranges in populations.
-#' Either min or max can be NULL to represent ranges with only an upper or lower bound.
+#' An R6 class that represents a range of values with a minimum, maximum and
+#' unit. Used for age, weight, height, and BMI ranges in populations. Either
+#' `min` or `max` can be `NULL` to represent ranges with only an upper or
+#' lower bound.
+#'
+#' Use [range()] as the user-facing constructor; `Range$new()` is the
+#' equivalent direct call on the R6 generator.
+#'
+#' @name Range-class
+#' @aliases Range
 #'
 #' @importFrom R6 R6Class
 #'
@@ -177,15 +184,18 @@ Range <- R6::R6Class(
 #' Create a range object for physiological parameters
 #'
 #' @description
-#' Create a new Range object with the specified min, max, and unit values.
-#' Either min or max can be NULL to represent ranges with only an upper or lower bound.
-#' Min and max can also be equal to represent a single value.
+#' Create a new [Range] object with the specified min, max, and unit values.
+#' Either `min` or `max` can be `NULL` to represent ranges with only an upper
+#' or lower bound. `min` and `max` can also be equal to represent a single
+#' value.
 #'
-#' @param min Numeric or NULL. Minimum value, can be NULL for ranges with only an upper bound
-#' @param max Numeric or NULL. Maximum value, can be NULL for ranges with only a lower bound
-#' @param unit Character. Unit for the range
+#' @param min Numeric or `NULL`. Minimum value, can be `NULL` for ranges with
+#'   only an upper bound.
+#' @param max Numeric or `NULL`. Maximum value, can be `NULL` for ranges with
+#'   only a lower bound.
+#' @param unit Character. Unit for the range.
 #'
-#' @return A Range object
+#' @return A [Range] object.
 #' @export
 #'
 #' @examples
