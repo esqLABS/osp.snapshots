@@ -164,6 +164,42 @@
       Warning:
       No events to remove
 
+# remove_observed_data warns when name is missing
+
+    Code
+      remove_observed_data(snapshot, "Other")
+    Condition
+      Warning:
+      Observed data 'Other' not found in snapshot
+    Message
+      v Removed 0 observed data item(s)
+
+# remove_observed_data warns on empty collection
+
+    Code
+      remove_observed_data(snapshot, "Study A")
+    Condition
+      Warning:
+      No observed data to remove
+
+# remove_expression_profile warns when id is missing
+
+    Code
+      remove_expression_profile(snapshot, "Other|Human|Healthy")
+    Condition
+      Warning:
+      Expression profile 'Other|Human|Healthy' not found in snapshot
+    Message
+      v Removed 0 expression profile(s)
+
+# remove_expression_profile warns on empty collection
+
+    Code
+      remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
+    Condition
+      Warning:
+      No expression profiles to remove
+
 # add_observed_data exported wrapper errors on wrong class
 
     Code

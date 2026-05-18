@@ -464,14 +464,11 @@ Snapshot <- R6::R6Class(
 
       # Remove the requested expression profiles
       keep_indices <- which(!(current_ids %in% profile_id))
-
-      if (length(keep_indices) == 0) {
-        private$.expression_profiles <- list()
-      } else {
-        private$.expression_profiles <- private$.expression_profiles[
-          keep_indices
-        ]
-      }
+      num_removed <- length(private$.expression_profiles) -
+        length(keep_indices)
+      private$.expression_profiles <- private$.expression_profiles[
+        keep_indices
+      ]
 
       # Reset the named list
       private$.expression_profiles_named <- private$.build_named_list(
@@ -481,7 +478,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(profile_id)} expression profile(s)"
+        "Removed {num_removed} expression profile(s)"
       )
       invisible(self)
     },
@@ -621,12 +618,8 @@ Snapshot <- R6::R6Class(
 
       # Remove the requested observed data
       keep_indices <- which(!(current_names %in% observed_data_name))
-
-      if (length(keep_indices) == 0) {
-        private$.observed_data <- list()
-      } else {
-        private$.observed_data <- private$.observed_data[keep_indices]
-      }
+      num_removed <- length(private$.observed_data) - length(keep_indices)
+      private$.observed_data <- private$.observed_data[keep_indices]
 
       # Reset the named list
       private$.observed_data_named <- private$.build_named_list(
@@ -635,7 +628,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Removed {length(observed_data_name)} observed data item(s)"
+        "Removed {num_removed} observed data item(s)"
       )
       invisible(self)
     },

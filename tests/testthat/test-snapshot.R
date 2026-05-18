@@ -944,6 +944,30 @@ test_that("remove_event warns on empty collection", {
   expect_snapshot(remove_event(snapshot, "Breakfast"))
 })
 
+test_that("remove_observed_data warns when name is missing", {
+  source_snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  dataset <- source_snapshot$observed_data[[1]]
+
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  snapshot <- suppressWarnings(add_observed_data(snapshot, dataset))
+  expect_snapshot(remove_observed_data(snapshot, "Other"))
+})
+
+test_that("remove_observed_data warns on empty collection", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(remove_observed_data(snapshot, "Study A"))
+})
+
+test_that("remove_expression_profile warns when id is missing", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  expect_snapshot(remove_expression_profile(snapshot, "Other|Human|Healthy"))
+})
+
+test_that("remove_expression_profile warns on empty collection", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(remove_expression_profile(snapshot, "CYP3A4|Human|Healthy"))
+})
+
 test_that("add_observed_data exported wrapper round-trips", {
   source_snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
   dataset <- source_snapshot$observed_data[[1]]
