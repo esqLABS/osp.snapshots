@@ -68,9 +68,11 @@ create_schema <- function(name, parameters = NULL, items = NULL) {
         "Every entry of {.arg items} must be a {.cls SchemaItem} or a raw list"
       )
     }
-    data$SchemaItems <- lapply(items, function(item) {
+    # `unname()` keeps the JSON shape an array rather than an object when a
+    # user supplies a named list of schema items.
+    data$SchemaItems <- unname(lapply(items, function(item) {
       if (inherits(item, "SchemaItem")) item$data else item
-    })
+    }))
   }
 
   Schema$new(data)

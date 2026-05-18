@@ -126,9 +126,11 @@ create_protocol <- function(
         "Every entry of {.arg schemas} must be a {.cls Schema} or a raw list"
       )
     }
-    data$Schemas <- lapply(schemas, function(schema) {
+    # `unname()` keeps the JSON shape an array rather than an object when a
+    # user supplies a named list of schemas, matching `Protocol$data`.
+    data$Schemas <- unname(lapply(schemas, function(schema) {
       if (inherits(schema, "Schema")) schema$data else schema
-    })
+    }))
   } else {
     if (!is.null(application_type)) {
       data$ApplicationType <- application_type

@@ -158,6 +158,28 @@ test_that("create_protocol accepts a mix of Schema objects and raw lists", {
   expect_equal(protocol$schemas[[2]]$name, "Schema 2")
 })
 
+test_that("create_protocol strips names from the schemas list", {
+  protocol <- create_protocol(
+    name = "Advanced",
+    schemas = list(
+      first = create_schema(
+        name = "Schema 1",
+        items = list(
+          create_schema_item(name = "Item 1", application_type = "Oral")
+        )
+      ),
+      second = list(
+        Name = "Schema 2",
+        SchemaItems = list(list(
+          Name = "Item 2",
+          ApplicationType = "IntravenousBolus"
+        ))
+      )
+    )
+  )
+  expect_null(names(protocol$data$Schemas))
+})
+
 test_that("create_protocol validates required arguments", {
   expect_snapshot(error = TRUE, create_protocol())
   expect_snapshot(error = TRUE, create_protocol(name = ""))

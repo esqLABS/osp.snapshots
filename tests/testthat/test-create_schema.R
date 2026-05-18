@@ -68,6 +68,21 @@ test_that("create_schema accepts a mix of R6 and raw items", {
   expect_equal(schema$items[[2]]$application_type, "IntravenousBolus")
 })
 
+test_that("create_schema strips names from the items list", {
+  schema <- create_schema(
+    name = "Schema 1",
+    items = list(
+      first = create_schema_item(name = "Item 1", application_type = "Oral"),
+      second = create_schema_item(
+        name = "Item 2",
+        application_type = "IntravenousBolus"
+      )
+    )
+  )
+  raw <- schema$data
+  expect_null(names(raw$SchemaItems))
+})
+
 test_that("create_schema validates required arguments", {
   expect_snapshot(error = TRUE, create_schema())
   expect_snapshot(error = TRUE, create_schema(name = ""))
