@@ -56,7 +56,7 @@
   every building-block section: clearing a collection via `remove_individual()`,
   `remove_formulation()`, `remove_population()`, or
   `remove_expression_profile()` now writes an empty section on export instead
-  of falling back to the original entries (#35).
+  of falling back to the original entries (#35, #59).
 
 - Fixed snapshot export/import so single-element JSON arrays remain arrays,
   allowing exported snapshots to load in PK-Sim (#23).
