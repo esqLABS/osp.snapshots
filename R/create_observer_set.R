@@ -56,20 +56,19 @@ create_observer_set <- function(name, observers = NULL) {
   data <- list(Name = name)
 
   if (!is.null(observers)) {
-    raw <- vector("list", length(observers))
-    for (i in seq_along(observers)) {
-      observer <- observers[[i]]
+    call <- environment()
+    data$Observers <- unname(lapply(observers, function(observer) {
       if (inherits(observer, "Observer")) {
-        raw[[i]] <- observer$data
-      } else if (is.list(observer)) {
-        raw[[i]] <- observer
-      } else {
-        cli::cli_abort(
-          "Every entry of {.arg observers} must be an {.cls Observer} or a list"
-        )
+        return(observer$data)
       }
-    }
-    data$Observers <- raw
+      if (is.list(observer)) {
+        return(observer)
+      }
+      cli::cli_abort(
+        "Every entry of {.arg observers} must be an {.cls Observer} or a list",
+        call = call
+      )
+    }))
   }
 
   ObserverSet$new(data)
