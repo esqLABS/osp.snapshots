@@ -652,6 +652,59 @@ get_protocols_dfs <- function(snapshot) {
   return(result)
 }
 
+#' Get all observer sets in a snapshot as a data frame
+#'
+#' @description
+#' Extracts all observer sets from a snapshot and returns them as a tibble
+#' with one row per `ObserverSet`. The shape is intentionally flat; richer
+#' per-observer detail is deferred until the `Observer` leaf class lands.
+#'
+#' @param snapshot A `Snapshot` object.
+#'
+#' @return A tibble with one row per `ObserverSet`, with columns:
+#' \itemize{
+#'   \item `observer_set_id`: name used to look up the set in
+#'     `snapshot$observer_sets` (the building block name, with `_N`
+#'     disambiguation when duplicates collide).
+#'   \item `name`: the observer set's `Name` field as stored in the snapshot.
+#'   \item `n_observers`: number of observers in the set.
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#'
+#' observer_sets_df <- get_observer_sets_dfs(snapshot)
+#' }
+get_observer_sets_dfs <- function(snapshot) {
+  validate_snapshot(snapshot)
+
+  observer_sets <- snapshot$observer_sets
+
+  result <- tibble::tibble(
+    observer_set_id = character(0),
+    name = character(0),
+    n_observers = integer(0)
+  )
+
+  if (length(observer_sets) == 0) {
+    return(result)
+  }
+
+  rows <- lapply(names(observer_sets), function(id) {
+    os <- observer_sets[[id]]
+    tibble::tibble(
+      observer_set_id = id,
+      name = os$name %||% NA_character_,
+      n_observers = length(os$observers)
+    )
+  })
+
+  dplyr::bind_rows(rows)
+}
+
 #' Get all observed data in a snapshot as data frames
 #'
 #' @description

@@ -109,6 +109,8 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
 
     \item{\code{events}}{List of Event objects in the snapshot}
 
+    \item{\code{observer_sets}}{List of ObserverSet objects in the snapshot}
+
     \item{\code{protocols}}{List of Protocol objects in the snapshot}
 
     \item{\code{observed_data}}{List of DataSet objects (observed data) in the snapshot}
@@ -128,6 +130,8 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     \item \href{#method-Snapshot-remove_population}{\code{Snapshot$remove_population()}}
     \item \href{#method-Snapshot-add_expression_profile}{\code{Snapshot$add_expression_profile()}}
     \item \href{#method-Snapshot-remove_expression_profile}{\code{Snapshot$remove_expression_profile()}}
+    \item \href{#method-Snapshot-add_observer_set}{\code{Snapshot$add_observer_set()}}
+    \item \href{#method-Snapshot-remove_observer_set}{\code{Snapshot$remove_observer_set()}}
     \item \href{#method-Snapshot-add_observed_data}{\code{Snapshot$add_observed_data()}}
     \item \href{#method-Snapshot-remove_observed_data}{\code{Snapshot$remove_observed_data()}}
     \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
@@ -414,6 +418,28 @@ snapshot$add_expression_profile(profile)
     \preformatted{# Remove an expression profile from the snapshot
 snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
 }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_observer_set"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_observer_set}{}}}
+\subsection{\code{Snapshot$add_observer_set()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_observer_set(observer_set)}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_observer_set"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_observer_set}{}}}
+\subsection{\code{Snapshot$remove_observer_set()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_observer_set(observer_set_name)}
     \if{html}{\out{</div>}}
   }
 }
