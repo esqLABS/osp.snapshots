@@ -1042,35 +1042,8 @@ Snapshot <- R6::R6Class(
       }
 
       keys <- vapply(items, key_fn, character(1))
-
-      if (!anyDuplicated(keys)) {
-        named <- items
-        names(named) <- keys
-        return(as_snapshot_collection(named, collection_class))
-      }
-
-      named <- list()
-      key_counts <- table(keys)
-      key_indices <- list()
-
-      for (i in seq_along(items)) {
-        key <- keys[i]
-
-        if (is.null(key_indices[[key]])) {
-          key_indices[[key]] <- 0
-        }
-        key_indices[[key]] <- key_indices[[key]] + 1
-
-        if (key_counts[key] > 1) {
-          final_name <- glue::glue("{key}_{key_indices[[key]]}")
-        } else {
-          final_name <- key
-        }
-
-        named[[final_name]] <- items[[i]]
-      }
-
-      as_snapshot_collection(named, collection_class)
+      names(items) <- disambiguate_names(keys)
+      as_snapshot_collection(items, collection_class)
     }
   )
 )

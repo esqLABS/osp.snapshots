@@ -176,31 +176,6 @@ build_observers_from_raw <- function(raw_observers) {
     character(1)
   )
 
-  if (!anyDuplicated(keys)) {
-    names(observers) <- keys
-    return(observers)
-  }
-
-  named <- list()
-  key_counts <- table(keys)
-  key_indices <- list()
-
-  for (i in seq_along(observers)) {
-    key <- keys[i]
-
-    if (is.null(key_indices[[key]])) {
-      key_indices[[key]] <- 0
-    }
-    key_indices[[key]] <- key_indices[[key]] + 1
-
-    if (key_counts[key] > 1) {
-      final_name <- paste0(key, "_", key_indices[[key]])
-    } else {
-      final_name <- key
-    }
-
-    named[[final_name]] <- observers[[i]]
-  }
-
-  named
+  names(observers) <- disambiguate_names(keys)
+  observers
 }
