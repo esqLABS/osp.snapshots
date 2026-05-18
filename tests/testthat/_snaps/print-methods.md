@@ -1,4 +1,4 @@
-# print.compound_collection works with compounds
+# print.snapshot_collection dispatches on compound_collection
 
     Code
       print(test_snapshot$compounds)
@@ -12,7 +12,7 @@
       * 100777
       * test
 
-# print.compound_collection works with empty collection
+# print.snapshot_collection dispatches on empty compound_collection
 
     Code
       print(compounds_named)
@@ -21,7 +21,7 @@
       -- Compounds (0) ---------------------------------------------------------------
       i No compounds found
 
-# print.individual_collection works with individuals
+# print.snapshot_collection dispatches on individual_collection
 
     Code
       print(test_snapshot$individuals)
@@ -34,7 +34,7 @@
       * Asian
       * CKD
 
-# print.individual_collection works with empty collection
+# print.snapshot_collection dispatches on empty individual_collection
 
     Code
       print(individuals_named)
@@ -43,7 +43,7 @@
       -- Individuals (0) -------------------------------------------------------------
       i No individuals found
 
-# print.formulation_collection works with formulations
+# print.snapshot_collection dispatches on formulation_collection
 
     Code
       print(test_snapshot$formulations)
@@ -60,7 +60,7 @@
       * form-FO (First Order)
       * form-particle-dissolution-2 (Particle)
 
-# print.formulation_collection works with empty collection
+# print.snapshot_collection dispatches on empty formulation_collection
 
     Code
       print(formulations_named)
@@ -68,6 +68,14 @@
       
       -- Formulations (0) ------------------------------------------------------------
       i No formulations found
+
+# print.snapshot_collection errors when no collection_kind_info method exists
+
+    Code
+      print(unknown)
+    Condition
+      Error in `UseMethod()`:
+      ! no applicable method for 'collection_kind_info' applied to an object of class "c('future_collection', 'snapshot_collection', 'list')"
 
 # print.parameter_collection works with parameters
 
@@ -101,7 +109,7 @@
       Test|Scientific                          | 1.23e-05        | mol
       Test|Large                               | 12345678        | cells
 
-# print.expression_profile_collection works with profiles
+# print.snapshot_collection dispatches on expression_profile_collection
 
     Code
       print(profiles)
@@ -112,7 +120,7 @@
       * P-gp (Transporter, Human, Healthy)
       * OATP1B1 (Transporter, Rat, N/A)
 
-# print.expression_profile_collection works with empty collection
+# print.snapshot_collection dispatches on empty expression_profile_collection
 
     Code
       print(profiles_named)

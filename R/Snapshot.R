@@ -36,109 +36,8 @@ Snapshot <- R6::R6Class(
         cli::cli_abort("Input must be either a path to a JSON file or a list")
       }
 
-      # Initialize compounds list during snapshot initialization
-      if (is.null(private$.original_data$Compounds)) {
-        private$.compounds <- list()
-      } else {
-        # Create compound objects and store in an unnamed list
-        private$.compounds <- lapply(
-          private$.original_data$Compounds,
-          function(compound_data) {
-            Compound$new(compound_data)
-          }
-        )
-      }
-
-      # Initialize expression profiles list during snapshot initialization
-      if (is.null(private$.original_data$ExpressionProfiles)) {
-        private$.expression_profiles <- list()
-      } else {
-        # Create expression profile objects and store in an unnamed list
-        private$.expression_profiles <- lapply(
-          private$.original_data$ExpressionProfiles,
-          function(expression_profile_data) {
-            ExpressionProfile$new(expression_profile_data)
-          }
-        )
-      }
-
-      # Initialize individuals list during snapshot initialization
-      if (is.null(private$.original_data$Individuals)) {
-        private$.individuals <- list()
-      } else {
-        # Create individual objects and store in an unnamed list
-        private$.individuals <- lapply(
-          private$.original_data$Individuals,
-          function(individual_data) {
-            Individual$new(individual_data)
-          }
-        )
-      }
-
-      # Initialize formulations list during snapshot initialization
-      if (is.null(private$.original_data$Formulations)) {
-        private$.formulations <- list()
-      } else {
-        # Create formulation objects and store in an unnamed list
-        private$.formulations <- lapply(
-          private$.original_data$Formulations,
-          function(formulation_data) {
-            Formulation$new(formulation_data)
-          }
-        )
-      }
-
-      # Initialize populations list during snapshot initialization
-      if (is.null(private$.original_data$Populations)) {
-        private$.populations <- list()
-      } else {
-        # Create population objects and store in an unnamed list
-        private$.populations <- lapply(
-          private$.original_data$Populations,
-          function(population_data) {
-            Population$new(population_data)
-          }
-        )
-      }
-
-      # Initialize events list during snapshot initialization
-      if (is.null(private$.original_data$Events)) {
-        private$.events <- list()
-      } else {
-        # Create event objects and store in an unnamed list
-        private$.events <- lapply(
-          private$.original_data$Events,
-          function(event_data) {
-            Event$new(event_data)
-          }
-        )
-      }
-
-      # Initialize protocols list during snapshot initialization
-      if (is.null(private$.original_data$Protocols)) {
-        private$.protocols <- list()
-      } else {
-        # Create protocol objects and store in an unnamed list
-        private$.protocols <- lapply(
-          private$.original_data$Protocols,
-          function(protocol_data) {
-            Protocol$new(protocol_data)
-          }
-        )
-      }
-
-      # Initialize observed data list during snapshot initialization
-      if (is.null(private$.original_data$ObservedData)) {
-        private$.observed_data <- list()
-      } else {
-        # Create DataSet objects and store in an unnamed list
-        private$.observed_data <- lapply(
-          private$.original_data$ObservedData,
-          function(observed_data_item) {
-            loadDataSetFromSnapshot(observed_data_item)
-          }
-        )
-      }
+      # Building-block collections are constructed lazily on first access via
+      # their active bindings; all `private$.<kind>` caches stay NULL here.
 
       cli::cli_alert_success("Snapshot loaded successfully")
     },
@@ -228,12 +127,17 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Force lazy construction of any existing individuals before mutating
+      private$.ensure_individuals()
+
       # Add the individual to the list
       private$.individuals <- c(private$.individuals, list(individual))
 
       # Reset the named list to include the new individual
-      private$.individuals_named <- NULL
-      private$.build_individuals_named_list()
+      private$.individuals_named <- private$.build_named_list(
+        private$.individuals,
+        "individual_collection"
+      )
 
       cli::cli_alert_success(
         "Added individual '{individual$name}' to the snapshot"
@@ -251,6 +155,9 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_individual("Subject_001")
     #' }
     remove_individual = function(individual_name) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_individuals()
+
       if (length(private$.individuals) == 0) {
         cli::cli_warn("No individuals to remove")
         return(invisible(self))
@@ -276,8 +183,10 @@ Snapshot <- R6::R6Class(
       }
 
       # Reset the named list
-      private$.individuals_named <- NULL
-      private$.build_individuals_named_list()
+      private$.individuals_named <- private$.build_named_list(
+        private$.individuals,
+        "individual_collection"
+      )
 
       cli::cli_alert_success(
         "Removed {length(individual_name)} individual(s)"
@@ -305,12 +214,17 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Force lazy construction of any existing formulations before mutating
+      private$.ensure_formulations()
+
       # Add the formulation to the list
       private$.formulations <- c(private$.formulations, list(formulation))
 
       # Reset the named list to include the new formulation
-      private$.formulations_named <- NULL
-      private$.build_formulations_named_list()
+      private$.formulations_named <- private$.build_named_list(
+        private$.formulations,
+        "formulation_collection"
+      )
 
       cli::cli_alert_success(
         "Added formulation '{formulation$name}' to the snapshot"
@@ -328,6 +242,9 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_formulation("Tablet")
     #' }
     remove_formulation = function(formulation_name) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_formulations()
+
       if (length(private$.formulations) == 0) {
         cli::cli_warn("No formulations to remove")
         return(invisible(self))
@@ -353,8 +270,10 @@ Snapshot <- R6::R6Class(
       }
 
       # Reset the named list
-      private$.formulations_named <- NULL
-      private$.build_formulations_named_list()
+      private$.formulations_named <- private$.build_named_list(
+        private$.formulations,
+        "formulation_collection"
+      )
 
       cli::cli_alert_success(
         "Removed {length(formulation_name)} formulation(s)"
@@ -372,6 +291,9 @@ Snapshot <- R6::R6Class(
     #' snapshot$remove_population("pop_1")
     #' }
     remove_population = function(population_name) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_populations()
+
       if (length(private$.populations) == 0) {
         cli::cli_warn("No populations to remove")
         return(invisible(self))
@@ -397,8 +319,10 @@ Snapshot <- R6::R6Class(
       }
 
       # Reset the named list
-      private$.populations_named <- NULL
-      private$.build_populations_named_list()
+      private$.populations_named <- private$.build_named_list(
+        private$.populations,
+        "population_collection"
+      )
 
       cli::cli_alert_success(
         "Removed {length(population_name)} population(s)"
@@ -433,6 +357,9 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Force lazy construction of any existing expression profiles before mutating
+      private$.ensure_expression_profiles()
+
       # Add the expression profile to the list
       private$.expression_profiles <- c(
         private$.expression_profiles,
@@ -440,8 +367,11 @@ Snapshot <- R6::R6Class(
       )
 
       # Reset the named list to include the new expression profile
-      private$.expression_profiles_named <- NULL
-      private$.build_expression_profiles_named_list()
+      private$.expression_profiles_named <- private$.build_named_list(
+        private$.expression_profiles,
+        "expression_profile_collection",
+        key_fn = \(x) x$id
+      )
 
       cli::cli_alert_success(
         "Added expression profile '{expression_profile$molecule}' to the snapshot"
@@ -456,9 +386,12 @@ Snapshot <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' # Remove an expression profile from the snapshot
-    #' snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
+    #' snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     #' }
     remove_expression_profile = function(profile_id) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_expression_profiles()
+
       if (length(private$.expression_profiles) == 0) {
         cli::cli_warn("No expression profiles to remove")
         return(invisible(self))
@@ -489,8 +422,11 @@ Snapshot <- R6::R6Class(
       }
 
       # Reset the named list
-      private$.expression_profiles_named <- NULL
-      private$.build_expression_profiles_named_list()
+      private$.expression_profiles_named <- private$.build_named_list(
+        private$.expression_profiles,
+        "expression_profile_collection",
+        key_fn = \(x) x$id
+      )
 
       cli::cli_alert_success(
         "Removed {length(profile_id)} expression profile(s)"
@@ -510,12 +446,17 @@ Snapshot <- R6::R6Class(
         )
       }
 
+      # Force lazy construction of any existing observed data before mutating
+      private$.ensure_observed_data()
+
       # Add the observed data to the list
       private$.observed_data <- c(private$.observed_data, list(observed_data))
 
       # Reset the named list to include the new observed data
-      private$.observed_data_named <- NULL
-      private$.build_observed_data_named_list()
+      private$.observed_data_named <- private$.build_named_list(
+        private$.observed_data,
+        "observed_data_collection"
+      )
 
       cli::cli_alert_success(
         "Added observed data '{observed_data$name}' to the snapshot"
@@ -528,6 +469,9 @@ Snapshot <- R6::R6Class(
     #' @param observed_data_name Character vector of observed data names to remove
     #' @return Invisibly returns the object
     remove_observed_data = function(observed_data_name) {
+      # Force lazy construction so we can inspect the current set
+      private$.ensure_observed_data()
+
       if (length(private$.observed_data) == 0) {
         cli::cli_warn("No observed data to remove")
         return(invisible(self))
@@ -553,8 +497,10 @@ Snapshot <- R6::R6Class(
       }
 
       # Reset the named list
-      private$.observed_data_named <- NULL
-      private$.build_observed_data_named_list()
+      private$.observed_data_named <- private$.build_named_list(
+        private$.observed_data,
+        "observed_data_collection"
+      )
 
       cli::cli_alert_success(
         "Removed {length(observed_data_name)} observed data item(s)"
@@ -633,14 +579,36 @@ Snapshot <- R6::R6Class(
       }
 
       # Update with current observed data
-      # Note: DataSet objects don't have $data property, so we return the original data
-      # This preserves the original snapshot format for export/reimport
-      if (length(private$.observed_data) > 0) {
-        # Return original observed data to maintain snapshot format compatibility
-        result$ObservedData <- private$.original_data$ObservedData
-      } else {
-        # Remove ObservedData section if no data exists
-        result$ObservedData <- NULL
+      # Note: DataSet objects have no $data accessor so the raw JSON entries in
+      # `.original_data$ObservedData` are the source of truth on export. When
+      # the lazy cache has been touched, filter the original entries down to
+      # the names that still survive in the cache so removals and re-orderings
+      # are honored. Items added at runtime (whose backing JSON is not in
+      # `.original_data`) cannot be serialized here and are dropped with a
+      # warning.
+      if (!is.null(private$.observed_data)) {
+        if (length(private$.observed_data) == 0) {
+          result$ObservedData <- NULL
+        } else {
+          surviving_names <- vapply(
+            private$.observed_data,
+            function(od) od$name,
+            character(1)
+          )
+          original <- private$.original_data$ObservedData
+          original_names <- vapply(
+            original,
+            function(od) od$Name %||% od$name,
+            character(1)
+          )
+          result$ObservedData <- original[original_names %in% surviving_names]
+          if (length(private$.observed_data) > length(result$ObservedData)) {
+            cli::cli_warn(c(
+              "Some observed data added at runtime cannot be serialized.",
+              i = "DataSet objects have no $data accessor; only original entries are exported."
+            ))
+          }
+        }
       }
 
       return(result)
@@ -672,118 +640,131 @@ Snapshot <- R6::R6Class(
 
     #' @field compounds List of Compound objects in the snapshot
     compounds = function(value = NULL) {
-      # Build the named list if it doesn't exist yet
-      if (is.null(private$.compounds_named)) {
-        private$.build_compounds_named_list()
-      }
-
-      if (is.null(value)) {
-        return(private$.compounds_named)
-      } else {
+      if (!is.null(value)) {
         private$.compounds <- value
-        private$.build_compounds_named_list()
-        return(private$.compounds_named)
+        private$.compounds_named <- NULL
       }
+      private$.ensure_compounds()
+      if (is.null(private$.compounds_named)) {
+        private$.compounds_named <- private$.build_named_list(
+          private$.compounds,
+          "compound_collection"
+        )
+      }
+      private$.compounds_named
     },
 
     #' @field expression_profiles List of ExpressionProfile objects in the snapshot
     expression_profiles = function(value = NULL) {
-      # Build the named list if it doesn't exist yet
-      if (is.null(private$.expression_profiles_named)) {
-        private$.build_expression_profiles_named_list()
-      }
-
-      if (is.null(value)) {
-        return(private$.expression_profiles_named)
-      } else {
+      if (!is.null(value)) {
         private$.expression_profiles <- value
-        private$.build_expression_profiles_named_list()
-        return(private$.expression_profiles_named)
+        private$.expression_profiles_named <- NULL
       }
+      private$.ensure_expression_profiles()
+      if (is.null(private$.expression_profiles_named)) {
+        private$.expression_profiles_named <- private$.build_named_list(
+          private$.expression_profiles,
+          "expression_profile_collection",
+          key_fn = \(x) x$id
+        )
+      }
+      private$.expression_profiles_named
     },
 
     #' @field individuals List of Individual objects in the snapshot
     individuals = function(value = NULL) {
-      # Build the named list
-      private$.build_individuals_named_list()
-
-      if (is.null(value)) {
-        return(private$.individuals_named)
-      } else {
+      if (!is.null(value)) {
         private$.individuals <- value
-        private$.build_individuals_named_list()
-        return(private$.individuals_named)
+        private$.individuals_named <- NULL
       }
+      private$.ensure_individuals()
+      if (is.null(private$.individuals_named)) {
+        private$.individuals_named <- private$.build_named_list(
+          private$.individuals,
+          "individual_collection"
+        )
+      }
+      private$.individuals_named
     },
 
     #' @field formulations List of Formulation objects in the snapshot
     formulations = function(value = NULL) {
-      # Build the named list
-      private$.build_formulations_named_list()
-
-      if (is.null(value)) {
-        return(private$.formulations_named)
-      } else {
+      if (!is.null(value)) {
         private$.formulations <- value
-        private$.build_formulations_named_list()
-        return(private$.formulations_named)
+        private$.formulations_named <- NULL
       }
+      private$.ensure_formulations()
+      if (is.null(private$.formulations_named)) {
+        private$.formulations_named <- private$.build_named_list(
+          private$.formulations,
+          "formulation_collection"
+        )
+      }
+      private$.formulations_named
     },
 
     #' @field populations List of Population objects in the snapshot
     populations = function(value = NULL) {
-      # Build the named list
-      private$.build_populations_named_list()
-
-      if (is.null(value)) {
-        return(private$.populations_named)
-      } else {
+      if (!is.null(value)) {
         private$.populations <- value
-        private$.build_populations_named_list()
-        return(private$.populations_named)
+        private$.populations_named <- NULL
       }
+      private$.ensure_populations()
+      if (is.null(private$.populations_named)) {
+        private$.populations_named <- private$.build_named_list(
+          private$.populations,
+          "population_collection"
+        )
+      }
+      private$.populations_named
     },
 
     #' @field events List of Event objects in the snapshot
     events = function(value = NULL) {
-      # Build the named list if it doesn't exist yet
-      private$.build_events_named_list()
-
-      if (is.null(value)) {
-        return(private$.events_named)
-      } else {
+      if (!is.null(value)) {
         private$.events <- value
-        private$.build_events_named_list()
-        return(private$.events_named)
+        private$.events_named <- NULL
       }
+      private$.ensure_events()
+      if (is.null(private$.events_named)) {
+        private$.events_named <- private$.build_named_list(
+          private$.events,
+          "event_collection"
+        )
+      }
+      private$.events_named
     },
 
     #' @field protocols List of Protocol objects in the snapshot
     protocols = function(value = NULL) {
-      # Build the named list if it doesn't exist yet
-      private$.build_protocols_named_list()
-
-      if (is.null(value)) {
-        return(private$.protocols_named)
-      } else {
+      if (!is.null(value)) {
         private$.protocols <- value
-        private$.build_protocols_named_list()
-        return(private$.protocols_named)
+        private$.protocols_named <- NULL
       }
+      private$.ensure_protocols()
+      if (is.null(private$.protocols_named)) {
+        private$.protocols_named <- private$.build_named_list(
+          private$.protocols,
+          "protocol_collection"
+        )
+      }
+      private$.protocols_named
     },
 
     #' @field observed_data List of DataSet objects (observed data) in the snapshot
     observed_data = function(value = NULL) {
-      # Build the named list if it doesn't exist yet
-      private$.build_observed_data_named_list()
-
-      if (is.null(value)) {
-        return(private$.observed_data_named)
-      } else {
+      if (!is.null(value)) {
         private$.observed_data <- value
-        private$.build_observed_data_named_list()
-        return(private$.observed_data_named)
+        private$.observed_data_named <- NULL
       }
+      private$.ensure_observed_data()
+      if (is.null(private$.observed_data_named)) {
+        private$.observed_data_named <- private$.build_named_list(
+          private$.observed_data,
+          "observed_data_collection"
+        )
+      }
+      private$.observed_data_named
     }
   ),
   private = list(
@@ -807,176 +788,86 @@ Snapshot <- R6::R6Class(
 
       return(pksim_version)
     },
-    # Build the named list of compounds with disambiguated names
-    .build_compounds_named_list = function() {
-      # Create a named list with compound names, handling duplicates
-      compounds_named <- list()
 
-      # Handle empty compound list
-      if (length(private$.compounds) == 0) {
-        class(compounds_named) <- c("compound_collection", "list")
-        private$.compounds_named <- compounds_named
-        return()
+    # Lazily build the unnamed object list for a building-block collection.
+    # On first call, walks the matching section of `private$.original_data`
+    # and wraps each item with `ctor`; the cache slot stays an empty list
+    # when the section is absent or empty. Idempotent on the cache.
+    .ensure_collection = function(cache_name, section_name, ctor) {
+      if (!is.null(private[[cache_name]])) {
+        return(invisible(NULL))
       }
-
-      compound_names <- sapply(private$.compounds, function(x) x$name)
-
-      # Track name occurrences to handle duplicates
-      name_counts <- table(compound_names)
-      name_indices <- list()
-
-      for (i in seq_along(private$.compounds)) {
-        name <- compound_names[i]
-
-        # Initialize counter for this name if not already done
-        if (is.null(name_indices[[name]])) {
-          name_indices[[name]] <- 0
-        }
-
-        # Increment counter
-        name_indices[[name]] <- name_indices[[name]] + 1
-
-        # Construct the final name (with suffix if needed)
-        if (name_counts[name] > 1) {
-          final_name <- glue::glue("{name}_{name_indices[[name]]}")
-        } else {
-          final_name <- name
-        }
-
-        compounds_named[[final_name]] <- private$.compounds[[i]]
+      section <- private$.original_data[[section_name]]
+      if (is.null(section)) {
+        private[[cache_name]] <- list()
+      } else {
+        private[[cache_name]] <- lapply(section, ctor)
       }
-
-      class(compounds_named) <- c("compound_collection", "list")
-      private$.compounds_named <- compounds_named
+      invisible(NULL)
     },
 
-    # Build the named list of individuals with disambiguated names
-    .build_individuals_named_list = function() {
-      # Create a named list with individual names, handling duplicates
-      individuals_named <- list()
-
-      # Handle empty individuals list
-      if (length(private$.individuals) == 0) {
-        class(individuals_named) <- c("individual_collection", "list")
-        private$.individuals_named <- individuals_named
-        return()
-      }
-
-      individual_names <- sapply(private$.individuals, function(x) x$name)
-
-      # Track name occurrences to handle duplicates
-      name_counts <- table(individual_names)
-      name_indices <- list()
-
-      for (i in seq_along(private$.individuals)) {
-        name <- individual_names[i]
-
-        # Initialize counter for this name if not already done
-        if (is.null(name_indices[[name]])) {
-          name_indices[[name]] <- 0
-        }
-
-        # Increment counter
-        name_indices[[name]] <- name_indices[[name]] + 1
-
-        # Construct the final name (with suffix if needed)
-        if (name_counts[name] > 1) {
-          final_name <- glue::glue("{name}_{name_indices[[name]]}")
-        } else {
-          final_name <- name
-        }
-
-        individuals_named[[final_name]] <- private$.individuals[[i]]
-      }
-
-      class(individuals_named) <- c("individual_collection", "list")
-      private$.individuals_named <- individuals_named
+    .ensure_compounds = function() {
+      private$.ensure_collection(
+        ".compounds",
+        "Compounds",
+        function(d) Compound$new(d)
+      )
     },
 
-    # Build the named list of formulations with disambiguated names
-    .build_formulations_named_list = function() {
-      # Create a named list with formulation names, handling duplicates
-      formulations_named <- list()
-
-      # Handle empty formulations list
-      if (length(private$.formulations) == 0) {
-        class(formulations_named) <- c("formulation_collection", "list")
-        private$.formulations_named <- formulations_named
-        return()
-      }
-
-      formulation_names <- sapply(private$.formulations, function(x) x$name)
-
-      # Track name occurrences to handle duplicates
-      name_counts <- table(formulation_names)
-      name_indices <- list()
-
-      for (i in seq_along(private$.formulations)) {
-        name <- formulation_names[i]
-
-        # Initialize counter for this name if not already done
-        if (is.null(name_indices[[name]])) {
-          name_indices[[name]] <- 0
-        }
-
-        # Increment counter
-        name_indices[[name]] <- name_indices[[name]] + 1
-
-        # Construct the final name (with suffix if needed)
-        if (name_counts[name] > 1) {
-          final_name <- glue::glue("{name}_{name_indices[[name]]}")
-        } else {
-          final_name <- name
-        }
-
-        formulations_named[[final_name]] <- private$.formulations[[i]]
-      }
-
-      class(formulations_named) <- c("formulation_collection", "list")
-      private$.formulations_named <- formulations_named
+    .ensure_expression_profiles = function() {
+      private$.ensure_collection(
+        ".expression_profiles",
+        "ExpressionProfiles",
+        function(d) ExpressionProfile$new(d)
+      )
     },
 
-    # Build the named list of populations with disambiguated names
-    .build_populations_named_list = function() {
-      # Create a named list with population names, handling duplicates
-      populations_named <- list()
+    .ensure_individuals = function() {
+      private$.ensure_collection(
+        ".individuals",
+        "Individuals",
+        function(d) Individual$new(d)
+      )
+    },
 
-      # Handle empty populations list
-      if (length(private$.populations) == 0) {
-        class(populations_named) <- c("population_collection", "list")
-        private$.populations_named <- populations_named
-        return()
-      }
+    .ensure_formulations = function() {
+      private$.ensure_collection(
+        ".formulations",
+        "Formulations",
+        function(d) Formulation$new(d)
+      )
+    },
 
-      population_names <- sapply(private$.populations, function(x) x$name)
+    .ensure_populations = function() {
+      private$.ensure_collection(
+        ".populations",
+        "Populations",
+        function(d) Population$new(d)
+      )
+    },
 
-      # Track name occurrences to handle duplicates
-      name_counts <- table(population_names)
-      name_indices <- list()
+    .ensure_events = function() {
+      private$.ensure_collection(
+        ".events",
+        "Events",
+        function(d) Event$new(d)
+      )
+    },
 
-      for (i in seq_along(private$.populations)) {
-        name <- population_names[i]
+    .ensure_protocols = function() {
+      private$.ensure_collection(
+        ".protocols",
+        "Protocols",
+        function(d) Protocol$new(d)
+      )
+    },
 
-        # Initialize counter for this name if not already done
-        if (is.null(name_indices[[name]])) {
-          name_indices[[name]] <- 0
-        }
-
-        # Increment counter
-        name_indices[[name]] <- name_indices[[name]] + 1
-
-        # Construct the final name (with suffix if needed)
-        if (name_counts[name] > 1) {
-          final_name <- glue::glue("{name}_{name_indices[[name]]}")
-        } else {
-          final_name <- name
-        }
-
-        populations_named[[final_name]] <- private$.populations[[i]]
-      }
-
-      class(populations_named) <- c("population_collection", "list")
-      private$.populations_named <- populations_named
+    .ensure_observed_data = function() {
+      private$.ensure_collection(
+        ".observed_data",
+        "ObservedData",
+        function(d) loadDataSetFromSnapshot(d)
+      )
     },
 
     # Store compound objects in an unnamed list
@@ -1021,191 +912,63 @@ Snapshot <- R6::R6Class(
     # Cache for the named protocols list with disambiguated names
     .protocols_named = NULL,
 
-    # Store observed data objects in an unnamed list
+    # Store observed data objects in an unnamed list.
+    # Tri-state sentinel used by the export path in `$data`:
+    #   NULL          = lazy cache untouched, export from `.original_data`.
+    #   list()        = cleared by the user, drop ObservedData from export.
+    #   non-empty     = filter `.original_data` down to surviving names.
+    # Only the first and third states are reachable from the public API today;
+    # the cleared state is reachable via `remove_observed_data()` removing all
+    # entries.
     .observed_data = NULL,
 
     # Cache for the named observed data list with disambiguated names
     .observed_data_named = NULL,
 
-    # Build the named list of events with disambiguated names
-    .build_events_named_list = function() {
-      # Create a named list with event names, handling duplicates
-      events_named <- list()
-
-      # Handle empty events list
-      if (length(private$.events) == 0) {
-        class(events_named) <- c("event_collection", "list")
-        private$.events_named <- events_named
-        return()
+    # Build a named list from a building-block collection, disambiguating
+    # duplicate keys by appending "_{n}" suffixes. `key_fn` extracts the
+    # lookup key from each item (typically the building-block's `$name`
+    # field, but ExpressionProfile uses the composite
+    # `Molecule|Species|Category` id).
+    .build_named_list = function(
+      items,
+      collection_class,
+      key_fn = \(x) x$name
+    ) {
+      if (length(items) == 0) {
+        return(as_snapshot_collection(list(), collection_class))
       }
 
-      event_names <- sapply(private$.events, function(x) x$name)
+      keys <- vapply(items, key_fn, character(1))
 
-      # Track name occurrences to handle duplicates
-      name_counts <- table(event_names)
-      name_indices <- list()
+      if (!anyDuplicated(keys)) {
+        named <- items
+        names(named) <- keys
+        return(as_snapshot_collection(named, collection_class))
+      }
 
-      for (i in seq_along(private$.events)) {
-        name <- event_names[i]
+      named <- list()
+      key_counts <- table(keys)
+      key_indices <- list()
 
-        # Initialize counter for this name if not already done
-        if (is.null(name_indices[[name]])) {
-          name_indices[[name]] <- 0
+      for (i in seq_along(items)) {
+        key <- keys[i]
+
+        if (is.null(key_indices[[key]])) {
+          key_indices[[key]] <- 0
         }
+        key_indices[[key]] <- key_indices[[key]] + 1
 
-        # Increment counter
-        name_indices[[name]] <- name_indices[[name]] + 1
-
-        # Construct the final name (with suffix if needed)
-        if (name_counts[name] > 1) {
-          final_name <- glue::glue("{name}_{name_indices[[name]]}")
+        if (key_counts[key] > 1) {
+          final_name <- glue::glue("{key}_{key_indices[[key]]}")
         } else {
-          final_name <- name
+          final_name <- key
         }
 
-        events_named[[final_name]] <- private$.events[[i]]
+        named[[final_name]] <- items[[i]]
       }
 
-      class(events_named) <- c("event_collection", "list")
-      private$.events_named <- events_named
-    },
-
-    # Build the named list of expression profiles with disambiguated names
-    .build_expression_profiles_named_list = function() {
-      # Create a named list with expression profile names, handling duplicates
-      expression_profiles_named <- list()
-
-      # Handle empty expression profiles list
-      if (length(private$.expression_profiles) == 0) {
-        class(expression_profiles_named) <- c(
-          "expression_profile_collection",
-          "list"
-        )
-        private$.expression_profiles_named <- expression_profiles_named
-        return()
-      }
-
-      # Create profile IDs in the format "Molecule|Species|Category"
-      profile_ids <- sapply(private$.expression_profiles, function(x) x$id)
-
-      # Track name occurrences to handle duplicates
-      name_counts <- table(profile_ids)
-      name_indices <- list()
-
-      for (i in seq_along(private$.expression_profiles)) {
-        profile_id <- profile_ids[i]
-
-        # Initialize counter for this name if not already done
-        if (is.null(name_indices[[profile_id]])) {
-          name_indices[[profile_id]] <- 0
-        }
-
-        # Increment counter
-        name_indices[[profile_id]] <- name_indices[[profile_id]] + 1
-
-        # Construct the final name (with suffix if needed)
-        if (name_counts[profile_id] > 1) {
-          final_name <- glue::glue("{profile_id}_{name_indices[[profile_id]]}")
-        } else {
-          final_name <- profile_id
-        }
-
-        expression_profiles_named[[
-          final_name
-        ]] <- private$.expression_profiles[[i]]
-      }
-
-      class(expression_profiles_named) <- c(
-        "expression_profile_collection",
-        "list"
-      )
-      private$.expression_profiles_named <- expression_profiles_named
-    },
-
-    # Build the named list of protocols with disambiguated names
-    .build_protocols_named_list = function() {
-      # Create a named list with protocol names, handling duplicates
-      protocols_named <- list()
-
-      # Handle empty protocol list
-      if (length(private$.protocols) == 0) {
-        class(protocols_named) <- c("protocol_collection", "list")
-        private$.protocols_named <- protocols_named
-        return()
-      }
-
-      protocol_names <- sapply(private$.protocols, function(x) x$name)
-
-      # Track name occurrences to handle duplicates
-      name_counts <- table(protocol_names)
-      name_indices <- list()
-
-      for (i in seq_along(private$.protocols)) {
-        name <- protocol_names[i]
-
-        # Initialize counter for this name if not already done
-        if (is.null(name_indices[[name]])) {
-          name_indices[[name]] <- 0
-        }
-
-        # Increment counter
-        name_indices[[name]] <- name_indices[[name]] + 1
-
-        # Construct the final name (with suffix if needed)
-        if (name_counts[name] > 1) {
-          final_name <- glue::glue("{name}_{name_indices[[name]]}")
-        } else {
-          final_name <- name
-        }
-
-        protocols_named[[final_name]] <- private$.protocols[[i]]
-      }
-
-      class(protocols_named) <- c("protocol_collection", "list")
-      private$.protocols_named <- protocols_named
-    },
-
-    # Build the named list of observed data with disambiguated names
-    .build_observed_data_named_list = function() {
-      # Create a named list with observed data names, handling duplicates
-      observed_data_named <- list()
-
-      # Handle empty observed data list
-      if (length(private$.observed_data) == 0) {
-        class(observed_data_named) <- c("observed_data_collection", "list")
-        private$.observed_data_named <- observed_data_named
-        return()
-      }
-
-      observed_data_names <- sapply(private$.observed_data, function(x) x$name)
-
-      # Track name occurrences to handle duplicates
-      name_counts <- table(observed_data_names)
-      name_indices <- list()
-
-      for (i in seq_along(private$.observed_data)) {
-        name <- observed_data_names[i]
-
-        # Initialize counter for this name if not already done
-        if (is.null(name_indices[[name]])) {
-          name_indices[[name]] <- 0
-        }
-
-        # Increment counter
-        name_indices[[name]] <- name_indices[[name]] + 1
-
-        # Construct the final name (with suffix if needed)
-        if (name_counts[name] > 1) {
-          final_name <- glue::glue("{name}_{name_indices[[name]]}")
-        } else {
-          final_name <- name
-        }
-
-        observed_data_named[[final_name]] <- private$.observed_data[[i]]
-      }
-
-      class(observed_data_named) <- c("observed_data_collection", "list")
-      private$.observed_data_named <- observed_data_named
+      as_snapshot_collection(named, collection_class)
     }
   )
 )

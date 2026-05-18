@@ -155,6 +155,30 @@ test_that("Snapshot export includes observed data", {
   expect_true(length(data$ObservedData) > 0)
 })
 
+test_that("Snapshot export drops removed observed data on round-trip", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  initial_count <- length(snapshot$observed_data)
+  expect_gt(initial_count, 1)
+
+  to_remove <- snapshot$observed_data[[1]]$name
+  snapshot$remove_observed_data(to_remove)
+
+  exported <- snapshot$data
+  expect_equal(length(exported$ObservedData), initial_count - 1)
+  exported_names <- vapply(
+    exported$ObservedData,
+    function(od) od$Name %||% od$name,
+    character(1)
+  )
+  expect_false(to_remove %in% exported_names)
+
+  out <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(snapshot, out)
+  reloaded <- load_snapshot(out)
+  expect_equal(length(reloaded$observed_data), initial_count - 1)
+  expect_false(to_remove %in% names(reloaded$observed_data))
+})
+
 test_that("DataSet handles complex real data structure", {
   # Test with actual data from pre-loaded snapshot
   first_dataset <- test_snapshot$observed_data[[1]]
@@ -247,12 +271,20 @@ test_that("Snapshot print method includes observed data", {
 test_that("ObservedData collection print method works", {
   # Test that print methods run without error
   empty_collection <- list()
-  class(empty_collection) <- c("observed_data_collection", "list")
+  class(empty_collection) <- c(
+    "observed_data_collection",
+    "snapshot_collection",
+    "list"
+  )
   expect_invisible(print(empty_collection))
 
   # Test with a non-empty collection
   small_collection <- test_snapshot$observed_data[1:2]
-  class(small_collection) <- c("observed_data_collection", "list")
+  class(small_collection) <- c(
+    "observed_data_collection",
+    "snapshot_collection",
+    "list"
+  )
   expect_invisible(print(small_collection))
 
   # Test that the collection has the right structure

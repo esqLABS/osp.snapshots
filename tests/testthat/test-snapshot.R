@@ -285,6 +285,40 @@ test_that("Snapshot compounds are initialized correctly", {
   }
 })
 
+test_that("Snapshot defers building-block construction until first access", {
+  snapshot <- Snapshot$new(testthat::test_path("data", "test_snapshot.json"))
+
+  # Reach into private state because laziness has no public-facing signal;
+  # the active fields populate `private$.<kind>` on first read. Note that a
+  # NULL cache only proves the cache slot has not been written, not that no
+  # constructor ran; instrumenting R6 generators via `local_mocked_bindings`
+  # would require a mockable wrapper that does not exist today. Treat the
+  # NULL assertions as a strong but imperfect proxy for "no work done".
+  private <- snapshot$.__enclos_env__$private
+
+  expect_null(private$.compounds)
+  expect_null(private$.individuals)
+  expect_null(private$.formulations)
+  expect_null(private$.populations)
+  expect_null(private$.events)
+  expect_null(private$.protocols)
+  expect_null(private$.expression_profiles)
+  expect_null(private$.observed_data)
+
+  # Touch a single section; only its cache should populate. The other 7
+  # caches must remain NULL, otherwise a future change has accidentally
+  # eager-loaded a sibling collection.
+  invisible(snapshot$compounds)
+  expect_type(private$.compounds, "list")
+  expect_null(private$.individuals)
+  expect_null(private$.formulations)
+  expect_null(private$.populations)
+  expect_null(private$.events)
+  expect_null(private$.protocols)
+  expect_null(private$.expression_profiles)
+  expect_null(private$.observed_data)
+})
+
 test_that("Snapshot handles duplicated individual and compound names correctly", {
   # Create a snapshot object
   snapshot <- test_snapshot$clone()
@@ -333,6 +367,47 @@ test_that("Snapshot handles duplicated compound names correctly", {
   expect_equal(snapshot$compounds$CompoundA_1$data$Path, "Path1")
   expect_equal(snapshot$compounds$CompoundA_2$data$Name, "CompoundA")
   expect_equal(snapshot$compounds$CompoundA_2$data$Path, "Path2")
+})
+
+test_that("Snapshot disambiguates ExpressionProfiles by composite id", {
+  # Two profiles sharing Molecule, Species, Category collide on the composite
+  # id "CYP3A4_Human_Healthy"; a third with a different Category does not.
+  snapshot_data <- list(
+    Version = 80,
+    ExpressionProfiles = list(
+      list(
+        Type = "Enzyme",
+        Species = "Human",
+        Molecule = "CYP3A4",
+        Category = "Healthy"
+      ),
+      list(
+        Type = "Enzyme",
+        Species = "Human",
+        Molecule = "CYP3A4",
+        Category = "Healthy"
+      ),
+      list(
+        Type = "Enzyme",
+        Species = "Human",
+        Molecule = "CYP3A4",
+        Category = "Disease"
+      )
+    )
+  )
+
+  snapshot <- Snapshot$new(snapshot_data)
+
+  expect_s3_class(snapshot$expression_profiles, "expression_profile_collection")
+  expect_length(snapshot$expression_profiles, 3)
+  expect_named(
+    snapshot$expression_profiles,
+    c(
+      "CYP3A4_Human_Healthy_1",
+      "CYP3A4_Human_Healthy_2",
+      "CYP3A4_Human_Disease"
+    )
+  )
 })
 
 test_that("Snapshot handles empty individuals and compounds", {

@@ -85,7 +85,7 @@ snapshot$add_expression_profile(profile)
 
 \dontrun{
 # Remove an expression profile from the snapshot
-snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
+snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
 }
 }
 \section{Active bindings}{
@@ -412,7 +412,7 @@ snapshot$add_expression_profile(profile)
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
     \preformatted{# Remove an expression profile from the snapshot
-snapshot$remove_expression_profile("CYP3A4|Human|Healthy")
+snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
 }
     \if{html}{\out{</div>}}
   }
