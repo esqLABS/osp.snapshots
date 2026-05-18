@@ -6,41 +6,41 @@
 \description{
 An R6 class that represents a single compound process in an OSP snapshot.
 
-A `Process` wraps one entry of a `Compound`'s `Processes` array
-(PK-Sim `CompoundProcess`). The PK-Sim JSON does not bucket processes by
-subtype; subtypes are inferred from `internal_name`. The derived
-`category` field surfaces that bucketing for R consumers:
-`"protein_binding_partners"`, `"metabolizing_enzymes"`,
-`"hepatic_clearance"`, `"transporter_proteins"`, `"renal_clearance"`,
-`"biliary_clearance"`, `"inhibition"`, `"induction"`, or `NA` when the
-`internal_name` does not match any known pattern.
+A \code{Process} wraps one entry of a \code{Compound}'s \code{Processes} array
+(PK-Sim \code{CompoundProcess}). The PK-Sim JSON does not bucket processes by
+subtype; subtypes are inferred from \code{internal_name}. The derived
+\code{category} field surfaces that bucketing for R consumers:
+\code{"protein_binding_partners"}, \code{"metabolizing_enzymes"},
+\code{"hepatic_clearance"}, \code{"transporter_proteins"}, \code{"renal_clearance"},
+\code{"biliary_clearance"}, \code{"inhibition"}, \code{"induction"}, or \code{NA} when the
+\code{internal_name} does not match any known pattern.
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
     \item{\code{data}}{The raw underlying data list (read-only).}
 
-    \item{\code{internal_name}}{The PK-Sim `InternalName` (process template key).}
+    \item{\code{internal_name}}{The PK-Sim \code{InternalName} (process template key).}
 
-    \item{\code{data_source}}{The `DataSource` string identifying the process.}
+    \item{\code{data_source}}{The \code{DataSource} string identifying the process.}
 
-    \item{\code{molecule}}{Optional `Molecule` field (for partial processes).}
+    \item{\code{molecule}}{Optional \code{Molecule} field (for partial processes).}
 
-    \item{\code{metabolite}}{Optional `Metabolite` field (for enzymatic processes).}
+    \item{\code{metabolite}}{Optional \code{Metabolite} field (for enzymatic processes).}
 
-    \item{\code{species}}{Optional `Species` field (for species-dependent
+    \item{\code{species}}{Optional \code{Species} field (for species-dependent
 processes).}
 
-    \item{\code{parameters}}{A named list of [Parameter] objects (one entry per
-`Parameter` in the snapshot JSON), keyed by parameter name. Assigning
-accepts either a list of [Parameter] objects or raw parameter dicts;
-the underlying raw data and the [Parameter] cache are kept in sync.}
+    \item{\code{parameters}}{A named list of \link{Parameter} objects (one entry per
+\code{Parameter} in the snapshot JSON), keyed by parameter name. Assigning
+accepts either a list of \link{Parameter} objects or raw parameter dicts;
+the underlying raw data and the \link{Parameter} cache are kept in sync.}
 
     \item{\code{category}}{Derived category string. One of
-`"protein_binding_partners"`, `"metabolizing_enzymes"`,
-`"hepatic_clearance"`, `"transporter_proteins"`,
-`"renal_clearance"`, `"biliary_clearance"`, `"inhibition"`,
-`"induction"`, or `NA_character_`.}
+\code{"protein_binding_partners"}, \code{"metabolizing_enzymes"},
+\code{"hepatic_clearance"}, \code{"transporter_proteins"},
+\code{"renal_clearance"}, \code{"biliary_clearance"}, \code{"inhibition"},
+\code{"induction"}, or \code{NA_character_}.}
   }
   \if{html}{\out{</div>}}
 }
@@ -65,7 +65,7 @@ the underlying raw data and the [Parameter] cache are kept in sync.}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{data}}{Raw process data (a `CompoundProcess` entry from a snapshot).}
+      \item{\code{data}}{Raw process data (a \code{CompoundProcess} entry from a snapshot).}
     }
     \if{html}{\out{</div>}}
   }

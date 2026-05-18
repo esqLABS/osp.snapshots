@@ -7,38 +7,38 @@
 as_tibbles(snapshot, kind)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 
 \item{kind}{Character scalar naming the collection to convert.
-One of `"compounds"`, `"individuals"`, `"formulations"`,
-`"populations"`, `"events"`, `"expression_profiles"`,
-`"protocols"`, `"observer_sets"`, `"observed_data"`.}
+One of \code{"compounds"}, \code{"individuals"}, \code{"formulations"},
+\code{"populations"}, \code{"events"}, \code{"expression_profiles"},
+\code{"protocols"}, \code{"observer_sets"}, \code{"observed_data"}.}
 }
 \value{
-A tibble or a named list of tibbles, depending on `kind`:
+A tibble or a named list of tibbles, depending on \code{kind}:
 \itemize{
-  \item `"compounds"`: a list with `properties` and `processes`
-    tibbles. `properties` carries one row per (compound,
-    physicochemical property) pair (plus folded process rows
-    for backwards compatibility); `processes` is the long-form,
-    one row per (compound, process, parameter) triple.
-  \item `"protocols"`, `"observer_sets"`,
-    `"observed_data"`: a single tibble.
-  \item `"individuals"`: a list with `individuals`,
-    `individuals_parameters`, `individuals_expressions`.
-  \item `"formulations"`: a list with `formulations`,
-    `formulations_parameters`.
-  \item `"populations"`: a list with `populations`,
-    `populations_parameters`.
-  \item `"events"`: a list with `events`, `events_parameters`.
-  \item `"expression_profiles"`: a list with `expression_profiles`,
-    `expression_profiles_parameters`.
+\item \code{"compounds"}: a list with \code{properties} and \code{processes}
+tibbles. \code{properties} carries one row per (compound,
+physicochemical property) pair (plus folded process rows
+for backwards compatibility); \code{processes} is the long-form,
+one row per (compound, process, parameter) triple.
+\item \code{"protocols"}, \code{"observer_sets"},
+\code{"observed_data"}: a single tibble.
+\item \code{"individuals"}: a list with \code{individuals},
+\code{individuals_parameters}, \code{individuals_expressions}.
+\item \code{"formulations"}: a list with \code{formulations},
+\code{formulations_parameters}.
+\item \code{"populations"}: a list with \code{populations},
+\code{populations_parameters}.
+\item \code{"events"}: a list with \code{events}, \code{events_parameters}.
+\item \code{"expression_profiles"}: a list with \code{expression_profiles},
+\code{expression_profiles_parameters}.
 }
 }
 \description{
-Unified bridge from a `Snapshot` to the tidyverse for any
+Unified bridge from a \code{Snapshot} to the tidyverse for any
 building-block kind plus observed data. Replaces the eight
-per-kind `get_*_dfs()` functions as the canonical entry point;
+per-kind \verb{get_*_dfs()} functions as the canonical entry point;
 those remain available as thin wrappers.
 }
 \examples{

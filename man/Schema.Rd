@@ -5,27 +5,27 @@
 \title{Schema class for OSP advanced protocols}
 \description{
 An R6 class that represents a repeatable block inside an Advanced
-[Protocol]. A schema has its own name, schema-level parameters
-(typically `Start time`, `NumberOfRepetitions`,
-`TimeBetweenRepetitions`), and an ordered list of [SchemaItem]
+\link{Protocol}. A schema has its own name, schema-level parameters
+(typically \verb{Start time}, \code{NumberOfRepetitions},
+\code{TimeBetweenRepetitions}), and an ordered list of \link{SchemaItem}
 applications.
 
-In an OSP snapshot, each schema is one entry of the `Schemas` array
-inside a `Protocols` building block.
+In an OSP snapshot, each schema is one entry of the \code{Schemas} array
+inside a \code{Protocols} building block.
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{data}}{The raw `Schema` list as it appears in the snapshot
+    \item{\code{data}}{The raw \code{Schema} list as it appears in the snapshot
 JSON, refreshed from the wrapped schema items and parameters
 (read-only).}
 
     \item{\code{name}}{The name of the schema.}
 
-    \item{\code{parameters}}{The schema-level [Parameter] objects (number of
+    \item{\code{parameters}}{The schema-level \link{Parameter} objects (number of
 repetitions, time between repetitions, ...).}
 
-    \item{\code{items}}{List of [SchemaItem] objects in the schema, in
+    \item{\code{items}}{List of \link{SchemaItem} objects in the schema, in
 declaration order.}
   }
   \if{html}{\out{</div>}}
@@ -51,7 +51,7 @@ declaration order.}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{data}}{Raw `Schema` list from a snapshot. May be `NULL` or
+      \item{\code{data}}{Raw \code{Schema} list from a snapshot. May be \code{NULL} or
 an empty list, both of which create an empty schema.}
     }
     \if{html}{\out{</div>}}

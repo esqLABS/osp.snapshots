@@ -12,12 +12,12 @@ osp_models(pattern = NULL)
 }
 \value{
 A data.frame with template information (invisibly), while also
-  printing a formatted list to the console.
+printing a formatted list to the console.
 }
 \description{
 Browse and display all available building block templates from the
 OSPSuite.BuildingBlockTemplates repository. This function helps users
-discover what templates are available for loading with `load_snapshot()`.
+discover what templates are available for loading with \code{load_snapshot()}.
 }
 \examples{
 \dontrun{

@@ -4,25 +4,25 @@
 \alias{SchemaItem}
 \title{SchemaItem class for OSP advanced protocols}
 \description{
-An R6 class that represents one application inside a [Schema] of an
-Advanced [Protocol]. A schema item carries an application type, an
+An R6 class that represents one application inside a \link{Schema} of an
+Advanced \link{Protocol}. A schema item carries an application type, an
 optional formulation key, target organ and compartment, and the
 application-level parameters (dose, start time, ...).
 
 In an OSP snapshot, each schema item is one entry of the
-`SchemaItems` array nested inside a `Schemas` entry of a
-`Protocols` building block.
+\code{SchemaItems} array nested inside a \code{Schemas} entry of a
+\code{Protocols} building block.
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{data}}{The raw `SchemaItem` list as it appears in the snapshot
+    \item{\code{data}}{The raw \code{SchemaItem} list as it appears in the snapshot
 JSON, refreshed from the wrapped parameters (read-only).}
 
     \item{\code{name}}{The name of the schema item.}
 
     \item{\code{application_type}}{The application type of the schema item
-(for example `"Oral"`, `"IntravenousBolus"`).}
+(for example \code{"Oral"}, \code{"IntravenousBolus"}).}
 
     \item{\code{formulation_key}}{The formulation key, linking the schema item
 to a formulation selection in the owning simulation.}
@@ -32,7 +32,7 @@ to a formulation selection in the owning simulation.}
     \item{\code{target_compartment}}{The target compartment for the
 application.}
 
-    \item{\code{parameters}}{The schema item's application-level [Parameter]
+    \item{\code{parameters}}{The schema item's application-level \link{Parameter}
 objects (dose, start time, ...).}
   }
   \if{html}{\out{</div>}}
@@ -58,7 +58,7 @@ objects (dose, start time, ...).}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{data}}{Raw `SchemaItem` list from a snapshot. May be `NULL` or
+      \item{\code{data}}{Raw \code{SchemaItem} list from a snapshot. May be \code{NULL} or
 an empty list, both of which create an empty schema item.}
     }
     \if{html}{\out{</div>}}

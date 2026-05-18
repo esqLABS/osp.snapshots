@@ -7,15 +7,15 @@
 add_protocol(snapshot, protocol)
 }
 \arguments{
-\item{snapshot}{A [Snapshot] object.}
+\item{snapshot}{A \link{Snapshot} object.}
 
-\item{protocol}{A [Protocol] object created with [create_protocol()].}
+\item{protocol}{A \link{Protocol} object created with \code{\link[=create_protocol]{create_protocol()}}.}
 }
 \value{
-The updated [Snapshot] object, returned invisibly.
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add a [Protocol] object to a [Snapshot].
+Add a \link{Protocol} object to a \link{Snapshot}.
 }
 \examples{
 \dontrun{

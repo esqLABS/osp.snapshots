@@ -7,15 +7,15 @@
 get_individuals_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A `Snapshot` object.}
+\item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
-A list with `individuals`, `individuals_parameters`, and
-  `individuals_expressions` tibbles.
+A list with \code{individuals}, \code{individuals_parameters}, and
+\code{individuals_expressions} tibbles.
 }
 \description{
-Thin wrapper around [as_tibbles()] with `kind = "individuals"`.
-Prefer [as_tibbles()] in new code.
+Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "individuals"}.
+Prefer \code{\link[=as_tibbles]{as_tibbles()}} in new code.
 }
 \examples{
 \dontrun{

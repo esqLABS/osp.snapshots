@@ -10,20 +10,22 @@ collection_kind_info(x)
 \item{x}{A snapshot collection. Used for dispatch only.}
 }
 \value{
-A list with `title`, `empty_message`, and optionally
-  `truncate`.
+A list with \code{title}, \code{empty_message}, and optionally
+\code{truncate}.
 }
 \description{
 Internal S3 generic. Returns a list describing how
-`print.snapshot_collection()` should label the collection.
+\code{print.snapshot_collection()} should label the collection.
 }
 \details{
 Required return shape:
-* `title`: length-1 character. Header title (e.g. "Compounds").
-* `empty_message`: length-1 character. Message shown when the
-  collection has no items.
-* `truncate` (optional): length-1 logical. When `TRUE`,
-  `print.snapshot_collection()` truncates the listing at its `n`
-  argument. Defaults to `FALSE` (show every item) when absent.
+\itemize{
+\item \code{title}: length-1 character. Header title (e.g. "Compounds").
+\item \code{empty_message}: length-1 character. Message shown when the
+collection has no items.
+\item \code{truncate} (optional): length-1 logical. When \code{TRUE},
+\code{print.snapshot_collection()} truncates the listing at its \code{n}
+argument. Defaults to \code{FALSE} (show every item) when absent.
+}
 }
 \keyword{internal}

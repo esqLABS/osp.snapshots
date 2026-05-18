@@ -17,3 +17,5 @@
 ^\.vscode$
 ^air\.toml$
 ^\.claude$
+^doc$
+^Meta$

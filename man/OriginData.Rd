@@ -5,20 +5,20 @@
 \title{OriginData class for OSP snapshot individuals}
 \description{
 An R6 class that represents the demographic starting point of an
-[Individual]: species, population, gender, and the physiological
+\link{Individual}: species, population, gender, and the physiological
 parameters (age, gestational age, weight, height) that PK-Sim uses when
 creating the subject. The set of calculation methods used while deriving
-the individual is exposed as a [CalculationMethodCache]. Optional disease
+the individual is exposed as a \link{CalculationMethodCache}. Optional disease
 state metadata is preserved as-is for round-trip fidelity.
 
-In an OSP snapshot, the JSON object is named `OriginData` and lives under
-each entry of the `Individuals` array.
+In an OSP snapshot, the JSON object is named \code{OriginData} and lives under
+each entry of the \code{Individuals} array.
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{data}}{The raw `OriginData` list as it appears in the snapshot
-JSON, refreshed from the embedded [CalculationMethodCache]
+    \item{\code{data}}{The raw \code{OriginData} list as it appears in the snapshot
+JSON, refreshed from the embedded \link{CalculationMethodCache}
 (read-only).}
 
     \item{\code{species}}{The species of the individual.}
@@ -27,26 +27,26 @@ JSON, refreshed from the embedded [CalculationMethodCache]
 
     \item{\code{gender}}{The gender of the individual.}
 
-    \item{\code{age}}{Numeric age value of the individual (in `age_unit`).}
+    \item{\code{age}}{Numeric age value of the individual (in \code{age_unit}).}
 
-    \item{\code{age_unit}}{Unit string for [age].}
+    \item{\code{age_unit}}{Unit string for \code{age}.}
 
     \item{\code{gestational_age}}{Numeric gestational age value (in
-`gestational_age_unit`), used for preterm individuals.}
+\code{gestational_age_unit}), used for preterm individuals.}
 
-    \item{\code{gestational_age_unit}}{Unit string for [gestational_age].}
+    \item{\code{gestational_age_unit}}{Unit string for \code{gestational_age}.}
 
     \item{\code{weight}}{Numeric weight value of the individual (in
-`weight_unit`).}
+\code{weight_unit}).}
 
-    \item{\code{weight_unit}}{Unit string for [weight].}
+    \item{\code{weight_unit}}{Unit string for \code{weight}.}
 
     \item{\code{height}}{Numeric height value of the individual (in
-`height_unit`).}
+\code{height_unit}).}
 
-    \item{\code{height_unit}}{Unit string for [height].}
+    \item{\code{height_unit}}{Unit string for \code{height}.}
 
-    \item{\code{calculation_methods}}{A [CalculationMethodCache] holding the
+    \item{\code{calculation_methods}}{A \link{CalculationMethodCache} holding the
 calculation methods PK-Sim applies while creating the individual.}
 
     \item{\code{disease_state}}{Optional disease state name (legacy snapshot
@@ -79,7 +79,7 @@ round-trip fidelity.}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{data}}{Raw `OriginData` list from a snapshot. May be `NULL` or
+      \item{\code{data}}{Raw \code{OriginData} list from a snapshot. May be \code{NULL} or
 an empty list, both of which create an empty OriginData.}
     }
     \if{html}{\out{</div>}}

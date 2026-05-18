@@ -7,15 +7,15 @@
 add_population(snapshot, population)
 }
 \arguments{
-\item{snapshot}{A [Snapshot] object.}
+\item{snapshot}{A \link{Snapshot} object.}
 
-\item{population}{A [Population] object created with [create_population()].}
+\item{population}{A \link{Population} object created with \code{\link[=create_population]{create_population()}}.}
 }
 \value{
-The updated [Snapshot] object, returned invisibly.
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add a [Population] object to a [Snapshot].
+Add a \link{Population} object to a \link{Snapshot}.
 }
 \examples{
 \dontrun{

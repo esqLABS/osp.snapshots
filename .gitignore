@@ -8,3 +8,5 @@ legacy_code
 **/.quarto/
 **_cache/
 .cursor/
+/doc/
+/Meta/
