@@ -1,10 +1,10 @@
-# Test for compound_collection print method
-test_that("print.compound_collection works with compounds", {
+# Test for compound_collection dispatch via print.snapshot_collection
+test_that("print.snapshot_collection dispatches on compound_collection", {
   # Test the print method
   expect_snapshot(print(test_snapshot$compounds))
 })
 
-test_that("print.compound_collection works with empty collection", {
+test_that("print.snapshot_collection dispatches on empty compound_collection", {
   # Create an empty compound collection
   compounds_named <- list()
   class(compounds_named) <- c(
@@ -17,13 +17,13 @@ test_that("print.compound_collection works with empty collection", {
   expect_snapshot(print(compounds_named))
 })
 
-# Test for individual_collection print method
-test_that("print.individual_collection works with individuals", {
+# Test for individual_collection dispatch via print.snapshot_collection
+test_that("print.snapshot_collection dispatches on individual_collection", {
   # Test the print method
   expect_snapshot(print(test_snapshot$individuals))
 })
 
-test_that("print.individual_collection works with empty collection", {
+test_that("print.snapshot_collection dispatches on empty individual_collection", {
   # Create an empty individual collection
   individuals_named <- list()
   class(individuals_named) <- c(
@@ -36,13 +36,13 @@ test_that("print.individual_collection works with empty collection", {
   expect_snapshot(print(individuals_named))
 })
 
-# Test for formulation_collection print method
-test_that("print.formulation_collection works with formulations", {
+# Test for formulation_collection dispatch via print.snapshot_collection
+test_that("print.snapshot_collection dispatches on formulation_collection", {
   # Test the print method
   expect_snapshot(print(test_snapshot$formulations))
 })
 
-test_that("print.formulation_collection works with empty collection", {
+test_that("print.snapshot_collection dispatches on empty formulation_collection", {
   # Create an empty formulation collection
   formulations_named <- list()
   class(formulations_named) <- c(
@@ -53,6 +53,12 @@ test_that("print.formulation_collection works with empty collection", {
 
   # Test the print method with empty collection
   expect_snapshot(print(formulations_named))
+})
+
+test_that("print.snapshot_collection errors when no collection_kind_info method exists", {
+  unknown <- list(a = 1L, b = 2L)
+  class(unknown) <- c("future_collection", "snapshot_collection", "list")
+  expect_snapshot(print(unknown), error = TRUE)
 })
 
 # Test for parameter_collection print method
@@ -147,8 +153,8 @@ test_that("print.parameter_collection formats values correctly", {
   }
 })
 
-# Test for expression_profile_collection print method
-test_that("print.expression_profile_collection works with profiles", {
+# Test for expression_profile_collection dispatch via print.snapshot_collection
+test_that("print.snapshot_collection dispatches on expression_profile_collection", {
   # Create a collection of expression profiles
   profiles <- list(
     complete_expression_profile,
@@ -170,7 +176,7 @@ test_that("print.expression_profile_collection works with profiles", {
   expect_snapshot(print(profiles))
 })
 
-test_that("print.expression_profile_collection works with empty collection", {
+test_that("print.snapshot_collection dispatches on empty expression_profile_collection", {
   # Create an empty expression profile collection
   profiles_named <- list()
   class(profiles_named) <- c(

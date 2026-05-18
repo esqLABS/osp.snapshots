@@ -9,13 +9,22 @@
 #'
 #' @param x A snapshot collection (a `snapshot_collection` named list).
 #' @param n Maximum number of items to display before truncating with
-#'   "... and X more". Currently honoured by `observed_data_collection`
-#'   only; other collections show every item.
+#'   "... and X more". Honoured only when the collection's
+#'   `collection_kind_info()` method returns `truncate = TRUE`; the
+#'   default is to show every item. Currently only the
+#'   `observed_data_collection` opts in.
 #' @param ... Additional arguments passed to print methods.
 #' @return Invisibly returns the collection.
 #' @export
 print.snapshot_collection <- function(x, n = 5, ...) {
   info <- collection_kind_info(x)
+
+  stopifnot(
+    is.character(info$title),
+    length(info$title) == 1L,
+    is.character(info$empty_message),
+    length(info$empty_message) == 1L
+  )
 
   output <- cli::cli_format_method({
     cli::cli_h1("{info$title} ({length(x)})")
@@ -42,38 +51,53 @@ print.snapshot_collection <- function(x, n = 5, ...) {
   invisible(x)
 }
 
-# Internal generic returning the header title and empty-state copy for a
-# collection. One method per collection class.
+#' Per-kind header info for a snapshot collection
+#'
+#' Internal S3 generic. Returns a list describing how
+#' `print.snapshot_collection()` should label the collection.
+#'
+#' Required return shape:
+#' * `title`: length-1 character. Header title (e.g. "Compounds").
+#' * `empty_message`: length-1 character. Message shown when the
+#'   collection has no items.
+#' * `truncate` (optional): length-1 logical. When `TRUE`,
+#'   `print.snapshot_collection()` truncates the listing at its `n`
+#'   argument. Defaults to `FALSE` (show every item) when absent.
+#'
+#' @param x A snapshot collection. Used for dispatch only.
+#' @return A list with `title`, `empty_message`, and optionally
+#'   `truncate`.
+#' @keywords internal
 collection_kind_info <- function(x) {
   UseMethod("collection_kind_info")
 }
 
-#' @exportS3Method
+#' @export
 collection_kind_info.compound_collection <- function(x) {
   list(title = "Compounds", empty_message = "No compounds found")
 }
 
-#' @exportS3Method
+#' @export
 collection_kind_info.individual_collection <- function(x) {
   list(title = "Individuals", empty_message = "No individuals found")
 }
 
-#' @exportS3Method
+#' @export
 collection_kind_info.population_collection <- function(x) {
   list(title = "Populations", empty_message = "No populations found")
 }
 
-#' @exportS3Method
+#' @export
 collection_kind_info.formulation_collection <- function(x) {
   list(title = "Formulations", empty_message = "No formulations found")
 }
 
-#' @exportS3Method
+#' @export
 collection_kind_info.event_collection <- function(x) {
   list(title = "Events", empty_message = "No events found")
 }
 
-#' @exportS3Method
+#' @export
 collection_kind_info.expression_profile_collection <- function(x) {
   list(
     title = "Expression Profiles",
@@ -81,12 +105,12 @@ collection_kind_info.expression_profile_collection <- function(x) {
   )
 }
 
-#' @exportS3Method
+#' @export
 collection_kind_info.protocol_collection <- function(x) {
   list(title = "Protocols", empty_message = "No protocols found")
 }
 
-#' @exportS3Method
+#' @export
 collection_kind_info.observed_data_collection <- function(x) {
   list(
     title = "Observed Data",
@@ -95,24 +119,35 @@ collection_kind_info.observed_data_collection <- function(x) {
   )
 }
 
-# Internal generic returning the per-item bullet text for a collection
-# entry. Dispatched on the collection class so the item type need not
-# carry a marker class itself.
+#' Per-item bullet label for a snapshot collection
+#'
+#' Internal S3 generic. Returns the text used for the bullet of a single
+#' item in `print.snapshot_collection()`.
+#'
+#' Required return shape: length-1 character or glue string.
+#'
+#' @param x The owning snapshot collection. Present so that dispatch
+#'   reads the collection class via `UseMethod()`; methods typically
+#'   ignore the value.
+#' @param item The current entry, i.e. `x[[name]]`.
+#' @param name The current entry's name in `x`.
+#' @return A length-1 character (or glue) string.
+#' @keywords internal
 collection_item_label <- function(x, item, name) {
   UseMethod("collection_item_label")
 }
 
-#' @exportS3Method
+#' @export
 collection_item_label.compound_collection <- function(x, item, name) {
   name
 }
 
-#' @exportS3Method
+#' @export
 collection_item_label.individual_collection <- function(x, item, name) {
   name
 }
 
-#' @exportS3Method
+#' @export
 collection_item_label.population_collection <- function(x, item, name) {
   source_text <- if (!is.null(item$source_population)) {
     glue::glue(" [Source: {item$source_population}]")
@@ -122,12 +157,12 @@ collection_item_label.population_collection <- function(x, item, name) {
   glue::glue("{name}{source_text} ({item$number_of_individuals} individuals)")
 }
 
-#' @exportS3Method
+#' @export
 collection_item_label.formulation_collection <- function(x, item, name) {
   glue::glue("{name} ({item$get_human_formulation_type()})")
 }
 
-#' @exportS3Method
+#' @export
 collection_item_label.event_collection <- function(x, item, name) {
   template <- item$template
   param_count <- length(item$parameters)
@@ -139,13 +174,13 @@ collection_item_label.event_collection <- function(x, item, name) {
   }
 }
 
-#' @exportS3Method
+#' @export
 collection_item_label.expression_profile_collection <- function(x, item, name) {
   category <- if (!is.null(item$category)) item$category else "N/A"
   glue::glue("{item$molecule} ({item$type}, {item$species}, {category})")
 }
 
-#' @exportS3Method
+#' @export
 collection_item_label.protocol_collection <- function(x, item, name) {
   if (item$is_advanced) {
     schema_count <- length(item$schemas)
@@ -166,9 +201,19 @@ collection_item_label.protocol_collection <- function(x, item, name) {
   }
 }
 
-#' @exportS3Method
+#' @export
 collection_item_label.observed_data_collection <- function(x, item, name) {
   name
+}
+
+# Helper that tags a list with the snapshot_collection class triplet:
+# (kind, "snapshot_collection", "list"). Class ordering matters: the
+# kind-specific class must appear first so `collection_kind_info()` /
+# `collection_item_label()` dispatch on the kind, with
+# `print.snapshot_collection` as the shared method.
+as_snapshot_collection <- function(x, kind) {
+  class(x) <- c(kind, "snapshot_collection", "list")
+  x
 }
 
 #' Print method for parameter collections

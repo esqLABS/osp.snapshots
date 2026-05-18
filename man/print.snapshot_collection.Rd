@@ -10,8 +10,10 @@
 \item{x}{A snapshot collection (a `snapshot_collection` named list).}
 
 \item{n}{Maximum number of items to display before truncating with
-"... and X more". Currently honoured by `observed_data_collection`
-only; other collections show every item.}
+"... and X more". Honoured only when the collection's
+`collection_kind_info()` method returns `truncate = TRUE`; the
+default is to show every item. Currently only the
+`observed_data_collection` opts in.}
 
 \item{...}{Additional arguments passed to print methods.}
 }
