@@ -1,5 +1,10 @@
 # osp.snapshots (development version)
 
+## New features
+
+- New `CalculationMethodCache` R6 class wrapping the array of calculation method names stored on a `Compound` and inside an `Individual`'s `OriginData`. `Compound$calculation_methods` and `Individual$origin_data$calculation_methods` now return this class (#30).
+- New `OriginData` R6 class wrapping the demographic starting point of an `Individual` (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via `Individual$origin_data` (#30).
+
 ## Bug fixes
 
 - Fixed snapshot export/import so single-element JSON arrays remain arrays,

@@ -28,8 +28,8 @@
       
       -- Calculation Methods --
       
-      * Partition Coefficient: Rodgers and Rowland
-      * Permeability: PK-Sim Standard
+      * Cellular partition coefficient method - Rodgers and Rowland
+      * Cellular permeability - PK-Sim Standard
       
       -- Physicochemical Properties --
       
@@ -97,8 +97,8 @@
       
       -- Calculation Methods --
       
-      * Partition Coefficient: Rodgers and Rowland
-      * Permeability: Charge dependent Schmitt
+      * Cellular partition coefficient method - Rodgers and Rowland
+      * Cellular permeability - Charge dependent Schmitt
       
       -- Physicochemical Properties --
       
@@ -218,8 +218,8 @@
       
       -- Calculation Methods --
       
-      * Partition Coefficient: Rodgers and Rowland
-      * Permeability: PK-Sim Standard
+      * Cellular partition coefficient method - Rodgers and Rowland
+      * Cellular permeability - PK-Sim Standard
       
       -- Physicochemical Properties --
       
@@ -257,8 +257,8 @@
       
       -- Calculation Methods --
       
-      * Partition Coefficient: Rodgers and Rowland
-      * Permeability: Charge dependent Schmitt
+      * Cellular partition coefficient method - Rodgers and Rowland
+      * Cellular permeability - Charge dependent Schmitt
       
       -- Physicochemical Properties --
       
@@ -321,8 +321,8 @@
       
       -- Calculation Methods --
       
-      * Partition Coefficient: Poulin and Theil
-      * Permeability: Charge dependent Schmitt
+      * Cellular partition coefficient method - Poulin and Theil
+      * Cellular permeability - Charge dependent Schmitt
       
       -- Physicochemical Properties --
       
@@ -387,8 +387,8 @@
       
       -- Calculation Methods --
       
-      * Partition Coefficient: PK-Sim Standard
-      * Permeability: PK-Sim Standard
+      * Cellular partition coefficient method - PK-Sim Standard
+      * Cellular permeability - PK-Sim Standard
       
       -- Physicochemical Properties --
       
@@ -467,10 +467,10 @@
 
     Code
       snapshot$compounds[[1]]$calculation_methods
-    Message
-      Calculation Methods:
-        * Partition Coefficient: Rodgers and Rowland
-        * Permeability: PK-Sim Standard
+    Output
+      CalculationMethodCache (2 methods)
+      * Cellular partition coefficient method - Rodgers and Rowland
+      * Cellular permeability - PK-Sim Standard
 
 # Compounds can be converted to dataframes
 

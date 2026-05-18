@@ -63,7 +63,7 @@ test_that("Compounds active binding data are of the same size than the raw data"
 
     expect_equal(
       length(compound$data$CalculationMethods),
-      length(compound$calculation_methods)
+      compound$calculation_methods$length
     )
   }
 })

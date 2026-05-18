@@ -11,7 +11,9 @@ and display a summary of its information.
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{data}}{The raw data of the compound (read-only)}
+    \item{\code{data}}{The raw data of the compound (read-only). Refreshed from
+the embedded [CalculationMethodCache] so that mutations flow back to
+the export payload.}
 
     \item{\code{name}}{The name of the compound}
 
@@ -35,7 +37,8 @@ and display a summary of its information.
 
     \item{\code{processes}}{The processes of the compound}
 
-    \item{\code{calculation_methods}}{The calculation methods of the compound}
+    \item{\code{calculation_methods}}{A [CalculationMethodCache] holding the
+compound's calculation methods.}
 
     \item{\code{parameters}}{The additional parameters of the compound (excluding molecular weight)}
 

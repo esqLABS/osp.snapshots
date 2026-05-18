@@ -60,6 +60,12 @@ reference:
   - AdvancedParameter
   - range
 
+- title: "Domain Types"
+  desc: "Reusable sub-structures shared across building blocks"
+  contents:
+  - OriginData
+  - CalculationMethodCache
+
 - title: "Create Building Blocks"
   desc: "Functions to create new building blocks from scratch"
   contents:
