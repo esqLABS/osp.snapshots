@@ -6,6 +6,7 @@
 
 ## New features
 
+- `as_tibbles()` is the new unified entry point for converting any building-block collection in a snapshot to a tibble (or list of tibbles), dispatched on a `kind` argument. The eight existing `get_*_dfs()` functions remain available as thin wrappers (#36).
 - New `CalculationMethodCache` R6 class wrapping the array of calculation method names stored on a `Compound` and inside an `Individual`'s `OriginData`. `Compound$calculation_methods` and `Individual$origin_data$calculation_methods` now return this class (#30).
 - New `LocalizedParameter` R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from `Parameter` and migrates legacy `Applications` path segments to `Events` for v11+ snapshots. `create_parameter()` now routes to `LocalizedParameter` when called with a `path` argument (#31).
 - New `OriginData` R6 class wrapping the demographic starting point of an `Individual` (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via `Individual$origin_data` (#30).

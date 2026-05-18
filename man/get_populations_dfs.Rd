@@ -7,29 +7,19 @@
 get_populations_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A Snapshot object}
+\item{snapshot}{A `Snapshot` object.}
 }
 \value{
-A list containing two data frames:
-\itemize{
-  \item populations: Basic information about each population including ranges
-  \item populations_parameters: All parameters for all populations
-}
+A list with `populations` and `populations_parameters`
+  tibbles.
 }
 \description{
-This function extracts all populations from a snapshot and converts them to
-data frames for easier analysis and visualization.
+Thin wrapper around [as_tibbles()] with `kind = "populations"`.
+Prefer [as_tibbles()] in new code.
 }
 \examples{
 \dontrun{
-# Load a snapshot
 snapshot <- load_snapshot("path/to/snapshot.json")
-
-# Get all population data as data frames
 dfs <- get_populations_dfs(snapshot)
-
-# Access specific data frames
-populations_df <- dfs$populations
-populations_parameters_df <- dfs$populations_parameters
 }
 }
