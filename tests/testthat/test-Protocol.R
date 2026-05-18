@@ -203,19 +203,34 @@ test_that("Protocol parameters are converted to Parameter objects", {
   expect_true("End time" %in% param_names)
 })
 
+test_that("Protocol$data clears Parameters when emptied on simple protocols", {
+  simple_protocol <- Protocol$new(simple_protocol_data)
+  simple_protocol$parameters <- list()
+  expect_equal(simple_protocol$data$Parameters, list())
+})
+
+test_that("Protocol$data omits Parameters when absent from raw data", {
+  raw <- simple_protocol_data
+  raw$Parameters <- NULL
+  protocol <- Protocol$new(raw)
+  expect_null(protocol$data$Parameters)
+})
+
 test_that("Protocol schema structure is correct", {
   advanced_protocol <- Protocol$new(advanced_protocol_data)
 
   # Test schema structure
   expect_length(advanced_protocol$schemas, 1)
   schema <- advanced_protocol$schemas[[1]]
+  expect_r6_class(schema, "Schema")
 
   expect_equal(schema$name, "Schema 1")
-  expect_length(schema$schema_items, 1)
+  expect_length(schema$items, 1)
   expect_length(schema$parameters, 3)
 
   # Test schema item structure
-  schema_item <- schema$schema_items[[1]]
+  schema_item <- schema$items[[1]]
+  expect_r6_class(schema_item, "SchemaItem")
   expect_equal(schema_item$name, "Schema Item 1")
   expect_equal(schema_item$application_type, "Oral")
   expect_equal(schema_item$formulation_key, "Test Formulation")

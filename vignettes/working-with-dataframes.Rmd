@@ -37,14 +37,16 @@ snapshot <- load_snapshot("Midazolam")
 
 ## Converting Building Blocks to Data Frames
 
-Each building block type has a corresponding `get_*_dfs()` function that converts the data to structured data frames.
+The unified `as_tibbles()` function is the canonical entry point. It takes a snapshot plus a `kind` naming the collection to convert, and returns a tibble (or named list of tibbles for collections that need to be split into related tables).
+
+Valid values of `kind` are `"compounds"`, `"individuals"`, `"formulations"`, `"populations"`, `"events"`, `"expression_profiles"`, `"protocols"`, and `"observed_data"`.
 
 ### Converting Individuals
 
 Individual data is converted into multiple related data frames:
 
 ```{r}
-individual_dfs <- get_individuals_dfs(snapshot)
+individual_dfs <- as_tibbles(snapshot, "individuals")
 names(individual_dfs)
 ```
 
@@ -77,27 +79,27 @@ head(single_individual_df$individuals)
 ### Converting Compounds
 
 ```{r}
-compounds_df <- get_compounds_dfs(snapshot)
+compounds_df <- as_tibbles(snapshot, "compounds")
 head(compounds_df)
 ```
 
 ### Converting Formulations
 
 ```{r}
-formulations_dfs <- get_formulations_dfs(snapshot)
+formulations_dfs <- as_tibbles(snapshot, "formulations")
 names(formulations_dfs)
 
 # Basic formulation info
 head(formulations_dfs$formulations)
 
 # Formulation parameters
-head(formulations_dfs$parameters)
+head(formulations_dfs$formulations_parameters)
 ```
 
 ### Converting Populations
 
 ```{r}
-populations_dfs <- get_populations_dfs(snapshot)
+populations_dfs <- as_tibbles(snapshot, "populations")
 names(populations_dfs)
 
 head(populations_dfs$populations)
@@ -108,9 +110,13 @@ head(populations_dfs$populations)
 Observed data conversion creates a flat data frame perfect for analysis:
 
 ```{r}
-obs_data_df <- get_observed_data_dfs(snapshot)
+obs_data_df <- as_tibbles(snapshot, "observed_data")
 head(obs_data_df)
 ```
+
+## Legacy per-kind helpers
+
+For backwards compatibility, the eight original `get_*_dfs()` functions (`get_compounds_dfs()`, `get_individuals_dfs()`, `get_formulations_dfs()`, `get_populations_dfs()`, `get_events_dfs()`, `get_expression_profiles_dfs()`, `get_protocols_dfs()`, `get_observed_data_dfs()`) remain available as thin wrappers around `as_tibbles()`. New code should prefer `as_tibbles()`.
 
 ## Next Steps
 

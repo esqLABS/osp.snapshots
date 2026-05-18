@@ -7,38 +7,21 @@
 get_compounds_dfs(snapshot)
 }
 \arguments{
-\item{snapshot}{A Snapshot object}
+\item{snapshot}{A `Snapshot` object.}
 }
 \value{
-A data frame with compound parameter data including:
-\itemize{
-  \item compound: Compound name
-  \item category: Broad parameter category - "physicochemical_property" for basic properties,
-        or descriptive categories like "protein_binding_partners", "metabolizing_enzymes",
-        "hepatic_clearance", "transporter_proteins", "renal_clearance", "biliary_clearance",
-        "inhibition", "induction" for process-related data
-  \item type: Specific type within category - for physicochemical properties: property type
-        (e.g., "lipophilicity", "fraction_unbound", "molecular_weight"); for processes:
-        the InternalName from process data (e.g., "SpecificBinding", "Metabolization", "ActiveTransport")
-  \item parameter: Specific parameter details (e.g., parameter names, molecule names)
-  \item value: Parameter value (raw values from data)
-  \item unit: Parameter unit
-  \item data_source: Data source information from the snapshot
-  \item source: Original source information
-}
+A list with `properties` and `processes` tibbles; see
+  [as_tibbles()] for the column contract.
 }
 \description{
-This function extracts all compounds from a snapshot and converts them to
-data frames for easier analysis and visualization, following the same format
-as the legacy compound dataframe functions.
+Thin wrapper around [as_tibbles()] with `kind = "compounds"`.
+Prefer [as_tibbles()] in new code.
 }
 \examples{
 \dontrun{
-# Load a snapshot
 snapshot <- load_snapshot("path/to/snapshot.json")
-
-# Get all compound data as a data frame
-compounds_df <- get_compounds_dfs(snapshot)
-
+dfs <- get_compounds_dfs(snapshot)
+dfs$properties
+dfs$processes
 }
 }
