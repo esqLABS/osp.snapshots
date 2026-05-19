@@ -1,69 +1,58 @@
 # osp.snapshots (development version)
 
+This release widens the building-block coverage of `osp.snapshots` and consolidates the public surface. You can now build every PK-Sim building block from named arguments through a single `create_*()` factory family (compounds, events, expression profiles, observed data, observer sets, populations, processes, protocols, schemas, and schema items), attach or remove them with paired `add_*()` / `remove_*()` mutators that chain with the base pipe, and convert any collection to a tibble through one dispatched `as_tibbles()` entry point. Observer sets are supported end to end (load, mutate, convert, export). Several previously list-shaped fields on existing classes are now first-class R6 objects with typed accessors.
+
 ## Breaking changes
 
-- `Snapshot$new()` (and therefore `load_snapshot()`) now refuses snapshots that lack a `Version` field or whose `Version` is below 79 (PK-Sim v11.2). Earlier versions used pre-v11 conventions (notably `Applications|...` path segments) that this package does not model. Re-export the project from PK-Sim v11.2 or newer before loading (#52).
-- `get_compounds_dfs()` now returns a list with two tibbles, `properties` and `processes`, instead of the single combined tibble it returned before. Update callers from `df <- get_compounds_dfs(snap)` to `dfs <- get_compounds_dfs(snap); df <- dfs$properties`, or switch to the new long-form `dfs$processes` (#40).
-- `get_observer_sets_dfs()` now returns a list with two tibbles, `observer_sets` (one row per `ObserverSet`) and `observers` (one row per `Observer`, joinable back to its parent via `observer_set_id` / `observer_set_name`), instead of the single combined tibble it returned before. Update callers from `df <- get_observer_sets_dfs(snap)` to `dfs <- get_observer_sets_dfs(snap); df <- dfs$observers` (or `dfs$observer_sets` for the set-level rows) (#38, #42).
-- `Compound$calculation_methods` now returns a `CalculationMethodCache` R6 object instead of a plain list with class `compound_calculation_methods`. The old list-shape accessors no longer work; switch from `compound$calculation_methods$partition_coef` to `compound$calculation_methods$methods` (a character vector of every method name in the cache) and use `$add(method)`, `$remove(method)`, and `$length` to mutate or inspect it (#30).
-- `Compound$processes` now returns a flat named list of `Process` R6 objects (with duplicate names disambiguated via `_{n}` suffixes), replacing the raw `compound_processes` list it returned before. Filter by `process$category` to recover the equivalent of the deprecated per-category accessors (#40).
-- `create_parameter()` now writes the identifier to `data$Name` when called without `path` (plain `Parameter`) and to `data$Path` only when called with `path` (`LocalizedParameter`). Previously every result carried `data$Path`, hiding which kind of parameter the factory had produced. Pass `path = ...` to get a `LocalizedParameter`; pass `name = ...` to get a plain `Parameter` (#52).
-- `LocalizedParameter$new()` now emits a deprecation warning when falling back to `data$Name` for the path, and drops `Name` from the stored data so the resulting shape is unambiguous. The fallback continues to work; real v11+ snapshots never hit it. Rename `Name` to `Path` in any custom raw list passed to `LocalizedParameter$new()` to silence the warning (#52).
-- `Observer$container_path` was renamed to `Observer$container_tags`, and the same column renamed in `Observer$to_df()` and `get_observer_sets_dfs()$observers`. The field is synthesized by joining `Tag` values from `ContainerCriteria` with `|`; the previous name implied a `ContainerPath` JSON concept that does not exist. Rename `container_path` to `container_tags` in any caller code (#76).
+- `load_snapshot()` now requires PK-Sim v11.2 snapshots or newer (`Version >= 79`). Re-export older projects from PK-Sim v11.2+ before loading (#52).
+- `get_compounds_dfs()` returns a list with two tibbles, `properties` and `processes`, instead of a single combined tibble. Update callers from `df <- get_compounds_dfs(snap)` to `dfs <- get_compounds_dfs(snap); df <- dfs$properties`, or switch to the new long-form `dfs$processes` (#40).
+- `compound$calculation_methods` returns a `CalculationMethods` R6 object instead of a plain list with class `compound_calculation_methods`. Read the names with `compound$calculation_methods$names` and mutate with `$add(name)`, `$remove(name)`; `$length` reports the count (#30).
+- `compound$processes` returns a flat named list of `Process` R6 objects (duplicate names disambiguated with `_{n}`). Filter by `process$category` to recover the equivalent of the deprecated per-category accessors (#40).
+- `create_parameter()` writes the identifier to `data$Name` for plain parameters (no `path` argument) and to `data$Path` for path-bearing parameters (with `path` argument). Previously every result carried `data$Path`. Pass `path = ...` to get a path-bearing parameter; pass `name = ...` to get a plain one (#52).
 
 ## New features
 
-This release widens the building-block coverage and consolidates the public surface. The new `create_*()` factory family (now spanning compounds, events, expression profiles, observed data, observer sets, populations, processes, protocols, schemas, and schema items) gives every building block a validated, named-argument constructor. `as_tibbles()` becomes the single dispatched bridge from snapshots to tibbles, with the legacy `get_*_dfs()` helpers preserved as thin wrappers. Seven new leaf R6 classes (`LocalizedParameter`, `OriginData`, `CalculationMethodCache`, `Schema`, `SchemaItem`, `Process`, `Observer`) replace ad-hoc list shapes that previously hid behind generic `Parameter` and `Compound` accessors, and a new `ObserverSet` building block is supported end-to-end (load, mutate via `add_observer_set()` / `remove_observer_set()`, convert to tibbles, and export).
+You can now create every kind of building block from a `create_*()` function and attach it with the matching `add_*()` mutator:
 
-- New `CalculationMethodCache` R6 class wrapping the array of calculation method names stored on a `Compound` and inside an `Individual`'s `OriginData`. `Compound$calculation_methods` and `Individual$origin_data$calculation_methods` now return this class (#30).
-- New `LocalizedParameter` R6 class for path-bearing parameters used in `Individual`, `ExpressionProfile`, and `Simulation` parameter trees. Inherits from `Parameter` and migrates legacy `Applications` path segments to `Events` for v11+ snapshots. `create_parameter()` now routes to `LocalizedParameter` when called with a `path` argument (#31).
-- New `Observer` R6 class representing one observer (a simulation-time formula that computes a derived quantity from the underlying model) inside an `ObserverSet`. `observer_set$observers` now returns a named list of `Observer` objects exposing `name`, `type`, `dimension`, `formula`, and `container_tags` (#42).
-- New `ObserverSet` R6 class wrapping the `ObserverSets` building blocks of a snapshot, accessible through `snapshot$observer_sets` and exported on round-trip (#38).
-- New `OriginData` R6 class wrapping the demographic starting point of an `Individual` (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via `Individual$origin_data` (#30).
-- New `Process` R6 class representing one compound process (PK-Sim `CompoundProcess`). Exposes `internal_name`, `data_source`, `molecule`, `metabolite`, `species`, `parameters` (a named list of `Parameter` R6 objects), and a derived `category` (one of `protein_binding_partners`, `metabolizing_enzymes`, `hepatic_clearance`, `transporter_proteins`, `renal_clearance`, `biliary_clearance`, `inhibition`, `induction`). `Compound$processes` now returns a flat named list of these objects, built once at construction so process state changes persist across accesses (#40).
-- New `Schema` and `SchemaItem` R6 classes wrapping the repeatable blocks and individual applications inside an Advanced `Protocol`. `Protocol$schemas` now returns a named list of `Schema` objects, each exposing `$items` as a list of `SchemaItem` objects with fields for application type, formulation key, target organ and compartment, and parameters (#29).
-- `add_compound()` attaches a `Compound` building block to a `Snapshot` (#39).
-- `add_event()` attaches an `Event` building block to a `Snapshot` (#39).
-- `add_observed_data()` attaches an `ospsuite::DataSet` to a `Snapshot` as an exported function wrapping the existing R6 method (#39).
-- `add_observer_set()` attaches an `ObserverSet` building block to a `Snapshot` as a pipeable wrapper around the underlying R6 method (#38).
-- `add_population()` attaches a `Population` building block to a `Snapshot` (#39).
-- `add_protocol()` attaches a `Protocol` building block to a `Snapshot` (#39).
-- `as_tibbles()` is the new unified entry point for converting any building-block collection in a snapshot to a tibble (or list of tibbles), dispatched on a `kind` argument. The eight existing `get_*_dfs()` functions remain available as thin wrappers (#36).
-- `create_compound()` builds a Compound building block from named arguments, wrapping `Compound$new()` with validation of common fields (#27). `molecular_weight_unit` is now validated against `ospsuite::ospUnits$"Molecular weight"` when `molecular_weight` is supplied (#48).
-- `create_event()` builds an Event building block from named arguments and a template name, wrapping `Event$new()` (#27).
-- `create_expression_profile()` builds an ExpressionProfile building block from named arguments, requiring molecule, species, category, and type (#27).
-- `create_observed_data()` builds an `ospsuite::DataSet` from named arguments for time, values, units, and optional error series (#27). `value_dimension` is now required (previously defaulted silently to `"Concentration (mass)"`); `time_unit` and `value_unit` are validated against the corresponding dimension (#48).
-- `create_observer_set()` builds an ObserverSet building block from a `name` and an optional list of `Observer` objects or raw observer lists, wrapping `ObserverSet$new()` (#43).
-- `create_population()` builds a Population building block from named arguments and `Range` objects for age, weight, height, and BMI bounds (#27). `number_of_individuals` must be a positive integer; `proportion_of_females` must be a length-1 number (#48).
-- `create_process()` builds a `Process` from named arguments, wrapping `Process$new()` with validation of `internal_name` and `data_source` (#40).
-- `create_protocol()` builds a Simple or Advanced Protocol building block from named arguments, wrapping `Protocol$new()` (#27). Passing `schemas` now errors if any Simple Protocol field (`application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `parameters`) is also supplied (#48). `schemas` now accepts a list of `Schema` objects (created with `create_schema()`) in addition to raw schema lists (#54).
-- `create_schema()` builds a `Schema` for an Advanced Protocol from named arguments, accepting `Parameter` and `SchemaItem` objects (or raw lists) and wrapping `Schema$new()` (#54).
-- `create_schema_item()` builds a `SchemaItem` for an Advanced Protocol from named arguments, validating `application_type` against the canonical PK-Sim application types and wrapping `SchemaItem$new()` (#54).
-- `remove_compound()` removes compounds from a `Snapshot` by name (#39).
-- `remove_event()` removes events from a `Snapshot` by name (#39).
-- `remove_observed_data()` removes observed-data entries from a `Snapshot` by name as an exported function wrapping the existing R6 method (#39).
-- `remove_observer_set()` removes `ObserverSet` building blocks from a `Snapshot` by name as a pipeable wrapper around the underlying R6 method (#38).
-- `remove_protocol()` removes protocols from a `Snapshot` by name (#39).
+- `create_compound()` builds a compound from named arguments, with validation on `molecular_weight_unit` against `ospsuite::ospUnits$"Molecular weight"` (#27, #48). Attach with `add_compound()`, remove by name with `remove_compound()` (#39).
+- `create_event()` builds an event from a template name and an optional list of parameter overrides (#27). Attach with `add_event()`, remove with `remove_event()` (#39).
+- `create_expression_profile()` builds an expression profile, requiring molecule, species, category, and type (#27).
+- `create_observed_data()` builds an `ospsuite::DataSet` from named time, value, unit, and optional error-series arguments. `value_dimension` is required and gates unit validation (#27, #48). Attach with `add_observed_data()`, remove with `remove_observed_data()` (#39).
+- `create_observer_set()` builds an observer set from a `name` and a list of observers (#43). Attach with `add_observer_set()`, remove with `remove_observer_set()` (#38).
+- `create_population()` builds a population, taking `Range` objects for age, weight, height, and BMI bounds. `number_of_individuals` must be a positive integer; `proportion_of_females` must be a length-1 number (#27, #48). Attach with `add_population()` (#39).
+- `create_process()` builds a compound process; `internal_name` and `data_source` are validated (#40). See `?create_process` for the list of supported `internal_name` values.
+- `create_protocol()` builds a Simple or Advanced protocol. Pass `schemas` to build an Advanced protocol (accepts `Schema` objects from `create_schema()` or raw lists); mixing Simple-only fields (`application_type`, `dosing_interval`, ...) with `schemas` errors out (#27, #48, #54). Attach with `add_protocol()`, remove with `remove_protocol()` (#39).
+- `create_schema()` and `create_schema_item()` build the repeatable blocks and individual applications used inside an Advanced protocol. `application_type` on a schema item is validated against the canonical PK-Sim application types (#54).
+
+You can now convert any building-block collection to a tibble through one entry point:
+
+- `as_tibbles(snapshot, kind)` returns either a bare tibble (`"protocols"`, `"observed_data"`) or a named list of related tibbles (every other kind). The eight existing `get_*_dfs()` functions remain available as thin wrappers (#36).
+
+Observer sets are now fully supported. Each `ObserverSet` exposes its observers as a named list of `Observer` objects with `name`, `type`, `dimension`, `formula`, and `container_tags`. `get_observer_sets_dfs()` returns two tibbles (`observer_sets` for set-level rows, `observers` joinable back via `observer_set_id` / `observer_set_name`) (#38, #42, #76).
+
+Several previously list-shaped fields are now first-class R6 objects:
+
+- `compound$calculation_methods` and `individual$origin_data$calculation_methods` return a `CalculationMethods` object you can inspect (`$names`, `$length`) and mutate (`$add()`, `$remove()`) (#30).
+- `individual$origin_data` returns an `OriginData` object holding the demographic starting point of the individual (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state) (#30).
+- Parameters that live in a parameter tree (under an `Individual`, `ExpressionProfile`, or `Simulation`) are now `LocalizedParameter` objects, identified by a pipe-separated path. Pre-v11 `Applications|...` segments are migrated to `Events|...` on load. `create_parameter()` routes to `LocalizedParameter` when called with a `path` argument (#31).
+- `compound$processes` returns a named list of `Process` objects, each exposing `internal_name`, `data_source`, `molecule`, `metabolite`, `species`, `parameters`, and a derived `category` (#40).
+- `protocol$schemas` returns a named list of `Schema` objects, each exposing `$items` as a list of `SchemaItem` objects (application type, formulation key, target organ and compartment, parameters) (#29).
 
 ## Deprecated
 
-- The eight category-keyed `Compound` accessors (`$protein_binding_partners`, `$metabolizing_enzymes`, `$hepatic_clearance`, `$transporter_proteins`, `$renal_clearance`, `$biliary_clearance`, `$inhibition`, `$induction`) are soft-deprecated. Use `compound$processes` (filter by `process$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead (#40).
+- The eight category-keyed compound accessors (`$protein_binding_partners`, `$metabolizing_enzymes`, `$hepatic_clearance`, `$transporter_proteins`, `$renal_clearance`, `$biliary_clearance`, `$inhibition`, `$induction`) are soft-deprecated. Use `compound$processes` (filter by `process$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` (#40).
 
 ## Minor improvements
 
-- Building-block collections now share a `snapshot_collection` S3 class with a single generic `print()` method, replacing the eight per-kind methods. The existing per-kind classes (`compound_collection`, `individual_collection`, etc.) are preserved as marker classes (#34).
-
-- `export_snapshot()` now documents that mutations to a `DataSet` after load (e.g. changing `xUnit` on an entry in `Snapshot$observed_data`) are not preserved on export. The exported `ObservedData` section is replayed verbatim from the original snapshot JSON, filtered to entries that still exist after `remove_observed_data()`. This matches the previous behaviour; only the documentation is new (#35).
+- Building-block collections now share a `snapshot_collection` S3 class with a single generic `print()` method. The existing per-kind classes (`compound_collection`, `individual_collection`, ...) are preserved as marker classes (#34).
+- `export_snapshot()` now documents that mutations to a `DataSet` after load (e.g. changing `xUnit` on an entry in `snapshot$observed_data`) are not preserved on export. The exported `ObservedData` section is replayed from the original snapshot JSON, filtered to entries still present after `remove_observed_data()` (#35).
 
 ## Bug fixes
 
-- `as_tibbles(snapshot, "protocols")` (and the legacy `get_protocols_dfs()` wrapper) now returns the same 13 columns whether the snapshot has any protocols or not, matching the populated shape emitted by `Protocol$to_df()`. Previously the empty-state path returned an 18-column tibble that disagreed with the populated path, breaking `bind_rows()` across mixed snapshots (#56).
-
+- `as_tibbles(snapshot, "protocols")` (and the legacy `get_protocols_dfs()` wrapper) now returns the same 13 columns whether the snapshot has any protocols or not. Previously the empty-state path returned an 18-column tibble that disagreed with the populated path, breaking `bind_rows()` across mixed snapshots (#56).
 - `remove_expression_profile()`, `remove_formulation()`, `remove_individual()`, `remove_observed_data()`, and `remove_population()` now report the actual number of entries removed instead of the length of the input vector, so the success message reads correctly when a requested name is not present in the snapshot (#66).
-
-- Fixed `Snapshot$data` so observed data removed via `remove_observed_data()` is also dropped from the exported snapshot. Previously the export reused the full original `ObservedData` list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip. The same fix applies to every building-block section: clearing a collection via `remove_individual()`, `remove_formulation()`, `remove_population()`, or `remove_expression_profile()` now writes an empty section on export instead of falling back to the original entries (#35, #59).
-
-- Fixed snapshot export/import so single-element JSON arrays remain arrays, allowing exported snapshots to load in PK-Sim (#23).
+- Observed data removed via `remove_observed_data()` is now dropped from the exported snapshot. Previously the export reused the full original `ObservedData` list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip. The same fix applies to every building-block section: clearing a collection via `remove_individual()`, `remove_formulation()`, `remove_population()`, or `remove_expression_profile()` now writes an empty section on export instead of falling back to the original entries (#35, #59).
+- Single-element JSON arrays remain arrays on export/import, allowing exported snapshots to load in PK-Sim (#23).
 
 # osp.snapshots 0.2.2
 

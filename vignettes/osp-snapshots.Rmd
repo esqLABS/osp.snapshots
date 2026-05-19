@@ -54,7 +54,7 @@ snapshot <- load_snapshot("Midazolam")
 snapshot
 ```
 
-`Snapshot$new()` only accepts v11.2 PK-Sim snapshots and newer (`Version >= 79`); older snapshots use pre-v11 conventions that this package does not model. Re-export the project from PK-Sim before loading if needed.
+`load_snapshot()` only accepts v11.2 PK-Sim snapshots and newer (`Version >= 79`); older snapshots use pre-v11 conventions that this package does not model. Re-export the project from PK-Sim before loading if needed.
 
 ## Exploring building blocks
 
@@ -82,7 +82,7 @@ individual$origin_data
 
 ### Compounds
 
-A *Compound* exposes its physicochemical properties, its *Calculation methods* (a `CalculationMethodCache`), and its biological *Processes* (one `Process` object per entry).
+A *Compound* exposes its physicochemical properties, its *Calculation methods*, and its biological *Processes*.
 
 ```{r}
 # List compounds
@@ -92,10 +92,10 @@ snapshot$compounds
 midazolam <- snapshot$compounds$Midazolam
 midazolam
 
-# Calculation methods are wrapped as a `CalculationMethodCache` R6 object
+# Calculation methods (read names, add, remove)
 midazolam$calculation_methods
 
-# `$processes` is a flat named list of `Process` objects (filter by category)
+# Processes (filter by category to recover the per-category groups)
 metab <- Filter(\(p) p$category == "metabolizing_enzymes", midazolam$processes)
 names(metab)
 ```
@@ -178,7 +178,7 @@ obs_data
 class(obs_data)
 ```
 
-`export_snapshot()` replays the observed data block from the original JSON (filtered to entries still present after `remove_observed_data()`), so mutations on a `DataSet` after load are not preserved on export.
+`export_snapshot()` replays the observed-data section from the original JSON (filtered to entries still present after `remove_observed_data()`), so mutations on a `DataSet` after load are not preserved on export.
 
 ## Converting collections to tibbles
 

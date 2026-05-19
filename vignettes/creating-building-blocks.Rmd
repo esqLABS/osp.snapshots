@@ -23,7 +23,7 @@ library(ospsuite)
 
 ## Overview
 
-This vignette walks through the `create_*()` factory family, which lets you build PK-Sim *Building blocks* and their leaf sub-structures from named arguments instead of raw JSON. It also covers the mutators (`add_*()`, `remove_*()`) that attach these objects to a `Snapshot`.
+This vignette walks through the `create_*()` functions that build PK-Sim *Building blocks* from named arguments, and the `add_*()` / `remove_*()` mutators that attach them to a snapshot.
 
 We use the `Midazolam` template throughout:
 
@@ -73,9 +73,31 @@ add_individual(snapshot, patient)
 snapshot$individuals
 ```
 
+Parameters that sit on a specific path inside the individual's physiological tree are built with `create_parameter()` using a `path` argument. PK-Sim writes the path as pipe-separated segments (`Organism|Liver|...`):
+
+```{r}
+ehc <- create_parameter(
+  path = "Organism|Liver|EHC continuous fraction",
+  value = 0.4
+)
+
+gfr <- create_parameter(
+  path = "Organism|Kidney|GFR",
+  value = 120,
+  unit = "ml/min",
+  source = "Literature",
+  description = "Normal adult GFR",
+  source_id = 123
+)
+
+gfr
+```
+
+You can pass a list of such parameters straight to `create_individual(parameters = ...)`, or assign them through `individual$parameters` after the fact (see "Modifying existing building blocks" below).
+
 ## Formulations
 
-`create_formulation()` covers every PK-Sim release profile (`"Dissolved"`, `"Weibull"`, `"First Order"`, `"Zero Order"`, `"Lint80"`, `"Particles"`, `"Table"`).
+`create_formulation()` covers every PK-Sim release profile (`"Dissolved"`, `"Weibull"`, `"First Order"`, `"Zero Order"`, `"Lint80"`, `"Particles"`, `"Table"`). The accepted `parameters` depend on the chosen `type`: `"Dissolved"` takes none; the kinetic profiles (`"Weibull"`, `"First Order"`, `"Zero Order"`, `"Lint80"`, `"Particles"`, `"Table"`) accept the release-kinetics parameters specific to that profile (for example a `"Weibull"` formulation accepts `dissolution_time`, `dissolution_shape`, `lag_time`, ...). See `?create_formulation` for the parameter list per type.
 
 ```{r}
 oral_solution <- create_formulation(
@@ -106,49 +128,9 @@ add_formulation(snapshot, oral_solution)
 add_formulation(snapshot, tablet)
 ```
 
-## Parameters
-
-`create_parameter()` returns either a `Parameter` or a `LocalizedParameter` depending on the inputs. The two are kept separate because they identify themselves differently in the JSON: a plain `Parameter` lives inside a named container (e.g. a `Compound` or a `Formulation`) and carries a `Name`; a `LocalizedParameter` lives inside a parameter tree (typically an `Individual` or a `Simulation`) and carries a full pipe-separated `Path`.
-
-`create_parameter()` routes on the `path` argument: passing `path = ...` produces a `LocalizedParameter`, passing only `name = ...` produces a `Parameter`. Both inherit from `Parameter`, so `inherits(x, "Parameter")` is `TRUE` for either.
-
-```{r}
-# Plain `Parameter` (name-based identity, suitable for a `Compound` or a
-# `Formulation`)
-clearance <- create_parameter(
-  name = "Cl_spec",
-  value = 5,
-  unit = "ml/min/kg"
-)
-inherits(clearance, "Parameter")
-
-# `LocalizedParameter` (path-based identity, suitable for an Individual's
-# parameter tree)
-ehc <- create_parameter(
-  path = "Organism|Liver|EHC continuous fraction",
-  value = 0.4
-)
-inherits(ehc, "LocalizedParameter")
-```
-
-Additional metadata for the *Value origin* (source, description, source identifier) is preserved through round-trip:
-
-```{r}
-gfr <- create_parameter(
-  path = "Organism|Kidney|GFR",
-  value = 120,
-  unit = "ml/min",
-  source = "Literature",
-  description = "Normal adult GFR",
-  source_id = 123
-)
-
-gfr
-```
-
 ## Compounds
 
-`create_compound()` wraps `Compound$new()` and validates common fields such as `molecular_weight_unit`:
+`create_compound()` builds a compound with validation on common fields such as `molecular_weight_unit`. Compound-level parameters (clearances, halogens, ...) are passed as a list of `create_parameter()` results: parameters named on a compound are identified by `name`, so omit the `path` argument.
 
 ```{r}
 drug <- create_compound(name = "Drug X")
@@ -168,7 +150,7 @@ drug
 
 ### Compound processes
 
-`create_process()` builds a *Process* (a PK-Sim `CompoundProcess`) from named arguments. The `internal_name` identifies the process template in PK-Sim's compound process repository (`"SpecificBinding"` for plasma protein binding, `"MetabolizationSpecific_MM"` for Michaelis-Menten metabolism, `"GlomerularFiltration"` for renal clearance, ...); `data_source` labels the data origin.
+`create_process()` builds a compound process (plasma protein binding, metabolism, clearance, ...) from named arguments. The `internal_name` identifies the process template in PK-Sim's compound process repository (for example `"SpecificBinding"`, `"MetabolizationSpecific_MM"`, `"GlomerularFiltration"`); `data_source` labels the data origin. See `?create_process` for usage and current examples; the canonical list of `internal_name` values is maintained in PK-Sim and groups into the categories surfaced by `process$category` (`protein_binding_partners`, `metabolizing_enzymes`, `hepatic_clearance`, `transporter_proteins`, `renal_clearance`, `biliary_clearance`, `inhibition`, `induction`).
 
 ```{r}
 binding <- create_process(
@@ -247,9 +229,9 @@ single_dose
 
 ### Advanced protocols
 
-For dosing schedules that do not fit the *Simple Protocol* pattern, build an *Advanced Protocol* from one or more *Schema* blocks. Each *Schema* owns schema-level parameters (such as `NumberOfRepetitions` and `TimeBetweenRepetitions`) and an ordered list of *SchemaItem* applications.
+For dosing schedules that do not fit a single application (a multi-day course, or two compounds dosed on staggered schedules), use an *Advanced Protocol*. An Advanced Protocol is built from one or more *Schemas*; each schema describes a repeating block of applications (for example "10 mg orally every 24 hours for 5 days"). Inside a schema, each individual application is a *SchemaItem*.
 
-`create_schema()` and `create_schema_item()` wrap the R6 constructors so you can pass *Parameter* objects directly rather than hand-rolling the raw JSON shape. We recommend the factory form for new code; the raw-list form remains accepted for forward compatibility with hand-edited JSON.
+You build them with `create_schema()` (the repeating block) and `create_schema_item()` (one application), then pass a list of schemas to `create_protocol()`:
 
 ```{r}
 qd_oral <- create_protocol(
@@ -283,7 +265,9 @@ qd_oral
 
 ## Events
 
-`create_event()` builds an *Event* from a named template (for example a meal). PK-Sim clones the template at simulation time and applies the parameter overrides supplied here.
+An *Event* is a discrete perturbation that is not a drug administration: a meal, a change of posture, an enzyme inducer dose, an exercise bout. `create_event()` builds one from a `template` (the name of an event recipe in PK-Sim's event database) plus optional parameter overrides. PK-Sim clones the named template at simulation time and applies your overrides.
+
+The set of available templates is defined inside PK-Sim (in particular by the PK-Sim Events database that ships with the installation), so the exact list of valid `template` names depends on your PK-Sim setup. Templates that are commonly seen in published snapshots include the "Meal: Standard (Human)" family for food effects; if you need a template that is not on your installation, define it in PK-Sim first and re-export.
 
 ```{r}
 breakfast <- create_event(
@@ -300,13 +284,12 @@ breakfast
 
 ## Observer sets
 
-`create_observer_set()` builds an *ObserverSet* from a name and an optional list of observers. Each *Observer* is a simulation-time formula that exposes a derived quantity (for example a tissue concentration) that is not a natural model output.
+An *Observer* is a simulation-time formula that exposes a derived quantity (for example a tissue concentration) that is not a natural model output. Observers travel in groups called *Observer sets*. `create_observer_set()` builds a set from a name and a list of observers.
 
-The factory accepts either *Observer* R6 objects (recommended) or raw observer lists. Prefer the R6 form: `Observer$new()` validates the input and gives you the typed accessors (`$name`, `$type`, `$dimension`, `$formula`, `$container_tags`).
+Build each observer with `Observer$new()` (which validates the input and gives you typed accessors `$name`, `$type`, `$dimension`, `$formula`, `$container_tags`), then bundle them into a set and attach the set to a snapshot:
 
 ```{r}
-# Recommended: build observers with `Observer$new()` and pass them in
-observer <- Observer$new(list(
+brain_obs <- Observer$new(list(
   Name = "brain_plasma_conc",
   Type = "Container",
   Dimension = "Concentration (molar)",
@@ -315,28 +298,12 @@ observer <- Observer$new(list(
 
 brain_set <- create_observer_set(
   name = "BrainPlasmaConcentration",
-  observers = list(observer)
+  observers = list(brain_obs)
 )
 
 brain_set
 
-# Attach it to the snapshot like any other building block
 add_observer_set(snapshot, brain_set)
-
-# Still accepted for round-tripping hand-edited JSON: raw observer lists
-brain_set_raw <- create_observer_set(
-  name = "BrainPlasmaConcentration_raw",
-  observers = list(
-    list(
-      Name = "brain_plasma_conc",
-      Type = "Container",
-      Dimension = "Concentration (molar)",
-      Formula = list(Formula = "Conc_Br")
-    )
-  )
-)
-
-brain_set_raw
 ```
 
 ## Observed data
@@ -372,7 +339,9 @@ remove_individual(snapshot, c("Patient_001", "Patient_002"))
 remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
 ```
 
-### Batch creation
+### Adding several building blocks at once
+
+`add_*()` currently takes one building block at a time, so loop over your list to add many:
 
 ```{r}
 patients <- list(
@@ -390,17 +359,35 @@ snapshot$individuals
 
 ### Modifying existing building blocks
 
-Fields on existing building blocks are mutable through active bindings:
+Most fields on an existing building block are mutable; assign to them like any other R6 active binding. Reading the object before and after shows the effect:
 
 ```{r}
 patient <- snapshot$individuals$Patient_A
+patient
+```
+
+```{r}
 patient$age <- 30
 patient$weight <- 75
+patient$gender <- "FEMALE"
+patient
 ```
+
+The same pattern works for nested objects. To bump a parameter on an individual, look it up by path under `individual$parameters` and write to its `value`:
+
+```{r}
+korean <- snapshot$individuals$`Korean (Yu 2004 study)`
+ehc <- korean$parameters$`Organism|Liver|EHC continuous fraction`
+ehc
+ehc$value <- 0.4
+ehc
+```
+
+After every change, the parent snapshot exports the updated values: `export_snapshot(snapshot, ...)` writes them straight back to JSON, no extra step required.
 
 ### Validation
 
-The factories validate common inputs and abort with informative messages on bad input:
+`create_*()` functions validate common inputs against the canonical ospsuite enums and abort with informative messages on bad input:
 
 ```{r, error=TRUE}
 tryCatch(
@@ -425,7 +412,7 @@ tryCatch(
 )
 ```
 
-The validation helpers (`validate_species()`, `validate_gender()`, `validate_unit()`, `validate_population()`) check inputs against the canonical ospsuite enums and are exported for direct use.
+The same checks are also exported as standalone helpers (`validate_species()`, `validate_gender()`, `validate_unit()`, `validate_population()`) when you need them outside a `create_*()` call.
 
 ## Exporting
 
