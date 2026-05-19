@@ -20,7 +20,7 @@ long-form \code{processes} tibble returned by \code{\link[=get_compounds_dfs]{ge
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
     \item{\code{data}}{The raw data of the compound (read-only). Refreshed from
-the embedded \link{CalculationMethodCache} and the cached \link{Process}
+the embedded \link{CalculationMethods} and the cached \link{Process}
 objects so that mutations flow back to the export payload.}
 
     \item{\code{name}}{The name of the compound}
@@ -49,7 +49,7 @@ disambiguated with a numeric suffix (\verb{_1}, \verb{_2}, ...). The list is
 built once at construction so that state changes made on a
 \link{Process} persist across accesses.}
 
-    \item{\code{calculation_methods}}{A \link{CalculationMethodCache} holding the
+    \item{\code{calculation_methods}}{A \link{CalculationMethods} object holding the
 compound's calculation methods.}
 
     \item{\code{parameters}}{The additional parameters of the compound (excluding molecular weight)}

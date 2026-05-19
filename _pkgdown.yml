@@ -62,7 +62,7 @@ reference:
   desc: "Reusable R6 leaf classes and sub-structures held inside building blocks"
   contents:
   - AdvancedParameter
-  - CalculationMethodCache
+  - CalculationMethods
   - LocalizedParameter
   - Observer
   - OriginData

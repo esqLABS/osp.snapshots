@@ -476,14 +476,14 @@ Individual <- R6::R6Class(
     #' @field calculation_methods The calculation methods of the individual,
     #'   returned as a character vector for backwards compatibility. Use
     #'   `$origin_data$calculation_methods` to access the
-    #'   [CalculationMethodCache] directly.
+    #'   [CalculationMethods] object directly.
     calculation_methods = function(value) {
       if (missing(value)) {
-        methods <- private$.origin_data$calculation_methods$methods
-        if (length(methods) == 0) {
+        names <- private$.origin_data$calculation_methods$names
+        if (length(names) == 0) {
           return(NULL)
         }
-        return(methods)
+        return(names)
       }
       private$.origin_data$calculation_methods <- value
     },

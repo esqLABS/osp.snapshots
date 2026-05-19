@@ -51,7 +51,7 @@ gender, physiological parameters, and calculation methods.}
     \item{\code{calculation_methods}}{The calculation methods of the individual,
 returned as a character vector for backwards compatibility. Use
 \verb{$origin_data$calculation_methods} to access the
-\link{CalculationMethodCache} directly.}
+\link{CalculationMethods} object directly.}
 
     \item{\code{expression_profiles}}{The expression profiles of the individual (read-only)}
   }

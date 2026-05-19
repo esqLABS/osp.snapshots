@@ -953,9 +953,9 @@ test_that("Individual$clone(deep = TRUE) isolates origin_data from the source", 
   cloned$origin_data$calculation_methods$add("DuBois")
 
   expect_equal(ind$origin_data$species, "Human")
-  expect_equal(ind$origin_data$calculation_methods$methods, "Mosteller")
+  expect_equal(ind$origin_data$calculation_methods$names, "Mosteller")
   expect_equal(
-    cloned$origin_data$calculation_methods$methods,
+    cloned$origin_data$calculation_methods$names,
     c("Mosteller", "DuBois")
   )
 })

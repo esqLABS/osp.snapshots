@@ -430,7 +430,7 @@
     Code
       snapshot$compounds[[1]]$calculation_methods
     Output
-      CalculationMethodCache (2 methods)
+      CalculationMethods (2 methods)
       * Cellular partition coefficient method - Rodgers and Rowland
       * Cellular permeability - PK-Sim Standard
 

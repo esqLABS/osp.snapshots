@@ -119,7 +119,7 @@ _Avoid_: dose entry, application entry.
 ### Compound internals
 
 **Calculation methods**:
-A named set of methods that PK-Sim uses to derive **Compound** quantities (e.g. partition coefficient calculation method). Stored on a Compound as a `CalculationMethodCache`.
+A named set of methods that PK-Sim uses to derive **Compound** quantities (e.g. partition coefficient calculation method). Stored on a Compound as a `CalculationMethods` object.
 _Avoid_: methods (unqualified), formulas.
 
 ### Templates
