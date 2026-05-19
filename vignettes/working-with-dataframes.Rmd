@@ -23,7 +23,7 @@ library(dplyr)
 
 ## Overview
 
-osp.snapshots ships a tibble layer that converts the nested PK-Sim snapshot tree into flat, joinable tibbles ready for downstream analysis with `dplyr` and friends. This vignette walks through the entry point, the per-collection shapes, and a few common analysis patterns.
+osp.snapshots ships a tibble layer that converts the nested PK-Sim snapshot tree into flat, joinable tibbles ready for downstream analysis with `dplyr`. This vignette walks through the entry point, the per-collection shapes, and a few common analysis patterns.
 
 ```{r}
 snapshot <- load_snapshot("Midazolam")
