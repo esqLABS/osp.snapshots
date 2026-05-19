@@ -4,8 +4,8 @@
 
 - `Snapshot$new()` (and therefore `load_snapshot()`) now refuses snapshots that lack a `Version` field or whose `Version` is below 79 (PK-Sim v11.2). Earlier versions used pre-v11 conventions (notably `Applications|...` path segments) that this package does not model. Re-export the project from PK-Sim v11.2 or newer before loading (#52).
 - `get_compounds_dfs()` now returns a list with two tibbles, `properties` and `processes`, instead of the single combined tibble it returned before. Update callers from `df <- get_compounds_dfs(snap)` to `dfs <- get_compounds_dfs(snap); df <- dfs$properties`, or switch to the new long-form `dfs$processes` (#40).
-- `get_observer_sets_dfs()` now returns a list with two tibbles, `observer_sets` (one row per `ObserverSet`) and `observers` (one row per `Observer`, joinable back to its parent via `observer_set_id` / `observer_set_name`), instead of the single combined tibble it returned before. Use the `observers` element to access per-Observer rows (#38, #42).
-- `Compound$calculation_methods` now returns a `CalculationMethodCache` R6 object instead of a plain list with class `compound_calculation_methods`. The old list-shape accessors (`compound$calculation_methods$partition_coef`, `compound$calculation_methods$permeability`) no longer work; use the new R6 surface (`$methods`, `$add()`, `$remove()`, `$length`) on `CalculationMethodCache` instead (#30).
+- `get_observer_sets_dfs()` now returns a list with two tibbles, `observer_sets` (one row per `ObserverSet`) and `observers` (one row per `Observer`, joinable back to its parent via `observer_set_id` / `observer_set_name`), instead of the single combined tibble it returned before. Update callers from `df <- get_observer_sets_dfs(snap)` to `dfs <- get_observer_sets_dfs(snap); df <- dfs$observers` (or `dfs$observer_sets` for the set-level rows) (#38, #42).
+- `Compound$calculation_methods` now returns a `CalculationMethodCache` R6 object instead of a plain list with class `compound_calculation_methods`. The old list-shape accessors no longer work; switch from `compound$calculation_methods$partition_coef` to `compound$calculation_methods$methods` (a character vector of every method name in the cache) and use `$add(method)`, `$remove(method)`, and `$length` to mutate or inspect it (#30).
 - `Compound$processes` now returns a flat named list of `Process` R6 objects (with duplicate names disambiguated via `_{n}` suffixes), replacing the raw `compound_processes` list it returned before. Filter by `process$category` to recover the equivalent of the deprecated per-category accessors (#40).
 - `create_parameter()` now writes the identifier to `data$Name` when called without `path` (plain `Parameter`) and to `data$Path` only when called with `path` (`LocalizedParameter`). Previously every result carried `data$Path`, hiding which kind of parameter the factory had produced. Pass `path = ...` to get a `LocalizedParameter`; pass `name = ...` to get a plain `Parameter` (#52).
 - `LocalizedParameter$new()` now emits a deprecation warning when falling back to `data$Name` for the path, and drops `Name` from the stored data so the resulting shape is unambiguous. The fallback continues to work; real v11+ snapshots never hit it. Rename `Name` to `Path` in any custom raw list passed to `LocalizedParameter$new()` to silence the warning (#52).
@@ -13,8 +13,10 @@
 
 ## New features
 
+This release widens the building-block coverage and consolidates the public surface. The new `create_*()` factory family (now spanning compounds, events, expression profiles, observed data, observer sets, populations, processes, protocols, schemas, and schema items) gives every building block a validated, named-argument constructor. `as_tibbles()` becomes the single dispatched bridge from snapshots to tibbles, with the legacy `get_*_dfs()` helpers preserved as thin wrappers. Seven new leaf R6 classes (`LocalizedParameter`, `OriginData`, `CalculationMethodCache`, `Schema`, `SchemaItem`, `Process`, `Observer`) replace ad-hoc list shapes that previously hid behind generic `Parameter` and `Compound` accessors, and a new `ObserverSet` building block is supported end-to-end (load, mutate via `add_observer_set()` / `remove_observer_set()`, convert to tibbles, and export).
+
 - New `CalculationMethodCache` R6 class wrapping the array of calculation method names stored on a `Compound` and inside an `Individual`'s `OriginData`. `Compound$calculation_methods` and `Individual$origin_data$calculation_methods` now return this class (#30).
-- New `LocalizedParameter` R6 class for path-bearing parameters used in Individual, ExpressionProfile, and Simulation parameter trees. Inherits from `Parameter` and migrates legacy `Applications` path segments to `Events` for v11+ snapshots. `create_parameter()` now routes to `LocalizedParameter` when called with a `path` argument (#31).
+- New `LocalizedParameter` R6 class for path-bearing parameters used in `Individual`, `ExpressionProfile`, and `Simulation` parameter trees. Inherits from `Parameter` and migrates legacy `Applications` path segments to `Events` for v11+ snapshots. `create_parameter()` now routes to `LocalizedParameter` when called with a `path` argument (#31).
 - New `Observer` R6 class representing one observer (a simulation-time formula that computes a derived quantity from the underlying model) inside an `ObserverSet`. `observer_set$observers` now returns a named list of `Observer` objects exposing `name`, `type`, `dimension`, `formula`, and `container_tags` (#42).
 - New `ObserverSet` R6 class wrapping the `ObserverSets` building blocks of a snapshot, accessible through `snapshot$observer_sets` and exported on round-trip (#38).
 - New `OriginData` R6 class wrapping the demographic starting point of an `Individual` (species, population, gender, age, weight, height, gestational age, calculation methods, optional disease state). Available via `Individual$origin_data` (#30).
@@ -23,7 +25,7 @@
 - `add_compound()` attaches a `Compound` building block to a `Snapshot` (#39).
 - `add_event()` attaches an `Event` building block to a `Snapshot` (#39).
 - `add_observed_data()` attaches an `ospsuite::DataSet` to a `Snapshot` as an exported function wrapping the existing R6 method (#39).
-- `add_observer_set()` and `remove_observer_set()` add and remove `ObserverSet` building blocks on a snapshot. Both are pipeable wrappers around the underlying R6 methods, following the same pattern as the other building-block mutators (#38).
+- `add_observer_set()` attaches an `ObserverSet` building block to a `Snapshot` as a pipeable wrapper around the underlying R6 method (#38).
 - `add_population()` attaches a `Population` building block to a `Snapshot` (#39).
 - `add_protocol()` attaches a `Protocol` building block to a `Snapshot` (#39).
 - `as_tibbles()` is the new unified entry point for converting any building-block collection in a snapshot to a tibble (or list of tibbles), dispatched on a `kind` argument. The eight existing `get_*_dfs()` functions remain available as thin wrappers (#36).
@@ -40,6 +42,7 @@
 - `remove_compound()` removes compounds from a `Snapshot` by name (#39).
 - `remove_event()` removes events from a `Snapshot` by name (#39).
 - `remove_observed_data()` removes observed-data entries from a `Snapshot` by name as an exported function wrapping the existing R6 method (#39).
+- `remove_observer_set()` removes `ObserverSet` building blocks from a `Snapshot` by name as a pipeable wrapper around the underlying R6 method (#38).
 - `remove_protocol()` removes protocols from a `Snapshot` by name (#39).
 
 ## Deprecated
@@ -58,17 +61,9 @@
 
 - `remove_expression_profile()`, `remove_formulation()`, `remove_individual()`, `remove_observed_data()`, and `remove_population()` now report the actual number of entries removed instead of the length of the input vector, so the success message reads correctly when a requested name is not present in the snapshot (#66).
 
-- Fixed `Snapshot$data` so observed data removed via `remove_observed_data()`
-  is also dropped from the exported snapshot. Previously the export reused the
-  full original `ObservedData` list whenever the lazy cache had been touched,
-  re-introducing the removed entries on round-trip. The same fix applies to
-  every building-block section: clearing a collection via `remove_individual()`,
-  `remove_formulation()`, `remove_population()`, or
-  `remove_expression_profile()` now writes an empty section on export instead
-  of falling back to the original entries (#35, #59).
+- Fixed `Snapshot$data` so observed data removed via `remove_observed_data()` is also dropped from the exported snapshot. Previously the export reused the full original `ObservedData` list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip. The same fix applies to every building-block section: clearing a collection via `remove_individual()`, `remove_formulation()`, `remove_population()`, or `remove_expression_profile()` now writes an empty section on export instead of falling back to the original entries (#35, #59).
 
-- Fixed snapshot export/import so single-element JSON arrays remain arrays,
-  allowing exported snapshots to load in PK-Sim (#23).
+- Fixed snapshot export/import so single-element JSON arrays remain arrays, allowing exported snapshots to load in PK-Sim (#23).
 
 # osp.snapshots 0.2.2
 

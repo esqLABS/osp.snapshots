@@ -17,9 +17,9 @@ navbar:
     articles:
       text: "Articles"
       menu:
-      - text: "Working with Data Frames" 
+      - text: "Working with data frames"
         href: articles/working-with-dataframes.html
-      - text: "Creating Building Blocks"
+      - text: "Creating and managing building blocks"
         href: articles/creating-building-blocks.html
 
 home:

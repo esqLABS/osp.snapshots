@@ -19,13 +19,11 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(osp.snapshots)
 library(dplyr)
-library(ggplot2)
-library(tidyr)
 ```
 
 ## Overview
 
-osp.snapshots ships a tibble layer that converts the nested PK-Sim snapshot tree into flat, joinable tibbles ready for `dplyr`, `tidyr`, and `ggplot2`. This vignette walks through the entry point, the per-collection shapes, and a few common analysis patterns.
+osp.snapshots ships a tibble layer that converts the nested PK-Sim snapshot tree into flat, joinable tibbles ready for downstream analysis with `dplyr` and friends. This vignette walks through the entry point, the per-collection shapes, and a few common analysis patterns.
 
 ```{r}
 snapshot <- load_snapshot("Midazolam")
@@ -35,7 +33,17 @@ snapshot <- load_snapshot("Midazolam")
 
 `as_tibbles()` is the canonical entry point. It takes the snapshot plus a `kind` naming the collection to convert, and returns either a tibble or a named list of tibbles for collections that split into related tables.
 
-Valid values of `kind`: `"compounds"`, `"individuals"`, `"formulations"`, `"populations"`, `"events"`, `"expression_profiles"`, `"protocols"`, `"observed_data"`, `"observer_sets"`.
+Valid values of `kind`:
+
+* `"compounds"`
+* `"events"`
+* `"expression_profiles"`
+* `"formulations"`
+* `"individuals"`
+* `"observed_data"`
+* `"observer_sets"`
+* `"populations"`
+* `"protocols"`
 
 ```{r}
 compound_dfs <- as_tibbles(snapshot, "compounds")
@@ -117,7 +125,7 @@ head(protocols_df)
 
 `as_tibbles(snapshot, "observer_sets")` returns a list of two tibbles:
 
-* `$observer_sets` has one row per *ObserverSet* with its container metadata.
+* `$observer_sets` has one row per *ObserverSet* with its name and observer count.
 * `$observers` has one row per *Observer* with `observer_set_id` / `observer_set_name` columns for joining back to the parent set.
 
 ```{r, eval=FALSE}

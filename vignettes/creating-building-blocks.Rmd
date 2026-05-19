@@ -320,9 +320,12 @@ brain_set <- create_observer_set(
 
 brain_set
 
+# Attach it to the snapshot like any other building block
+add_observer_set(snapshot, brain_set)
+
 # Still accepted for round-tripping hand-edited JSON: raw observer lists
 brain_set_raw <- create_observer_set(
-  name = "BrainPlasmaConcentration",
+  name = "BrainPlasmaConcentration_raw",
   observers = list(
     list(
       Name = "brain_plasma_conc",

@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(osp.snapshots)
-library(dplyr)
 ```
 
 ## Overview
@@ -103,7 +102,7 @@ names(metab)
 
 ### Formulations
 
-Formulations describe how a drug is released (Weibull, Lint80, particles, table, first order, zero order).
+Formulations describe how a drug is released (`"Dissolved"`, `"Weibull"`, `"First Order"`, `"Zero Order"`, `"Lint80"`, `"Particles"`, `"Table"`).
 
 ```{r}
 snapshot$formulations
@@ -183,13 +182,13 @@ class(obs_data)
 
 ## Converting collections to tibbles
 
-`as_tibbles()` is the canonical entry point for the tibble layer. It takes the snapshot plus a `kind` and returns a tibble, or a named list of tibbles when the collection has heterogeneous sub-structures (compounds, observer sets).
+`as_tibbles()` is the canonical entry point for the tibble layer. It takes the snapshot plus a `kind` and returns either a bare tibble (for `"protocols"` and `"observed_data"`) or a named list of related tibbles (for every other kind).
 
 ```{r}
-# Single-tibble collections
-head(as_tibbles(snapshot, "individuals")$individuals)
+# Bare-tibble collections (e.g. protocols)
+head(as_tibbles(snapshot, "protocols"))
 
-# Multi-tibble collections
+# Multi-tibble collections (compounds, individuals, formulations, populations, observer sets, ...)
 compound_dfs <- as_tibbles(snapshot, "compounds")
 names(compound_dfs)
 ```
