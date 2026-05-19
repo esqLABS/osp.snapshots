@@ -41,7 +41,7 @@ snapshot
 #> 
 #> ── PKSIM Snapshot ──────────────────────────────────────────────────────────────
 #> ℹ Version: 79 (PKSIM 11.2)
-#> ℹ Path: '../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/RtmpxzUpSR/temp_libpath44103c33cc80/osp.snapshots/extdata/test_snapshot.json'
+#> ℹ Path: '../../../../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/Rtmp770tJY/temp_libpath16d5e7e4ddfcf/osp.snapshots/extdata/test_snapshot.json'
 #> • Compounds: 6
 #> • Events: 10
 #> • ExpressionProfiles: 14
@@ -108,8 +108,8 @@ individual_dfs <- get_individuals_dfs(snapshot)
 Get started with osp.snapshots:
 
 - `vignette("osp-snapshots")` - Getting started guide
-- `vignette("working-with-dataframes")` - Converting snapshots to data
-  frames
+- `vignette("exporting-snapshots-to-dataframes")` - Exporting snapshots
+  to data frames
 - `vignette("creating-building-blocks")` - Creating and managing
   building blocks
 

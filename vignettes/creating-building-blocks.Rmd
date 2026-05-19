@@ -424,5 +424,5 @@ export_snapshot(snapshot, "modified_snapshot.json")
 
 ## Next steps
 
-* `vignette("working-with-dataframes")` covers the tibble layer for analysis.
+* `vignette("exporting-snapshots-to-dataframes")` covers the tibble layer for analysis.
 * The full API reference is at <https://esqlabs.github.io/osp.snapshots/reference/>.

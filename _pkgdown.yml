@@ -17,8 +17,8 @@ navbar:
     articles:
       text: "Articles"
       menu:
-      - text: "Working with data frames"
-        href: articles/working-with-dataframes.html
+      - text: "Exporting snapshots to data frames"
+        href: articles/exporting-snapshots-to-dataframes.html
       - text: "Creating and managing building blocks"
         href: articles/creating-building-blocks.html
 
@@ -33,7 +33,7 @@ articles:
 - title: "Guides"
   desc: "In-depth guides for specific tasks"
   contents:
-  - working-with-dataframes
+  - exporting-snapshots-to-dataframes
   - creating-building-blocks
 
 reference:
