@@ -17,8 +17,8 @@ test_that("OriginData constructs from a raw snapshot list", {
   expect_equal(od$age_unit, "year(s)")
   expect_equal(od$weight, 70)
   expect_equal(od$height, 175)
-  expect_r6_class(od$calculation_methods, "CalculationMethodCache")
-  expect_equal(od$calculation_methods$methods, c("Mosteller", "DuBois"))
+  expect_r6_class(od$calculation_methods, "CalculationMethods")
+  expect_equal(od$calculation_methods$names, c("Mosteller", "DuBois"))
 })
 
 test_that("OriginData handles NULL and empty input", {
@@ -44,7 +44,7 @@ test_that("OriginData active bindings mutate the underlying data", {
   expect_equal(od$data$Age$Value, 5)
 })
 
-test_that("OriginData$data refreshes CalculationMethods from the cache", {
+test_that("OriginData$data refreshes CalculationMethods from the embedded object", {
   od <- OriginData$new(list(
     CalculationMethods = c("A", "B"),
     Species = "Human"
@@ -56,7 +56,7 @@ test_that("OriginData$data refreshes CalculationMethods from the cache", {
   )
 })
 
-test_that("OriginData$data drops CalculationMethods when the cache is empty", {
+test_that("OriginData$data drops CalculationMethods when empty", {
   od <- OriginData$new(list(
     CalculationMethods = c("A"),
     Species = "Human"
@@ -65,12 +65,12 @@ test_that("OriginData$data drops CalculationMethods when the cache is empty", {
   expect_null(od$data$CalculationMethods)
 })
 
-test_that("OriginData accepts a CalculationMethodCache or a vector", {
+test_that("OriginData accepts a CalculationMethods object or a vector", {
   od <- OriginData$new()
   od$calculation_methods <- c("X", "Y")
-  expect_equal(od$calculation_methods$methods, c("X", "Y"))
-  od$calculation_methods <- CalculationMethodCache$new("Z")
-  expect_equal(od$calculation_methods$methods, "Z")
+  expect_equal(od$calculation_methods$names, c("X", "Y"))
+  od$calculation_methods <- CalculationMethods$new("Z")
+  expect_equal(od$calculation_methods$names, "Z")
 })
 
 test_that("OriginData prints a summary", {

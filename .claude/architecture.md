@@ -198,7 +198,7 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 |------|-------|
 | `osp-snapshots.Rmd` | Getting started: load, explore, modify, export. |
 | `creating-building-blocks.Rmd` | Build individuals, formulations programmatically with factories. |
-| `working-with-dataframes.Rmd` | Convert collections to tibbles for analysis. |
+| `exporting-snapshots-to-dataframes.Rmd` | Convert collections to tibbles for analysis. |
 | `articles/` | Pkgdown-only articles (not bundled in the package). |
 
 `snapshot-spec.md` — authoritative reference for the PKSIM JSON schema: every top-level section, field types, required flags, and domain-mapping notes describing what the PK-Sim CLI does with each property.

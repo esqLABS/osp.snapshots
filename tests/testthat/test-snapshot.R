@@ -250,7 +250,7 @@ test_that("Snapshot round-trip preserves observed data and expression profile sh
   }
 })
 
-test_that("Snapshot round-trip preserves OriginData and CalculationMethodCache", {
+test_that("Snapshot round-trip preserves OriginData and CalculationMethods", {
   snapshot <- test_snapshot$clone()
   temp_file <- withr::local_tempfile(fileext = ".json")
   snapshot$export(temp_file)
@@ -279,17 +279,17 @@ test_that("Snapshot round-trip preserves OriginData and CalculationMethodCache",
   }
 })
 
-test_that("Snapshot exposes OriginData and CalculationMethodCache as R6 classes", {
+test_that("Snapshot exposes OriginData and CalculationMethods as R6 classes", {
   snapshot <- test_snapshot$clone()
   first_individual <- snapshot$individuals[[1]]
   expect_r6_class(first_individual$origin_data, "OriginData")
   expect_r6_class(
     first_individual$origin_data$calculation_methods,
-    "CalculationMethodCache"
+    "CalculationMethods"
   )
 
   first_compound <- snapshot$compounds[[1]]
-  expect_r6_class(first_compound$calculation_methods, "CalculationMethodCache")
+  expect_r6_class(first_compound$calculation_methods, "CalculationMethods")
 })
 
 test_that("Mutations through OriginData propagate to the snapshot export", {

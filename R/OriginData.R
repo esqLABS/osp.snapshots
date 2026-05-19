@@ -5,8 +5,8 @@
 #' [Individual]: species, population, gender, and the physiological
 #' parameters (age, gestational age, weight, height) that PK-Sim uses when
 #' creating the subject. The set of calculation methods used while deriving
-#' the individual is exposed as a [CalculationMethodCache]. Optional disease
-#' state metadata is preserved as-is for round-trip fidelity.
+#' the individual is exposed as a [CalculationMethods] object. Optional
+#' disease state metadata is preserved as-is for round-trip fidelity.
 #'
 #' In an OSP snapshot, the JSON object is named `OriginData` and lives under
 #' each entry of the `Individuals` array.
@@ -27,7 +27,7 @@ OriginData <- R6::R6Class(
         data <- list()
       }
       private$.data <- data
-      private$.calculation_methods <- CalculationMethodCache$new(
+      private$.calculation_methods <- CalculationMethods$new(
         data$CalculationMethods
       )
     },
@@ -65,8 +65,8 @@ OriginData <- R6::R6Class(
         if (private$.calculation_methods$length > 0) {
           cli::cli_li("Calculation methods:")
           indented <- cli::cli_ul()
-          for (method in private$.calculation_methods$methods) {
-            cli::cli_li("{method}")
+          for (name in private$.calculation_methods$names) {
+            cli::cli_li("{name}")
           }
           cli::cli_end(indented)
         }
@@ -80,7 +80,7 @@ OriginData <- R6::R6Class(
   ),
   active = list(
     #' @field data The raw `OriginData` list as it appears in the snapshot
-    #'   JSON, refreshed from the embedded [CalculationMethodCache]
+    #'   JSON, refreshed from the embedded [CalculationMethods] object
     #'   (read-only).
     data = function(value) {
       if (!missing(value)) {
@@ -222,16 +222,16 @@ OriginData <- R6::R6Class(
       private$.data$Height$Unit <- value
     },
 
-    #' @field calculation_methods A [CalculationMethodCache] holding the
+    #' @field calculation_methods A [CalculationMethods] object holding the
     #'   calculation methods PK-Sim applies while creating the individual.
     calculation_methods = function(value) {
       if (missing(value)) {
         return(private$.calculation_methods)
       }
-      if (inherits(value, "CalculationMethodCache")) {
+      if (inherits(value, "CalculationMethods")) {
         private$.calculation_methods <- value
       } else {
-        private$.calculation_methods <- CalculationMethodCache$new(value)
+        private$.calculation_methods <- CalculationMethods$new(value)
       }
     },
 

@@ -8,8 +8,8 @@ An R6 class that represents the demographic starting point of an
 \link{Individual}: species, population, gender, and the physiological
 parameters (age, gestational age, weight, height) that PK-Sim uses when
 creating the subject. The set of calculation methods used while deriving
-the individual is exposed as a \link{CalculationMethodCache}. Optional disease
-state metadata is preserved as-is for round-trip fidelity.
+the individual is exposed as a \link{CalculationMethods} object. Optional
+disease state metadata is preserved as-is for round-trip fidelity.
 
 In an OSP snapshot, the JSON object is named \code{OriginData} and lives under
 each entry of the \code{Individuals} array.
@@ -18,7 +18,7 @@ each entry of the \code{Individuals} array.
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
     \item{\code{data}}{The raw \code{OriginData} list as it appears in the snapshot
-JSON, refreshed from the embedded \link{CalculationMethodCache}
+JSON, refreshed from the embedded \link{CalculationMethods} object
 (read-only).}
 
     \item{\code{species}}{The species of the individual.}
@@ -46,7 +46,7 @@ JSON, refreshed from the embedded \link{CalculationMethodCache}
 
     \item{\code{height_unit}}{Unit string for \code{height}.}
 
-    \item{\code{calculation_methods}}{A \link{CalculationMethodCache} holding the
+    \item{\code{calculation_methods}}{A \link{CalculationMethods} object holding the
 calculation methods PK-Sim applies while creating the individual.}
 
     \item{\code{disease_state}}{Optional disease state name (legacy snapshot

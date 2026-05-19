@@ -26,7 +26,7 @@ Compound <- R6::R6Class(
     #' @return A new Compound object
     initialize = function(data) {
       private$.data <- data
-      private$.calculation_methods <- CalculationMethodCache$new(
+      private$.calculation_methods <- CalculationMethods$new(
         data$CalculationMethods
       )
       private$.parameters <- build_parameters_from_raw(
@@ -75,8 +75,8 @@ Compound <- R6::R6Class(
         # Display calculation methods
         if (self$calculation_methods$length > 0) {
           cli::cli_h2("Calculation Methods")
-          for (method in self$calculation_methods$methods) {
-            cli::cli_li("{method}")
+          for (name in self$calculation_methods$names) {
+            cli::cli_li("{name}")
           }
         }
 
@@ -432,7 +432,7 @@ Compound <- R6::R6Class(
 
   active = list(
     #' @field data The raw data of the compound (read-only). Refreshed from
-    #'   the embedded [CalculationMethodCache] and the cached [Process]
+    #'   the embedded [CalculationMethods] and the cached [Process]
     #'   objects so that mutations flow back to the export payload.
     data = function() {
       result <- private$.data
@@ -559,16 +559,16 @@ Compound <- R6::R6Class(
       private$.processes
     },
 
-    #' @field calculation_methods A [CalculationMethodCache] holding the
+    #' @field calculation_methods A [CalculationMethods] object holding the
     #'   compound's calculation methods.
     calculation_methods = function(value) {
       if (missing(value)) {
         return(private$.calculation_methods)
       }
-      if (inherits(value, "CalculationMethodCache")) {
+      if (inherits(value, "CalculationMethods")) {
         private$.calculation_methods <- value
       } else {
-        private$.calculation_methods <- CalculationMethodCache$new(value)
+        private$.calculation_methods <- CalculationMethods$new(value)
       }
     },
 

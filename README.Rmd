@@ -81,7 +81,7 @@ individual_dfs <- get_individuals_dfs(snapshot)
 Get started with osp.snapshots:
 
 -   `vignette("osp-snapshots")` - Getting started guide
--   `vignette("working-with-dataframes")` - Converting snapshots to data frames
+-   `vignette("exporting-snapshots-to-dataframes")` - Exporting snapshots to data frames
 -   `vignette("creating-building-blocks")` - Creating and managing building blocks
 
 ## Getting Help

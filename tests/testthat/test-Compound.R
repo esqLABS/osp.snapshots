@@ -145,9 +145,9 @@ test_that("Compound$clone(deep = TRUE) isolates calculation_methods", {
   cloned <- compound$clone(deep = TRUE)
   cloned$calculation_methods$add("Mutated")
 
-  expect_equal(compound$calculation_methods$methods, "Original")
+  expect_equal(compound$calculation_methods$names, "Original")
   expect_equal(
-    cloned$calculation_methods$methods,
+    cloned$calculation_methods$names,
     c("Original", "Mutated")
   )
 })

@@ -1,8 +1,8 @@
 ---
-title: "Getting Started with osp.snapshots"
+title: "Getting started with osp.snapshots"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting Started with osp.snapshots}
+  %\VignetteIndexEntry{Getting started with osp.snapshots}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,178 +18,188 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(osp.snapshots)
-library(dplyr)
 ```
 
 ## Overview
 
-osp.snapshots provides a convenient R interface for working with PKSIM project snapshots. This package allows you to:
+osp.snapshots provides an R interface for working with PK-Sim project snapshots. The package lets you:
 
-- Import PKSIM snapshots from JSON files, URLs, or predefined templates
-- Navigate and explore complex nested snapshot structures
-- Modify building blocks and parameters in place
-- Export modified snapshots back to JSON for use in PKSIM
-- Convert snapshot data to data frames for analysis in R
+* Import PK-Sim snapshots from JSON files, URLs, or predefined templates.
+* Navigate and explore the nested snapshot structure as R6 objects.
+* Modify building blocks and parameters in place.
+* Export modified snapshots back to JSON for use in PK-Sim.
+* Convert building-block collections to tibbles for analysis in R.
 
-## Loading a Snapshot
+## Loading a snapshot
 
-### From a File
+### From a file, a URL, or a template
 
-The most common way to start is by loading a snapshot from a JSON file:
+`load_snapshot()` dispatches on its input. A local `.json` path is read from disk; an `https?://` URL is fetched; a bare name is resolved against the `OSPSuite.BuildingBlockTemplates` repository.
 
 ```{r, eval=FALSE}
-# Load from a local file
+# Local file
 snapshot <- load_snapshot("path/to/your_snapshot.json")
 
-# Load from a URL
+# Remote URL
 snapshot <- load_snapshot("https://example.com/snapshot.json")
 
-# From an OSP model
+# Named template (browse the catalogue with `osp_models()`)
 snapshot <- load_snapshot("Midazolam")
 ```
 
-### Using the Package Example
-
-For this tutorial, we'll use the test snapshot included with the package:
+For this guide we use the `Midazolam` template:
 
 ```{r, message=FALSE}
-# Load the test snapshot
 snapshot <- load_snapshot("Midazolam")
-
-# View snapshot overview
 snapshot
 ```
 
-## Exploring Building Blocks
+`load_snapshot()` only accepts v11.2 PK-Sim snapshots and newer (`Version >= 79`); older snapshots use pre-v11 conventions that this package does not model. Re-export the project from PK-Sim before loading if needed.
 
-The snapshot contains various building blocks used in PKSIM simulations. Let's explore each type:
+## Exploring building blocks
 
-### Individuals
+A loaded snapshot is a navigable tree: each kind of building block (individuals, compounds, formulations, populations, events, protocols, expression profiles, observer sets) lives in a named list under `snapshot$<kind>` that you can list, look up by name, and inspect interactively. Printing any object prints a readable summary; tab-completion works the whole way down.
 
-Individuals represent patient profiles with demographics and physiological parameters:
+### Walking one kind: individuals
+
+`snapshot$individuals` is a named list. Print it for a short overview, ask for `names()` and `length()` to see what is there, then index by name to get a single building block:
 
 ```{r}
-# List all individuals
 snapshot$individuals
 
-# Examine a specific individual
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+names(snapshot$individuals)
+length(snapshot$individuals)
 
-# Access individual properties
 individual <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+individual
+```
+
+Once you have an individual, the fields you would type in PK-Sim are available as active bindings on the object:
+
+```{r}
 individual$age
+individual$age_unit
 individual$gender
 individual$species
+individual$weight
 ```
 
-### Compounds
-
-Compounds define drug properties and ADME parameters:
+Nested structures are objects themselves, so you can keep drilling. The demographic starting point lives on `$origin_data`, and the calculation methods PK-Sim will use to create the virtual individual sit one level deeper:
 
 ```{r}
-# View available compounds
-snapshot$compounds
+individual$origin_data
 
-# Examine a compound
-snapshot$compounds$Midazolam
+individual$origin_data$calculation_methods
+individual$origin_data$calculation_methods$names
 ```
 
-### Formulations
-
-Formulations describe how drugs are formulated and released:
+Path-bearing parameters on the individual are exposed as a named list keyed by their PK-Sim path, so you can list them and pull one out by path:
 
 ```{r}
-# View formulations
-snapshot$formulations
+korean <- snapshot$individuals$`Korean (Yu 2004 study)`
+names(korean$parameters)
+korean$parameters$`Organism|Liver|EHC continuous fraction`
+```
 
-# Examine a tablet formulation
+### The same shape for every other kind
+
+Every other building-block collection works the same way: a named list under `snapshot$<kind>` that you can list, index by name, and print. The objects you get back have their own fields and nested structures, all available through `$`. For example, compounds expose their physicochemical properties, their calculation methods, and their biological processes:
+
+```{r}
+names(snapshot$compounds)
+midazolam <- snapshot$compounds$Midazolam
+midazolam$molecular_weight
+midazolam$is_small_molecule
+midazolam$calculation_methods$names
+names(midazolam$processes)
+```
+
+Other collections feel just as familiar. Asking for `names()` is usually the first move:
+
+```{r}
+names(snapshot$formulations)
+length(snapshot$protocols)
+head(names(snapshot$protocols))
+names(snapshot$expression_profiles)
+```
+
+And every kind of building block can be printed for a readable summary:
+
+```{r}
 snapshot$formulations$`Tablet (Dormicum)`
+snapshot$protocols$`po 15 mg`
 ```
 
-### Other Building Blocks
+## Mutating building blocks
 
-The snapshot includes several other building block types:
+Most fields on a building block are mutable, and every kind has a pair of `add_*()` / `remove_*()` functions for inserting or pruning entries. These functions are the public API; the matching R6 methods exist but are an implementation detail.
+
+### Changing fields on a building block
+
+Assigning to a field on an existing object writes the change straight back into the snapshot:
 
 ```{r}
-# Populations - groups of virtual individuals
-snapshot$populations
-
-# Events - simulation events like meals
-snapshot$events
-
-# Protocols - dosing regimens
-snapshot$protocols
-
-# Expression profiles - protein expression data
-snapshot$expression_profiles
+ind <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+ind$age <- 45
+ind$weight <- 78
+ind
 ```
 
-## Modifying Building Blocks
-
-All building blocks are mutable and can be modified directly:
-
-### Changing Individual Properties
+Parameters that sit at a known path inside the individual's parameter tree are exposed as `LocalizedParameter` objects with a pipe-separated path. v11+ snapshots already write `Events|...` segments; legacy `Applications|...` segments are migrated on load.
 
 ```{r}
-# Modify age
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age <- 45
-
-# Modify parameter values
-individual$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`$value <- 0.7
-
-# Verify changes
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+korean <- snapshot$individuals$`Korean (Yu 2004 study)`
+ehc <- korean$parameters$`Organism|Liver|EHC continuous fraction`
+ehc$value <- 0.4
+ehc
 ```
 
-### Working with Parameters
+### Adding and removing building blocks
 
-Parameters have special behavior and validation:
+Build the new object with the matching `create_*()` function (see `vignette("creating-building-blocks")`), then attach it with `add_*()`. Removal is by name.
 
 ```{r}
+patient <- create_individual("Patient_A", age = 35, gender = "FEMALE")
+add_individual(snapshot, patient)
 
-# Access parameters collection
-params <- snapshot$individuals$`Korean (Yu 2004 study)`$parameters
-params
-
-# Get a specific parameter
-params$`Organism|Liver|EHC continuous fraction`
-
-# Modify parameter value
-params$`Organism|Liver|EHC continuous fraction`$value <- 0.4
-
-params
+remove_individual(snapshot, "Patient_A")
 ```
 
-## Working with Observed Data
+### Chaining with the base pipe
 
-Snapshots often contain observed data from clinical studies:
-
-```{r}
-# View observed data collection
-snapshot$observed_data
-
-# Access a specific dataset
-obs_data <- snapshot$observed_data[[1]]
-obs_data
-
-# These are ospsuite DataSet objects
-class(obs_data)
-```
-
-## Exporting Snapshots
-
-After making modifications, you can export the snapshot back to a JSON file:
+`add_*()` and `remove_*()` take the snapshot first and return it invisibly, so you can chain them with the base pipe when you want to make several changes in one expression:
 
 ```{r, eval=FALSE}
-# Export to a new file
+snapshot |>
+  add_individual(create_individual("Patient_A", age = 35, gender = "FEMALE")) |>
+  add_individual(create_individual("Patient_B", age = 60, gender = "MALE")) |>
+  remove_population("Healthy Adults")
+```
+
+## Converting collections to tibbles
+
+`as_tibbles()` converts any building-block collection to a tibble (or a named list of related tibbles for collections that split into more than one). It takes the snapshot plus the `kind` to convert:
+
+```{r}
+head(as_tibbles(snapshot, "protocols"))
+
+compound_dfs <- as_tibbles(snapshot, "compounds")
+names(compound_dfs)
+```
+
+See `vignette("exporting-snapshots-to-dataframes")` for the per-kind shapes and analysis examples.
+
+## Exporting
+
+After mutating a snapshot, write it back to JSON with `export_snapshot()`:
+
+```{r, eval=FALSE}
 export_snapshot(snapshot, "modified_snapshot.json")
 ```
 
-The exported file can be imported back into PKSIM, preserving all your modifications.
+The exported file imports back into PK-Sim. Top-level JSON sections that osp.snapshots does not model (e.g. `Simulations`, `Classifications`, `ParameterIdentifications`) pass through unchanged.
 
-## Next Steps
+## Next steps
 
-Now that you understand the basics, explore these advanced topics:
-
-- **Working with Data Frames**: Learn how to convert building blocks to data frames for analysis with `vignette("working-with-dataframes")`
-- **Creating Building Blocks**: Create new individuals, formulations, and other building blocks from scratch with `vignette("creating-building-blocks")`
+* `vignette("creating-building-blocks")` walks through the `create_*()` functions for building new snapshots from scratch.
+* `vignette("exporting-snapshots-to-dataframes")` covers the tibble layer in depth.
