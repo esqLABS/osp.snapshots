@@ -17,9 +17,9 @@ navbar:
     articles:
       text: "Articles"
       menu:
-      - text: "Working with Data Frames" 
+      - text: "Working with data frames"
         href: articles/working-with-dataframes.html
-      - text: "Creating Building Blocks"
+      - text: "Creating and managing building blocks"
         href: articles/creating-building-blocks.html
 
 home:
@@ -38,43 +38,43 @@ articles:
 
 reference:
 
-- title: "Import and Export"
+- title: "Import and export"
   desc: "Load snapshots and export modifications"
   contents:
   - load_snapshot
   - export_snapshot
   - osp_models
 
-- title: "Core Classes"
-  desc: "Main classes for working with snapshots and building blocks"
+- title: "Building blocks"
+  desc: "R6 classes wrapping the eight PK-Sim building block kinds and the root snapshot"
   contents:
   - Snapshot
-  - Individual
   - Compound
-  - Process
-  - Formulation
-  - Population
-  - Protocol
   - Event
   - ExpressionProfile
-  - Observer
+  - Formulation
+  - Individual
   - ObserverSet
-  - Parameter
-  - LocalizedParameter
+  - Population
+  - Protocol
+
+- title: "Leaf and sub-structure types"
+  desc: "Reusable R6 leaf classes and sub-structures held inside building blocks"
+  contents:
   - AdvancedParameter
+  - CalculationMethodCache
+  - LocalizedParameter
+  - Observer
+  - OriginData
+  - Parameter
+  - Process
+  - Schema
+  - SchemaItem
   - range
   - Range-class
 
-- title: "Domain Types"
-  desc: "Reusable sub-structures shared across building blocks"
-  contents:
-  - OriginData
-  - CalculationMethodCache
-  - Schema
-  - SchemaItem
-
-- title: "Create Building Blocks"
-  desc: "Functions to create new building blocks from scratch"
+- title: "Factories"
+  desc: "Construct building blocks and leaves from named arguments"
   contents:
   - create_compound
   - create_event
@@ -90,8 +90,8 @@ reference:
   - create_schema
   - create_schema_item
 
-- title: "Manage Building Blocks"
-  desc: "Add and remove building blocks from snapshots"
+- title: "Mutators"
+  desc: "Add and remove building blocks on a snapshot"
   contents:
   - add_compound
   - add_event
@@ -112,27 +112,27 @@ reference:
   - remove_population
   - remove_protocol
 
-- title: "Data Frame Conversion"
-  desc: "Convert building blocks to data frames for analysis"
+- title: "Tibble exporters"
+  desc: "Convert building blocks to tibbles for analysis"
   contents:
   - as_tibbles
-  - get_individuals_dfs
   - get_compounds_dfs
-  - get_formulations_dfs
-  - get_populations_dfs
-  - get_protocols_dfs
   - get_events_dfs
   - get_expression_profiles_dfs
+  - get_formulations_dfs
+  - get_individuals_dfs
   - get_observed_data_dfs
   - get_observer_sets_dfs
+  - get_populations_dfs
+  - get_protocols_dfs
 
-- title: "Observed Data"
-  desc: "Work with clinical and experimental data"
+- title: "Observed data"
+  desc: "Bridge between PK-Sim observed data and ospsuite"
   contents:
   - loadDataSetFromSnapshot
 
-- title: "Validation and Utilities"
-  desc: "Helper functions for validation and data conversion"
+- title: "Validators and utilities"
+  desc: "Helpers for validation and data conversion"
   contents:
   - validate_snapshot
   - validate_species
@@ -142,7 +142,7 @@ reference:
   - convert_ospsuite_time_unit_to_lubridate
   - convert_ospsuite_time_to_duration
 
-- title: "Print Methods"
+- title: "Print methods"
   desc: "Formatted display methods for building block collections"
   contents:
   - starts_with("print.")

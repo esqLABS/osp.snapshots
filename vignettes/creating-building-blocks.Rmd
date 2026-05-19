@@ -1,8 +1,8 @@
 ---
-title: "Creating and Managing Building Blocks"
+title: "Creating and managing building blocks"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Creating and Managing Building Blocks}
+  %\VignetteIndexEntry{Creating and managing building blocks}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,30 +23,20 @@ library(ospsuite)
 
 ## Overview
 
-This vignette demonstrates how to create new building blocks from scratch and manage existing ones within snapshots. You'll learn to:
+This vignette walks through the `create_*()` factory family, which lets you build PK-Sim *Building blocks* and their leaf sub-structures from named arguments instead of raw JSON. It also covers the mutators (`add_*()`, `remove_*()`) that attach these objects to a `Snapshot`.
 
-- Create individuals, formulations, parameters, compounds, populations, expression profiles, protocols, events, and observed data
-- Add and remove building blocks from snapshots
-- Work with observed data
-- Manage collections efficiently
-
-## Setup
-
-Let's start with a test snapshot:
+We use the `Midazolam` template throughout:
 
 ```{r}
 snapshot <- load_snapshot("Midazolam")
 ```
 
-## Creating New Individuals
+## Individuals
 
-### Basic Individual Creation
-
-The most common building block to create is an individual:
+`create_individual()` builds an *Individual* from demographic arguments. PK-Sim seeds the underlying physiological tree at simulation time.
 
 ```{r}
-# Create a basic individual
-new_patient <- create_individual(
+patient <- create_individual(
   name = "Patient_001",
   species = "Human",
   population = "European_ICRP_2002",
@@ -56,16 +46,13 @@ new_patient <- create_individual(
   height = 165
 )
 
-new_patient
+patient
 ```
 
-### Advanced Individual Creation
-
-You can create individuals with additional parameters:
+Extra demographics (e.g. `gestational_age`) are accepted as additional named arguments:
 
 ```{r}
-# Create individual with more characteristics
-advanced_patient <- create_individual(
+pregnant_patient <- create_individual(
   name = "Pregnant_Patient",
   species = "Human",
   population = "European_ICRP_2002",
@@ -76,113 +63,79 @@ advanced_patient <- create_individual(
   gestational_age = 20 # weeks
 )
 
-advanced_patient
+pregnant_patient
 ```
 
-### Adding Individuals to Snapshots
+Attach the result to a snapshot with `add_individual()`:
 
 ```{r}
-# Add the new individual to the snapshot
-add_individual(snapshot, new_patient)
-
-# Verify it was added
+add_individual(snapshot, patient)
 snapshot$individuals
 ```
 
-## Creating New Formulations
+## Formulations
 
-### Dissolved Formulations
+`create_formulation()` covers every PK-Sim release profile (`"Dissolved"`, `"Weibull"`, `"First Order"`, `"Zero Order"`, `"Lint80"`, `"Particles"`, `"Table"`).
 
 ```{r}
-# Create a simple dissolved formulation
 oral_solution <- create_formulation(
   name = "Oral Solution 10mg/mL",
   type = "Dissolved"
 )
 
 oral_solution
-```
 
-### Tablet Formulations
-
-```{r}
-# Create a tablet with Weibull dissolution
 tablet <- create_formulation(
   name = "Immediate Release Tablet",
   type = "Weibull",
   parameters = list(
-    dissolution_time = 30, # 50% dissolved in 30 min
+    dissolution_time = 30,
     dissolution_time_unit = "min",
-    lag_time = 5, # 5 min lag time
+    lag_time = 5,
     lag_time_unit = "min",
-    dissolution_shape = 1.2, # shape parameter
-    suspension = TRUE # use as suspension
+    dissolution_shape = 1.2,
+    suspension = TRUE
   )
 )
 
 tablet
 ```
 
-### Additional Formulation Types
-
 ```{r}
-# Create a first-order formulation
-first_order_form <- create_formulation(
-  name = "First Order Release",
-  type = "First Order",
-  parameters = list(
-    thalf = 60,
-    thalf_unit = "min"
-  )
-)
-
-# Create a zero-order formulation
-zero_order_form <- create_formulation(
-  name = "Zero Order Release",
-  type = "Zero Order",
-  parameters = list(
-    end_time = 120,
-    end_time_unit = "min"
-  )
-)
-
-# Display the formulations
-first_order_form
-zero_order_form
-```
-
-### Adding Formulations to Snapshots
-
-```{r}
-# Add formulations to the snapshot
 add_formulation(snapshot, oral_solution)
 add_formulation(snapshot, tablet)
-
-# Check they were added
-snapshot$formulations
 ```
 
-## Creating Parameters
+## Parameters
 
-### Basic Parameter Creation
+`create_parameter()` returns either a `Parameter` or a `LocalizedParameter` depending on the inputs. The two are kept separate because they identify themselves differently in the JSON: a plain `Parameter` lives inside a named container (e.g. a `Compound` or a `Formulation`) and carries a `Name`; a `LocalizedParameter` lives inside a parameter tree (typically an `Individual` or a `Simulation`) and carries a full pipe-separated `Path`.
+
+`create_parameter()` routes on the `path` argument: passing `path = ...` produces a `LocalizedParameter`, passing only `name = ...` produces a `Parameter`. Both inherit from `Parameter`, so `inherits(x, "Parameter")` is `TRUE` for either.
 
 ```{r}
-# Create a parameter with basic properties
-liver_param <- create_parameter(
-  name = "Organism|Liver|Specific organ clearance",
-  value = 0.5,
-  unit = "1/min"
+# Plain `Parameter` (name-based identity, suitable for a `Compound` or a
+# `Formulation`)
+clearance <- create_parameter(
+  name = "Cl_spec",
+  value = 5,
+  unit = "ml/min/kg"
 )
+inherits(clearance, "Parameter")
 
-liver_param
+# `LocalizedParameter` (path-based identity, suitable for an Individual's
+# parameter tree)
+ehc <- create_parameter(
+  path = "Organism|Liver|EHC continuous fraction",
+  value = 0.4
+)
+inherits(ehc, "LocalizedParameter")
 ```
 
-### Parameter with Additional Properties
+Additional metadata for the *Value origin* (source, description, source identifier) is preserved through round-trip:
 
 ```{r}
-# Create parameter with source information
-detailed_param <- create_parameter(
-  name = "Organism|Kidney|GFR",
+gfr <- create_parameter(
+  path = "Organism|Kidney|GFR",
   value = 120,
   unit = "ml/min",
   source = "Literature",
@@ -190,18 +143,16 @@ detailed_param <- create_parameter(
   source_id = 123
 )
 
-detailed_param
+gfr
 ```
 
-## Creating Compounds
+## Compounds
 
-`create_compound()` wraps `Compound$new()` so you can build a *Compound* from named arguments instead of a raw list.
+`create_compound()` wraps `Compound$new()` and validates common fields such as `molecular_weight_unit`:
 
 ```{r}
-# Create a minimal compound
 drug <- create_compound(name = "Drug X")
 
-# Create a small molecule with molecular weight and binding partner
 drug <- create_compound(
   name = "Drug X",
   is_small_molecule = TRUE,
@@ -215,19 +166,17 @@ drug <- create_compound(
 drug
 ```
 
-## Creating Compound Processes
+### Compound processes
 
-`create_process()` builds a *Process* (a PK-Sim `CompoundProcess`) from named arguments. The `internal_name` identifies the process template in PK-Sim's compound process repository (e.g. `"SpecificBinding"` for plasma protein binding, `"MetabolizationSpecific_MM"` for Michaelis-Menten metabolism, `"GlomerularFiltration"` for renal clearance), and `data_source` labels the data origin.
+`create_process()` builds a *Process* (a PK-Sim `CompoundProcess`) from named arguments. The `internal_name` identifies the process template in PK-Sim's compound process repository (`"SpecificBinding"` for plasma protein binding, `"MetabolizationSpecific_MM"` for Michaelis-Menten metabolism, `"GlomerularFiltration"` for renal clearance, ...); `data_source` labels the data origin.
 
 ```{r}
-# A minimal protein-binding process
 binding <- create_process(
   internal_name = "SpecificBinding",
   data_source = "Buhr 1997",
   molecule = "GABRG2"
 )
 
-# A metabolizing enzyme with kinetic parameters
 metabolism <- create_process(
   internal_name = "MetabolizationSpecific_MM",
   data_source = "Optimized",
@@ -242,9 +191,9 @@ metabolism <- create_process(
 metabolism$category
 ```
 
-The `$category` active binding derives a domain label (`"protein_binding_partners"`, `"metabolizing_enzymes"`, `"hepatic_clearance"`, `"transporter_proteins"`, `"renal_clearance"`, `"biliary_clearance"`, `"inhibition"`, or `"induction"`) from the `internal_name`. Compound processes from a loaded snapshot are exposed as a flat named list of *Process* objects via `compound$processes`, and the long-form `processes` tibble returned by `get_compounds_dfs()` surfaces every (process, parameter) pair as a row.
+The `$category` active binding derives a domain label (`"protein_binding_partners"`, `"metabolizing_enzymes"`, `"hepatic_clearance"`, `"transporter_proteins"`, `"renal_clearance"`, `"biliary_clearance"`, `"inhibition"`, or `"induction"`) from the `internal_name`. Compound processes loaded from a snapshot are exposed as a flat named list of *Process* objects via `compound$processes`, and the long-form `processes` tibble returned by `get_compounds_dfs()` surfaces every (process, parameter) pair as a row.
 
-## Creating Populations
+## Populations
 
 `create_population()` builds a *Population* recipe: settings used by PK-Sim to sample a cohort at simulation time. Use `range()` for age, weight, height, and BMI bounds.
 
@@ -262,7 +211,7 @@ adults <- create_population(
 adults
 ```
 
-## Creating Expression Profiles
+## Expression profiles
 
 `create_expression_profile()` builds an *ExpressionProfile*. The identity of a profile is the composite `Molecule|Species|Category`, so all three are required, along with the molecule `type`.
 
@@ -278,12 +227,11 @@ cyp3a4 <- create_expression_profile(
 cyp3a4
 ```
 
-## Creating Protocols
+## Protocols
 
-`create_protocol()` builds a *Protocol*. By default it creates a Simple Protocol; pass `schemas` to create an Advanced Protocol.
+`create_protocol()` builds a *Protocol*. By default it creates a *Simple Protocol* (one application type, one dose, optional dosing interval); pass `schemas` to create an *Advanced Protocol*.
 
 ```{r}
-# Simple oral protocol with one dose
 single_dose <- create_protocol(
   name = "Single dose 10mg",
   application_type = "Oral",
@@ -297,12 +245,13 @@ single_dose <- create_protocol(
 single_dose
 ```
 
-### Advanced Protocols
+### Advanced protocols
 
-For dosing schedules that do not fit the Simple Protocol pattern, build an Advanced Protocol from one or more *Schema* blocks. Each *Schema* owns schema-level parameters (such as `NumberOfRepetitions` and `TimeBetweenRepetitions`) and an ordered list of *SchemaItem* applications. `create_schema()` and `create_schema_item()` wrap the R6 constructors so you can pass *Parameter* objects directly without hand-rolling the raw JSON shape.
+For dosing schedules that do not fit the *Simple Protocol* pattern, build an *Advanced Protocol* from one or more *Schema* blocks. Each *Schema* owns schema-level parameters (such as `NumberOfRepetitions` and `TimeBetweenRepetitions`) and an ordered list of *SchemaItem* applications.
+
+`create_schema()` and `create_schema_item()` wrap the R6 constructors so you can pass *Parameter* objects directly rather than hand-rolling the raw JSON shape. We recommend the factory form for new code; the raw-list form remains accepted for forward compatibility with hand-edited JSON.
 
 ```{r}
-# Build the schema item, the schema, and the protocol from named arguments
 qd_oral <- create_protocol(
   name = "Once daily oral, 5 days",
   schemas = list(
@@ -332,9 +281,9 @@ qd_oral
 
 `application_type` on a schema item is validated against the canonical PK-Sim application types (`"Oral"`, `"IntravenousBolus"`, `"IntravenousInfusion"`, `"Intramuscular"`, `"Subcutaneous"`, `"Dermal"`, `"Rectal"`, `"Inhalation"`, `"Intraperitoneal"`).
 
-## Creating Events
+## Events
 
-`create_event()` builds an *Event* from a named template (for example a meal). PK-Sim clones the template and applies your parameter overrides.
+`create_event()` builds an *Event* from a named template (for example a meal). PK-Sim clones the template at simulation time and applies the parameter overrides supplied here.
 
 ```{r}
 breakfast <- create_event(
@@ -349,18 +298,34 @@ breakfast <- create_event(
 breakfast
 ```
 
-## Creating Observer Sets
+## Observer sets
 
-`create_observer_set()` builds an [ObserverSet] from a name and an
-optional list of observers. Each observer is a simulation-time formula
-that exposes a derived quantity (for example a tissue concentration)
-that is not a natural model output. You can pass either raw observer
-lists or [Observer] R6 objects.
+`create_observer_set()` builds an *ObserverSet* from a name and an optional list of observers. Each *Observer* is a simulation-time formula that exposes a derived quantity (for example a tissue concentration) that is not a natural model output.
+
+The factory accepts either *Observer* R6 objects (recommended) or raw observer lists. Prefer the R6 form: `Observer$new()` validates the input and gives you the typed accessors (`$name`, `$type`, `$dimension`, `$formula`, `$container_tags`).
 
 ```{r}
-# Build the set from raw observer lists
+# Recommended: build observers with `Observer$new()` and pass them in
+observer <- Observer$new(list(
+  Name = "brain_plasma_conc",
+  Type = "Container",
+  Dimension = "Concentration (molar)",
+  Formula = list(Formula = "Conc_Br")
+))
+
 brain_set <- create_observer_set(
   name = "BrainPlasmaConcentration",
+  observers = list(observer)
+)
+
+brain_set
+
+# Attach it to the snapshot like any other building block
+add_observer_set(snapshot, brain_set)
+
+# Still accepted for round-tripping hand-edited JSON: raw observer lists
+brain_set_raw <- create_observer_set(
+  name = "BrainPlasmaConcentration_raw",
   observers = list(
     list(
       Name = "brain_plasma_conc",
@@ -371,27 +336,12 @@ brain_set <- create_observer_set(
   )
 )
 
-brain_set
-
-# Or build it from Observer R6 objects
-observer <- Observer$new(list(
-  Name = "brain_plasma_conc",
-  Type = "Container",
-  Dimension = "Concentration (molar)",
-  Formula = list(Formula = "Conc_Br")
-))
-
-brain_set_from_r6 <- create_observer_set(
-  name = "BrainPlasmaConcentration",
-  observers = list(observer)
-)
-
-brain_set_from_r6
+brain_set_raw
 ```
 
-## Creating Observed Data
+## Observed data
 
-`create_observed_data()` builds an `ospsuite::DataSet` from named arguments for the time grid, measurement values, units, and optional error series.
+`create_observed_data()` builds an `ospsuite::DataSet` from named arguments for the time grid, measurement values, units, and optional error series. `value_dimension` is required and gates the unit validation.
 
 ```{r}
 obs <- create_observed_data(
@@ -406,133 +356,59 @@ obs <- create_observed_data(
 obs
 ```
 
-## Managing Building Blocks
+## Managing building blocks
 
-### Removing Building Blocks
+Each building-block kind has paired `add_*()` and `remove_*()` mutators that take the snapshot first and return it invisibly, so they chain with the base pipe.
 
 ```{r}
-# Remove individuals by name
 remove_individual(snapshot, "Patient_001")
-
-# Remove multiple individuals at once
-# remove_individual(snapshot, c("Patient_001", "Patient_002"))
-
-# Remove formulations
 remove_formulation(snapshot, "Oral Solution 10mg/mL")
-
-# Remove populations
-# remove_population(snapshot, "Population_Name")
-
-# Remove expression profiles by ID (molecule|species|category)
-# remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
 ```
 
-### Batch Operations
+You can pass several names to remove at once:
+
+```{r, eval=FALSE}
+remove_individual(snapshot, c("Patient_001", "Patient_002"))
+remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
+```
+
+### Batch creation
 
 ```{r}
-# Create multiple individuals at once
 patients <- list(
   create_individual("Patient_A", age = 25, gender = "MALE"),
   create_individual("Patient_B", age = 45, gender = "FEMALE"),
   create_individual("Patient_C", age = 65, gender = "MALE")
 )
 
-# Add them all
 for (patient in patients) {
   add_individual(snapshot, patient)
 }
 
-# Verify
 snapshot$individuals
 ```
 
-## Working with Observed Data
+### Modifying existing building blocks
 
-### Creating DataSet Objects
-
-Observed data must be provided as `ospsuite::DataSet` objects:
+Fields on existing building blocks are mutable through active bindings:
 
 ```{r}
-# Create a new DataSet
-study_data <- DataSet$new(name = "Phase I Study - Subject 001")
-
-# Set the data values
-time_points <- c(0, 0.5, 1, 2, 4, 8, 12, 24)
-concentrations <- c(0, 12.5, 18.2, 15.8, 11.2, 6.8, 3.4, 1.1)
-
-study_data$setValues(xValues = time_points, yValues = concentrations)
-
-# Set dimensions and units
-study_data$xDimension <- "Time"
-study_data$xUnit <- "h"
-study_data$yDimension <- "Concentration (mass)"
-study_data$yUnit <- "mg/l"
-
-study_data
-```
-
-### Adding Observed Data
-
-```{r, eval=FALSE}
-# Add to snapshot (function needs to be implemented)
-# add_observed_data(snapshot, study_data)
-
-# Remove observed data by name
-# remove_observed_data(snapshot, "Phase I Study - Subject 001")
-```
-
-## Advanced Building Block Management
-
-### Modifying Existing Building Blocks
-
-```{r}
-# Get an individual and modify properties
-patient <- snapshot$individuals$`Patient_A`
+patient <- snapshot$individuals$Patient_A
 patient$age <- 30
 patient$weight <- 75
-
-# Add custom parameters
-custom_param <- create_parameter(
-  name = "Organism|Custom|Clearance",
-  value = 1.5,
-  unit = "L/h"
-)
-
-# Note: Adding parameters to existing individuals requires
-# working with the parameter collection directly
 ```
 
-### Copying and Modifying Building Blocks
+### Validation
 
-```{r}
-# Create a copy of an existing individual with modifications
-original <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
-
-# Create modified copy
-modified_individual <- create_individual(
-  name = "Modified European",
-  species = original$species,
-  population = original$population,
-  gender = original$gender,
-  age = 50, # Changed age
-  weight = 80 # Changed weight
-)
-
-add_individual(snapshot, modified_individual)
-```
-
-### Validation and Error Handling
-
-The package includes validation for common inputs:
+The factories validate common inputs and abort with informative messages on bad input:
 
 ```{r, error=TRUE}
-# These will produce validation errors:
 tryCatch(
   {
     create_individual(
       name = "Invalid Patient",
-      species = "InvalidSpecies", # Invalid species
-      gender = "OTHER" # Invalid gender
+      species = "InvalidSpecies",
+      gender = "OTHER"
     )
   },
   error = function(e) cat("Error:", e$message, "\n")
@@ -542,104 +418,24 @@ tryCatch(
   {
     create_formulation(
       name = "Invalid Form",
-      type = "NonexistentType" # Invalid formulation type
+      type = "NonexistentType"
     )
   },
   error = function(e) cat("Error:", e$message, "\n")
 )
 ```
 
-Valid options are available through validation functions:
+The validation helpers (`validate_species()`, `validate_gender()`, `validate_unit()`, `validate_population()`) check inputs against the canonical ospsuite enums and are exported for direct use.
 
-```{r}
-# Check valid species (this would show available options)
-# validate_species("Human")  # Returns TRUE
+## Exporting
 
-# Check valid genders
-# validate_gender("MALE")    # Returns TRUE
-```
-
-## Working with Templates
-
-You can load predefined templates and modify them:
+After your modifications, write the snapshot back to JSON:
 
 ```{r, eval=FALSE}
-# Load a template (if available)
-# template_snapshot <- load_snapshot("TemplateName")
-
-# Modify template building blocks
-# template_individual <- template_snapshot$individuals[[1]]
-# template_individual$age <- 40
-
-# Add to your snapshot
-# add_individual(snapshot, template_individual)
+export_snapshot(snapshot, "modified_snapshot.json")
 ```
 
-## Exporting Your Work
+## Next steps
 
-After creating and managing building blocks, export your snapshot:
-
-```{r, eval=FALSE}
-# Export the modified snapshot
-export_snapshot(snapshot, "modified_snapshot_with_new_blocks.json")
-```
-
-## Best Practices
-
-### Naming Conventions
-
-Use descriptive names for building blocks:
-
-```{r, eval=FALSE}
-# Good naming
-create_individual(
-  "Elderly_Female_80kg",
-  age = 75,
-  gender = "FEMALE",
-  weight = 80
-)
-create_formulation("IR_Tablet_Fast_Release", type = "Weibull")
-
-# Less descriptive
-create_individual("Patient1", age = 75)
-create_formulation("Form1", type = "Weibull")
-```
-
-### Organization
-
-Keep related building blocks together:
-
-```{r, eval=FALSE}
-# Create a family of related individuals
-pediatric_patients <- list(
-  create_individual("Pediatric_5yr", age = 5, weight = 18),
-  create_individual("Pediatric_10yr", age = 10, weight = 32),
-  create_individual("Pediatric_15yr", age = 15, weight = 55)
-)
-
-# Create related formulations
-pediatric_formulations <- list(
-  create_formulation("Oral_Suspension_Pediatric", type = "Dissolved"),
-  create_formulation("Chewable_Tablet_Pediatric", type = "Weibull")
-)
-```
-
-### Documentation
-
-Document your building blocks with meaningful metadata:
-
-```{r, eval=FALSE}
-# Add comments or descriptions when creating parameters
-hepatic_clearance <- create_parameter(
-  name = "Organism|Liver|Hepatic clearance",
-  value = 2.5,
-  unit = "L/h",
-  description = "Estimated from in vitro data scaled with ISEF=0.5",
-  source = "Laboratory study 2023"
-)
-```
-
-## Next Steps
-
-- Explore data frame conversion in `vignette("working-with-dataframes")`
-- See the complete API reference at [function reference](https://esqlabs.github.io/osp.snapshots/reference/)
+* `vignette("working-with-dataframes")` covers the tibble layer for analysis.
+* The full API reference is at <https://esqlabs.github.io/osp.snapshots/reference/>.
