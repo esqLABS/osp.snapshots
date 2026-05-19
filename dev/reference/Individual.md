@@ -86,8 +86,8 @@ display a summary of its information.
   The calculation methods of the individual, returned as a character
   vector for backwards compatibility. Use
   `$origin_data$calculation_methods` to access the
-  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
-  directly.
+  [CalculationMethods](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.md)
+  object directly.
 
 - `expression_profiles`:
 

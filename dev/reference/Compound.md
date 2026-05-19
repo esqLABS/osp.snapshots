@@ -20,7 +20,7 @@ by
 - `data`:
 
   The raw data of the compound (read-only). Refreshed from the embedded
-  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
+  [CalculationMethods](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.md)
   and the cached
   [Process](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
   objects so that mutations flow back to the export payload.
@@ -78,8 +78,8 @@ by
 - `calculation_methods`:
 
   A
-  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
-  holding the compound's calculation methods.
+  [CalculationMethods](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.md)
+  object holding the compound's calculation methods.
 
 - `parameters`:
 

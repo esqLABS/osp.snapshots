@@ -1,51 +1,48 @@
-# Getting Started with osp.snapshots
+# Getting started with osp.snapshots
 
 ``` r
 
 library(osp.snapshots)
-library(dplyr)
 ```
 
 ## Overview
 
-osp.snapshots provides a convenient R interface for working with PKSIM
-project snapshots. This package allows you to:
+osp.snapshots provides an R interface for working with PK-Sim project
+snapshots. The package lets you:
 
-- Import PKSIM snapshots from JSON files, URLs, or predefined templates
-- Navigate and explore complex nested snapshot structures
-- Modify building blocks and parameters in place
-- Export modified snapshots back to JSON for use in PKSIM
-- Convert snapshot data to data frames for analysis in R
+- Import PK-Sim snapshots from JSON files, URLs, or predefined
+  templates.
+- Navigate and explore the nested snapshot structure as R6 objects.
+- Modify building blocks and parameters in place.
+- Export modified snapshots back to JSON for use in PK-Sim.
+- Convert building-block collections to tibbles for analysis in R.
 
-## Loading a Snapshot
+## Loading a snapshot
 
-### From a File
+### From a file, a URL, or a template
 
-The most common way to start is by loading a snapshot from a JSON file:
+[`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
+dispatches on its input. A local `.json` path is read from disk; an
+`https?://` URL is fetched; a bare name is resolved against the
+`OSPSuite.BuildingBlockTemplates` repository.
 
 ``` r
 
-# Load from a local file
+# Local file
 snapshot <- load_snapshot("path/to/your_snapshot.json")
 
-# Load from a URL
+# Remote URL
 snapshot <- load_snapshot("https://example.com/snapshot.json")
 
-# From an OSP model
+# Named template (browse the catalogue with `osp_models()`)
 snapshot <- load_snapshot("Midazolam")
 ```
 
-### Using the Package Example
-
-For this tutorial, we’ll use the test snapshot included with the
-package:
+For this guide we use the `Midazolam` template:
 
 ``` r
 
-# Load the test snapshot
 snapshot <- load_snapshot("Midazolam")
-
-# View snapshot overview
 snapshot
 #> 
 #> ── PKSIM Snapshot ──────────────────────────────────────────────────────────────
@@ -63,27 +60,43 @@ snapshot
 #> • Simulations: 37
 ```
 
-## Exploring Building Blocks
+[`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
+only accepts v11.2 PK-Sim snapshots and newer (`Version >= 79`); older
+snapshots use pre-v11 conventions that this package does not model.
+Re-export the project from PK-Sim before loading if needed.
 
-The snapshot contains various building blocks used in PKSIM simulations.
-Let’s explore each type:
+## Exploring building blocks
 
-### Individuals
+A loaded snapshot is a navigable tree: each kind of building block
+(individuals, compounds, formulations, populations, events, protocols,
+expression profiles, observer sets) lives in a named list under
+`snapshot$<kind>` that you can list, look up by name, and inspect
+interactively. Printing any object prints a readable summary;
+tab-completion works the whole way down.
 
-Individuals represent patient profiles with demographics and
-physiological parameters:
+### Walking one kind: individuals
+
+`snapshot$individuals` is a named list. Print it for a short overview,
+ask for [`names()`](https://rdrr.io/r/base/names.html) and
+[`length()`](https://rdrr.io/r/base/length.html) to see what is there,
+then index by name to get a single building block:
 
 ``` r
 
-# List all individuals
 snapshot$individuals
 #> 
 #> ── Individuals (2) ─────────────────────────────────────────────────────────────
 #> • European (P-gp modified, CYP3A4 36 h)
 #> • Korean (Yu 2004 study)
 
-# Examine a specific individual
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+names(snapshot$individuals)
+#> [1] "European (P-gp modified, CYP3A4 36 h)"
+#> [2] "Korean (Yu 2004 study)"
+length(snapshot$individuals)
+#> [1] 2
+
+individual <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+individual
 #> 
 #> ── Individual: European (P-gp modified, CYP3A4 36 h) | Seed: 17189110 ──────────
 #> 
@@ -110,104 +123,124 @@ snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 #> • ATP1A2|Human|European (P-gp modified, CYP3A4 36 h)
 #> • UGT1A4|Human|European (P-gp modified, CYP3A4 36 h)
 #> • GABRG2|Human|European (P-gp modified, CYP3A4 36 h)
+```
 
-# Access individual properties
-individual <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+Once you have an individual, the fields you would type in PK-Sim are
+available as active bindings on the object:
+
+``` r
+
 individual$age
 #> [1] 30
+individual$age_unit
+#> [1] "year(s)"
 individual$gender
 #> [1] "MALE"
 individual$species
 #> [1] "Human"
+individual$weight
+#> NULL
 ```
 
-### Compounds
-
-Compounds define drug properties and ADME parameters:
+Nested structures are objects themselves, so you can keep drilling. The
+demographic starting point lives on `$origin_data`, and the calculation
+methods PK-Sim will use to create the virtual individual sit one level
+deeper:
 
 ``` r
 
-# View available compounds
-snapshot$compounds
+individual$origin_data
 #> 
-#> ── Compounds (1) ───────────────────────────────────────────────────────────────
-#> • Midazolam
+#> ── OriginData ──
+#> 
+#> • Species: Human
+#> • Population: European_ICRP_2002
+#> • Gender: MALE
+#> • Age: 30 year(s)
+#> • Calculation methods:
+#>   • SurfaceAreaPlsInt_VAR1
+#>   • Body surface area - Mosteller
 
-# Examine a compound
-snapshot$compounds$Midazolam
-#> 
-#> ── Compound: Midazolam ─────────────────────────────────────────────────────────
-#> 
-#> ── Basic Properties ──
-#> 
-#> • Type: Small Molecule
-#> • Plasma Protein Binding Partner: Albumin
-#> • Molecular Weight: 325.78 g/mol
-#> 
-#> ── Calculation Methods ──
-#> 
-#> • Cellular partition coefficient method - Rodgers and Rowland
-#> • Cellular permeability - PK-Sim Standard
-#> 
-#> ── Physicochemical Properties ──
-#> 
-#> • Lipophilicity:
-#>   • 2.8972038771 Log Units [ParameterIdentification - (Value updated from 'PI
-#>   Hohmann iv+po, Hyland feUr MDZG, Thummel feUr unchanged - Pint' on 2019-04-09
-#>   16:10)]
-#> • Fraction Unbound:
-#>   • 0.031 [ParameterIdentification - (Value updated from 'PI Hohmann iv+po,
-#>   Hyland feUr MDZG, Thummel feUr unchanged - Pint' on 2019-04-09 16:10)]
-#> • Solubility:
-#>   • Aqueous solubility: 0.13 mg/ml (pH 5) [Publication - InVitro - (Heikkinen
-#>   2012)]
-#>   • FaSSIF: 0.049 mg/ml (pH 6.5) [Publication - InVitro - (Heikkinen 2012)]
-#>   • FeSSIF: 0.09 mg/ml (pH 5) [Publication - InVitro - (Heikkinen 2012)]
-#> • Intestinal Permeability:
-#>   • 0.00015549970673 cm/min [ParameterIdentification - (Value updated from 'PI
-#>   Hohmann iv+po, Hyland feUr MDZG, Thummel feUr unchanged - Pint' on 2019-04-09
-#>   16:10)]
-#> • pKa Types:
-#>   • Base: 6.2 [Unknown]
-#>   • Acid: 10.95 [Unknown]
-#> 
-#> ── Processes ──
-#> 
-#> Processes (4 total):
-#>   • Metabolism:
-#>     • MetabolizationLiverMicrosomes_MM (CYP3A4): In vitro Vmax for liver
-#>     microsomes=850 pmol/min/mg mic. protein, Km=4 µmol/l, kcat=8.7607941215
-#>     1/min [Optimized]
-#>     • MetabolizationLiverMicrosomes_MM (UGT1A4): In vitro Vmax for liver
-#>     microsomes=276 pmol/min/mg mic. protein, Content of CYP proteins in liver
-#>     microsomes=58 pmol/mg mic. protein, Km=37.8 µmol/l, kcat=3.5911771641 1/min
-#>     [Optimized]
-#>   • Transport:
-#>     • SpecificBinding (GABRG2): koff=1 1/min, Kd=1.8 nmol/l [Buhr 1997]
-#>   • Clearance:
-#>     • GlomerularFiltration: GFR fraction=0.6401025724 [Optimized]
-#> 
-#> ── Additional Parameters ──
-#> 
-#> • Additional Parameters (2 total):
-#>   • Cl: 1 [Unknown]
-#>   • F: 1 [Unknown]
+individual$origin_data$calculation_methods
+#> CalculationMethods (2 methods)
+#> • SurfaceAreaPlsInt_VAR1
+#> • Body surface area - Mosteller
+individual$origin_data$calculation_methods$names
+#> [1] "SurfaceAreaPlsInt_VAR1"        "Body surface area - Mosteller"
 ```
 
-### Formulations
-
-Formulations describe how drugs are formulated and released:
+Path-bearing parameters on the individual are exposed as a named list
+keyed by their PK-Sim path, so you can list them and pull one out by
+path:
 
 ``` r
 
-# View formulations
-snapshot$formulations
+korean <- snapshot$individuals$`Korean (Yu 2004 study)`
+names(korean$parameters)
+#> [1] "Organism|Liver|EHC continuous fraction"
+korean$parameters$`Organism|Liver|EHC continuous fraction`
 #> 
-#> ── Formulations (2) ────────────────────────────────────────────────────────────
-#> • Oral solution (Dissolved)
-#> • Tablet (Dormicum) (Weibull)
+#> ── Parameter: Organism|Liver|EHC continuous fraction 
+#> • Value: 1
+#> • Source: Unknown
+```
 
-# Examine a tablet formulation
+### The same shape for every other kind
+
+Every other building-block collection works the same way: a named list
+under `snapshot$<kind>` that you can list, index by name, and print. The
+objects you get back have their own fields and nested structures, all
+available through `$`. For example, compounds expose their
+physicochemical properties, their calculation methods, and their
+biological processes:
+
+``` r
+
+names(snapshot$compounds)
+#> [1] "Midazolam"
+midazolam <- snapshot$compounds$Midazolam
+midazolam$molecular_weight
+#> [1] 325.78
+midazolam$is_small_molecule
+#> [1] TRUE
+midazolam$calculation_methods$names
+#> [1] "Cellular partition coefficient method - Rodgers and Rowland"
+#> [2] "Cellular permeability - PK-Sim Standard"
+names(midazolam$processes)
+#> [1] "SpecificBinding, Buhr 1997, GABRG2"                 
+#> [2] "GlomerularFiltration, Optimized"                    
+#> [3] "MetabolizationLiverMicrosomes_MM, Optimized, CYP3A4"
+#> [4] "MetabolizationLiverMicrosomes_MM, Optimized, UGT1A4"
+```
+
+Other collections feel just as familiar. Asking for
+[`names()`](https://rdrr.io/r/base/names.html) is usually the first
+move:
+
+``` r
+
+names(snapshot$formulations)
+#> [1] "Oral solution"     "Tablet (Dormicum)"
+length(snapshot$protocols)
+#> [1] 33
+head(names(snapshot$protocols))
+#> [1] "iv 0.075 mg/kg (1 min)" "iv 0.05 mg/kg (30 min)" "iv 1 mg (5 min)"       
+#> [4] "iv 0.001 mg (5 min)"    "iv 1 mg (bolus)"        "iv 2 mg (2 min)"
+names(snapshot$expression_profiles)
+#> [1] "CYP3A4_Human_European (P-gp modified, CYP3A4 36 h)" 
+#> [2] "AADAC_Human_European (P-gp modified, CYP3A4 36 h)"  
+#> [3] "P-gp_Human_European (P-gp modified, CYP3A4 36 h)"   
+#> [4] "OATP1B1_Human_European (P-gp modified, CYP3A4 36 h)"
+#> [5] "ATP1A2_Human_European (P-gp modified, CYP3A4 36 h)" 
+#> [6] "UGT1A4_Human_European (P-gp modified, CYP3A4 36 h)" 
+#> [7] "GABRG2_Human_European (P-gp modified, CYP3A4 36 h)" 
+#> [8] "CYP3A4_Human_Korean (Yu 2004 study)"
+```
+
+And every kind of building block can be printed for a readable summary:
+
+``` r
+
 snapshot$formulations$`Tablet (Dormicum)`
 #> 
 #> ── Formulation: Tablet (Dormicum) ──────────────────────────────────────────────
@@ -219,94 +252,38 @@ snapshot$formulations$`Tablet (Dormicum)`
 #> • Lag time: 0 min
 #> • Dissolution shape: 4.3802943225
 #> • Use as suspension: 1
+snapshot$protocols$`po 15 mg`
+#> 
+#> ── Protocol: po 15 mg ──────────────────────────────────────────────────────────
+#> • Type: Simple
+#> • Application Type: Oral
+#> • Dosing Interval: Once
+#> 
+#> ── Parameters ──
+#> 
+#> • Start time: 0 h
+#> • InputDose: 15 mg
+#> • Volume of water/body weight: 3.5 ml/kg
 ```
 
-### Other Building Blocks
+## Mutating building blocks
 
-The snapshot includes several other building block types:
+Most fields on a building block are mutable, and every kind has a pair
+of `add_*()` / `remove_*()` functions for inserting or pruning entries.
+These functions are the public API; the matching R6 methods exist but
+are an implementation detail.
+
+### Changing fields on a building block
+
+Assigning to a field on an existing object writes the change straight
+back into the snapshot:
 
 ``` r
 
-# Populations - groups of virtual individuals
-snapshot$populations
-#> 
-#> ── Populations (0) ─────────────────────────────────────────────────────────────
-#> ℹ No populations found
-
-# Events - simulation events like meals
-snapshot$events
-#> 
-#> ── Events (1) ──────────────────────────────────────────────────────────────────
-#> • High-fat breakfast (Meal: High-fat breakfast (Human))
-
-# Protocols - dosing regimens
-snapshot$protocols
-#> 
-#> ── Protocols (33) ──────────────────────────────────────────────────────────────
-#> • iv 0.075 mg/kg (1 min) (Simple - Intravenous - Once)
-#> • iv 0.05 mg/kg (30 min) (Simple - Intravenous - Once)
-#> • iv 1 mg (5 min) (Simple - Intravenous - Once)
-#> • iv 0.001 mg (5 min) (Simple - Intravenous - Once)
-#> • iv 1 mg (bolus) (Simple - Intravenous bolus - Once)
-#> • iv 2 mg (2 min) (Simple - Intravenous - Once)
-#> • iv 2 mg (bolus) (Simple - Intravenous bolus - Once)
-#> • iv 0.05 mg/kg (2 min) (Simple - Intravenous - Once)
-#> • iv 5 mg (30 sec) (Simple - Intravenous - Once)
-#> • iv 5 mg (bolus) (Simple - Intravenous bolus - Once)
-#> • iv 0.05 mg/kg (bolus) (Simple - Intravenous bolus - Once)
-#> • iv 0.15 mg/kg (bolus) (Simple - Intravenous bolus - Once)
-#> • po 1 mg (Simple - Oral - Once)
-#> • po 5 mg (Simple - Oral - Once)
-#> • po 7.5 mg (Simple - Oral - Once)
-#> • po 0.075 mg (Simple - Oral - Once)
-#> • po 3 mg (Simple - Oral - Once)
-#> • po 4 mg (Simple - Oral - Once)
-#> • po 6 mg (Simple - Oral - Once)
-#> • po 8 mg (Simple - Oral - Once)
-#> • po 15 mg (Simple - Oral - Once)
-#> • po 2 mg (Simple - Oral - Once)
-#> • po 0.075 mg/kg (Simple - Oral - Once)
-#> • po 10 mg (Simple - Oral - Once)
-#> • po 20 mg (Simple - Oral - Once)
-#> • po 40 mg (Simple - Oral - Once)
-#> • po 0.003 mg (Simple - Oral - Once)
-#> • po 15 mg (1 h delayed) (Advanced - 1 schema)
-#> • po 2.5 mg (Simple - Oral - Once)
-#> • po 0.01 mg (Simple - Oral - Once)
-#> • po 3.5 mg (Simple - Oral - Once)
-#> • Mikus 2017 (Advanced - 2 schemas)
-#> • iv 1 mg (2 min) (Simple - Intravenous - Once)
-
-# Expression profiles - protein expression data
-snapshot$expression_profiles
-#> 
-#> ── Expression Profiles (8) ─────────────────────────────────────────────────────
-#> • CYP3A4 (Enzyme, Human, European (P-gp modified, CYP3A4 36 h))
-#> • AADAC (Enzyme, Human, European (P-gp modified, CYP3A4 36 h))
-#> • P-gp (Transporter, Human, European (P-gp modified, CYP3A4 36 h))
-#> • OATP1B1 (Transporter, Human, European (P-gp modified, CYP3A4 36 h))
-#> • ATP1A2 (OtherProtein, Human, European (P-gp modified, CYP3A4 36 h))
-#> • UGT1A4 (Enzyme, Human, European (P-gp modified, CYP3A4 36 h))
-#> • GABRG2 (OtherProtein, Human, European (P-gp modified, CYP3A4 36 h))
-#> • CYP3A4 (Enzyme, Human, Korean (Yu 2004 study))
-```
-
-## Modifying Building Blocks
-
-All building blocks are mutable and can be modified directly:
-
-### Changing Individual Properties
-
-``` r
-
-# Modify age
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age <- 45
-
-# Modify parameter values
-individual$parameters$`Organism|Gallbladder|Gallbladder ejection fraction`$value <- 0.7
-
-# Verify changes
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+ind <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
+ind$age <- 45
+ind$weight <- 78
+ind
 #> 
 #> ── Individual: European (P-gp modified, CYP3A4 36 h) | Seed: 17189110 ──────────
 #> 
@@ -316,6 +293,7 @@ snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 #> • Population: European_ICRP_2002
 #> • Gender: MALE
 #> • Age: 45 year(s)
+#> • Weight: 78 kg
 #> • Calculation Methods:
 #>   • SurfaceAreaPlsInt_VAR1
 #>   • Body surface area - Mosteller
@@ -323,7 +301,6 @@ snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 #> ── Parameters ──
 #> 
 #> • Organism|Liver|EHC continuous fraction: 1
-#> • : 0.7
 #> 
 #> ── Expression Profiles ──
 #> 
@@ -336,118 +313,100 @@ snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 #> • GABRG2|Human|European (P-gp modified, CYP3A4 36 h)
 ```
 
-### Working with Parameters
-
-Parameters have special behavior and validation:
+Parameters that sit at a known path inside the individual’s parameter
+tree are exposed as `LocalizedParameter` objects with a pipe-separated
+path. v11+ snapshots already write `Events|...` segments; legacy
+`Applications|...` segments are migrated on load.
 
 ``` r
 
-
-# Access parameters collection
-params <- snapshot$individuals$`Korean (Yu 2004 study)`$parameters
-params
-#> Parameter Collection with 1 parameters:
-#> Name                                     | Value           | Unit
-#> -----------------------------------------|-----------------|----------------
-#> Organism|Liver|EHC continuous fraction   | 1               |
-
-# Get a specific parameter
-params$`Organism|Liver|EHC continuous fraction`
+korean <- snapshot$individuals$`Korean (Yu 2004 study)`
+ehc <- korean$parameters$`Organism|Liver|EHC continuous fraction`
+ehc$value <- 0.4
+ehc
 #> 
 #> ── Parameter: Organism|Liver|EHC continuous fraction 
-#> • Value: 1
+#> • Value: 0.4
 #> • Source: Unknown
-
-# Modify parameter value
-params$`Organism|Liver|EHC continuous fraction`$value <- 0.4
-
-params
-#> Parameter Collection with 1 parameters:
-#> Name                                     | Value           | Unit
-#> -----------------------------------------|-----------------|----------------
-#> Organism|Liver|EHC continuous fraction   | 0.4             |
 ```
 
-## Working with Observed Data
+### Adding and removing building blocks
 
-Snapshots often contain observed data from clinical studies:
+Build the new object with the matching `create_*()` function (see
+[`vignette("creating-building-blocks")`](https://esqlabs.github.io/osp.snapshots/dev/articles/creating-building-blocks.md)),
+then attach it with `add_*()`. Removal is by name.
 
 ``` r
 
-# View observed data collection
-snapshot$observed_data
-#> 
-#> ── Observed Data (115) ─────────────────────────────────────────────────────────
-#> • Bornemann 1986 - 1 h after a meal - Midazolam - PO - 15 mg - Plasma - agg.
-#> (n=18)
-#> • Olkkola 1993 - po Control (Perpetrator Placebo) - Midazolam - PO - 15 mg -
-#> Plasma - agg. (n=12)
-#> • Allonen 1981 - oral - Midazolam - PO - 15 mg - Plasma - agg. (n=6)
-#> • Allonen 1981 - iv - Midazolam - IV - 0.075 mg/kg - Plasma - agg. (n=6)
-#> • Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg -
-#> Plasma - agg. (n=10)
-#> ... and 110 more
+patient <- create_individual("Patient_A", age = 35, gender = "FEMALE")
+add_individual(snapshot, patient)
 
-# Access a specific dataset
-obs_data <- snapshot$observed_data[[1]]
-obs_data
-#> <DataSet>
-#>   • Name: Bornemann 1986 - 1 h after a meal - Midazolam - PO - 15 mg - Plasma -
-#>   agg. (n=18)
-#>   • X dimension: Time
-#>   • X unit: h
-#>   • Y dimension: Concentration (mass)
-#>   • Y unit: mg/l
-#>   • Error type: NULL
-#>   • Error unit: NULL
-#>   • Molecular weight: 325.77
-#>   • LLOQ: NULL
-#> Meta data:
-#>   • DB Version: OSP DATABASE
-#>   • ID: 104
-#>   • Study Id: Bornemann 1986
-#>   • Reference: https://www.ncbi.nlm.nih.gov/pubmed/2936766
-#>   • Source: Fig. 1
-#>   • Grouping: 1 h after a meal
-#>   • Data type: aggregated
-#>   • N: 18
-#>   • Molecule: Midazolam
-#>   • Species: Human
-#>   • Organ: Peripheral Venous Blood
-#>   • Compartment: Plasma
-#>   • Route: PO
-#>   • Dose: 15 mg
-#>   • Times of Administration [h]: 1
-#>   • Formulation: .
-#>   • Food state: Fed
-#>   • Comment: .
-
-# These are ospsuite DataSet objects
-class(obs_data)
-#> [1] "DataSet"       "DotNetWrapper" "NetObject"     "R6"
+remove_individual(snapshot, "Patient_A")
 ```
 
-## Exporting Snapshots
+### Chaining with the base pipe
 
-After making modifications, you can export the snapshot back to a JSON
-file:
+`add_*()` and `remove_*()` take the snapshot first and return it
+invisibly, so you can chain them with the base pipe when you want to
+make several changes in one expression:
 
 ``` r
 
-# Export to a new file
+snapshot |>
+  add_individual(create_individual("Patient_A", age = 35, gender = "FEMALE")) |>
+  add_individual(create_individual("Patient_B", age = 60, gender = "MALE")) |>
+  remove_population("Healthy Adults")
+```
+
+## Converting collections to tibbles
+
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+converts any building-block collection to a tibble (or a named list of
+related tibbles for collections that split into more than one). It takes
+the snapshot plus the `kind` to convert:
+
+``` r
+
+head(as_tibbles(snapshot, "protocols"))
+#> # A tibble: 6 × 13
+#>   protocol_name   schema_name schema_item_name type  formulation dosing_interval
+#>   <chr>           <chr>       <chr>            <chr> <chr>       <chr>          
+#> 1 iv 0.075 mg/kg… NA          NA               Intr… NA          Once           
+#> 2 iv 0.05 mg/kg … NA          NA               Intr… NA          Once           
+#> 3 iv 1 mg (5 min) NA          NA               Intr… NA          Once           
+#> 4 iv 0.001 mg (5… NA          NA               Intr… NA          Once           
+#> 5 iv 1 mg (bolus) NA          NA               Intr… NA          Once           
+#> 6 iv 2 mg (2 min) NA          NA               Intr… NA          Once           
+#> # ℹ 7 more variables: start_time <dbl>, start_time_unit <chr>, dose <dbl>,
+#> #   dose_unit <chr>, rep_number <dbl>, rep_time <chr>, rep_time_unit <chr>
+
+compound_dfs <- as_tibbles(snapshot, "compounds")
+names(compound_dfs)
+#> [1] "properties" "processes"
+```
+
+See
+[`vignette("exporting-snapshots-to-dataframes")`](https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.md)
+for the per-kind shapes and analysis examples.
+
+## Exporting
+
+After mutating a snapshot, write it back to JSON with
+[`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.md):
+
+``` r
+
 export_snapshot(snapshot, "modified_snapshot.json")
 ```
 
-The exported file can be imported back into PKSIM, preserving all your
-modifications.
+The exported file imports back into PK-Sim. Top-level JSON sections that
+osp.snapshots does not model (e.g. `Simulations`, `Classifications`,
+`ParameterIdentifications`) pass through unchanged.
 
-## Next Steps
+## Next steps
 
-Now that you understand the basics, explore these advanced topics:
-
-- **Working with Data Frames**: Learn how to convert building blocks to
-  data frames for analysis with
-  [`vignette("working-with-dataframes")`](https://esqlabs.github.io/osp.snapshots/dev/articles/working-with-dataframes.md)
-- **Creating Building Blocks**: Create new individuals, formulations,
-  and other building blocks from scratch with
-  [`vignette("creating-building-blocks")`](https://esqlabs.github.io/osp.snapshots/dev/articles/creating-building-blocks.md)
+- [`vignette("creating-building-blocks")`](https://esqlabs.github.io/osp.snapshots/dev/articles/creating-building-blocks.md)
+  walks through the `create_*()` functions for building new snapshots
+  from scratch.
+- [`vignette("exporting-snapshots-to-dataframes")`](https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.md)
+  covers the tibble layer in depth.

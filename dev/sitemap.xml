@@ -1,14 +1,14 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/LICENSE-text.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/articles/creating-building-blocks.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/articles/index.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/articles/osp-snapshots.html</loc></url>
-<url><loc>https://esqlabs.github.io/osp.snapshots/dev/articles/working-with-dataframes.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/authors.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/index.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/news/index.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/AdvancedParameter.html</loc></url>
-<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/Event.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/reference/ExpressionProfile.html</loc></url>

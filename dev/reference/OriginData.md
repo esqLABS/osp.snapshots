@@ -6,9 +6,9 @@ species, population, gender, and the physiological parameters (age,
 gestational age, weight, height) that PK-Sim uses when creating the
 subject. The set of calculation methods used while deriving the
 individual is exposed as a
-[CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md).
-Optional disease state metadata is preserved as-is for round-trip
-fidelity.
+[CalculationMethods](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.md)
+object. Optional disease state metadata is preserved as-is for
+round-trip fidelity.
 
 In an OSP snapshot, the JSON object is named `OriginData` and lives
 under each entry of the `Individuals` array.
@@ -19,8 +19,8 @@ under each entry of the `Individuals` array.
 
   The raw `OriginData` list as it appears in the snapshot JSON,
   refreshed from the embedded
-  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
-  (read-only).
+  [CalculationMethods](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.md)
+  object (read-only).
 
 - `species`:
 
@@ -70,9 +70,9 @@ under each entry of the `Individuals` array.
 - `calculation_methods`:
 
   A
-  [CalculationMethodCache](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
-  holding the calculation methods PK-Sim applies while creating the
-  individual.
+  [CalculationMethods](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.md)
+  object holding the calculation methods PK-Sim applies while creating
+  the individual.
 
 - `disease_state`:
 

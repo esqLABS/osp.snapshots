@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9029</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9030</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,8 +18,8 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/working-with-dataframes.html">Working with Data Frames</a></li>
-    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating Building Blocks</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -37,7 +37,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="import-and-export">Import and Export<a class="anchor" aria-label="anchor" href="#import-and-export"></a></h2>
+      <h2 id="import-and-export">Import and export<a class="anchor" aria-label="anchor" href="#import-and-export"></a></h2>
 
       <div class="section-desc"><p>Load snapshots and export modifications</p></div>
 
@@ -67,9 +67,9 @@
         </dt>
         <dd>Browse available OSPSuite building block templates</dd>
       </dl></div><div class="section level2">
-      <h2 id="core-classes">Core Classes<a class="anchor" aria-label="anchor" href="#core-classes"></a></h2>
+      <h2 id="building-blocks">Building blocks<a class="anchor" aria-label="anchor" href="#building-blocks"></a></h2>
 
-      <div class="section-desc"><p>Main classes for working with snapshots and building blocks</p></div>
+      <div class="section-desc"><p>R6 classes wrapping the eight PK-Sim building block kinds and the root snapshot</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -85,45 +85,10 @@
 
         <dt>
 
-          <code><a href="Individual.html">Individual</a></code>
-
-        </dt>
-        <dd>Individual class for OSP snapshot individuals</dd>
-
-        <dt>
-
           <code><a href="Compound.html">Compound</a></code>
 
         </dt>
         <dd>Compound class for OSP snapshot compounds</dd>
-
-        <dt>
-
-          <code><a href="Process.html">Process</a></code>
-
-        </dt>
-        <dd>Process class for OSP snapshot compound processes</dd>
-
-        <dt>
-
-          <code><a href="Formulation.html">Formulation</a></code>
-
-        </dt>
-        <dd>Formulation class for OSP snapshot formulations</dd>
-
-        <dt>
-
-          <code><a href="Population.html">Population</a></code>
-
-        </dt>
-        <dd>Population class for OSP snapshot populations</dd>
-
-        <dt>
-
-          <code><a href="Protocol.html">Protocol</a></code>
-
-        </dt>
-        <dd>Protocol class for OSP snapshot protocols</dd>
 
         <dt>
 
@@ -141,10 +106,17 @@
 
         <dt>
 
-          <code><a href="Observer.html">Observer</a></code>
+          <code><a href="Formulation.html">Formulation</a></code>
 
         </dt>
-        <dd>Observer class for OSP snapshot observer sets</dd>
+        <dd>Formulation class for OSP snapshot formulations</dd>
+
+        <dt>
+
+          <code><a href="Individual.html">Individual</a></code>
+
+        </dt>
+        <dd>Individual class for OSP snapshot individuals</dd>
 
         <dt>
 
@@ -155,10 +127,40 @@
 
         <dt>
 
-          <code><a href="Parameter.html">Parameter</a></code>
+          <code><a href="Population.html">Population</a></code>
 
         </dt>
-        <dd>Parameter class for OSP snapshot parameters</dd>
+        <dd>Population class for OSP snapshot populations</dd>
+
+        <dt>
+
+          <code><a href="Protocol.html">Protocol</a></code>
+
+        </dt>
+        <dd>Protocol class for OSP snapshot protocols</dd>
+      </dl></div><div class="section level2">
+      <h2 id="leaf-and-sub-structure-types">Leaf and sub-structure types<a class="anchor" aria-label="anchor" href="#leaf-and-sub-structure-types"></a></h2>
+
+      <div class="section-desc"><p>Reusable R6 leaf classes and sub-structures held inside building blocks</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="AdvancedParameter.html">AdvancedParameter</a></code>
+
+        </dt>
+        <dd>AdvancedParameter class for Population advanced parameters</dd>
+
+        <dt>
+
+          <code><a href="CalculationMethods.html">CalculationMethods</a></code>
+
+        </dt>
+        <dd>CalculationMethods class for OSP snapshots</dd>
 
         <dt>
 
@@ -169,10 +171,45 @@
 
         <dt>
 
-          <code><a href="AdvancedParameter.html">AdvancedParameter</a></code>
+          <code><a href="Observer.html">Observer</a></code>
 
         </dt>
-        <dd>AdvancedParameter class for Population advanced parameters</dd>
+        <dd>Observer class for OSP snapshot observer sets</dd>
+
+        <dt>
+
+          <code><a href="OriginData.html">OriginData</a></code>
+
+        </dt>
+        <dd>OriginData class for OSP snapshot individuals</dd>
+
+        <dt>
+
+          <code><a href="Parameter.html">Parameter</a></code>
+
+        </dt>
+        <dd>Parameter class for OSP snapshot parameters</dd>
+
+        <dt>
+
+          <code><a href="Process.html">Process</a></code>
+
+        </dt>
+        <dd>Process class for OSP snapshot compound processes</dd>
+
+        <dt>
+
+          <code><a href="Schema.html">Schema</a></code>
+
+        </dt>
+        <dd>Schema class for OSP advanced protocols</dd>
+
+        <dt>
+
+          <code><a href="SchemaItem.html">SchemaItem</a></code>
+
+        </dt>
+        <dd>SchemaItem class for OSP advanced protocols</dd>
 
         <dt>
 
@@ -188,46 +225,9 @@
         </dt>
         <dd>Range class for physiological parameters</dd>
       </dl></div><div class="section level2">
-      <h2 id="domain-types">Domain Types<a class="anchor" aria-label="anchor" href="#domain-types"></a></h2>
+      <h2 id="factories">Factories<a class="anchor" aria-label="anchor" href="#factories"></a></h2>
 
-      <div class="section-desc"><p>Reusable sub-structures shared across building blocks</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="OriginData.html">OriginData</a></code>
-
-        </dt>
-        <dd>OriginData class for OSP snapshot individuals</dd>
-
-        <dt>
-
-          <code><a href="CalculationMethodCache.html">CalculationMethodCache</a></code>
-
-        </dt>
-        <dd>CalculationMethodCache class for OSP snapshots</dd>
-
-        <dt>
-
-          <code><a href="Schema.html">Schema</a></code>
-
-        </dt>
-        <dd>Schema class for OSP advanced protocols</dd>
-
-        <dt>
-
-          <code><a href="SchemaItem.html">SchemaItem</a></code>
-
-        </dt>
-        <dd>SchemaItem class for OSP advanced protocols</dd>
-      </dl></div><div class="section level2">
-      <h2 id="create-building-blocks">Create Building Blocks<a class="anchor" aria-label="anchor" href="#create-building-blocks"></a></h2>
-
-      <div class="section-desc"><p>Functions to create new building blocks from scratch</p></div>
+      <div class="section-desc"><p>Construct building blocks and leaves from named arguments</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -325,9 +325,9 @@
         </dt>
         <dd>Create a new schema item</dd>
       </dl></div><div class="section level2">
-      <h2 id="manage-building-blocks">Manage Building Blocks<a class="anchor" aria-label="anchor" href="#manage-building-blocks"></a></h2>
+      <h2 id="mutators">Mutators<a class="anchor" aria-label="anchor" href="#mutators"></a></h2>
 
-      <div class="section-desc"><p>Add and remove building blocks from snapshots</p></div>
+      <div class="section-desc"><p>Add and remove building blocks on a snapshot</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -460,9 +460,9 @@
         </dt>
         <dd>Remove protocols from a snapshot</dd>
       </dl></div><div class="section level2">
-      <h2 id="data-frame-conversion">Data Frame Conversion<a class="anchor" aria-label="anchor" href="#data-frame-conversion"></a></h2>
+      <h2 id="tibble-exporters">Tibble exporters<a class="anchor" aria-label="anchor" href="#tibble-exporters"></a></h2>
 
-      <div class="section-desc"><p>Convert building blocks to data frames for analysis</p></div>
+      <div class="section-desc"><p>Convert building blocks to tibbles for analysis</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -478,38 +478,10 @@
 
         <dt>
 
-          <code><a href="get_individuals_dfs.html">get_individuals_dfs()</a></code>
-
-        </dt>
-        <dd>Get all individuals in a snapshot as data frames</dd>
-
-        <dt>
-
           <code><a href="get_compounds_dfs.html">get_compounds_dfs()</a></code>
 
         </dt>
         <dd>Get all compounds in a snapshot as data frames</dd>
-
-        <dt>
-
-          <code><a href="get_formulations_dfs.html">get_formulations_dfs()</a></code>
-
-        </dt>
-        <dd>Get all formulations in a snapshot as data frames</dd>
-
-        <dt>
-
-          <code><a href="get_populations_dfs.html">get_populations_dfs()</a></code>
-
-        </dt>
-        <dd>Get all populations in a snapshot as data frames</dd>
-
-        <dt>
-
-          <code><a href="get_protocols_dfs.html">get_protocols_dfs()</a></code>
-
-        </dt>
-        <dd>Get all protocols in a snapshot as a single consolidated data frame</dd>
 
         <dt>
 
@@ -527,6 +499,20 @@
 
         <dt>
 
+          <code><a href="get_formulations_dfs.html">get_formulations_dfs()</a></code>
+
+        </dt>
+        <dd>Get all formulations in a snapshot as data frames</dd>
+
+        <dt>
+
+          <code><a href="get_individuals_dfs.html">get_individuals_dfs()</a></code>
+
+        </dt>
+        <dd>Get all individuals in a snapshot as data frames</dd>
+
+        <dt>
+
           <code><a href="get_observed_data_dfs.html">get_observed_data_dfs()</a></code>
 
         </dt>
@@ -538,10 +524,24 @@
 
         </dt>
         <dd>Get all observer sets in a snapshot as data frames</dd>
-      </dl></div><div class="section level2">
-      <h2 id="observed-data">Observed Data<a class="anchor" aria-label="anchor" href="#observed-data"></a></h2>
 
-      <div class="section-desc"><p>Work with clinical and experimental data</p></div>
+        <dt>
+
+          <code><a href="get_populations_dfs.html">get_populations_dfs()</a></code>
+
+        </dt>
+        <dd>Get all populations in a snapshot as data frames</dd>
+
+        <dt>
+
+          <code><a href="get_protocols_dfs.html">get_protocols_dfs()</a></code>
+
+        </dt>
+        <dd>Get all protocols in a snapshot as a single consolidated data frame</dd>
+      </dl></div><div class="section level2">
+      <h2 id="observed-data">Observed data<a class="anchor" aria-label="anchor" href="#observed-data"></a></h2>
+
+      <div class="section-desc"><p>Bridge between PK-Sim observed data and ospsuite</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -555,9 +555,9 @@
         </dt>
         <dd>Load DataSet from OSP snapshot observed data</dd>
       </dl></div><div class="section level2">
-      <h2 id="validation-and-utilities">Validation and Utilities<a class="anchor" aria-label="anchor" href="#validation-and-utilities"></a></h2>
+      <h2 id="validators-and-utilities">Validators and utilities<a class="anchor" aria-label="anchor" href="#validators-and-utilities"></a></h2>
 
-      <div class="section-desc"><p>Helper functions for validation and data conversion</p></div>
+      <div class="section-desc"><p>Helpers for validation and data conversion</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -613,7 +613,7 @@
         </dt>
         <dd>Convert time value and unit to lubridate duration</dd>
       </dl></div><div class="section level2">
-      <h2 id="print-methods">Print Methods<a class="anchor" aria-label="anchor" href="#print-methods"></a></h2>
+      <h2 id="print-methods">Print methods<a class="anchor" aria-label="anchor" href="#print-methods"></a></h2>
 
       <div class="section-desc"><p>Formatted display methods for building block collections</p></div>
 

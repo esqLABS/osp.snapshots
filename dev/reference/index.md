@@ -1,6 +1,6 @@
 # Package index
 
-## Import and Export
+## Import and export
 
 Load snapshots and export modifications
 
@@ -11,60 +11,61 @@ Load snapshots and export modifications
 - [`osp_models()`](https://esqlabs.github.io/osp.snapshots/dev/reference/osp_models.md)
   : Browse available OSPSuite building block templates
 
-## Core Classes
+## Building blocks
 
-Main classes for working with snapshots and building blocks
+R6 classes wrapping the eight PK-Sim building block kinds and the root
+snapshot
 
 - [`Snapshot`](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
   : Snapshot class for OSP snapshots
-- [`Individual`](https://esqlabs.github.io/osp.snapshots/dev/reference/Individual.md)
-  : Individual class for OSP snapshot individuals
 - [`Compound`](https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.md)
   : Compound class for OSP snapshot compounds
-- [`Process`](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
-  : Process class for OSP snapshot compound processes
-- [`Formulation`](https://esqlabs.github.io/osp.snapshots/dev/reference/Formulation.md)
-  : Formulation class for OSP snapshot formulations
-- [`Population`](https://esqlabs.github.io/osp.snapshots/dev/reference/Population.md)
-  : Population class for OSP snapshot populations
-- [`Protocol`](https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.md)
-  : Protocol class for OSP snapshot protocols
 - [`Event`](https://esqlabs.github.io/osp.snapshots/dev/reference/Event.md)
   : Event class for OSP snapshot events
 - [`ExpressionProfile`](https://esqlabs.github.io/osp.snapshots/dev/reference/ExpressionProfile.md)
   : ExpressionProfile class for OSP snapshot expression profiles
-- [`Observer`](https://esqlabs.github.io/osp.snapshots/dev/reference/Observer.md)
-  : Observer class for OSP snapshot observer sets
+- [`Formulation`](https://esqlabs.github.io/osp.snapshots/dev/reference/Formulation.md)
+  : Formulation class for OSP snapshot formulations
+- [`Individual`](https://esqlabs.github.io/osp.snapshots/dev/reference/Individual.md)
+  : Individual class for OSP snapshot individuals
 - [`ObserverSet`](https://esqlabs.github.io/osp.snapshots/dev/reference/ObserverSet.md)
   : ObserverSet class for OSP snapshot observer sets
-- [`Parameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
-  : Parameter class for OSP snapshot parameters
-- [`LocalizedParameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.md)
-  : LocalizedParameter class for path-bearing OSP snapshot parameters
+- [`Population`](https://esqlabs.github.io/osp.snapshots/dev/reference/Population.md)
+  : Population class for OSP snapshot populations
+- [`Protocol`](https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.md)
+  : Protocol class for OSP snapshot protocols
+
+## Leaf and sub-structure types
+
+Reusable R6 leaf classes and sub-structures held inside building blocks
+
 - [`AdvancedParameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/AdvancedParameter.md)
   : AdvancedParameter class for Population advanced parameters
+- [`CalculationMethods`](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.md)
+  : CalculationMethods class for OSP snapshots
+- [`LocalizedParameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.md)
+  : LocalizedParameter class for path-bearing OSP snapshot parameters
+- [`Observer`](https://esqlabs.github.io/osp.snapshots/dev/reference/Observer.md)
+  : Observer class for OSP snapshot observer sets
+- [`OriginData`](https://esqlabs.github.io/osp.snapshots/dev/reference/OriginData.md)
+  : OriginData class for OSP snapshot individuals
+- [`Parameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+  : Parameter class for OSP snapshot parameters
+- [`Process`](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
+  : Process class for OSP snapshot compound processes
+- [`Schema`](https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.md)
+  : Schema class for OSP advanced protocols
+- [`SchemaItem`](https://esqlabs.github.io/osp.snapshots/dev/reference/SchemaItem.md)
+  : SchemaItem class for OSP advanced protocols
 - [`range()`](https://esqlabs.github.io/osp.snapshots/dev/reference/range.md)
   : Create a range object for physiological parameters
 - [`Range-class`](https://esqlabs.github.io/osp.snapshots/dev/reference/Range-class.md)
   [`Range`](https://esqlabs.github.io/osp.snapshots/dev/reference/Range-class.md)
   : Range class for physiological parameters
 
-## Domain Types
+## Factories
 
-Reusable sub-structures shared across building blocks
-
-- [`OriginData`](https://esqlabs.github.io/osp.snapshots/dev/reference/OriginData.md)
-  : OriginData class for OSP snapshot individuals
-- [`CalculationMethodCache`](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethodCache.md)
-  : CalculationMethodCache class for OSP snapshots
-- [`Schema`](https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.md)
-  : Schema class for OSP advanced protocols
-- [`SchemaItem`](https://esqlabs.github.io/osp.snapshots/dev/reference/SchemaItem.md)
-  : SchemaItem class for OSP advanced protocols
-
-## Create Building Blocks
-
-Functions to create new building blocks from scratch
+Construct building blocks and leaves from named arguments
 
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   : Create a new compound
@@ -93,9 +94,9 @@ Functions to create new building blocks from scratch
 - [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
   : Create a new schema item
 
-## Manage Building Blocks
+## Mutators
 
-Add and remove building blocks from snapshots
+Add and remove building blocks on a snapshot
 
 - [`add_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_compound.md)
   : Add a compound to a snapshot
@@ -134,41 +135,41 @@ Add and remove building blocks from snapshots
 - [`remove_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_protocol.md)
   : Remove protocols from a snapshot
 
-## Data Frame Conversion
+## Tibble exporters
 
-Convert building blocks to data frames for analysis
+Convert building blocks to tibbles for analysis
 
 - [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
   : Convert a snapshot collection to a tibble or list of tibbles
-- [`get_individuals_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_individuals_dfs.md)
-  : Get all individuals in a snapshot as data frames
 - [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
   : Get all compounds in a snapshot as data frames
-- [`get_formulations_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_formulations_dfs.md)
-  : Get all formulations in a snapshot as data frames
-- [`get_populations_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_populations_dfs.md)
-  : Get all populations in a snapshot as data frames
-- [`get_protocols_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_protocols_dfs.md)
-  : Get all protocols in a snapshot as a single consolidated data frame
 - [`get_events_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_events_dfs.md)
   : Get all events in a snapshot as data frames
 - [`get_expression_profiles_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_expression_profiles_dfs.md)
   : Get all expression profiles in a snapshot as data frames
+- [`get_formulations_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_formulations_dfs.md)
+  : Get all formulations in a snapshot as data frames
+- [`get_individuals_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_individuals_dfs.md)
+  : Get all individuals in a snapshot as data frames
 - [`get_observed_data_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observed_data_dfs.md)
   : Get all observed data in a snapshot as a tibble
 - [`get_observer_sets_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observer_sets_dfs.md)
   : Get all observer sets in a snapshot as data frames
+- [`get_populations_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_populations_dfs.md)
+  : Get all populations in a snapshot as data frames
+- [`get_protocols_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_protocols_dfs.md)
+  : Get all protocols in a snapshot as a single consolidated data frame
 
-## Observed Data
+## Observed data
 
-Work with clinical and experimental data
+Bridge between PK-Sim observed data and ospsuite
 
 - [`loadDataSetFromSnapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/loadDataSetFromSnapshot.md)
   : Load DataSet from OSP snapshot observed data
 
-## Validation and Utilities
+## Validators and utilities
 
-Helper functions for validation and data conversion
+Helpers for validation and data conversion
 
 - [`validate_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_snapshot.md)
   : Validate that an object is a Snapshot
@@ -185,7 +186,7 @@ Helper functions for validation and data conversion
 - [`convert_ospsuite_time_to_duration()`](https://esqlabs.github.io/osp.snapshots/dev/reference/convert_ospsuite_time_to_duration.md)
   : Convert time value and unit to lubridate duration
 
-## Print Methods
+## Print methods
 
 Formatted display methods for building block collections
 

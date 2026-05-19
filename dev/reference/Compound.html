@@ -25,7 +25,7 @@ long-form processes tibble returned by get_compounds_dfs()."><meta name="robots"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9029</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9030</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,8 +36,8 @@ long-form processes tibble returned by get_compounds_dfs()."><meta name="robots"
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/working-with-dataframes.html">Working with Data Frames</a></li>
-    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating Building Blocks</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -74,7 +74,7 @@ long-form <code>processes</code> tibble returned by <code><a href="get_compounds
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
     <p></p><div class="r6-active-bindings"><dl><dt><code>data</code></dt>
 <dd><p>The raw data of the compound (read-only). Refreshed from
-the embedded <a href="CalculationMethodCache.html">CalculationMethodCache</a> and the cached <a href="Process.html">Process</a>
+the embedded <a href="CalculationMethods.html">CalculationMethods</a> and the cached <a href="Process.html">Process</a>
 objects so that mutations flow back to the export payload.</p></dd>
 
 
@@ -127,7 +127,7 @@ built once at construction so that state changes made on a
 
 
     <dt><code>calculation_methods</code></dt>
-<dd><p>A <a href="CalculationMethodCache.html">CalculationMethodCache</a> holding the
+<dd><p>A <a href="CalculationMethods.html">CalculationMethods</a> object holding the
 compound's calculation methods.</p></dd>
 
 

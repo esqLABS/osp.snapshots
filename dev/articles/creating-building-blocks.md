@@ -1,4 +1,4 @@
-# Creating and Managing Building Blocks
+# Creating and managing building blocks
 
 ``` r
 
@@ -8,34 +8,26 @@ library(ospsuite)
 
 ## Overview
 
-This vignette demonstrates how to create new building blocks from
-scratch and manage existing ones within snapshots. You’ll learn to:
+This vignette walks through the `create_*()` functions that build PK-Sim
+*Building blocks* from named arguments, and the `add_*()` / `remove_*()`
+mutators that attach them to a snapshot.
 
-- Create individuals, formulations, parameters, compounds, populations,
-  expression profiles, protocols, events, and observed data
-- Add and remove building blocks from snapshots
-- Work with observed data
-- Manage collections efficiently
-
-## Setup
-
-Let’s start with a test snapshot:
+We use the `Midazolam` template throughout:
 
 ``` r
 
 snapshot <- load_snapshot("Midazolam")
 ```
 
-## Creating New Individuals
+## Individuals
 
-### Basic Individual Creation
-
-The most common building block to create is an individual:
+[`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
+builds an *Individual* from demographic arguments. PK-Sim seeds the
+underlying physiological tree at simulation time.
 
 ``` r
 
-# Create a basic individual
-new_patient <- create_individual(
+patient <- create_individual(
   name = "Patient_001",
   species = "Human",
   population = "European_ICRP_2002",
@@ -45,7 +37,7 @@ new_patient <- create_individual(
   height = 165
 )
 
-new_patient
+patient
 #> 
 #> ── Individual: Patient_001 ─────────────────────────────────────────────────────
 #> 
@@ -59,14 +51,12 @@ new_patient
 #> • Weight: 65 kg
 ```
 
-### Advanced Individual Creation
-
-You can create individuals with additional parameters:
+Extra demographics (e.g. `gestational_age`) are accepted as additional
+named arguments:
 
 ``` r
 
-# Create individual with more characteristics
-advanced_patient <- create_individual(
+pregnant_patient <- create_individual(
   name = "Pregnant_Patient",
   species = "Human",
   population = "European_ICRP_2002",
@@ -77,7 +67,7 @@ advanced_patient <- create_individual(
   gestational_age = 20 # weeks
 )
 
-advanced_patient
+pregnant_patient
 #> 
 #> ── Individual: Pregnant_Patient ────────────────────────────────────────────────
 #> 
@@ -92,14 +82,12 @@ advanced_patient
 #> • Weight: 70 kg
 ```
 
-### Adding Individuals to Snapshots
+Attach the result to a snapshot with
+[`add_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_individual.md):
 
 ``` r
 
-# Add the new individual to the snapshot
-add_individual(snapshot, new_patient)
-
-# Verify it was added
+add_individual(snapshot, patient)
 snapshot$individuals
 #> 
 #> ── Individuals (3) ─────────────────────────────────────────────────────────────
@@ -108,13 +96,58 @@ snapshot$individuals
 #> • Patient_001
 ```
 
-## Creating New Formulations
-
-### Dissolved Formulations
+Parameters that sit on a specific path inside the individual’s
+physiological tree are built with
+[`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
+using a `path` argument. PK-Sim writes the path as pipe-separated
+segments (`Organism|Liver|...`):
 
 ``` r
 
-# Create a simple dissolved formulation
+ehc <- create_parameter(
+  path = "Organism|Liver|EHC continuous fraction",
+  value = 0.4
+)
+
+gfr <- create_parameter(
+  path = "Organism|Kidney|GFR",
+  value = 120,
+  unit = "ml/min",
+  source = "Literature",
+  description = "Normal adult GFR",
+  source_id = 123
+)
+
+gfr
+#> 
+#> ── Parameter: Organism|Kidney|GFR 
+#> • Value: 120
+#> • Unit: ml/min
+#> • Source: Literature
+#> • Description: Normal adult GFR
+```
+
+You can pass a list of such parameters straight to
+`create_individual(parameters = ...)`, or assign them through
+`individual$parameters` after the fact (see “Modifying existing building
+blocks” below).
+
+## Formulations
+
+[`create_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
+covers every PK-Sim release profile (`"Dissolved"`, `"Weibull"`,
+`"First Order"`, `"Zero Order"`, `"Lint80"`, `"Particles"`, `"Table"`).
+The accepted `parameters` depend on the chosen `type`: `"Dissolved"`
+takes none; the kinetic profiles (`"Weibull"`, `"First Order"`,
+`"Zero Order"`, `"Lint80"`, `"Particles"`, `"Table"`) accept the
+release-kinetics parameters specific to that profile (for example a
+`"Weibull"` formulation accepts `dissolution_time`, `dissolution_shape`,
+`lag_time`, …). See
+[`?create_formulation`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
+for the parameter list per type.
+
+``` r
+
 oral_solution <- create_formulation(
   name = "Oral Solution 10mg/mL",
   type = "Dissolved"
@@ -124,23 +157,17 @@ oral_solution
 #> 
 #> ── Formulation: Oral Solution 10mg/mL ──────────────────────────────────────────
 #> • Type: Dissolved
-```
 
-### Tablet Formulations
-
-``` r
-
-# Create a tablet with Weibull dissolution
 tablet <- create_formulation(
   name = "Immediate Release Tablet",
   type = "Weibull",
   parameters = list(
-    dissolution_time = 30, # 50% dissolved in 30 min
+    dissolution_time = 30,
     dissolution_time_unit = "min",
-    lag_time = 5, # 5 min lag time
+    lag_time = 5,
     lag_time_unit = "min",
-    dissolution_shape = 1.2, # shape parameter
-    suspension = TRUE # use as suspension
+    dissolution_shape = 1.2,
+    suspension = TRUE
   )
 )
 
@@ -157,122 +184,26 @@ tablet
 #> • Use as suspension: 1
 ```
 
-### Additional Formulation Types
-
 ``` r
 
-# Create a first-order formulation
-first_order_form <- create_formulation(
-  name = "First Order Release",
-  type = "First Order",
-  parameters = list(
-    thalf = 60,
-    thalf_unit = "min"
-  )
-)
-
-# Create a zero-order formulation
-zero_order_form <- create_formulation(
-  name = "Zero Order Release",
-  type = "Zero Order",
-  parameters = list(
-    end_time = 120,
-    end_time_unit = "min"
-  )
-)
-
-# Display the formulations
-first_order_form
-#> 
-#> ── Formulation: First Order Release ────────────────────────────────────────────
-#> • Type: First Order
-#> 
-#> ── Parameters ──
-#> 
-#> • t1/2: 60 min
-zero_order_form
-#> 
-#> ── Formulation: Zero Order Release ─────────────────────────────────────────────
-#> • Type: Zero Order
-#> 
-#> ── Parameters ──
-#> 
-#> • End time: 120 min
-```
-
-### Adding Formulations to Snapshots
-
-``` r
-
-# Add formulations to the snapshot
 add_formulation(snapshot, oral_solution)
 add_formulation(snapshot, tablet)
-
-# Check they were added
-snapshot$formulations
-#> 
-#> ── Formulations (4) ────────────────────────────────────────────────────────────
-#> • Oral solution (Dissolved)
-#> • Tablet (Dormicum) (Weibull)
-#> • Oral Solution 10mg/mL (Dissolved)
-#> • Immediate Release Tablet (Weibull)
 ```
 
-## Creating Parameters
-
-### Basic Parameter Creation
-
-``` r
-
-# Create a parameter with basic properties
-liver_param <- create_parameter(
-  name = "Organism|Liver|Specific organ clearance",
-  value = 0.5,
-  unit = "1/min"
-)
-
-liver_param
-#> 
-#> ── Parameter: Organism|Liver|Specific organ clearance 
-#> • Value: 0.5
-#> • Unit: 1/min
-```
-
-### Parameter with Additional Properties
-
-``` r
-
-# Create parameter with source information
-detailed_param <- create_parameter(
-  name = "Organism|Kidney|GFR",
-  value = 120,
-  unit = "ml/min",
-  source = "Literature",
-  description = "Normal adult GFR",
-  source_id = 123
-)
-
-detailed_param
-#> 
-#> ── Parameter: Organism|Kidney|GFR 
-#> • Value: 120
-#> • Unit: ml/min
-#> • Source: Literature
-#> • Description: Normal adult GFR
-```
-
-## Creating Compounds
+## Compounds
 
 [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
-wraps `Compound$new()` so you can build a *Compound* from named
-arguments instead of a raw list.
+builds a compound with validation on common fields such as
+`molecular_weight_unit`. Compound-level parameters (clearances,
+halogens, …) are passed as a list of
+[`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
+results: parameters named on a compound are identified by `name`, so
+omit the `path` argument.
 
 ``` r
 
-# Create a minimal compound
 drug <- create_compound(name = "Drug X")
 
-# Create a small molecule with molecular weight and binding partner
 drug <- create_compound(
   name = "Drug X",
   is_small_molecule = TRUE,
@@ -301,26 +232,29 @@ drug
 #>   • Cl_spec: 5 ml/min/kg [Unknown]
 ```
 
-## Creating Compound Processes
+### Compound processes
 
 [`create_process()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_process.md)
-builds a *Process* (a PK-Sim `CompoundProcess`) from named arguments.
-The `internal_name` identifies the process template in PK-Sim’s compound
-process repository (e.g. `"SpecificBinding"` for plasma protein binding,
-`"MetabolizationSpecific_MM"` for Michaelis-Menten metabolism,
-`"GlomerularFiltration"` for renal clearance), and `data_source` labels
-the data origin.
+builds a compound process (plasma protein binding, metabolism,
+clearance, …) from named arguments. The `internal_name` identifies the
+process template in PK-Sim’s compound process repository (for example
+`"SpecificBinding"`, `"MetabolizationSpecific_MM"`,
+`"GlomerularFiltration"`); `data_source` labels the data origin. See
+[`?create_process`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_process.md)
+for usage and current examples; the canonical list of `internal_name`
+values is maintained in PK-Sim and groups into the categories surfaced
+by `process$category` (`protein_binding_partners`,
+`metabolizing_enzymes`, `hepatic_clearance`, `transporter_proteins`,
+`renal_clearance`, `biliary_clearance`, `inhibition`, `induction`).
 
 ``` r
 
-# A minimal protein-binding process
 binding <- create_process(
   internal_name = "SpecificBinding",
   data_source = "Buhr 1997",
   molecule = "GABRG2"
 )
 
-# A metabolizing enzyme with kinetic parameters
 metabolism <- create_process(
   internal_name = "MetabolizationSpecific_MM",
   data_source = "Optimized",
@@ -340,13 +274,13 @@ The `$category` active binding derives a domain label
 (`"protein_binding_partners"`, `"metabolizing_enzymes"`,
 `"hepatic_clearance"`, `"transporter_proteins"`, `"renal_clearance"`,
 `"biliary_clearance"`, `"inhibition"`, or `"induction"`) from the
-`internal_name`. Compound processes from a loaded snapshot are exposed
+`internal_name`. Compound processes loaded from a snapshot are exposed
 as a flat named list of *Process* objects via `compound$processes`, and
 the long-form `processes` tibble returned by
 [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
 surfaces every (process, parameter) pair as a row.
 
-## Creating Populations
+## Populations
 
 [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
 builds a *Population* recipe: settings used by PK-Sim to sample a cohort
@@ -377,7 +311,7 @@ adults
 #> Weight range: 50 - 90 kg
 ```
 
-## Creating Expression Profiles
+## Expression profiles
 
 [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
 builds an *ExpressionProfile*. The identity of a profile is the
@@ -402,15 +336,15 @@ cyp3a4
 #> • Ontogeny: CYP3A4
 ```
 
-## Creating Protocols
+## Protocols
 
 [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
-builds a *Protocol*. By default it creates a Simple Protocol; pass
-`schemas` to create an Advanced Protocol.
+builds a *Protocol*. By default it creates a *Simple Protocol* (one
+application type, one dose, optional dosing interval); pass `schemas` to
+create an *Advanced Protocol*.
 
 ``` r
 
-# Simple oral protocol with one dose
 single_dose <- create_protocol(
   name = "Single dose 10mg",
   application_type = "Oral",
@@ -434,22 +368,24 @@ single_dose
 #> • InputDose: 10 mg
 ```
 
-### Advanced Protocols
+### Advanced protocols
 
-For dosing schedules that do not fit the Simple Protocol pattern, build
-an Advanced Protocol from one or more *Schema* blocks. Each *Schema*
-owns schema-level parameters (such as `NumberOfRepetitions` and
-`TimeBetweenRepetitions`) and an ordered list of *SchemaItem*
-applications.
+For dosing schedules that do not fit a single application (a multi-day
+course, or two compounds dosed on staggered schedules), use an *Advanced
+Protocol*. An Advanced Protocol is built from one or more *Schemas*;
+each schema describes a repeating block of applications (for example “10
+mg orally every 24 hours for 5 days”). Inside a schema, each individual
+application is a *SchemaItem*.
+
+You build them with
 [`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md)
-and
+(the repeating block) and
 [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
-wrap the R6 constructors so you can pass *Parameter* objects directly
-without hand-rolling the raw JSON shape.
+(one application), then pass a list of schemas to
+[`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md):
 
 ``` r
 
-# Build the schema item, the schema, and the protocol from named arguments
 qd_oral <- create_protocol(
   name = "Once daily oral, 5 days",
   schemas = list(
@@ -491,11 +427,22 @@ PK-Sim application types (`"Oral"`, `"IntravenousBolus"`,
 `"IntravenousInfusion"`, `"Intramuscular"`, `"Subcutaneous"`,
 `"Dermal"`, `"Rectal"`, `"Inhalation"`, `"Intraperitoneal"`).
 
-## Creating Events
+## Events
 
+An *Event* is a discrete perturbation that is not a drug administration:
+a meal, a change of posture, an enzyme inducer dose, an exercise bout.
 [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
-builds an *Event* from a named template (for example a meal). PK-Sim
-clones the template and applies your parameter overrides.
+builds one from a `template` (the name of an event recipe in PK-Sim’s
+event database) plus optional parameter overrides. PK-Sim clones the
+named template at simulation time and applies your overrides.
+
+The set of available templates is defined inside PK-Sim (in particular
+by the PK-Sim Events database that ships with the installation), so the
+exact list of valid `template` names depends on your PK-Sim setup.
+Templates that are commonly seen in published snapshots include the
+“Meal: Standard (Human)” family for food effects; if you need a template
+that is not on your installation, define it in PK-Sim first and
+re-export.
 
 ``` r
 
@@ -519,28 +466,31 @@ breakfast
 #> • Meal volume: 0.3 l
 ```
 
-## Creating Observer Sets
+## Observer sets
 
-[`create_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set.md)
-builds an \[ObserverSet\] from a name and an optional list of observers.
-Each observer is a simulation-time formula that exposes a derived
+An *Observer* is a simulation-time formula that exposes a derived
 quantity (for example a tissue concentration) that is not a natural
-model output. You can pass either raw observer lists or \[Observer\] R6
-objects.
+model output. Observers travel in groups called *Observer sets*.
+[`create_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set.md)
+builds a set from a name and a list of observers.
+
+Build each observer with `Observer$new()` (which validates the input and
+gives you typed accessors `$name`, `$type`, `$dimension`, `$formula`,
+`$container_tags`), then bundle them into a set and attach the set to a
+snapshot:
 
 ``` r
 
-# Build the set from raw observer lists
+brain_obs <- Observer$new(list(
+  Name = "brain_plasma_conc",
+  Type = "Container",
+  Dimension = "Concentration (molar)",
+  Formula = list(Formula = "Conc_Br")
+))
+
 brain_set <- create_observer_set(
   name = "BrainPlasmaConcentration",
-  observers = list(
-    list(
-      Name = "brain_plasma_conc",
-      Type = "Container",
-      Dimension = "Concentration (molar)",
-      Formula = list(Formula = "Conc_Br")
-    )
-  )
+  observers = list(brain_obs)
 )
 
 brain_set
@@ -548,32 +498,17 @@ brain_set
 #> ── ObserverSet: BrainPlasmaConcentration ───────────────────────────────────────
 #> • 1 observer
 
-# Or build it from Observer R6 objects
-observer <- Observer$new(list(
-  Name = "brain_plasma_conc",
-  Type = "Container",
-  Dimension = "Concentration (molar)",
-  Formula = list(Formula = "Conc_Br")
-))
-
-brain_set_from_r6 <- create_observer_set(
-  name = "BrainPlasmaConcentration",
-  observers = list(observer)
-)
-
-brain_set_from_r6
-#> 
-#> ── ObserverSet: BrainPlasmaConcentration ───────────────────────────────────────
-#> • 1 observer
+add_observer_set(snapshot, brain_set)
 ```
 
-## Creating Observed Data
+## Observed data
 
 [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
 builds an
 [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
 from named arguments for the time grid, measurement values, units, and
-optional error series.
+optional error series. `value_dimension` is required and gates the unit
+validation.
 
 ``` r
 
@@ -600,45 +535,43 @@ obs
 #> Meta data:
 ```
 
-## Managing Building Blocks
+## Managing building blocks
 
-### Removing Building Blocks
+Each building-block kind has paired `add_*()` and `remove_*()` mutators
+that take the snapshot first and return it invisibly, so they chain with
+the base pipe.
 
 ``` r
 
-# Remove individuals by name
 remove_individual(snapshot, "Patient_001")
-
-# Remove multiple individuals at once
-# remove_individual(snapshot, c("Patient_001", "Patient_002"))
-
-# Remove formulations
 remove_formulation(snapshot, "Oral Solution 10mg/mL")
-
-# Remove populations
-# remove_population(snapshot, "Population_Name")
-
-# Remove expression profiles by ID (molecule|species|category)
-# remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
 ```
 
-### Batch Operations
+You can pass several names to remove at once:
 
 ``` r
 
-# Create multiple individuals at once
+remove_individual(snapshot, c("Patient_001", "Patient_002"))
+remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
+```
+
+### Adding several building blocks at once
+
+`add_*()` currently takes one building block at a time, so loop over
+your list to add many:
+
+``` r
+
 patients <- list(
   create_individual("Patient_A", age = 25, gender = "MALE"),
   create_individual("Patient_B", age = 45, gender = "FEMALE"),
   create_individual("Patient_C", age = 65, gender = "MALE")
 )
 
-# Add them all
 for (patient in patients) {
   add_individual(snapshot, patient)
 }
 
-# Verify
 snapshot$individuals
 #> 
 #> ── Individuals (5) ─────────────────────────────────────────────────────────────
@@ -649,111 +582,79 @@ snapshot$individuals
 #> • Patient_C
 ```
 
-## Working with Observed Data
+### Modifying existing building blocks
 
-### Creating DataSet Objects
-
-Observed data must be provided as
-[`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
-objects:
+Most fields on an existing building block are mutable; assign to them
+like any other R6 active binding. Reading the object before and after
+shows the effect:
 
 ``` r
 
-# Create a new DataSet
-study_data <- DataSet$new(name = "Phase I Study - Subject 001")
-
-# Set the data values
-time_points <- c(0, 0.5, 1, 2, 4, 8, 12, 24)
-concentrations <- c(0, 12.5, 18.2, 15.8, 11.2, 6.8, 3.4, 1.1)
-
-study_data$setValues(xValues = time_points, yValues = concentrations)
-
-# Set dimensions and units
-study_data$xDimension <- "Time"
-study_data$xUnit <- "h"
-study_data$yDimension <- "Concentration (mass)"
-study_data$yUnit <- "mg/l"
-
-study_data
-#> <DataSet>
-#>   • Name: Phase I Study - Subject 001
-#>   • X dimension: Time
-#>   • X unit: h
-#>   • Y dimension: Concentration (mass)
-#>   • Y unit: mg/l
-#>   • Error type: NULL
-#>   • Error unit: NULL
-#>   • Molecular weight: NULL
-#>   • LLOQ: NULL
-#> Meta data:
+patient <- snapshot$individuals$Patient_A
+patient
+#> 
+#> ── Individual: Patient_A ───────────────────────────────────────────────────────
+#> 
+#> ── Characteristics ──
+#> 
+#> • Gender: MALE
+#> • Age: 25 year(s)
 ```
 
-### Adding Observed Data
-
 ``` r
 
-# Add to snapshot (function needs to be implemented)
-# add_observed_data(snapshot, study_data)
-
-# Remove observed data by name
-# remove_observed_data(snapshot, "Phase I Study - Subject 001")
-```
-
-## Advanced Building Block Management
-
-### Modifying Existing Building Blocks
-
-``` r
-
-# Get an individual and modify properties
-patient <- snapshot$individuals$`Patient_A`
 patient$age <- 30
 patient$weight <- 75
-
-# Add custom parameters
-custom_param <- create_parameter(
-  name = "Organism|Custom|Clearance",
-  value = 1.5,
-  unit = "L/h"
-)
-
-# Note: Adding parameters to existing individuals requires
-# working with the parameter collection directly
+patient$gender <- "FEMALE"
+patient
+#> 
+#> ── Individual: Patient_A ───────────────────────────────────────────────────────
+#> 
+#> ── Characteristics ──
+#> 
+#> • Gender: FEMALE
+#> • Age: 30 year(s)
+#> • Weight: 75 kg
 ```
 
-### Copying and Modifying Building Blocks
+The same pattern works for nested objects. To bump a parameter on an
+individual, look it up by path under `individual$parameters` and write
+to its `value`:
 
 ``` r
 
-# Create a copy of an existing individual with modifications
-original <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
-
-# Create modified copy
-modified_individual <- create_individual(
-  name = "Modified European",
-  species = original$species,
-  population = original$population,
-  gender = original$gender,
-  age = 50, # Changed age
-  weight = 80 # Changed weight
-)
-
-add_individual(snapshot, modified_individual)
+korean <- snapshot$individuals$`Korean (Yu 2004 study)`
+ehc <- korean$parameters$`Organism|Liver|EHC continuous fraction`
+ehc
+#> 
+#> ── Parameter: Organism|Liver|EHC continuous fraction 
+#> • Value: 1
+#> • Source: Unknown
+ehc$value <- 0.4
+ehc
+#> 
+#> ── Parameter: Organism|Liver|EHC continuous fraction 
+#> • Value: 0.4
+#> • Source: Unknown
 ```
 
-### Validation and Error Handling
+After every change, the parent snapshot exports the updated values:
+`export_snapshot(snapshot, ...)` writes them straight back to JSON, no
+extra step required.
 
-The package includes validation for common inputs:
+### Validation
+
+`create_*()` functions validate common inputs against the canonical
+ospsuite enums and abort with informative messages on bad input:
 
 ``` r
 
-# These will produce validation errors:
 tryCatch(
   {
     create_individual(
       name = "Invalid Patient",
-      species = "InvalidSpecies", # Invalid species
-      gender = "OTHER" # Invalid gender
+      species = "InvalidSpecies",
+      gender = "OTHER"
     )
   },
   error = function(e) cat("Error:", e$message, "\n")
@@ -764,7 +665,7 @@ tryCatch(
   {
     create_formulation(
       name = "Invalid Form",
-      type = "NonexistentType" # Invalid formulation type
+      type = "NonexistentType"
     )
   },
   error = function(e) cat("Error:", e$message, "\n")
@@ -772,105 +673,25 @@ tryCatch(
 #> Error: subscript out of bounds
 ```
 
-Valid options are available through validation functions:
+The same checks are also exported as standalone helpers
+([`validate_species()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_species.md),
+[`validate_gender()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_gender.md),
+[`validate_unit()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_unit.md),
+[`validate_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_population.md))
+when you need them outside a `create_*()` call.
+
+## Exporting
+
+After your modifications, write the snapshot back to JSON:
 
 ``` r
 
-# Check valid species (this would show available options)
-# validate_species("Human")  # Returns TRUE
-
-# Check valid genders
-# validate_gender("MALE")    # Returns TRUE
+export_snapshot(snapshot, "modified_snapshot.json")
 ```
 
-## Working with Templates
+## Next steps
 
-You can load predefined templates and modify them:
-
-``` r
-
-# Load a template (if available)
-# template_snapshot <- load_snapshot("TemplateName")
-
-# Modify template building blocks
-# template_individual <- template_snapshot$individuals[[1]]
-# template_individual$age <- 40
-
-# Add to your snapshot
-# add_individual(snapshot, template_individual)
-```
-
-## Exporting Your Work
-
-After creating and managing building blocks, export your snapshot:
-
-``` r
-
-# Export the modified snapshot
-export_snapshot(snapshot, "modified_snapshot_with_new_blocks.json")
-```
-
-## Best Practices
-
-### Naming Conventions
-
-Use descriptive names for building blocks:
-
-``` r
-
-# Good naming
-create_individual(
-  "Elderly_Female_80kg",
-  age = 75,
-  gender = "FEMALE",
-  weight = 80
-)
-create_formulation("IR_Tablet_Fast_Release", type = "Weibull")
-
-# Less descriptive
-create_individual("Patient1", age = 75)
-create_formulation("Form1", type = "Weibull")
-```
-
-### Organization
-
-Keep related building blocks together:
-
-``` r
-
-# Create a family of related individuals
-pediatric_patients <- list(
-  create_individual("Pediatric_5yr", age = 5, weight = 18),
-  create_individual("Pediatric_10yr", age = 10, weight = 32),
-  create_individual("Pediatric_15yr", age = 15, weight = 55)
-)
-
-# Create related formulations
-pediatric_formulations <- list(
-  create_formulation("Oral_Suspension_Pediatric", type = "Dissolved"),
-  create_formulation("Chewable_Tablet_Pediatric", type = "Weibull")
-)
-```
-
-### Documentation
-
-Document your building blocks with meaningful metadata:
-
-``` r
-
-# Add comments or descriptions when creating parameters
-hepatic_clearance <- create_parameter(
-  name = "Organism|Liver|Hepatic clearance",
-  value = 2.5,
-  unit = "L/h",
-  description = "Estimated from in vitro data scaled with ISEF=0.5",
-  source = "Laboratory study 2023"
-)
-```
-
-## Next Steps
-
-- Explore data frame conversion in
-  [`vignette("working-with-dataframes")`](https://esqlabs.github.io/osp.snapshots/dev/articles/working-with-dataframes.md)
-- See the complete API reference at [function
-  reference](https://esqlabs.github.io/osp.snapshots/reference/)
+- [`vignette("exporting-snapshots-to-dataframes")`](https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.md)
+  covers the tibble layer for analysis.
+- The full API reference is at
+  <https://esqlabs.github.io/osp.snapshots/reference/>.
