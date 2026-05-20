@@ -2,31 +2,36 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_individual}
 \alias{add_individual}
-\title{Add an individual to a snapshot}
+\title{Add one or more individuals to a snapshot}
 \usage{
 add_individual(snapshot, individual)
 }
 \arguments{
 \item{snapshot}{A Snapshot object}
 
-\item{individual}{An Individual object created with create_individual()}
+\item{individual}{An Individual object created with \code{\link[=create_individual]{create_individual()}},
+or a list of such objects.}
 }
 \value{
-The updated Snapshot object
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add an Individual object to a Snapshot. This is a convenience function
-that calls the add_individual method of the Snapshot class.
+Add one or more \link{Individual} objects to a \link{Snapshot}.
 }
 \examples{
 \dontrun{
 # Load a snapshot
 snapshot <- load_snapshot("Midazolam")
 
-# Create a new individual
+# Add a single individual
 ind <- create_individual(name = "New Patient", age = 35, weight = 70)
-
-# Add the individual to the snapshot
 snapshot <- add_individual(snapshot, ind)
+
+# Add several at once
+patients <- list(
+  create_individual("Patient_A", age = 25),
+  create_individual("Patient_B", age = 45)
+)
+snapshot <- add_individual(snapshot, patients)
 }
 }

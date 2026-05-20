@@ -84,7 +84,7 @@
       add_compound(snapshot, "not a compound")
     Condition
       Error in `snapshot$add_compound()`:
-      ! Expected a Compound object, but got <character>
+      ! Expected a Compound object or a list of them, but got <character>
 
 # remove_compound warns when name is missing
 
@@ -110,7 +110,7 @@
       add_population(snapshot, "not a population")
     Condition
       Error in `snapshot$add_population()`:
-      ! Expected a Population object, but got <character>
+      ! Expected a Population object or a list of them, but got <character>
 
 # add_protocol errors on wrong class
 
@@ -118,7 +118,7 @@
       add_protocol(snapshot, "not a protocol")
     Condition
       Error in `snapshot$add_protocol()`:
-      ! Expected a Protocol object, but got <character>
+      ! Expected a Protocol object or a list of them, but got <character>
 
 # remove_protocol warns when name is missing
 
@@ -144,7 +144,7 @@
       add_event(snapshot, "not an event")
     Condition
       Error in `snapshot$add_event()`:
-      ! Expected an Event object, but got <character>
+      ! Expected an Event object or a list of them, but got <character>
 
 # remove_event warns when name is missing
 
@@ -280,7 +280,7 @@
       add_observed_data(snapshot, "not a dataset")
     Condition
       Error in `snapshot$add_observed_data()`:
-      ! Expected a DataSet object, but got <character>
+      ! Expected a DataSet object or a list of them, but got <character>
 
 # mutators reject non-Snapshot inputs
 
@@ -337,4 +337,59 @@
     Condition
       Error in `validate_snapshot()`:
       ! Expected a Snapshot object, but got <character>
+
+# add_compound errors on an empty list
+
+    Code
+      add_compound(snapshot, list())
+    Condition
+      Error in `snapshot$add_compound()`:
+      ! Must supply at least one <Compound>.
+
+# add_individual errors on an empty list
+
+    Code
+      add_individual(snapshot, list())
+    Condition
+      Error in `snapshot$add_individual()`:
+      ! Must supply at least one <Individual>.
+
+# add_compound rejects a list with a wrong-class element
+
+    Code
+      add_compound(snapshot, bad)
+    Condition
+      Error in `snapshot$add_compound()`:
+      ! Every element must be a <Compound> object.
+      x Element 2 is <character>.
+
+# add_individual rejects a list with a wrong-class element
+
+    Code
+      add_individual(snapshot, bad)
+    Condition
+      Error in `snapshot$add_individual()`:
+      ! Every element must be an <Individual> object.
+      x Element 2 is <character>.
+
+# add_expression_profile rejects a list with a wrong-class element
+
+    Code
+      add_expression_profile(snapshot, bad)
+    Condition
+      Error in `snapshot$add_expression_profile()`:
+      ! Every element must be an <ExpressionProfile> object.
+      x Element 2 is <character>.
+
+# add_*() reports the count of added entries
+
+    Code
+      snapshot <- add_compound(snapshot, create_compound(name = "X"))
+    Message
+      v Added 1 compound(s)
+    Code
+      snapshot <- add_compound(snapshot, list(create_compound(name = "Y"),
+      create_compound(name = "Z")))
+    Message
+      v Added 2 compound(s)
 

@@ -2,20 +2,21 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_protocol}
 \alias{add_protocol}
-\title{Add a protocol to a snapshot}
+\title{Add one or more protocols to a snapshot}
 \usage{
 add_protocol(snapshot, protocol)
 }
 \arguments{
 \item{snapshot}{A \link{Snapshot} object.}
 
-\item{protocol}{A \link{Protocol} object created with \code{\link[=create_protocol]{create_protocol()}}.}
+\item{protocol}{A \link{Protocol} object created with \code{\link[=create_protocol]{create_protocol()}}, or a
+list of such objects.}
 }
 \value{
 The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add a \link{Protocol} object to a \link{Snapshot}.
+Add one or more \link{Protocol} objects to a \link{Snapshot}.
 }
 \examples{
 \dontrun{
@@ -26,5 +27,8 @@ prot <- create_protocol(
 )
 snapshot <- load_snapshot("Midazolam") |>
   add_protocol(prot)
+
+snapshot <- load_snapshot("Midazolam") |>
+  add_protocol(list(prot, prot))
 }
 }

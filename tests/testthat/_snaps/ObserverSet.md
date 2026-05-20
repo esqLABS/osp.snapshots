@@ -12,7 +12,7 @@
       add_observer_set(snapshot, list())
     Condition
       Error in `snapshot$add_observer_set()`:
-      ! Expected an ObserverSet object, but got <list>
+      ! Must supply at least one <ObserverSet>.
 
 # add_observer_set() rejects non-Snapshot inputs
 

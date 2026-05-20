@@ -2,31 +2,36 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_formulation}
 \alias{add_formulation}
-\title{Add a formulation to a snapshot}
+\title{Add one or more formulations to a snapshot}
 \usage{
 add_formulation(snapshot, formulation)
 }
 \arguments{
 \item{snapshot}{A Snapshot object}
 
-\item{formulation}{A Formulation object created with create_formulation()}
+\item{formulation}{A Formulation object created with
+\code{\link[=create_formulation]{create_formulation()}}, or a list of such objects.}
 }
 \value{
-The updated Snapshot object
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add a Formulation object to a Snapshot. This is a convenience function
-that calls the add_formulation method of the Snapshot class.
+Add one or more \link{Formulation} objects to a \link{Snapshot}.
 }
 \examples{
 \dontrun{
 # Load a snapshot
 snapshot <- load_snapshot("Midazolam")
 
-# Create a new formulation
+# Add a single formulation
 form <- create_formulation(name = "Tablet", type = "Weibull")
-
-# Add the formulation to the snapshot
 snapshot <- add_formulation(snapshot, form)
+
+# Add several at once
+forms <- list(
+  create_formulation("Tablet", type = "Weibull"),
+  create_formulation("Oral solution", type = "First Order")
+)
+snapshot <- add_formulation(snapshot, forms)
 }
 }
