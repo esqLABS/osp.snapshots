@@ -69,7 +69,7 @@ pregnant_patient
 Attach the result to a snapshot with `add_individual()`:
 
 ```{r}
-add_individual(snapshot, patient)
+snapshot <- add_individual(snapshot, patient)
 snapshot$individuals
 ```
 
@@ -124,8 +124,8 @@ tablet
 ```
 
 ```{r}
-add_formulation(snapshot, oral_solution)
-add_formulation(snapshot, tablet)
+snapshot <- add_formulation(snapshot, oral_solution)
+snapshot <- add_formulation(snapshot, tablet)
 ```
 
 ## Compounds
@@ -303,7 +303,7 @@ brain_set <- create_observer_set(
 
 brain_set
 
-add_observer_set(snapshot, brain_set)
+snapshot <- add_observer_set(snapshot, brain_set)
 ```
 
 ## Observed data
@@ -328,15 +328,15 @@ obs
 Each building-block kind has paired `add_*()` and `remove_*()` mutators that take the snapshot first and return it invisibly, so they chain with the base pipe.
 
 ```{r}
-remove_individual(snapshot, "Patient_001")
-remove_formulation(snapshot, "Oral Solution 10mg/mL")
+snapshot <- remove_individual(snapshot, "Patient_001")
+snapshot <- remove_formulation(snapshot, "Oral Solution 10mg/mL")
 ```
 
 You can pass several names to remove at once:
 
 ```{r, eval=FALSE}
-remove_individual(snapshot, c("Patient_001", "Patient_002"))
-remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
+snapshot <- remove_individual(snapshot, c("Patient_001", "Patient_002"))
+snapshot <- remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
 ```
 
 ### Adding several building blocks at once
@@ -351,7 +351,7 @@ patients <- list(
 )
 
 for (patient in patients) {
-  add_individual(snapshot, patient)
+  snapshot <- add_individual(snapshot, patient)
 }
 
 snapshot$individuals
