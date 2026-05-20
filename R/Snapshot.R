@@ -160,8 +160,9 @@ Snapshot <- R6::R6Class(
     },
 
     #' @description
-    #' Add an Individual object to the snapshot
-    #' @param individual An Individual object created with create_individual()
+    #' Add one or more Individual objects to the snapshot.
+    #' @param individual An Individual object created with create_individual(),
+    #'   or a list of such objects.
     #' @return Invisibly returns the object
     #' @examples
     #' \dontrun{
@@ -170,6 +171,13 @@ Snapshot <- R6::R6Class(
     #'
     #' # Add the individual to a snapshot
     #' snapshot$add_individual(ind)
+    #'
+    #' # Add several at once
+    #' patients <- list(
+    #'   create_individual("Patient_A", age = 25),
+    #'   create_individual("Patient_B", age = 45)
+    #' )
+    #' snapshot$add_individual(patients)
     #' }
     add_individual = function(individual) {
       private$.add_block(
@@ -180,7 +188,7 @@ Snapshot <- R6::R6Class(
         named_slot = ".individuals_named",
         ensure = private$.ensure_individuals,
         collection_class = "individual_collection",
-        label = "individual"
+        label_count = "individual(s)"
       )
     },
 
@@ -207,8 +215,9 @@ Snapshot <- R6::R6Class(
     },
 
     #' @description
-    #' Add a Formulation object to the snapshot
-    #' @param formulation A Formulation object created with create_formulation()
+    #' Add one or more Formulation objects to the snapshot.
+    #' @param formulation A Formulation object created with
+    #'   create_formulation(), or a list of such objects.
     #' @return Invisibly returns the object
     #' @examples
     #' \dontrun{
@@ -217,6 +226,13 @@ Snapshot <- R6::R6Class(
     #'
     #' # Add the formulation to a snapshot
     #' snapshot$add_formulation(form)
+    #'
+    #' # Add several at once
+    #' forms <- list(
+    #'   create_formulation("Tablet", type = "Weibull"),
+    #'   create_formulation("Oral solution", type = "First Order")
+    #' )
+    #' snapshot$add_formulation(forms)
     #' }
     add_formulation = function(formulation) {
       private$.add_block(
@@ -227,7 +243,7 @@ Snapshot <- R6::R6Class(
         named_slot = ".formulations_named",
         ensure = private$.ensure_formulations,
         collection_class = "formulation_collection",
-        label = "formulation"
+        label_count = "formulation(s)"
       )
     },
 
@@ -276,8 +292,9 @@ Snapshot <- R6::R6Class(
     },
 
     #' @description
-    #' Add an ExpressionProfile object to the snapshot
-    #' @param expression_profile An ExpressionProfile object
+    #' Add one or more ExpressionProfile objects to the snapshot.
+    #' @param expression_profile An ExpressionProfile object, or a list of
+    #'   such objects.
     #' @return Invisibly returns the object
     #' @examples
     #' \dontrun{
@@ -293,6 +310,9 @@ Snapshot <- R6::R6Class(
     #'
     #' # Add the expression profile to a snapshot
     #' snapshot$add_expression_profile(profile)
+    #'
+    #' # Add several at once
+    #' snapshot$add_expression_profile(list(profile, profile))
     #' }
     add_expression_profile = function(expression_profile) {
       private$.add_block(
@@ -304,8 +324,7 @@ Snapshot <- R6::R6Class(
         ensure = private$.ensure_expression_profiles,
         collection_class = "expression_profile_collection",
         key_fn = \(x) x$id,
-        label = "expression profile",
-        display_fn = \(x) x$molecule
+        label_count = "expression profile(s)"
       )
     },
 
@@ -341,7 +360,7 @@ Snapshot <- R6::R6Class(
         named_slot = ".observer_sets_named",
         ensure = private$.ensure_observer_sets,
         collection_class = "observer_set_collection",
-        label = "observer set"
+        label_count = "observer set(s)"
       )
     },
 
@@ -359,8 +378,9 @@ Snapshot <- R6::R6Class(
     },
 
     #' @description
-    #' Add a DataSet object (observed data) to the snapshot
-    #' @param observed_data A DataSet object created from snapshot observed data
+    #' Add one or more DataSet objects (observed data) to the snapshot.
+    #' @param observed_data A DataSet object created from snapshot observed
+    #'   data, or a list of such objects.
     #' @return Invisibly returns the object
     add_observed_data = function(observed_data) {
       private$.add_block(
@@ -371,7 +391,7 @@ Snapshot <- R6::R6Class(
         named_slot = ".observed_data_named",
         ensure = private$.ensure_observed_data,
         collection_class = "observed_data_collection",
-        label = "observed data",
+        label_count = "observed data item(s)",
         pre_add = function(obj) {
           # Warn once at add time if the new DataSet has no backing JSON slice
           # in `.original_data`; `ospsuite::DataSet` does not round-trip back
@@ -424,7 +444,7 @@ Snapshot <- R6::R6Class(
         named_slot = ".compounds_named",
         ensure = private$.ensure_compounds,
         collection_class = "compound_collection",
-        label = "compound"
+        label_count = "compound(s)"
       )
     },
 
@@ -450,7 +470,7 @@ Snapshot <- R6::R6Class(
         named_slot = ".populations_named",
         ensure = private$.ensure_populations,
         collection_class = "population_collection",
-        label = "population"
+        label_count = "population(s)"
       )
     },
 
@@ -463,7 +483,7 @@ Snapshot <- R6::R6Class(
         named_slot = ".protocols_named",
         ensure = private$.ensure_protocols,
         collection_class = "protocol_collection",
-        label = "protocol"
+        label_count = "protocol(s)"
       )
     },
 
@@ -489,7 +509,7 @@ Snapshot <- R6::R6Class(
         named_slot = ".events_named",
         ensure = private$.ensure_events,
         collection_class = "event_collection",
-        label = "event"
+        label_count = "event(s)"
       )
     },
 
@@ -931,12 +951,14 @@ Snapshot <- R6::R6Class(
     # Cache for the named observed data list with disambiguated names
     .observed_data_named = NULL,
 
-    # Shared append routine for `add_<kind>` methods. Validates `obj` against
-    # `expected_class`, forces lazy construction of the cache via `ensure()`,
-    # appends the new object to the unnamed cache slot, rebuilds the named
-    # cache via `.build_named_list`, and emits a success message. `pre_add`,
-    # when supplied, is run after the class check but before mutation; it is
-    # used by `add_observed_data` to warn about un-serializable DataSets.
+    # Shared append routine for `add_<kind>` methods. Accepts either a single
+    # building block of class `expected_class` or a list of such objects;
+    # rejects mixed-type lists and empty lists. Forces lazy construction via
+    # `ensure()`, appends the validated objects to the unnamed cache slot in
+    # one shot, rebuilds the named cache via `.build_named_list`, and emits a
+    # success message counting the entries added. `pre_add`, when supplied,
+    # runs once per element before any mutation; it is used by
+    # `add_observed_data` to warn about un-serializable DataSets.
     .add_block = function(
       obj,
       expected_class,
@@ -944,26 +966,49 @@ Snapshot <- R6::R6Class(
       named_slot,
       ensure,
       collection_class,
-      label,
+      label_count,
       key_fn = \(x) x$name,
-      display_fn = \(x) x$name,
       class_article = "a",
       pre_add = NULL
     ) {
-      if (!inherits(obj, expected_class)) {
+      if (inherits(obj, expected_class)) {
+        objs <- list(obj)
+      } else if (is.list(obj)) {
+        objs <- obj
+        bad <- which(!vapply(objs, inherits, logical(1), expected_class))
+        if (length(bad) > 0) {
+          first <- bad[[1]]
+          cli::cli_abort(
+            c(
+              "Every element must be {class_article} {.cls {expected_class}} object.",
+              x = "Element {first} is {.cls {class(objs[[first]])[1]}}."
+            ),
+            call = rlang::caller_env()
+          )
+        }
+      } else {
         cli::cli_abort(
-          "Expected {class_article} {expected_class} object, but got {.cls {class(obj)[1]}}",
+          "Expected {class_article} {expected_class} object or a list of them, but got {.cls {class(obj)[1]}}",
+          call = rlang::caller_env()
+        )
+      }
+
+      if (length(objs) == 0) {
+        cli::cli_abort(
+          "Must supply at least one {.cls {expected_class}}.",
           call = rlang::caller_env()
         )
       }
 
       if (!is.null(pre_add)) {
-        pre_add(obj)
+        for (el in objs) {
+          pre_add(el)
+        }
       }
 
       ensure()
 
-      private[[slot]] <- c(private[[slot]], list(obj))
+      private[[slot]] <- c(private[[slot]], objs)
 
       private[[named_slot]] <- private$.build_named_list(
         private[[slot]],
@@ -972,7 +1017,7 @@ Snapshot <- R6::R6Class(
       )
 
       cli::cli_alert_success(
-        "Added {label} '{display_fn(obj)}' to the snapshot"
+        "Added {length(objs)} {label_count}"
       )
       invisible(self)
     },
@@ -1162,15 +1207,15 @@ load_snapshot <- function(source) {
   return(templates$Templates)
 }
 
-#' Add an individual to a snapshot
+#' Add one or more individuals to a snapshot
 #'
 #' @description
-#' Add an Individual object to a Snapshot. This is a convenience function
-#' that calls the add_individual method of the Snapshot class.
+#' Add one or more [Individual] objects to a [Snapshot].
 #'
 #' @param snapshot A Snapshot object
-#' @param individual An Individual object created with create_individual()
-#' @return The updated Snapshot object
+#' @param individual An Individual object created with [create_individual()],
+#'   or a list of such objects.
+#' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
 #' @examples
@@ -1178,11 +1223,16 @@ load_snapshot <- function(source) {
 #' # Load a snapshot
 #' snapshot <- load_snapshot("Midazolam")
 #'
-#' # Create a new individual
+#' # Add a single individual
 #' ind <- create_individual(name = "New Patient", age = 35, weight = 70)
-#'
-#' # Add the individual to the snapshot
 #' snapshot <- add_individual(snapshot, ind)
+#'
+#' # Add several at once
+#' patients <- list(
+#'   create_individual("Patient_A", age = 25),
+#'   create_individual("Patient_B", age = 45)
+#' )
+#' snapshot <- add_individual(snapshot, patients)
 #' }
 add_individual <- function(snapshot, individual) {
   # Validate that the snapshot is a Snapshot object
@@ -1202,7 +1252,7 @@ add_individual <- function(snapshot, individual) {
 #'
 #' @param snapshot A Snapshot object
 #' @param individual_name Character vector of individual names to remove
-#' @return The updated Snapshot object
+#' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
 #' @examples
@@ -1230,15 +1280,15 @@ remove_individual <- function(snapshot, individual_name) {
   invisible(snapshot)
 }
 
-#' Add a formulation to a snapshot
+#' Add one or more formulations to a snapshot
 #'
 #' @description
-#' Add a Formulation object to a Snapshot. This is a convenience function
-#' that calls the add_formulation method of the Snapshot class.
+#' Add one or more [Formulation] objects to a [Snapshot].
 #'
 #' @param snapshot A Snapshot object
-#' @param formulation A Formulation object created with create_formulation()
-#' @return The updated Snapshot object
+#' @param formulation A Formulation object created with
+#'   [create_formulation()], or a list of such objects.
+#' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
 #' @examples
@@ -1246,11 +1296,16 @@ remove_individual <- function(snapshot, individual_name) {
 #' # Load a snapshot
 #' snapshot <- load_snapshot("Midazolam")
 #'
-#' # Create a new formulation
+#' # Add a single formulation
 #' form <- create_formulation(name = "Tablet", type = "Weibull")
-#'
-#' # Add the formulation to the snapshot
 #' snapshot <- add_formulation(snapshot, form)
+#'
+#' # Add several at once
+#' forms <- list(
+#'   create_formulation("Tablet", type = "Weibull"),
+#'   create_formulation("Oral solution", type = "First Order")
+#' )
+#' snapshot <- add_formulation(snapshot, forms)
 #' }
 add_formulation <- function(snapshot, formulation) {
   # Validate that the snapshot is a Snapshot object
@@ -1270,7 +1325,7 @@ add_formulation <- function(snapshot, formulation) {
 #'
 #' @param snapshot A Snapshot object
 #' @param formulation_name Character vector of formulation names to remove
-#' @return The updated Snapshot object
+#' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
 #' @examples
@@ -1305,7 +1360,7 @@ remove_formulation <- function(snapshot, formulation_name) {
 #'
 #' @param snapshot A Snapshot object
 #' @param population_name Character vector of population names to remove
-#' @return The updated Snapshot object
+#' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
 #' @examples
@@ -1333,15 +1388,15 @@ remove_population <- function(snapshot, population_name) {
   invisible(snapshot)
 }
 
-#' Add an expression profile to a snapshot
+#' Add one or more expression profiles to a snapshot
 #'
 #' @description
-#' Add an ExpressionProfile object to a Snapshot. This is a convenience function
-#' that calls the add_expression_profile method of the Snapshot class.
+#' Add one or more [ExpressionProfile] objects to a [Snapshot].
 #'
 #' @param snapshot A Snapshot object
-#' @param expression_profile An ExpressionProfile object
-#' @return The updated Snapshot object
+#' @param expression_profile An ExpressionProfile object, or a list of such
+#'   objects.
+#' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
 #' @examples
@@ -1359,8 +1414,11 @@ remove_population <- function(snapshot, population_name) {
 #' )
 #' profile <- ExpressionProfile$new(profile_data)
 #'
-#' # Add the expression profile to the snapshot
+#' # Add a single expression profile
 #' snapshot <- add_expression_profile(snapshot, profile)
+#'
+#' # Add several at once
+#' snapshot <- add_expression_profile(snapshot, list(profile, profile))
 #' }
 add_expression_profile <- function(snapshot, expression_profile) {
   # Validate that the snapshot is a Snapshot object
@@ -1381,7 +1439,7 @@ add_expression_profile <- function(snapshot, expression_profile) {
 #'
 #' @param snapshot A Snapshot object
 #' @param profile_id Character vector of expression profile IDs to remove
-#' @return The updated Snapshot object
+#' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
 #' @examples
@@ -1409,15 +1467,15 @@ remove_expression_profile <- function(snapshot, profile_id) {
   invisible(snapshot)
 }
 
-#' Add an observer set to a snapshot
+#' Add one or more observer sets to a snapshot
 #'
 #' @description
-#' Add an `ObserverSet` building block to a `Snapshot`. The exported function
-#' is the canonical, pipeable surface for the mutation; it validates the
-#' snapshot before delegating to the underlying R6 method.
+#' Add one or more `ObserverSet` building blocks to a `Snapshot`. The
+#' exported function is the canonical, pipeable surface for the mutation; it
+#' validates the snapshot before delegating to the underlying R6 method.
 #'
 #' @param snapshot A `Snapshot` object.
-#' @param observer_set An `ObserverSet` object.
+#' @param observer_set An `ObserverSet` object, or a list of such objects.
 #'
 #' @return The updated `Snapshot` object, invisibly.
 #' @export
@@ -1432,6 +1490,8 @@ remove_expression_profile <- function(snapshot, profile_id) {
 #' ))
 #'
 #' snapshot |> add_observer_set(observer_set)
+#'
+#' snapshot |> add_observer_set(list(observer_set, observer_set))
 #' }
 add_observer_set <- function(snapshot, observer_set) {
   validate_snapshot(snapshot)
@@ -1535,13 +1595,14 @@ osp_models <- function(pattern = NULL) {
   )
 }
 
-#' Add a compound to a snapshot
+#' Add one or more compounds to a snapshot
 #'
 #' @description
-#' Add a [Compound] object to a [Snapshot].
+#' Add one or more [Compound] objects to a [Snapshot].
 #'
 #' @param snapshot A [Snapshot] object.
-#' @param compound A [Compound] object created with [create_compound()].
+#' @param compound A [Compound] object created with [create_compound()], or a
+#'   list of such objects.
 #' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
@@ -1549,6 +1610,12 @@ osp_models <- function(pattern = NULL) {
 #' \dontrun{
 #' snapshot <- load_snapshot("Midazolam") |>
 #'   add_compound(create_compound(name = "Drug X"))
+#'
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_compound(list(
+#'     create_compound(name = "Drug X"),
+#'     create_compound(name = "Drug Y")
+#'   ))
 #' }
 add_compound <- function(snapshot, compound) {
   validate_snapshot(snapshot)
@@ -1577,13 +1644,14 @@ remove_compound <- function(snapshot, compound_name) {
   invisible(snapshot)
 }
 
-#' Add a population to a snapshot
+#' Add one or more populations to a snapshot
 #'
 #' @description
-#' Add a [Population] object to a [Snapshot].
+#' Add one or more [Population] objects to a [Snapshot].
 #'
 #' @param snapshot A [Snapshot] object.
-#' @param population A [Population] object created with [create_population()].
+#' @param population A [Population] object created with [create_population()],
+#'   or a list of such objects.
 #' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
@@ -1592,6 +1660,12 @@ remove_compound <- function(snapshot, compound_name) {
 #' pop <- create_population(name = "Adults", number_of_individuals = 100)
 #' snapshot <- load_snapshot("Midazolam") |>
 #'   add_population(pop)
+#'
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_population(list(
+#'     create_population(name = "Adults", number_of_individuals = 100),
+#'     create_population(name = "Children", number_of_individuals = 50)
+#'   ))
 #' }
 add_population <- function(snapshot, population) {
   validate_snapshot(snapshot)
@@ -1599,13 +1673,14 @@ add_population <- function(snapshot, population) {
   invisible(snapshot)
 }
 
-#' Add a protocol to a snapshot
+#' Add one or more protocols to a snapshot
 #'
 #' @description
-#' Add a [Protocol] object to a [Snapshot].
+#' Add one or more [Protocol] objects to a [Snapshot].
 #'
 #' @param snapshot A [Snapshot] object.
-#' @param protocol A [Protocol] object created with [create_protocol()].
+#' @param protocol A [Protocol] object created with [create_protocol()], or a
+#'   list of such objects.
 #' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
@@ -1618,6 +1693,9 @@ add_population <- function(snapshot, population) {
 #' )
 #' snapshot <- load_snapshot("Midazolam") |>
 #'   add_protocol(prot)
+#'
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_protocol(list(prot, prot))
 #' }
 add_protocol <- function(snapshot, protocol) {
   validate_snapshot(snapshot)
@@ -1646,13 +1724,14 @@ remove_protocol <- function(snapshot, protocol_name) {
   invisible(snapshot)
 }
 
-#' Add an event to a snapshot
+#' Add one or more events to a snapshot
 #'
 #' @description
-#' Add an [Event] object to a [Snapshot].
+#' Add one or more [Event] objects to a [Snapshot].
 #'
 #' @param snapshot A [Snapshot] object.
-#' @param event An [Event] object created with [create_event()].
+#' @param event An [Event] object created with [create_event()], or a list of
+#'   such objects.
 #' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
@@ -1664,6 +1743,9 @@ remove_protocol <- function(snapshot, protocol_name) {
 #' )
 #' snapshot <- load_snapshot("Midazolam") |>
 #'   add_event(evt)
+#'
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_event(list(evt, evt))
 #' }
 add_event <- function(snapshot, event) {
   validate_snapshot(snapshot)
@@ -1692,14 +1774,16 @@ remove_event <- function(snapshot, event_name) {
   invisible(snapshot)
 }
 
-#' Add observed data to a snapshot
+#' Add one or more observed-data entries to a snapshot
 #'
 #' @description
-#' Add an `ospsuite::DataSet` (observed data) to a [Snapshot].
+#' Add one or more `ospsuite::DataSet` (observed data) objects to a
+#' [Snapshot].
 #'
 #' @param snapshot A [Snapshot] object.
 #' @param observed_data A `DataSet` object, typically created with
-#'   [create_observed_data()] or [loadDataSetFromSnapshot()].
+#'   [create_observed_data()] or [loadDataSetFromSnapshot()], or a list of
+#'   such objects.
 #' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
@@ -1713,6 +1797,9 @@ remove_event <- function(snapshot, event_name) {
 #' )
 #' snapshot <- load_snapshot("Midazolam") |>
 #'   add_observed_data(dataset)
+#'
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_observed_data(list(dataset, dataset))
 #' }
 add_observed_data <- function(snapshot, observed_data) {
   validate_snapshot(snapshot)

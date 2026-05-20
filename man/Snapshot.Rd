@@ -29,6 +29,13 @@ ind <- create_individual(name = "New Patient", age = 35, weight = 70)
 
 # Add the individual to a snapshot
 snapshot$add_individual(ind)
+
+# Add several at once
+patients <- list(
+  create_individual("Patient_A", age = 25),
+  create_individual("Patient_B", age = 45)
+)
+snapshot$add_individual(patients)
 }
 
 ## ------------------------------------------------
@@ -50,6 +57,13 @@ form <- create_formulation(name = "Tablet", type = "Weibull")
 
 # Add the formulation to a snapshot
 snapshot$add_formulation(form)
+
+# Add several at once
+forms <- list(
+  create_formulation("Tablet", type = "Weibull"),
+  create_formulation("Oral solution", type = "First Order")
+)
+snapshot$add_formulation(forms)
 }
 
 ## ------------------------------------------------
@@ -87,6 +101,9 @@ profile <- ExpressionProfile$new(profile_data)
 
 # Add the expression profile to a snapshot
 snapshot$add_expression_profile(profile)
+
+# Add several at once
+snapshot$add_expression_profile(list(profile, profile))
 }
 
 ## ------------------------------------------------
@@ -227,7 +244,7 @@ versions abort.}
 \if{html}{\out{<a id="method-Snapshot-add_individual"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_individual}{}}}
 \subsection{\code{Snapshot$add_individual()}}{
-  Add an Individual object to the snapshot
+  Add one or more Individual objects to the snapshot.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Snapshot$add_individual(individual)}
@@ -236,7 +253,8 @@ versions abort.}
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{individual}}{An Individual object created with create_individual()}
+      \item{\code{individual}}{An Individual object created with create_individual(),
+or a list of such objects.}
     }
     \if{html}{\out{</div>}}
   }
@@ -250,6 +268,13 @@ ind <- create_individual(name = "New Patient", age = 35, weight = 70)
 
 # Add the individual to a snapshot
 snapshot$add_individual(ind)
+
+# Add several at once
+patients <- list(
+  create_individual("Patient_A", age = 25),
+  create_individual("Patient_B", age = 45)
+)
+snapshot$add_individual(patients)
 }
     \if{html}{\out{</div>}}
   }
@@ -288,7 +313,7 @@ snapshot$remove_individual("Subject_001")
 \if{html}{\out{<a id="method-Snapshot-add_formulation"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_formulation}{}}}
 \subsection{\code{Snapshot$add_formulation()}}{
-  Add a Formulation object to the snapshot
+  Add one or more Formulation objects to the snapshot.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Snapshot$add_formulation(formulation)}
@@ -297,7 +322,8 @@ snapshot$remove_individual("Subject_001")
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{formulation}}{A Formulation object created with create_formulation()}
+      \item{\code{formulation}}{A Formulation object created with
+create_formulation(), or a list of such objects.}
     }
     \if{html}{\out{</div>}}
   }
@@ -311,6 +337,13 @@ form <- create_formulation(name = "Tablet", type = "Weibull")
 
 # Add the formulation to a snapshot
 snapshot$add_formulation(form)
+
+# Add several at once
+forms <- list(
+  create_formulation("Tablet", type = "Weibull"),
+  create_formulation("Oral solution", type = "First Order")
+)
+snapshot$add_formulation(forms)
 }
     \if{html}{\out{</div>}}
   }
@@ -378,7 +411,7 @@ snapshot$remove_population("pop_1")
 \if{html}{\out{<a id="method-Snapshot-add_expression_profile"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_expression_profile}{}}}
 \subsection{\code{Snapshot$add_expression_profile()}}{
-  Add an ExpressionProfile object to the snapshot
+  Add one or more ExpressionProfile objects to the snapshot.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Snapshot$add_expression_profile(expression_profile)}
@@ -387,7 +420,8 @@ snapshot$remove_population("pop_1")
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{expression_profile}}{An ExpressionProfile object}
+      \item{\code{expression_profile}}{An ExpressionProfile object, or a list of
+such objects.}
     }
     \if{html}{\out{</div>}}
   }
@@ -408,6 +442,9 @@ profile <- ExpressionProfile$new(profile_data)
 
 # Add the expression profile to a snapshot
 snapshot$add_expression_profile(profile)
+
+# Add several at once
+snapshot$add_expression_profile(list(profile, profile))
 }
     \if{html}{\out{</div>}}
   }
@@ -468,7 +505,7 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
 \if{html}{\out{<a id="method-Snapshot-add_observed_data"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_observed_data}{}}}
 \subsection{\code{Snapshot$add_observed_data()}}{
-  Add a DataSet object (observed data) to the snapshot
+  Add one or more DataSet objects (observed data) to the snapshot.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Snapshot$add_observed_data(observed_data)}
@@ -477,7 +514,8 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{observed_data}}{A DataSet object created from snapshot observed data}
+      \item{\code{observed_data}}{A DataSet object created from snapshot observed
+data, or a list of such objects.}
     }
     \if{html}{\out{</div>}}
   }

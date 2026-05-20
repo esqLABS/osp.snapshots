@@ -341,7 +341,7 @@ remove_expression_profile(snapshot, "CYP3A4|Human|Healthy")
 
 ### Adding several building blocks at once
 
-`add_*()` currently takes one building block at a time, so loop over your list to add many:
+`add_*()` accepts either a single building block or a list of them, so you can attach many in one call. Each `add_*()` reports how many entries were added.
 
 ```{r}
 patients <- list(
@@ -350,9 +350,7 @@ patients <- list(
   create_individual("Patient_C", age = 65, gender = "MALE")
 )
 
-for (patient in patients) {
-  add_individual(snapshot, patient)
-}
+add_individual(snapshot, patients)
 
 snapshot$individuals
 ```

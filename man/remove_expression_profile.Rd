@@ -12,7 +12,7 @@ remove_expression_profile(snapshot, profile_id)
 \item{profile_id}{Character vector of expression profile IDs to remove}
 }
 \value{
-The updated Snapshot object
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
 Remove one or more expression profiles from a Snapshot by ID

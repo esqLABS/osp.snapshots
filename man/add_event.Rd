@@ -2,20 +2,21 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_event}
 \alias{add_event}
-\title{Add an event to a snapshot}
+\title{Add one or more events to a snapshot}
 \usage{
 add_event(snapshot, event)
 }
 \arguments{
 \item{snapshot}{A \link{Snapshot} object.}
 
-\item{event}{An \link{Event} object created with \code{\link[=create_event]{create_event()}}.}
+\item{event}{An \link{Event} object created with \code{\link[=create_event]{create_event()}}, or a list of
+such objects.}
 }
 \value{
 The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add an \link{Event} object to a \link{Snapshot}.
+Add one or more \link{Event} objects to a \link{Snapshot}.
 }
 \examples{
 \dontrun{
@@ -25,5 +26,8 @@ evt <- create_event(
 )
 snapshot <- load_snapshot("Midazolam") |>
   add_event(evt)
+
+snapshot <- load_snapshot("Midazolam") |>
+  add_event(list(evt, evt))
 }
 }

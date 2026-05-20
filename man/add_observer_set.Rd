@@ -2,22 +2,22 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_observer_set}
 \alias{add_observer_set}
-\title{Add an observer set to a snapshot}
+\title{Add one or more observer sets to a snapshot}
 \usage{
 add_observer_set(snapshot, observer_set)
 }
 \arguments{
 \item{snapshot}{A \code{Snapshot} object.}
 
-\item{observer_set}{An \code{ObserverSet} object.}
+\item{observer_set}{An \code{ObserverSet} object, or a list of such objects.}
 }
 \value{
 The updated \code{Snapshot} object, invisibly.
 }
 \description{
-Add an \code{ObserverSet} building block to a \code{Snapshot}. The exported function
-is the canonical, pipeable surface for the mutation; it validates the
-snapshot before delegating to the underlying R6 method.
+Add one or more \code{ObserverSet} building blocks to a \code{Snapshot}. The
+exported function is the canonical, pipeable surface for the mutation; it
+validates the snapshot before delegating to the underlying R6 method.
 }
 \examples{
 \dontrun{
@@ -29,5 +29,7 @@ observer_set <- ObserverSet$new(list(
 ))
 
 snapshot |> add_observer_set(observer_set)
+
+snapshot |> add_observer_set(list(observer_set, observer_set))
 }
 }

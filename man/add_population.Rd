@@ -2,25 +2,32 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_population}
 \alias{add_population}
-\title{Add a population to a snapshot}
+\title{Add one or more populations to a snapshot}
 \usage{
 add_population(snapshot, population)
 }
 \arguments{
 \item{snapshot}{A \link{Snapshot} object.}
 
-\item{population}{A \link{Population} object created with \code{\link[=create_population]{create_population()}}.}
+\item{population}{A \link{Population} object created with \code{\link[=create_population]{create_population()}},
+or a list of such objects.}
 }
 \value{
 The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add a \link{Population} object to a \link{Snapshot}.
+Add one or more \link{Population} objects to a \link{Snapshot}.
 }
 \examples{
 \dontrun{
 pop <- create_population(name = "Adults", number_of_individuals = 100)
 snapshot <- load_snapshot("Midazolam") |>
   add_population(pop)
+
+snapshot <- load_snapshot("Midazolam") |>
+  add_population(list(
+    create_population(name = "Adults", number_of_individuals = 100),
+    create_population(name = "Children", number_of_individuals = 50)
+  ))
 }
 }

@@ -12,6 +12,8 @@ This release widens the building-block coverage of `osp.snapshots` and consolida
 
 ## New features
 
+- `add_*()` mutators now accept either a single building block or a list of building blocks, mirroring `remove_*()` which has accepted a character vector of names since #66. Success messages on both sides now uniformly report `Added N kind(s)` / `Removed N kind(s)` (#92).
+
 You can now create every kind of building block from a `create_*()` function and attach it with the matching `add_*()` mutator:
 
 - `create_compound()` builds a compound from named arguments, with validation on `molecular_weight_unit` against `ospsuite::ospUnits$"Molecular weight"` (#27, #48). Attach with `add_compound()`, remove by name with `remove_compound()` (#39).
