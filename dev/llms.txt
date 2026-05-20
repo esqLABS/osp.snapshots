@@ -129,8 +129,7 @@ Load snapshots and export modifications
 
 ## Building blocks
 
-R6 classes wrapping the eight PK-Sim building block kinds and the root
-snapshot
+R6 classes wrapping the PK-Sim building blocks and the root snapshot
 
 - [`Snapshot`](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
   : Snapshot class for OSP snapshots
@@ -150,6 +149,8 @@ snapshot
   : Population class for OSP snapshot populations
 - [`Protocol`](https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.md)
   : Protocol class for OSP snapshot protocols
+- [`Simulation`](https://esqlabs.github.io/osp.snapshots/dev/reference/Simulation.md)
+  : Simulation class for OSP snapshot simulations
 
 ## Leaf and sub-structure types
 
@@ -159,20 +160,42 @@ Reusable R6 leaf classes and sub-structures held inside building blocks
   : AdvancedParameter class for Population advanced parameters
 - [`CalculationMethods`](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.md)
   : CalculationMethods class for OSP snapshots
+- [`CompoundGroupSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundGroupSelection.md)
+  : CompoundGroupSelection class for compound alternative selections
+- [`CompoundProcessSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundProcessSelection.md)
+  : CompoundProcessSelection class for compound process selections
+- [`CompoundProperties`](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundProperties.md)
+  : CompoundProperties class for Simulation compound configurations
+- [`EventSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/EventSelection.md)
+  : EventSelection class for Simulation event references
+- [`FormulationSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/FormulationSelection.md)
+  : FormulationSelection class for Simulation compound formulations
 - [`LocalizedParameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/LocalizedParameter.md)
   : LocalizedParameter class for path-bearing OSP snapshot parameters
 - [`Observer`](https://esqlabs.github.io/osp.snapshots/dev/reference/Observer.md)
   : Observer class for OSP snapshot observer sets
+- [`ObserverSetSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/ObserverSetSelection.md)
+  : ObserverSetSelection class for Simulation observer-set references
 - [`OriginData`](https://esqlabs.github.io/osp.snapshots/dev/reference/OriginData.md)
   : OriginData class for OSP snapshot individuals
+- [`OutputInterval`](https://esqlabs.github.io/osp.snapshots/dev/reference/OutputInterval.md)
+  : OutputInterval class for Simulation output schemas
+- [`OutputMapping`](https://esqlabs.github.io/osp.snapshots/dev/reference/OutputMapping.md)
+  : OutputMapping class for simulation output-to-observed-data mappings
+- [`OutputSchema`](https://esqlabs.github.io/osp.snapshots/dev/reference/OutputSchema.md)
+  : OutputSchema class for Simulation output schedules
 - [`Parameter`](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
   : Parameter class for OSP snapshot parameters
 - [`Process`](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
   : Process class for OSP snapshot compound processes
+- [`ProtocolSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/ProtocolSelection.md)
+  : ProtocolSelection class for Simulation compound protocol assignments
 - [`Schema`](https://esqlabs.github.io/osp.snapshots/dev/reference/Schema.md)
   : Schema class for OSP advanced protocols
 - [`SchemaItem`](https://esqlabs.github.io/osp.snapshots/dev/reference/SchemaItem.md)
   : SchemaItem class for OSP advanced protocols
+- [`SolverSettings`](https://esqlabs.github.io/osp.snapshots/dev/reference/SolverSettings.md)
+  : SolverSettings class for simulation solver configuration
 - [`range()`](https://esqlabs.github.io/osp.snapshots/dev/reference/range.md)
   : Create a range object for physiological parameters
 - [`Range-class`](https://esqlabs.github.io/osp.snapshots/dev/reference/Range-class.md)
@@ -185,18 +208,36 @@ Construct building blocks and leaves from named arguments
 
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   : Create a new compound
+- [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_group_selection.md)
+  : Create a compound alternative group selection
+- [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md)
+  : Create a compound process selection
+- [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md)
+  : Create compound properties for a simulation
 - [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
   : Create a new event
+- [`create_event_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event_selection.md)
+  : Create an event selection for a simulation
 - [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
   : Create a new expression profile
 - [`create_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
   : Create a new formulation
+- [`create_formulation_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation_selection.md)
+  : Create a formulation selection for a simulation compound
 - [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
   : Create a new individual
 - [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
   : Create a new observed data set
 - [`create_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set.md)
   : Create a new observer set
+- [`create_observer_set_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set_selection.md)
+  : Create an observer-set selection for a simulation
+- [`create_output_interval()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_interval.md)
+  : Create an output interval for a simulation output schema
+- [`create_output_mapping()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_mapping.md)
+  : Create an output-to-observed-data mapping for a simulation
+- [`create_output_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_schema.md)
+  : Create an output schema for a simulation
 - [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   : Create a new parameter
 - [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
@@ -205,10 +246,16 @@ Construct building blocks and leaves from named arguments
   : Create a new compound process
 - [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
   : Create a new protocol
+- [`create_protocol_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol_selection.md)
+  : Create a protocol selection for a simulation compound
 - [`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md)
   : Create a new schema
 - [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
   : Create a new schema item
+- [`create_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_simulation.md)
+  : Create a simulation building block
+- [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_solver_settings.md)
+  : Create a solver settings object for a simulation
 
 ## Mutators
 
@@ -232,6 +279,8 @@ Add and remove building blocks on a snapshot
   : Add one or more populations to a snapshot
 - [`add_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_protocol.md)
   : Add one or more protocols to a snapshot
+- [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
+  : Add one or more simulations to a snapshot
 - [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
   : Remove compounds from a snapshot
 - [`remove_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_event.md)
@@ -250,6 +299,8 @@ Add and remove building blocks on a snapshot
   : Remove populations from a snapshot
 - [`remove_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_protocol.md)
   : Remove protocols from a snapshot
+- [`remove_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_simulation.md)
+  : Remove simulations from a snapshot
 
 ## Tibble exporters
 
@@ -343,3 +394,5 @@ In-depth guides for specific tasks
   frames](https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.md):
 - [Creating and managing building
   blocks](https://esqlabs.github.io/osp.snapshots/dev/articles/creating-building-blocks.md):
+- [Building simulations from
+  scratch](https://esqlabs.github.io/osp.snapshots/dev/articles/simulations.md):

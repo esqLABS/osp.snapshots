@@ -64,6 +64,10 @@ reason.
 
   List of DataSet objects (observed data) in the snapshot
 
+- `simulations`:
+
+  List of Simulation objects in the snapshot
+
 ## Methods
 
 ### Public methods
@@ -109,6 +113,10 @@ reason.
 - [`Snapshot$add_event()`](#method-Snapshot-add_event)
 
 - [`Snapshot$remove_event()`](#method-Snapshot-remove_event)
+
+- [`Snapshot$add_simulation()`](#method-Snapshot-add_simulation)
+
+- [`Snapshot$remove_simulation()`](#method-Snapshot-remove_simulation)
 
 - [`Snapshot$clone()`](#method-Snapshot-clone)
 
@@ -497,6 +505,47 @@ Invisibly returns the object
 #### Usage
 
     Snapshot$remove_event(event_name)
+
+------------------------------------------------------------------------
+
+### `Snapshot$add_simulation()`
+
+Add one or more Simulation objects to the snapshot.
+
+#### Usage
+
+    Snapshot$add_simulation(simulation)
+
+#### Arguments
+
+- `simulation`:
+
+  A Simulation object created with create_simulation(), or a list of
+  such objects.
+
+#### Returns
+
+Invisibly returns the object
+
+------------------------------------------------------------------------
+
+### `Snapshot$remove_simulation()`
+
+Remove a simulation from the snapshot by name
+
+#### Usage
+
+    Snapshot$remove_simulation(simulation_name)
+
+#### Arguments
+
+- `simulation_name`:
+
+  Character vector of simulation name(s) to remove
+
+#### Returns
+
+Invisibly returns the object
 
 ------------------------------------------------------------------------
 

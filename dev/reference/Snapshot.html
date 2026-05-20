@@ -11,7 +11,7 @@ structure."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9034</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9035</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,7 @@ structure."><meta name="robots" content="noindex"></head><body>
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -108,6 +109,10 @@ fields. Hand-rolled list input must supply <code>Version</code> for the same rea
 <dd><p>List of DataSet objects (observed data) in the snapshot</p></dd>
 
 
+    <dt><code>simulations</code></dt>
+<dd><p>List of Simulation objects in the snapshot</p></dd>
+
+
 </dl><p></p></div>
     </div>
     <div class="section level2">
@@ -136,6 +141,8 @@ fields. Hand-rolled list input must supply <code>Version</code> for the same rea
 <li><p><a href="#method-Snapshot-remove_protocol"><code>Snapshot$remove_protocol()</code></a></p></li>
 <li><p><a href="#method-Snapshot-add_event"><code>Snapshot$add_event()</code></a></p></li>
 <li><p><a href="#method-Snapshot-remove_event"><code>Snapshot$remove_event()</code></a></p></li>
+<li><p><a href="#method-Snapshot-add_simulation"><code>Snapshot$add_simulation()</code></a></p></li>
+<li><p><a href="#method-Snapshot-remove_simulation"><code>Snapshot$remove_simulation()</code></a></p></li>
 <li><p><a href="#method-Snapshot-clone"><code>Snapshot$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-Snapshot-initialize"></a><div class="section">
 <h3 id="snapshot-new-"><code>Snapshot$new()</code><a class="anchor" aria-label="anchor" href="#snapshot-new-"></a></h3>
@@ -514,13 +521,52 @@ data, or a list of such objects.</p></dd>
 
 </div>
 
+<p></p><hr><a id="method-Snapshot-add_simulation"></a><div class="section">
+<h3 id="snapshot-add-simulation-"><code>Snapshot$add_simulation()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-simulation-"></a></h3>
+<p>Add one or more Simulation objects to the snapshot.</p><div class="section">
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_simulation</span><span class="op">(</span><span class="va">simulation</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>simulation</code></dt>
+<dd><p>A Simulation object created with
+create_simulation(), or a list of such objects.</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-12">Returns<a class="anchor" aria-label="anchor" href="#returns-12"></a></h4>
+<p>Invisibly returns the object</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-Snapshot-remove_simulation"></a><div class="section">
+<h3 id="snapshot-remove-simulation-"><code>Snapshot$remove_simulation()</code><a class="anchor" aria-label="anchor" href="#snapshot-remove-simulation-"></a></h3>
+<p>Remove a simulation from the snapshot by name</p><div class="section">
+<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">remove_simulation</span><span class="op">(</span><span class="va">simulation_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-13">Arguments<a class="anchor" aria-label="anchor" href="#arguments-13"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>simulation_name</code></dt>
+<dd><p>Character vector of simulation name(s) to remove</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-13">Returns<a class="anchor" aria-label="anchor" href="#returns-13"></a></h4>
+<p>Invisibly returns the object</p>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-Snapshot-clone"></a><div class="section">
 <h3 id="snapshot-clone-"><code>Snapshot$clone()</code><a class="anchor" aria-label="anchor" href="#snapshot-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
+<h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
+<h4 id="arguments-14">Arguments<a class="anchor" aria-label="anchor" href="#arguments-14"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

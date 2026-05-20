@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9034</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9035</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,6 +20,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -69,7 +70,7 @@
       </dl></div><div class="section level2">
       <h2 id="building-blocks">Building blocks<a class="anchor" aria-label="anchor" href="#building-blocks"></a></h2>
 
-      <div class="section-desc"><p>R6 classes wrapping the eight PK-Sim building block kinds and the root snapshot</p></div>
+      <div class="section-desc"><p>R6 classes wrapping the PK-Sim building blocks and the root snapshot</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -138,6 +139,13 @@
 
         </dt>
         <dd>Protocol class for OSP snapshot protocols</dd>
+
+        <dt>
+
+          <code><a href="Simulation.html">Simulation</a></code>
+
+        </dt>
+        <dd>Simulation class for OSP snapshot simulations</dd>
       </dl></div><div class="section level2">
       <h2 id="leaf-and-sub-structure-types">Leaf and sub-structure types<a class="anchor" aria-label="anchor" href="#leaf-and-sub-structure-types"></a></h2>
 
@@ -164,6 +172,41 @@
 
         <dt>
 
+          <code><a href="CompoundGroupSelection.html">CompoundGroupSelection</a></code>
+
+        </dt>
+        <dd>CompoundGroupSelection class for compound alternative selections</dd>
+
+        <dt>
+
+          <code><a href="CompoundProcessSelection.html">CompoundProcessSelection</a></code>
+
+        </dt>
+        <dd>CompoundProcessSelection class for compound process selections</dd>
+
+        <dt>
+
+          <code><a href="CompoundProperties.html">CompoundProperties</a></code>
+
+        </dt>
+        <dd>CompoundProperties class for Simulation compound configurations</dd>
+
+        <dt>
+
+          <code><a href="EventSelection.html">EventSelection</a></code>
+
+        </dt>
+        <dd>EventSelection class for Simulation event references</dd>
+
+        <dt>
+
+          <code><a href="FormulationSelection.html">FormulationSelection</a></code>
+
+        </dt>
+        <dd>FormulationSelection class for Simulation compound formulations</dd>
+
+        <dt>
+
           <code><a href="LocalizedParameter.html">LocalizedParameter</a></code>
 
         </dt>
@@ -178,10 +221,38 @@
 
         <dt>
 
+          <code><a href="ObserverSetSelection.html">ObserverSetSelection</a></code>
+
+        </dt>
+        <dd>ObserverSetSelection class for Simulation observer-set references</dd>
+
+        <dt>
+
           <code><a href="OriginData.html">OriginData</a></code>
 
         </dt>
         <dd>OriginData class for OSP snapshot individuals</dd>
+
+        <dt>
+
+          <code><a href="OutputInterval.html">OutputInterval</a></code>
+
+        </dt>
+        <dd>OutputInterval class for Simulation output schemas</dd>
+
+        <dt>
+
+          <code><a href="OutputMapping.html">OutputMapping</a></code>
+
+        </dt>
+        <dd>OutputMapping class for simulation output-to-observed-data mappings</dd>
+
+        <dt>
+
+          <code><a href="OutputSchema.html">OutputSchema</a></code>
+
+        </dt>
+        <dd>OutputSchema class for Simulation output schedules</dd>
 
         <dt>
 
@@ -199,6 +270,13 @@
 
         <dt>
 
+          <code><a href="ProtocolSelection.html">ProtocolSelection</a></code>
+
+        </dt>
+        <dd>ProtocolSelection class for Simulation compound protocol assignments</dd>
+
+        <dt>
+
           <code><a href="Schema.html">Schema</a></code>
 
         </dt>
@@ -210,6 +288,13 @@
 
         </dt>
         <dd>SchemaItem class for OSP advanced protocols</dd>
+
+        <dt>
+
+          <code><a href="SolverSettings.html">SolverSettings</a></code>
+
+        </dt>
+        <dd>SolverSettings class for simulation solver configuration</dd>
 
         <dt>
 
@@ -243,10 +328,38 @@
 
         <dt>
 
+          <code><a href="create_compound_group_selection.html">create_compound_group_selection()</a></code>
+
+        </dt>
+        <dd>Create a compound alternative group selection</dd>
+
+        <dt>
+
+          <code><a href="create_compound_process_selection.html">create_compound_process_selection()</a></code>
+
+        </dt>
+        <dd>Create a compound process selection</dd>
+
+        <dt>
+
+          <code><a href="create_compound_properties.html">create_compound_properties()</a></code>
+
+        </dt>
+        <dd>Create compound properties for a simulation</dd>
+
+        <dt>
+
           <code><a href="create_event.html">create_event()</a></code>
 
         </dt>
         <dd>Create a new event</dd>
+
+        <dt>
+
+          <code><a href="create_event_selection.html">create_event_selection()</a></code>
+
+        </dt>
+        <dd>Create an event selection for a simulation</dd>
 
         <dt>
 
@@ -261,6 +374,13 @@
 
         </dt>
         <dd>Create a new formulation</dd>
+
+        <dt>
+
+          <code><a href="create_formulation_selection.html">create_formulation_selection()</a></code>
+
+        </dt>
+        <dd>Create a formulation selection for a simulation compound</dd>
 
         <dt>
 
@@ -282,6 +402,34 @@
 
         </dt>
         <dd>Create a new observer set</dd>
+
+        <dt>
+
+          <code><a href="create_observer_set_selection.html">create_observer_set_selection()</a></code>
+
+        </dt>
+        <dd>Create an observer-set selection for a simulation</dd>
+
+        <dt>
+
+          <code><a href="create_output_interval.html">create_output_interval()</a></code>
+
+        </dt>
+        <dd>Create an output interval for a simulation output schema</dd>
+
+        <dt>
+
+          <code><a href="create_output_mapping.html">create_output_mapping()</a></code>
+
+        </dt>
+        <dd>Create an output-to-observed-data mapping for a simulation</dd>
+
+        <dt>
+
+          <code><a href="create_output_schema.html">create_output_schema()</a></code>
+
+        </dt>
+        <dd>Create an output schema for a simulation</dd>
 
         <dt>
 
@@ -313,6 +461,13 @@
 
         <dt>
 
+          <code><a href="create_protocol_selection.html">create_protocol_selection()</a></code>
+
+        </dt>
+        <dd>Create a protocol selection for a simulation compound</dd>
+
+        <dt>
+
           <code><a href="create_schema.html">create_schema()</a></code>
 
         </dt>
@@ -324,6 +479,20 @@
 
         </dt>
         <dd>Create a new schema item</dd>
+
+        <dt>
+
+          <code><a href="create_simulation.html">create_simulation()</a></code>
+
+        </dt>
+        <dd>Create a simulation building block</dd>
+
+        <dt>
+
+          <code><a href="create_solver_settings.html">create_solver_settings()</a></code>
+
+        </dt>
+        <dd>Create a solver settings object for a simulation</dd>
       </dl></div><div class="section level2">
       <h2 id="mutators">Mutators<a class="anchor" aria-label="anchor" href="#mutators"></a></h2>
 
@@ -399,6 +568,13 @@
 
         <dt>
 
+          <code><a href="add_simulation.html">add_simulation()</a></code>
+
+        </dt>
+        <dd>Add one or more simulations to a snapshot</dd>
+
+        <dt>
+
           <code><a href="remove_compound.html">remove_compound()</a></code>
 
         </dt>
@@ -459,6 +635,13 @@
 
         </dt>
         <dd>Remove protocols from a snapshot</dd>
+
+        <dt>
+
+          <code><a href="remove_simulation.html">remove_simulation()</a></code>
+
+        </dt>
+        <dd>Remove simulations from a snapshot</dd>
       </dl></div><div class="section level2">
       <h2 id="tibble-exporters">Tibble exporters<a class="anchor" aria-label="anchor" href="#tibble-exporters"></a></h2>
 

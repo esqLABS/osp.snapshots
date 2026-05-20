@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9034</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9035</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,6 +20,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -80,7 +81,16 @@
 <ul><li>
 <code>as_tibbles(snapshot, kind)</code> returns either a bare tibble (<code>"protocols"</code>, <code>"observed_data"</code>) or a named list of related tibbles (every other kind). The eight existing <code>get_*_dfs()</code> functions remain available as thin wrappers (#36).</li>
 </ul><p>Observer sets are now fully supported. Each <code>ObserverSet</code> exposes its observers as a named list of <code>Observer</code> objects with <code>name</code>, <code>type</code>, <code>dimension</code>, <code>formula</code> (the full <code>ExplicitFormula</code> list), <code>formula_expression</code>, <code>formula_dimension</code>, <code>formula_references</code>, and <code>container_tags</code>. <code><a href="../reference/get_observer_sets_dfs.html">get_observer_sets_dfs()</a></code> returns two tibbles (<code>observer_sets</code> for set-level rows, <code>observers</code> joinable back via <code>observer_set_id</code> / <code>observer_set_name</code>); the <code>observers</code> tibble carries <code>formula_expression</code>, <code>formula_dimension</code>, and <code>formula_references</code> columns alongside <code>name</code>, <code>type</code>, <code>dimension</code>, and <code>container_tags</code> (#38, #42, #76, #79).</p>
-<p>Several previously list-shaped fields are now first-class R6 objects:</p>
+<p>Simulations are now first-class building blocks. The new <code>Simulation</code> class wraps the simulation slice of a snapshot with R6 accessors for solver settings, output schemas, compound configurations, event and observer-set selections, observed-data references, output mappings, and <code>LocalizedParameter</code> overrides. Four post-run fields (<code>Interactions</code>, <code>AlteredBuildingBlocks</code>, <code>IndividualAnalyses</code>, <code>PopulationAnalyses</code>) are preserved byte-equivalent through <code>$data</code> (#94):</p>
+<ul><li>
+<code><a href="../reference/add_simulation.html">add_simulation()</a></code> attaches one or more <code>Simulation</code> objects to a <code>Snapshot</code>. Unresolved references to other building blocks (individual, population, compounds, events, observer sets, observed data, protocols, formulations) trigger one informational warning per simulation; the add proceeds either way (#94).</li>
+<li>
+<code><a href="../reference/create_compound_group_selection.html">create_compound_group_selection()</a></code>, <code><a href="../reference/create_compound_process_selection.html">create_compound_process_selection()</a></code>, <code><a href="../reference/create_compound_properties.html">create_compound_properties()</a></code>, <code><a href="../reference/create_event_selection.html">create_event_selection()</a></code>, <code><a href="../reference/create_formulation_selection.html">create_formulation_selection()</a></code>, <code><a href="../reference/create_observer_set_selection.html">create_observer_set_selection()</a></code>, <code><a href="../reference/create_output_interval.html">create_output_interval()</a></code>, <code><a href="../reference/create_output_mapping.html">create_output_mapping()</a></code>, <code><a href="../reference/create_output_schema.html">create_output_schema()</a></code>, <code><a href="../reference/create_protocol_selection.html">create_protocol_selection()</a></code>, <code><a href="../reference/create_simulation.html">create_simulation()</a></code>, and <code><a href="../reference/create_solver_settings.html">create_solver_settings()</a></code> build a <code>Simulation</code> and its supporting structures from named arguments (#94).</li>
+<li>
+<code><a href="../reference/remove_simulation.html">remove_simulation()</a></code> removes one or more simulations from a <code>Snapshot</code> by name (#94).</li>
+<li>
+<code>Simulation</code> enforces an XOR on <code>$individual</code> and <code>$population</code> at construction so that exactly one subject is configured (#94).</li>
+</ul><p>Several previously list-shaped fields are now first-class R6 objects:</p>
 <ul><li>
 <code>compound$calculation_methods</code> and <code>individual$origin_data$calculation_methods</code> return a <code>CalculationMethods</code> object you can inspect (<code>$names</code>, <code>$length</code>) and mutate (<code>$add()</code>, <code>$remove()</code>) (#30).</li>
 <li>

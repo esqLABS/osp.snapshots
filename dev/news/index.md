@@ -137,6 +137,40 @@ joinable back via `observer_set_id` / `observer_set_name`); the
 and `formula_references` columns alongside `name`, `type`, `dimension`,
 and `container_tags` (#38, \#42, \#76, \#79).
 
+Simulations are now first-class building blocks. The new `Simulation`
+class wraps the simulation slice of a snapshot with R6 accessors for
+solver settings, output schemas, compound configurations, event and
+observer-set selections, observed-data references, output mappings, and
+`LocalizedParameter` overrides. Four post-run fields (`Interactions`,
+`AlteredBuildingBlocks`, `IndividualAnalyses`, `PopulationAnalyses`) are
+preserved byte-equivalent through `$data` (#94):
+
+- [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
+  attaches one or more `Simulation` objects to a `Snapshot`. Unresolved
+  references to other building blocks (individual, population,
+  compounds, events, observer sets, observed data, protocols,
+  formulations) trigger one informational warning per simulation; the
+  add proceeds either way (#94).
+- [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_group_selection.md),
+  [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md),
+  [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md),
+  [`create_event_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event_selection.md),
+  [`create_formulation_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation_selection.md),
+  [`create_observer_set_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set_selection.md),
+  [`create_output_interval()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_interval.md),
+  [`create_output_mapping()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_mapping.md),
+  [`create_output_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_schema.md),
+  [`create_protocol_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol_selection.md),
+  [`create_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_simulation.md),
+  and
+  [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_solver_settings.md)
+  build a `Simulation` and its supporting structures from named
+  arguments (#94).
+- [`remove_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_simulation.md)
+  removes one or more simulations from a `Snapshot` by name (#94).
+- `Simulation` enforces an XOR on `$individual` and `$population` at
+  construction so that exactly one subject is configured (#94).
+
 Several previously list-shaped fields are now first-class R6 objects:
 
 - `compound$calculation_methods` and
