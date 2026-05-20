@@ -2,7 +2,7 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_observed_data}
 \alias{add_observed_data}
-\title{Add observed data to a snapshot}
+\title{Add one or more observed-data entries to a snapshot}
 \usage{
 add_observed_data(snapshot, observed_data)
 }
@@ -10,13 +10,15 @@ add_observed_data(snapshot, observed_data)
 \item{snapshot}{A \link{Snapshot} object.}
 
 \item{observed_data}{A \code{DataSet} object, typically created with
-\code{\link[=create_observed_data]{create_observed_data()}} or \code{\link[=loadDataSetFromSnapshot]{loadDataSetFromSnapshot()}}.}
+\code{\link[=create_observed_data]{create_observed_data()}} or \code{\link[=loadDataSetFromSnapshot]{loadDataSetFromSnapshot()}}, or a list of
+such objects.}
 }
 \value{
 The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add an \code{ospsuite::DataSet} (observed data) to a \link{Snapshot}.
+Add one or more \code{ospsuite::DataSet} (observed data) objects to a
+\link{Snapshot}.
 }
 \examples{
 \dontrun{
@@ -28,5 +30,8 @@ dataset <- create_observed_data(
 )
 snapshot <- load_snapshot("Midazolam") |>
   add_observed_data(dataset)
+
+snapshot <- load_snapshot("Midazolam") |>
+  add_observed_data(list(dataset, dataset))
 }
 }

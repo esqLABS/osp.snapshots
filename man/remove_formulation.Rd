@@ -12,7 +12,7 @@ remove_formulation(snapshot, formulation_name)
 \item{formulation_name}{Character vector of formulation names to remove}
 }
 \value{
-The updated Snapshot object
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
 Remove one or more formulations from a Snapshot by name.

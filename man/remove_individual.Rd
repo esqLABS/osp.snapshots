@@ -12,7 +12,7 @@ remove_individual(snapshot, individual_name)
 \item{individual_name}{Character vector of individual names to remove}
 }
 \value{
-The updated Snapshot object
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
 Remove one or more individuals from a Snapshot by name.

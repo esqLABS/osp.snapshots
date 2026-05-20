@@ -42,5 +42,5 @@
       Observed data "Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)" cannot be serialized on export.
       i <DataSet> objects have no `$data` accessor; only entries present in the original snapshot are exported.
     Message
-      v Added observed data 'Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)' to the snapshot
+      v Added 1 observed data item(s)
 

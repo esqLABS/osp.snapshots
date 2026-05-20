@@ -12,7 +12,7 @@ remove_population(snapshot, population_name)
 \item{population_name}{Character vector of population names to remove}
 }
 \value{
-The updated Snapshot object
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
 Remove one or more populations from a Snapshot by name.

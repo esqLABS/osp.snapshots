@@ -2,21 +2,21 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_expression_profile}
 \alias{add_expression_profile}
-\title{Add an expression profile to a snapshot}
+\title{Add one or more expression profiles to a snapshot}
 \usage{
 add_expression_profile(snapshot, expression_profile)
 }
 \arguments{
 \item{snapshot}{A Snapshot object}
 
-\item{expression_profile}{An ExpressionProfile object}
+\item{expression_profile}{An ExpressionProfile object, or a list of such
+objects.}
 }
 \value{
-The updated Snapshot object
+The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add an ExpressionProfile object to a Snapshot. This is a convenience function
-that calls the add_expression_profile method of the Snapshot class.
+Add one or more \link{ExpressionProfile} objects to a \link{Snapshot}.
 }
 \examples{
 \dontrun{
@@ -33,7 +33,10 @@ profile_data <- list(
 )
 profile <- ExpressionProfile$new(profile_data)
 
-# Add the expression profile to the snapshot
+# Add a single expression profile
 snapshot <- add_expression_profile(snapshot, profile)
+
+# Add several at once
+snapshot <- add_expression_profile(snapshot, list(profile, profile))
 }
 }

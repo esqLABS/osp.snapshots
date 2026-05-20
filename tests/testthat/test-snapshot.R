@@ -1048,3 +1048,176 @@ test_that("mutators reject non-Snapshot inputs", {
   expect_snapshot(add_event("nope", event), error = TRUE)
   expect_snapshot(remove_event("nope", "E"), error = TRUE)
 })
+
+# add_*() accepts a list of objects -----------------------------------------
+
+test_that("add_compound accepts a list of objects", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  objs <- list(
+    create_compound(name = "A"),
+    create_compound(name = "B")
+  )
+  snapshot <- add_compound(snapshot, objs)
+  expect_named(snapshot$compounds, c("A", "B"))
+})
+
+test_that("add_individual accepts a list of objects", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  objs <- list(
+    create_individual(name = "A", age = 25),
+    create_individual(name = "B", age = 45)
+  )
+  snapshot <- add_individual(snapshot, objs)
+  expect_named(snapshot$individuals, c("A", "B"))
+})
+
+test_that("add_formulation accepts a list of objects", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  objs <- list(
+    create_formulation(name = "A", type = "Weibull"),
+    create_formulation(name = "B", type = "First Order")
+  )
+  snapshot <- add_formulation(snapshot, objs)
+  expect_named(snapshot$formulations, c("A", "B"))
+})
+
+test_that("add_population accepts a list of objects", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  objs <- list(
+    create_population(name = "A", number_of_individuals = 10),
+    create_population(name = "B", number_of_individuals = 20)
+  )
+  snapshot <- add_population(snapshot, objs)
+  expect_named(snapshot$populations, c("A", "B"))
+})
+
+test_that("add_protocol accepts a list of objects", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  objs <- list(
+    create_protocol(
+      name = "A",
+      application_type = "Oral",
+      dosing_interval = "Single"
+    ),
+    create_protocol(
+      name = "B",
+      application_type = "Oral",
+      dosing_interval = "Single"
+    )
+  )
+  snapshot <- add_protocol(snapshot, objs)
+  expect_named(snapshot$protocols, c("A", "B"))
+})
+
+test_that("add_event accepts a list of objects", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  objs <- list(
+    create_event(name = "A", template = "Meal: Standard (Human)"),
+    create_event(name = "B", template = "Meal: Standard (Human)")
+  )
+  snapshot <- add_event(snapshot, objs)
+  expect_named(snapshot$events, c("A", "B"))
+})
+
+test_that("add_expression_profile accepts a list of objects", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  objs <- list(
+    create_expression_profile(
+      molecule = "CYP3A4",
+      species = "Human",
+      category = "Healthy",
+      type = "Enzyme"
+    ),
+    create_expression_profile(
+      molecule = "CYP2D6",
+      species = "Human",
+      category = "Healthy",
+      type = "Enzyme"
+    )
+  )
+  snapshot <- add_expression_profile(snapshot, objs)
+  expect_named(
+    snapshot$expression_profiles,
+    c("CYP3A4_Human_Healthy", "CYP2D6_Human_Healthy")
+  )
+})
+
+test_that("add_observer_set accepts a list of objects", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  objs <- list(
+    create_observer_set(name = "A"),
+    create_observer_set(name = "B")
+  )
+  snapshot <- add_observer_set(snapshot, objs)
+  expect_named(snapshot$observer_sets, c("A", "B"))
+})
+
+test_that("add_observed_data accepts a list of objects", {
+  source_snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  dataset <- source_snapshot$observed_data[[1]]
+
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  snapshot <- suppressWarnings(
+    add_observed_data(snapshot, list(dataset, dataset))
+  )
+  expect_length(snapshot$observed_data, 2)
+})
+
+# add_*() rejects an empty list ---------------------------------------------
+
+test_that("add_compound errors on an empty list", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(add_compound(snapshot, list()), error = TRUE)
+})
+
+test_that("add_individual errors on an empty list", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot(add_individual(snapshot, list()), error = TRUE)
+})
+
+# add_*() rejects a mixed-type list -----------------------------------------
+
+test_that("add_compound rejects a list with a wrong-class element", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  bad <- list(create_compound(name = "A"), "not a compound")
+  expect_snapshot(add_compound(snapshot, bad), error = TRUE)
+})
+
+test_that("add_individual rejects a list with a wrong-class element", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  bad <- list(create_individual(name = "A", age = 25), "nope")
+  expect_snapshot(add_individual(snapshot, bad), error = TRUE)
+})
+
+test_that("add_expression_profile rejects a list with a wrong-class element", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  bad <- list(
+    create_expression_profile(
+      molecule = "CYP3A4",
+      species = "Human",
+      category = "Healthy",
+      type = "Enzyme"
+    ),
+    "nope"
+  )
+  expect_snapshot(add_expression_profile(snapshot, bad), error = TRUE)
+})
+
+# add_*() success message format --------------------------------------------
+
+test_that("add_*() reports the count of added entries", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  expect_snapshot({
+    snapshot <- add_compound(
+      snapshot,
+      create_compound(name = "X")
+    )
+    snapshot <- add_compound(
+      snapshot,
+      list(
+        create_compound(name = "Y"),
+        create_compound(name = "Z")
+      )
+    )
+  })
+})

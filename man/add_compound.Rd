@@ -2,24 +2,31 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_compound}
 \alias{add_compound}
-\title{Add a compound to a snapshot}
+\title{Add one or more compounds to a snapshot}
 \usage{
 add_compound(snapshot, compound)
 }
 \arguments{
 \item{snapshot}{A \link{Snapshot} object.}
 
-\item{compound}{A \link{Compound} object created with \code{\link[=create_compound]{create_compound()}}.}
+\item{compound}{A \link{Compound} object created with \code{\link[=create_compound]{create_compound()}}, or a
+list of such objects.}
 }
 \value{
 The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add a \link{Compound} object to a \link{Snapshot}.
+Add one or more \link{Compound} objects to a \link{Snapshot}.
 }
 \examples{
 \dontrun{
 snapshot <- load_snapshot("Midazolam") |>
   add_compound(create_compound(name = "Drug X"))
+
+snapshot <- load_snapshot("Midazolam") |>
+  add_compound(list(
+    create_compound(name = "Drug X"),
+    create_compound(name = "Drug Y")
+  ))
 }
 }
