@@ -29,23 +29,34 @@ create_output_interval <- function(
   if (
     missing(start_time) ||
       !is.numeric(start_time) ||
-      length(start_time) != 1
+      length(start_time) != 1 ||
+      !is.finite(start_time)
   ) {
-    cli::cli_abort("{.arg start_time} must be a single numeric value")
+    cli::cli_abort("{.arg start_time} must be a single finite numeric value")
   }
   if (
     missing(end_time) ||
       !is.numeric(end_time) ||
-      length(end_time) != 1
+      length(end_time) != 1 ||
+      !is.finite(end_time)
   ) {
-    cli::cli_abort("{.arg end_time} must be a single numeric value")
+    cli::cli_abort("{.arg end_time} must be a single finite numeric value")
   }
   if (
     missing(resolution) ||
       !is.numeric(resolution) ||
-      length(resolution) != 1
+      length(resolution) != 1 ||
+      !is.finite(resolution) ||
+      resolution <= 0
   ) {
-    cli::cli_abort("{.arg resolution} must be a single numeric value")
+    cli::cli_abort(
+      "{.arg resolution} must be a single finite positive numeric value"
+    )
+  }
+  if (end_time <= start_time) {
+    cli::cli_abort(
+      "{.arg end_time} ({end_time}) must be greater than {.arg start_time} ({start_time})"
+    )
   }
 
   data <- list()

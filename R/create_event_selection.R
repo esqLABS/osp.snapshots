@@ -19,9 +19,10 @@ create_event_selection <- function(name, start_time) {
   if (
     missing(start_time) ||
       !is.numeric(start_time) ||
-      length(start_time) != 1
+      length(start_time) != 1 ||
+      !is.finite(start_time)
   ) {
-    cli::cli_abort("{.arg start_time} must be a single numeric value")
+    cli::cli_abort("{.arg start_time} must be a single finite numeric value")
   }
 
   EventSelection$new(list(

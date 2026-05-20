@@ -12,7 +12,10 @@ absent on export.
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
-    \item{\code{data}}{The raw data of the solver settings (read-only).}
+    \item{\code{data}}{The raw data of the solver settings (read-only). An
+empty solver is always returned as a named-empty list so the JSON
+serialiser writes it as \code{{}} (an object), not \verb{[]} (an array).
+PK-Sim's snapshot mapper requires the object shape.}
 
     \item{\code{abs_tol}}{Absolute solver tolerance.}
 

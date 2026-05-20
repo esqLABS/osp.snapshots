@@ -12,7 +12,7 @@
       create_event_selection(name = "E")
     Condition
       Error in `create_event_selection()`:
-      ! `start_time` must be a single numeric value
+      ! `start_time` must be a single finite numeric value
 
 ---
 
@@ -20,5 +20,5 @@
       create_event_selection(name = "E", start_time = "x")
     Condition
       Error in `create_event_selection()`:
-      ! `start_time` must be a single numeric value
+      ! `start_time` must be a single finite numeric value
 

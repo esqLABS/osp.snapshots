@@ -45,6 +45,11 @@ create_compound_properties <- function(
   data <- list(Name = name)
 
   if (!is.null(calculation_methods)) {
+    if (!is.character(calculation_methods)) {
+      cli::cli_abort(
+        "{.arg calculation_methods} must be a character vector"
+      )
+    }
     data$CalculationMethods <- as.list(calculation_methods)
   }
 

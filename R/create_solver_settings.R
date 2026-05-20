@@ -68,10 +68,18 @@ create_solver_settings <- function(
     data$HMax <- h_max
   }
   if (!is.null(mx_step)) {
-    if (!is.numeric(mx_step) || length(mx_step) != 1) {
-      cli::cli_abort("{.arg mx_step} must be a single numeric value")
+    if (
+      !is.numeric(mx_step) ||
+        length(mx_step) != 1 ||
+        !is.finite(mx_step) ||
+        mx_step != as.integer(mx_step) ||
+        mx_step < 1
+    ) {
+      cli::cli_abort(
+        "{.arg mx_step} must be a single positive whole number"
+      )
     }
-    data$MxStep <- mx_step
+    data$MxStep <- as.integer(mx_step)
   }
   SolverSettings$new(data)
 }

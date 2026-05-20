@@ -20,5 +20,5 @@
       create_solver_settings(mx_step = "x")
     Condition
       Error in `create_solver_settings()`:
-      ! `mx_step` must be a single numeric value
+      ! `mx_step` must be a single positive whole number
 

@@ -74,9 +74,14 @@ OutputInterval <- R6::R6Class(
     .parameters = NULL,
     deep_clone = function(name, value) {
       if (name == ".parameters" && is.list(value)) {
-        return(lapply(value, function(p) {
+        # lapply() drops the parameter_collection S3 class; restore it so
+        # custom print methods keep working on cloned intervals.
+        cls <- class(value)
+        cloned <- lapply(value, function(p) {
           if (inherits(p, "R6")) p$clone(deep = TRUE) else p
-        }))
+        })
+        class(cloned) <- cls
+        return(cloned)
       }
       value
     }

@@ -14,7 +14,7 @@ exposes the wrapped list directly.
   \describe{
     \item{\code{data}}{The raw data of the schema (read-only). Rebuilt from
 the cached \link{OutputInterval} list so that mutations flow back to
-the export payload. Returns a bare list of interval dicts.}
+the export payload. Returns a bare list of interval named lists.}
 
     \item{\code{intervals}}{List of \link{OutputInterval} objects.}
   }
@@ -41,7 +41,7 @@ the export payload. Returns a bare list of interval dicts.}
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{data}}{Raw \code{OutputSchema} data from a snapshot. May be a bare
-list of interval dicts or \code{NULL} for an empty schema.}
+list of interval named lists or \code{NULL} for an empty schema.}
     }
     \if{html}{\out{</div>}}
   }

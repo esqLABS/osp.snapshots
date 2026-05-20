@@ -14,7 +14,7 @@ OutputSchema <- R6::R6Class(
     #' @description
     #' Create a new OutputSchema object.
     #' @param data Raw `OutputSchema` data from a snapshot. May be a bare
-    #'   list of interval dicts or `NULL` for an empty schema.
+    #'   list of interval named lists or `NULL` for an empty schema.
     #' @return A new OutputSchema object.
     initialize = function(data) {
       raw <- data %||% list()
@@ -24,7 +24,7 @@ OutputSchema <- R6::R6Class(
   active = list(
     #' @field data The raw data of the schema (read-only). Rebuilt from
     #'   the cached [OutputInterval] list so that mutations flow back to
-    #'   the export payload. Returns a bare list of interval dicts.
+    #'   the export payload. Returns a bare list of interval named lists.
     data = function(value) {
       if (missing(value)) {
         intervals <- lapply(private$.intervals, function(i) i$data)

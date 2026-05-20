@@ -396,10 +396,20 @@ Simulation <- R6::R6Class(
           key_by = "path"
         )
       } else if (is.list(value)) {
-        private$.parameters <- value
-        if (!inherits(private$.parameters, "parameter_collection")) {
-          class(private$.parameters) <- c("parameter_collection", "list")
-        }
+        # Wrap raw list entries through LocalizedParameter so the export
+        # path (which calls `p$data` on every element) keeps working.
+        # Pre-wrapped `Parameter`/`LocalizedParameter` objects are passed
+        # through unchanged.
+        wrapped <- lapply(value, function(p) {
+          if (inherits(p, "Parameter")) p else LocalizedParameter$new(p)
+        })
+        names(wrapped) <- vapply(
+          wrapped,
+          function(p) p$path %||% "Unknown",
+          character(1)
+        )
+        class(wrapped) <- c("parameter_collection", "list")
+        private$.parameters <- wrapped
       } else {
         cli::cli_abort("{.field parameters} must be a list")
       }
