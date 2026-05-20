@@ -141,6 +141,8 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     \item{\code{protocols}}{List of Protocol objects in the snapshot}
 
     \item{\code{observed_data}}{List of DataSet objects (observed data) in the snapshot}
+
+    \item{\code{simulations}}{List of Simulation objects in the snapshot}
   }
   \if{html}{\out{</div>}}
 }
@@ -168,6 +170,8 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     \item \href{#method-Snapshot-remove_protocol}{\code{Snapshot$remove_protocol()}}
     \item \href{#method-Snapshot-add_event}{\code{Snapshot$add_event()}}
     \item \href{#method-Snapshot-remove_event}{\code{Snapshot$remove_event()}}
+    \item \href{#method-Snapshot-add_simulation}{\code{Snapshot$add_simulation()}}
+    \item \href{#method-Snapshot-remove_simulation}{\code{Snapshot$remove_simulation()}}
     \item \href{#method-Snapshot-clone}{\code{Snapshot$clone()}}
   }
 }
@@ -620,6 +624,51 @@ data, or a list of such objects.}
     \if{html}{\out{<div class="r">}}
     \preformatted{Snapshot$remove_event(event_name)}
     \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-add_simulation"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-add_simulation}{}}}
+\subsection{\code{Snapshot$add_simulation()}}{
+  Add one or more Simulation objects to the snapshot.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$add_simulation(simulation)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{simulation}}{A Simulation object created with
+create_simulation(), or a list of such objects.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Snapshot-remove_simulation"></a>}}
+\if{latex}{\out{\hypertarget{method-Snapshot-remove_simulation}{}}}
+\subsection{\code{Snapshot$remove_simulation()}}{
+  Remove a simulation from the snapshot by name
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Snapshot$remove_simulation(simulation_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{simulation_name}}{Character vector of simulation name(s) to remove}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the object
   }
 }
 

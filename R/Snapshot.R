@@ -501,6 +501,59 @@ Snapshot <- R6::R6Class(
         label_plural = "events",
         label_count = "event(s)"
       )
+    },
+
+    #' @description
+    #' Add one or more Simulation objects to the snapshot.
+    #' @param simulation A Simulation object created with
+    #'   create_simulation(), or a list of such objects.
+    #' @return Invisibly returns the object
+    add_simulation = function(simulation) {
+      # Walk every simulation that looks valid, emit a missing-refs warning
+      # per simulation before `.add_block` mutates the cache. `.add_block`
+      # repeats the type validation so we keep this loop tolerant: we skip
+      # entries that are not Simulation objects (those errors are surfaced
+      # by `.add_block` immediately after).
+      sims <- if (inherits(simulation, "Simulation")) {
+        list(simulation)
+      } else if (is.list(simulation)) {
+        simulation
+      } else {
+        list()
+      }
+      for (s in sims) {
+        if (inherits(s, "Simulation")) {
+          private$.warn_unresolved_simulation_refs(s)
+        }
+      }
+
+      private$.add_block(
+        obj = simulation,
+        expected_class = "Simulation",
+        class_article = "a",
+        slot = ".simulations",
+        named_slot = ".simulations_named",
+        ensure = private$.ensure_simulations,
+        collection_class = "simulation_collection",
+        label_count = "simulation(s)"
+      )
+    },
+
+    #' @description
+    #' Remove a simulation from the snapshot by name
+    #' @param simulation_name Character vector of simulation name(s) to remove
+    #' @return Invisibly returns the object
+    remove_simulation = function(simulation_name) {
+      private$.remove_block(
+        input_keys = simulation_name,
+        slot = ".simulations",
+        named_slot = ".simulations_named",
+        ensure = private$.ensure_simulations,
+        collection_class = "simulation_collection",
+        label_singular_title = "Simulation",
+        label_plural = "simulations",
+        label_count = "simulation(s)"
+      )
     }
   ),
   active = list(
@@ -684,6 +737,22 @@ Snapshot <- R6::R6Class(
         )
       }
       private$.observed_data_named
+    },
+
+    #' @field simulations List of Simulation objects in the snapshot
+    simulations = function(value = NULL) {
+      if (!is.null(value)) {
+        private$.simulations <- value
+        private$.simulations_named <- NULL
+      }
+      private$.ensure_simulations()
+      if (is.null(private$.simulations_named)) {
+        private$.simulations_named <- private$.build_named_list(
+          private$.simulations,
+          "simulation_collection"
+        )
+      }
+      private$.simulations_named
     }
   ),
   private = list(
@@ -760,6 +829,10 @@ Snapshot <- R6::R6Class(
       ObservedData = list(
         cache = ".observed_data",
         adapter = .observed_data_export_adapter
+      ),
+      Simulations = list(
+        cache = ".simulations",
+        adapter = .default_export_adapter
       )
     ),
 
@@ -867,6 +940,14 @@ Snapshot <- R6::R6Class(
       )
     },
 
+    .ensure_simulations = function() {
+      private$.ensure_collection(
+        ".simulations",
+        "Simulations",
+        function(d) Simulation$new(d)
+      )
+    },
+
     # Store compound objects in an unnamed list
     .compounds = NULL,
 
@@ -927,6 +1008,12 @@ Snapshot <- R6::R6Class(
 
     # Cache for the named observed data list with disambiguated names
     .observed_data_named = NULL,
+
+    # Store simulation objects in an unnamed list
+    .simulations = NULL,
+
+    # Cache for the named simulations list with disambiguated names
+    .simulations_named = NULL,
 
     # Shared append routine for `add_<kind>` methods. Accepts either a single
     # building block of class `expected_class` or a list of such objects;
@@ -1038,6 +1125,123 @@ Snapshot <- R6::R6Class(
         "Removed {num_removed} {label_count}"
       )
       invisible(self)
+    },
+
+    # Pre-add hook for `add_simulation()`. Warns once per simulation when
+    # any name referenced by the simulation does not resolve to a
+    # currently-known building block in the snapshot. The add proceeds
+    # either way; PK-Sim will surface unresolved references at load time.
+    .warn_unresolved_simulation_refs = function(sim) {
+      collect_names <- function(items, accessor) {
+        if (length(items) == 0) return(character())
+        vapply(items, accessor, character(1))
+      }
+
+      known_individuals <- collect_names(
+        self$individuals,
+        function(x) x$name %||% ""
+      )
+      known_populations <- collect_names(
+        self$populations,
+        function(x) x$name %||% ""
+      )
+      known_compounds <- collect_names(
+        self$compounds,
+        function(x) x$name %||% ""
+      )
+      known_events <- collect_names(self$events, function(x) x$name %||% "")
+      known_observer_sets <- collect_names(
+        self$observer_sets,
+        function(x) x$name %||% ""
+      )
+      known_observed_data <- collect_names(
+        self$observed_data,
+        function(x) x$name %||% ""
+      )
+      known_protocols <- collect_names(
+        self$protocols,
+        function(x) x$name %||% ""
+      )
+      known_formulations <- collect_names(
+        self$formulations,
+        function(x) x$name %||% ""
+      )
+
+      missing <- list()
+      record <- function(kind, name) {
+        if (is.null(name) || !nzchar(name)) return()
+        missing[[kind]] <<- unique(c(missing[[kind]], name))
+      }
+
+      if (!is.null(sim$individual) && nzchar(sim$individual)) {
+        if (!(sim$individual %in% known_individuals)) {
+          record("Individuals", sim$individual)
+        }
+      }
+      if (!is.null(sim$population) && nzchar(sim$population)) {
+        if (!(sim$population %in% known_populations)) {
+          record("Populations", sim$population)
+        }
+      }
+
+      for (c in sim$compounds) {
+        if (!is.null(c$name) && !(c$name %in% known_compounds)) {
+          record("Compounds", c$name)
+        }
+        if (!is.null(c$protocol)) {
+          p_name <- c$protocol$name
+          if (!is.null(p_name) && !(p_name %in% known_protocols)) {
+            record("Protocols", p_name)
+          }
+          for (f in c$protocol$formulations) {
+            if (!is.null(f$name) && !(f$name %in% known_formulations)) {
+              record("Formulations", f$name)
+            }
+          }
+        }
+      }
+
+      for (e in sim$events) {
+        if (!is.null(e$name) && !(e$name %in% known_events)) {
+          record("Events", e$name)
+        }
+      }
+
+      for (o in sim$observer_sets) {
+        if (!is.null(o$name) && !(o$name %in% known_observer_sets)) {
+          record("ObserverSets", o$name)
+        }
+      }
+
+      od_names <- sim$observed_data_names
+      if (!is.null(od_names)) {
+        for (od in od_names) {
+          od_name <- as.character(od)
+          if (!(od_name %in% known_observed_data)) {
+            record("ObservedData", od_name)
+          }
+        }
+      }
+
+      if (length(missing) == 0) return()
+
+      lines <- vapply(
+        names(missing),
+        function(kind) {
+          paste0(
+            kind,
+            ": ",
+            paste(missing[[kind]], collapse = ", ")
+          )
+        },
+        character(1)
+      )
+      sim_name <- sim$name %||% "<unnamed>"
+      cli::cli_warn(c(
+        "Simulation {.val {sim_name}} references building blocks that are not in the snapshot:",
+        stats::setNames(lines, rep("*", length(lines))),
+        i = "PK-Sim will fail to resolve these at load time."
+      ))
     },
 
     # Build a named list from a building-block collection, disambiguating
@@ -1794,6 +1998,53 @@ add_observed_data <- function(snapshot, observed_data) {
 remove_observed_data <- function(snapshot, observed_data_name) {
   validate_snapshot(snapshot)
   snapshot$remove_observed_data(observed_data_name)
+  invisible(snapshot)
+}
+
+#' Add one or more simulations to a snapshot
+#'
+#' @description
+#' Add one or more [Simulation] objects to a [Snapshot]. References to
+#' missing building blocks (individual, population, compounds, events,
+#' observer sets, observed data, protocols, formulations) trigger one
+#' informational warning per simulation; the add proceeds either way.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param simulation A [Simulation] object created with
+#'   [create_simulation()], or a list of such objects.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' sim <- create_simulation(name = "Sim 1", individual = "Adult")
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   add_simulation(sim)
+#' }
+add_simulation <- function(snapshot, simulation) {
+  validate_snapshot(snapshot)
+  snapshot$add_simulation(simulation)
+  invisible(snapshot)
+}
+
+#' Remove simulations from a snapshot
+#'
+#' @description
+#' Remove one or more simulations from a [Snapshot] by name.
+#'
+#' @param snapshot A [Snapshot] object.
+#' @param simulation_name Character vector of simulation names to remove.
+#' @return The updated [Snapshot] object, returned invisibly.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("Midazolam") |>
+#'   remove_simulation("simulation1")
+#' }
+remove_simulation <- function(snapshot, simulation_name) {
+  validate_snapshot(snapshot)
+  snapshot$remove_simulation(simulation_name)
   invisible(snapshot)
 }
 

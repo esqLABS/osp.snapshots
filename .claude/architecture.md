@@ -4,7 +4,7 @@
 
 `osp.snapshots` is an R package that wraps PKSIM project snapshots (JSON files exported by Open Systems Pharmacology Suite) in a navigable R6 object tree. A user calls `load_snapshot()` to parse a JSON file (or a remote template), reads and mutates building blocks through R6 objects, optionally converts collections to tibbles for analysis, and calls `export_snapshot()` to write the modified snapshot back to JSON.
 
-The design has two goals that shape every component. First, round-trip fidelity: any field not explicitly modelled is preserved verbatim through export, so unmapped snapshot sections (`Simulations`, `Classifications`, `ParameterIdentifications`, ...) survive a load/save cycle untouched. Second, a tidyverse-friendly view: every building-block collection has a `get_*_dfs()` function that produces a tibble suitable for `dplyr` pipelines and ospsuite workflows.
+The design has two goals that shape every component. First, round-trip fidelity: any field not explicitly modelled is preserved verbatim through export, so unmapped snapshot sections (`Classifications`, `ParameterIdentifications`, `SimulationComparisons`, ...) survive a load/save cycle untouched. Second, a tidyverse-friendly view: every building-block collection has a `get_*_dfs()` function that produces a tibble suitable for `dplyr` pipelines and ospsuite workflows.
 
 ## Architecture diagram
 
@@ -54,7 +54,7 @@ A `Snapshot` is the root container. It holds eight kinds of building-block colle
 | `LocalizedParameter` | `R/LocalizedParameter.R` | A `Parameter` identified by its full pipe-separated path within a target's parameter tree (Individual, ExpressionProfile, Simulation parameter trees). Inherits from `Parameter`; adds construction-time path validation and the v11+ `Applications` to `Events` path-segment migration. | Leaf; passes `inherits(x, "Parameter")`. |
 | `Range` | `R/Range.R` | Min/max value with unit (age, weight, height, BMI). | Leaf utility class. |
 
-Building blocks not yet wrapped in R6 (`Simulations`, `ObserverSets`, `ParameterIdentifications`, `SimulationComparisons`, `*Classifications`) live in `Snapshot`'s preserved raw data and pass through unchanged on export. See `snapshot-spec.md` for the full JSON contract.
+Building blocks not yet wrapped in R6 (`ParameterIdentifications`, `SimulationComparisons`, `*Classifications`) live in `Snapshot`'s preserved raw data and pass through unchanged on export. Inside `Simulation`, four post-run fields (`Interactions`, `AlteredBuildingBlocks`, `IndividualAnalyses`, `PopulationAnalyses`) are kept as passthrough for the same reason. See `snapshot-spec.md` for the full JSON contract.
 
 ## Entry points and user-facing API
 
@@ -144,7 +144,7 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 
 ## Cross-cutting concerns
 
-**Round-trip fidelity.** `Snapshot` always keeps the original parsed JSON in `private$.original_data`. The `data` active field rebuilds the export payload by merging current R6 state on top of that snapshot, so any top-level key the package does not model (`Simulations`, `ObserverSets`, `Classifications`, `ParameterIdentifications`, ...) passes through untouched.
+**Round-trip fidelity.** `Snapshot` always keeps the original parsed JSON in `private$.original_data`. The `data` active field rebuilds the export payload by merging current R6 state on top of that snapshot, so any top-level key the package does not model (`Classifications`, `ParameterIdentifications`, ...) passes through untouched.
 
 **Unnamed-internal-list, named-access pattern.** Collections are stored as unnamed lists internally and exposed as named lists through active bindings. Duplicate names get numeric suffixes at access time. This separates positional identity (preserved for export) from convenient lookup by name.
 
@@ -209,7 +209,7 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 |-----------|------|-------------|
 | Root R6 class and serialization | `R/Snapshot.R` | `Snapshot`, `Snapshot$initialize`, `Snapshot$export`, `Snapshot$data` (active), `Snapshot$pksim_version` (active), `private$.original_data` |
 | Load dispatcher | `R/Snapshot.R` | `load_snapshot`, `.get_templates_data` |
-| Templates and mutators | `R/Snapshot.R` | `osp_models`, `add_individual`, `remove_individual`, `add_formulation`, `remove_formulation`, `add_expression_profile`, `remove_expression_profile`, `remove_population`, `export_snapshot` |
+| Templates and mutators | `R/Snapshot.R` | `osp_models`, `add_individual`, `remove_individual`, `add_formulation`, `remove_formulation`, `add_expression_profile`, `remove_expression_profile`, `remove_population`, `add_simulation`, `remove_simulation`, `export_snapshot` |
 | Compounds | `R/Compound.R` | `Compound` |
 | Processes | `R/Process.R`, `R/create_process.R`, `R/process_dataframes.R` | `Process`, `create_process`, `process_category`, `compound_processes_to_long_df` |
 | Individuals | `R/Individual.R` | `Individual`, `create_individual` |
@@ -218,6 +218,8 @@ ospsuite is the canonical R interface to PK-Sim. `osp.snapshots` integrates with
 | Formulations | `R/Formulation.R` | `Formulation`, `create_formulation` |
 | Protocols | `R/Protocol.R` | `Protocol`, `convert_ospsuite_time_to_duration`, `convert_ospsuite_time_unit_to_lubridate` |
 | Events | `R/Event.R` | `Event` |
+| Simulations | `R/Simulation.R`, `R/create_simulation.R` | `Simulation`, `create_simulation` |
+| Simulation sub-structures | `R/SolverSettings.R`, `R/OutputSchema.R`, `R/OutputInterval.R`, `R/OutputMapping.R`, `R/CompoundProperties.R`, `R/CompoundGroupSelection.R`, `R/CompoundProcessSelection.R`, `R/ProtocolSelection.R`, `R/FormulationSelection.R`, `R/EventSelection.R`, `R/ObserverSetSelection.R` and matching `R/create_*.R` files | `SolverSettings`, `OutputSchema`, `OutputInterval`, `OutputMapping`, `CompoundProperties`, `CompoundGroupSelection`, `CompoundProcessSelection`, `ProtocolSelection`, `FormulationSelection`, `EventSelection`, `ObserverSetSelection` plus their `create_*()` factories |
 | Observed data bridge | `R/ObservedData.R` | `loadDataSetFromSnapshot`, `ObservedData` |
 | Leaf types | `R/Parameter.R`, `R/LocalizedParameter.R`, `R/Range.R` | `Parameter`, `LocalizedParameter`, `create_parameter`, `Range`, `range` |
 | Shared parameter loader | `R/parameter-init.R` | `build_parameters_from_raw`, `ensure_path_from_name` |

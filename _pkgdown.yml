@@ -21,6 +21,8 @@ navbar:
         href: articles/exporting-snapshots-to-dataframes.html
       - text: "Creating and managing building blocks"
         href: articles/creating-building-blocks.html
+      - text: "Building simulations from scratch"
+        href: articles/simulations.html
 
 home:
   title: "osp.snapshots"
@@ -35,6 +37,7 @@ articles:
   contents:
   - exporting-snapshots-to-dataframes
   - creating-building-blocks
+  - simulations
 
 reference:
 
@@ -46,7 +49,7 @@ reference:
   - osp_models
 
 - title: "Building blocks"
-  desc: "R6 classes wrapping the eight PK-Sim building block kinds and the root snapshot"
+  desc: "R6 classes wrapping the PK-Sim building blocks and the root snapshot"
   contents:
   - Snapshot
   - Compound
@@ -57,19 +60,31 @@ reference:
   - ObserverSet
   - Population
   - Protocol
+  - Simulation
 
 - title: "Leaf and sub-structure types"
   desc: "Reusable R6 leaf classes and sub-structures held inside building blocks"
   contents:
   - AdvancedParameter
   - CalculationMethods
+  - CompoundGroupSelection
+  - CompoundProcessSelection
+  - CompoundProperties
+  - EventSelection
+  - FormulationSelection
   - LocalizedParameter
   - Observer
+  - ObserverSetSelection
   - OriginData
+  - OutputInterval
+  - OutputMapping
+  - OutputSchema
   - Parameter
   - Process
+  - ProtocolSelection
   - Schema
   - SchemaItem
+  - SolverSettings
   - range
   - Range-class
 
@@ -77,18 +92,30 @@ reference:
   desc: "Construct building blocks and leaves from named arguments"
   contents:
   - create_compound
+  - create_compound_group_selection
+  - create_compound_process_selection
+  - create_compound_properties
   - create_event
+  - create_event_selection
   - create_expression_profile
   - create_formulation
+  - create_formulation_selection
   - create_individual
   - create_observed_data
   - create_observer_set
+  - create_observer_set_selection
+  - create_output_interval
+  - create_output_mapping
+  - create_output_schema
   - create_parameter
   - create_population
   - create_process
   - create_protocol
+  - create_protocol_selection
   - create_schema
   - create_schema_item
+  - create_simulation
+  - create_solver_settings
 
 - title: "Mutators"
   desc: "Add and remove building blocks on a snapshot"
@@ -102,6 +129,7 @@ reference:
   - add_observer_set
   - add_population
   - add_protocol
+  - add_simulation
   - remove_compound
   - remove_event
   - remove_expression_profile
@@ -111,6 +139,7 @@ reference:
   - remove_observer_set
   - remove_population
   - remove_protocol
+  - remove_simulation
 
 - title: "Tibble exporters"
   desc: "Convert building blocks to tibbles for analysis"

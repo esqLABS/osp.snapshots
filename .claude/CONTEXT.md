@@ -73,8 +73,52 @@ _Avoid_: probe, watcher, metric.
 ### Other top-level snapshot sections
 
 **Simulation**:
-A named PK-Sim project entity that combines **Building blocks** into a runnable model. References either an **Individual** (then it is an **Individual simulation**) or a **Population** (then it is a **Population simulation**), plus **Compounds**, **Events**, **ObserverSets**, **Observed data**, a solver configuration, an output schema, and output selections. Not itself a building block; not currently wrapped in an R6 class by `osp.snapshots` (passes through as raw JSON).
+A named PK-Sim project entity that combines **Building blocks** into a runnable model. References either an **Individual** (then it is an **Individual simulation**) or a **Population** (then it is a **Population simulation**), plus **Compounds**, **Events**, **ObserverSets**, **Observed data**, a solver configuration, an output schema, and output selections. Not itself a building block. Wrapped by `osp.snapshots` as the R6 class `Simulation`; four post-run fields (`Interactions`, `AlteredBuildingBlocks`, `IndividualAnalyses`, `PopulationAnalyses`) survive round-trip as raw passthrough.
 _Avoid_: model, run.
+
+**Solver settings**:
+The numerical solver configuration block (`Solver`) of a **Simulation**: tolerances, step sizes, Jacobian use, and a maximum-step cap. Absent fields fall back to PK-Sim defaults. Wrapped as the R6 class `SolverSettings`.
+_Avoid_: integrator config, solver options.
+
+**Output schema**:
+The reporting schedule of a **Simulation**: a list of **Output intervals**, each defining one time window (start, end, resolution). Wrapped as the R6 class `OutputSchema`.
+_Avoid_: reporting schedule, output plan.
+
+**Output interval**:
+One time window within an **Output schema**, carrying its `Start time`, `End time`, and `Resolution` as **Parameters**. Wrapped as the R6 class `OutputInterval`.
+_Avoid_: time window, output range.
+
+**Output mapping**:
+A binding inside a **Simulation** between a simulation output quantity (by path) and an **Observed data** repository, used by downstream comparison and parameter identification. Wrapped as the R6 class `OutputMapping`.
+_Avoid_: data mapping, comparison binding.
+
+**Compound properties**:
+The simulation-local configuration of a **Compound**: which calculation methods to apply, which alternatives, processes, and protocol to use. Wrapped as the R6 class `CompoundProperties`.
+_Avoid_: compound config, sim-compound.
+
+**Compound group selection**:
+One entry within a **Compound properties** record selecting an alternative inside a named alternative group (e.g. choosing `Aqueous` inside `COMPOUND_SOLUBILITY`). Wrapped as the R6 class `CompoundGroupSelection`.
+_Avoid_: alternative pick, group choice.
+
+**Compound process selection**:
+One entry within a **Compound properties** record selecting a compound process (by some combination of name, molecule, metabolite, compound, and systemic process type). Wrapped as the R6 class `CompoundProcessSelection`.
+_Avoid_: process pick, kinetic selection.
+
+**Protocol selection**:
+The `Protocol` field of a **Compound properties**, referencing a **Protocol** building block by name and listing per-application **Formulation selections**. Wrapped as the R6 class `ProtocolSelection`.
+_Avoid_: protocol binding, dosing selection.
+
+**Formulation selection**:
+One entry inside a **Protocol selection** mapping a formulation key to a **Formulation** building block. Wrapped as the R6 class `FormulationSelection`.
+_Avoid_: formulation mapping, application binding.
+
+**Event selection**:
+One entry in a **Simulation**'s `Events` array, referencing an **Event** building block by name and carrying a `StartTime` **Parameter**. Wrapped as the R6 class `EventSelection`.
+_Avoid_: event ref, perturbation entry.
+
+**Observer set selection**:
+One entry in a **Simulation**'s `ObserverSets` array, referencing an **ObserverSet** building block by name. Wrapped as the R6 class `ObserverSetSelection`.
+_Avoid_: observer ref, set pick.
 
 **Observed data**:
 Experimental measurement series (time + value + error) attached to a **Snapshot**. Each entry maps to a PK-Sim `DataRepository` and is loaded by `osp.snapshots` into an `ospsuite::DataSet`. Referenced by name from a **Simulation**. Not a **Building block**.
