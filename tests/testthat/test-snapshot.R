@@ -1157,9 +1157,7 @@ test_that("add_observed_data accepts a list of objects", {
   dataset <- source_snapshot$observed_data[[1]]
 
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
-  snapshot <- suppressWarnings(
-    add_observed_data(snapshot, list(dataset, dataset))
-  )
+  snapshot <- add_observed_data(snapshot, list(dataset, dataset))
   expect_length(snapshot$observed_data, 2)
 })
 

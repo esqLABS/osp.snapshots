@@ -220,8 +220,8 @@ ObservedData <- loadDataSetFromSnapshot
       AuxiliaryType = "Undefined"
     ),
     Values = values_as_list(dataset$xValues),
-    Dimension = dataset$xDimension,
-    Unit = dataset$xUnit
+    Dimension = dataset$xDimension %||% "Time",
+    Unit = dataset$xUnit %||% "h"
   )
 
   data_info <- list(
@@ -235,10 +235,12 @@ ObservedData <- loadDataSetFromSnapshot
     data_info$LLOQ <- dataset$LLOQ
   }
 
+  base_path <- paste0(dataset$name, "|ObservedData|", dataset$name)
+
   column <- list(
     Name = "Avg",
     QuantityInfo = list(
-      Path = paste0(dataset$name, "|ObservedData|", dataset$name)
+      Path = paste0(base_path, "|ArithmeticMean")
     ),
     DataInfo = data_info,
     Values = values_as_list(dataset$yValues),
@@ -247,9 +249,10 @@ ObservedData <- loadDataSetFromSnapshot
   )
 
   if (length(dataset$yErrorValues) > 0) {
+    error_type <- dataset$yErrorType %||% "ArithmeticStdDev"
     related_data_info <- list(
       Origin = "ObservationAuxiliary",
-      AuxiliaryType = dataset$yErrorType %||% "ArithmeticStdDev"
+      AuxiliaryType = error_type
     )
     if (!is.null(dataset$molWeight) && !is.na(dataset$molWeight)) {
       related_data_info$MolWeight <- dataset$molWeight
@@ -257,7 +260,7 @@ ObservedData <- loadDataSetFromSnapshot
     column$RelatedColumns <- list(list(
       Name = "Var",
       QuantityInfo = list(
-        Path = paste0(dataset$name, "|ObservedData|", dataset$name)
+        Path = paste0(base_path, "|", error_type)
       ),
       DataInfo = related_data_info,
       Values = values_as_list(dataset$yErrorValues),

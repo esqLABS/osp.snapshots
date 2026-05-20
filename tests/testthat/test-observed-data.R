@@ -256,6 +256,7 @@ test_that("export_snapshot round-trips a runtime DataSet added to an empty snaps
   expect_equal(ds2$yErrorValues, dataset$yErrorValues)
   expect_equal(ds2$xUnit, dataset$xUnit)
   expect_equal(ds2$yUnit, dataset$yUnit)
+  expect_equal(ds2$xDimension, dataset$xDimension)
   expect_equal(ds2$yDimension, dataset$yDimension)
   expect_equal(ds2$yErrorType, dataset$yErrorType)
   expect_equal(ds2$yErrorUnit, dataset$yErrorUnit)
