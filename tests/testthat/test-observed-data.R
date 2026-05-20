@@ -233,6 +233,12 @@ test_that("add_observed_data warns when the dataset has no backing snapshot slic
   expect_snapshot(snapshot$add_observed_data(dataset))
 })
 
+test_that("add_observed_data aggregates the warning when adding several non-backed DataSets at once", {
+  snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
+  datasets <- test_snapshot$observed_data[1:3]
+  expect_snapshot(snapshot$add_observed_data(datasets))
+})
+
 test_that("Snapshot$print stays quiet when runtime DataSet entries are present", {
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
   dataset <- test_snapshot$observed_data[[1]]
