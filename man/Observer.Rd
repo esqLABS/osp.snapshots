@@ -19,11 +19,22 @@ observer <- Observer$new(list(
   Name = "brain_plasma_conc",
   Type = "Container",
   Dimension = "Concentration (molar)",
-  Formula = list(Formula = "Conc_Br")
+  Formula = list(
+    Name = "brain_plasma_conc_formula",
+    Formula = "Conc_Br",
+    Dimension = "Concentration (molar)",
+    References = list(list(
+      Alias = "Conc_Br",
+      Path = "Organism|Brain|Plasma|Drug|Concentration",
+      Dimension = "Concentration (molar)"
+    ))
+  )
 ))
 observer$name
 observer$type
-observer$dimension
+observer$formula_expression
+observer$formula_dimension
+observer$formula_references
 }
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
@@ -40,11 +51,31 @@ JSON (read-only).}
     \item{\code{dimension}}{The dimension of the observed quantity, resolved
 in PK-Sim via \code{IDimensionRepository.DimensionByName()}.}
 
-    \item{\code{formula}}{The formula expression string. Read from the inner
-\code{Formula$Formula} field of the underlying \code{ExplicitFormula}
-object; this binding does not expose \code{References} or \code{Dimension}.
-Setting this field writes back to \code{Formula$Formula} only. To
-access the full \code{ExplicitFormula}, use \code{observer$data$Formula}.}
+    \item{\code{formula}}{The full \code{ExplicitFormula} object backing the
+observer, as a list with \code{Name}, \code{Formula} (the expression
+string), \code{Dimension}, and \code{References} (a list of
+\code{FormulaUsablePath} entries, each with \code{Alias}, \code{Path}, and
+\code{Dimension}). \code{NULL} when the observer carries no formula.
+Setting this field replaces the whole structure; pass \code{NULL} to
+drop it. For the inner expression string or dimension only, use
+\code{formula_expression} or \code{formula_dimension}.}
+
+    \item{\code{formula_expression}}{The expression string of the underlying
+\code{ExplicitFormula} (\code{Formula$Formula} in the snapshot JSON).
+Setting writes back to the inner \code{Formula$Formula} field and
+preserves the sibling \code{Name}, \code{Dimension}, and \code{References}
+entries. To build a complete \code{ExplicitFormula} (including
+\code{Name} and \code{References}), assign to \code{formula} instead.}
+
+    \item{\code{formula_dimension}}{The output dimension of the underlying
+\code{ExplicitFormula} (\code{Formula$Dimension} in the snapshot JSON),
+resolved in PK-Sim via \code{IDimensionRepository.DimensionByName()}.
+Setting writes back to the inner \code{Formula$Dimension} field.}
+
+    \item{\code{formula_references}}{The \code{References} list of the underlying
+\code{ExplicitFormula}, where each entry is a named list with
+\code{Alias}, \code{Path}, and \code{Dimension}. Read-only; mutate the whole
+structure through \code{formula}.}
 
     \item{\code{container_tags}}{The \code{Tag} values from the observer's
 \code{ContainerCriteria}, joined with \code{|}. There is no \code{ContainerPath}
@@ -114,7 +145,11 @@ an empty list, both of which create an empty observer.}
 \subsection{\code{Observer$to_df()}}{
   Convert the observer to a single-row tibble suitable for the
 tibble-layer exporter. Columns are \code{name}, \code{type}, \code{dimension},
-\code{formula}, and \code{container_tags}.
+\code{formula_expression}, \code{formula_dimension}, \code{formula_references},
+and \code{container_tags}. \code{formula_references} collapses each
+\code{FormulaUsablePath} entry (\code{Alias}, \code{Path}, \code{Dimension}) to
+\code{"alias=path"} and joins entries with \code{|}; \code{NA} when the observer
+carries no references.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Observer$to_df()}

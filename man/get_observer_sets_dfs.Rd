@@ -14,8 +14,11 @@ A list with two tibbles. \code{observer_sets} has one row per
 \code{ObserverSet} with columns \code{observer_set_id}, \code{name},
 \code{n_observers}. \code{observers} has one row per \code{Observer} with columns
 \code{observer_set_id}, \code{observer_set_name}, \code{name}, \code{type},
-\code{dimension}, \code{formula}, \code{container_tags}; rows join back to their
+\code{dimension}, \code{formula_expression}, \code{formula_dimension},
+\code{formula_references}, \code{container_tags}; rows join back to their
 parent \code{ObserverSet} by \code{observer_set_id} or \code{observer_set_name}.
+\code{formula_references} flattens the underlying \code{ExplicitFormula}
+references to \code{"alias=path"} pairs joined with \code{|}.
 }
 \description{
 Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "observer_sets"}.

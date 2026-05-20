@@ -14,7 +14,8 @@ test_that("Observer class initialization works", {
   expect_equal(observer$name, "brain_plasma")
   expect_equal(observer$type, "Container")
   expect_equal(observer$dimension, "Concentration (molar)")
-  expect_equal(observer$formula, "Conc_Br")
+  expect_equal(observer$formula, list(Formula = "Conc_Br"))
+  expect_equal(observer$formula_expression, "Conc_Br")
   expect_equal(observer$container_tags, "Brain")
   expect_equal(observer$data, data)
 })
@@ -25,6 +26,9 @@ test_that("Observer handles empty and NULL data", {
   expect_null(empty$type)
   expect_null(empty$dimension)
   expect_null(empty$formula)
+  expect_null(empty$formula_expression)
+  expect_null(empty$formula_dimension)
+  expect_null(empty$formula_references)
   expect_null(empty$container_tags)
 
   null_data <- Observer$new(NULL)
@@ -58,26 +62,109 @@ test_that("Observer dimension setter round-trips through data", {
   expect_equal(observer$data$Dimension, "Time")
 })
 
-test_that("Observer formula setter writes into nested Formula", {
+test_that("Observer formula returns the full ExplicitFormula list", {
+  observer <- Observer$new(list(
+    Name = "x",
+    Formula = list(
+      Name = "f",
+      Formula = "Conc",
+      Dimension = "D",
+      References = list(list(Alias = "Conc", Path = "p", Dimension = "D"))
+    )
+  ))
+
+  expect_equal(
+    observer$formula,
+    list(
+      Name = "f",
+      Formula = "Conc",
+      Dimension = "D",
+      References = list(list(Alias = "Conc", Path = "p", Dimension = "D"))
+    )
+  )
+})
+
+test_that("Observer formula setter replaces the whole structure", {
+  observer <- Observer$new(list(
+    Name = "x",
+    Formula = list(Name = "old", Formula = "Conc", Dimension = "D")
+  ))
+
+  observer$formula <- list(Name = "new", Formula = "2*Conc")
+
+  expect_equal(observer$data$Formula, list(Name = "new", Formula = "2*Conc"))
+})
+
+test_that("Observer formula setter accepts NULL to drop the formula", {
+  observer <- Observer$new(list(
+    Name = "x",
+    Formula = list(Formula = "Conc")
+  ))
+
+  observer$formula <- NULL
+
+  expect_null(observer$formula)
+  expect_null(observer$data$Formula)
+})
+
+test_that("Observer formula_expression setter writes into nested Formula", {
   observer <- Observer$new(list(Name = "x"))
 
-  observer$formula <- "2*Conc"
+  observer$formula_expression <- "2*Conc"
 
-  expect_equal(observer$formula, "2*Conc")
+  expect_equal(observer$formula_expression, "2*Conc")
   expect_equal(observer$data$Formula$Formula, "2*Conc")
 })
 
-test_that("Observer formula setter preserves existing Formula fields", {
+test_that("Observer formula_expression setter preserves sibling fields", {
   observer <- Observer$new(list(
     Name = "x",
     Formula = list(Name = "f", Formula = "Conc", Dimension = "D")
   ))
 
-  observer$formula <- "2*Conc"
+  observer$formula_expression <- "2*Conc"
 
   expect_equal(observer$data$Formula$Formula, "2*Conc")
   expect_equal(observer$data$Formula$Name, "f")
   expect_equal(observer$data$Formula$Dimension, "D")
+})
+
+test_that("Observer formula_dimension round-trips through nested Formula", {
+  observer <- Observer$new(list(
+    Name = "x",
+    Formula = list(Formula = "Conc", Dimension = "Concentration (molar)")
+  ))
+
+  expect_equal(observer$formula_dimension, "Concentration (molar)")
+
+  observer$formula_dimension <- "Time"
+
+  expect_equal(observer$formula_dimension, "Time")
+  expect_equal(observer$data$Formula$Dimension, "Time")
+  expect_equal(observer$data$Formula$Formula, "Conc")
+})
+
+test_that("Observer formula_references reads References from Formula", {
+  refs <- list(
+    list(Alias = "Conc_Br", Path = "Brain|Conc", Dimension = "C"),
+    list(Alias = "Vol_Br", Path = "Brain|Vol", Dimension = "V")
+  )
+  observer <- Observer$new(list(
+    Name = "x",
+    Formula = list(Formula = "Conc_Br/Vol_Br", References = refs)
+  ))
+
+  expect_equal(observer$formula_references, refs)
+})
+
+test_that("Observer formula_references is NULL when no formula present", {
+  observer <- Observer$new(list(Name = "x"))
+  expect_null(observer$formula_references)
+})
+
+test_that("Observer formula_references is read-only", {
+  observer <- Observer$new(list(Name = "x"))
+  expect_snapshot(observer$formula_references <- list(), error = TRUE)
 })
 
 test_that("Observer container_tags joins multiple tags", {
@@ -107,7 +194,11 @@ test_that("Observer to_df returns a single-row tibble", {
     Name = "obs",
     Type = "Amount",
     Dimension = "Time",
-    Formula = list(Formula = "t"),
+    Formula = list(
+      Formula = "t",
+      Dimension = "Time",
+      References = list(list(Alias = "t", Path = "Time", Dimension = "Time"))
+    ),
     ContainerCriteria = list(list(Tag = "Brain", Type = "MatchTag"))
   ))
 
@@ -117,10 +208,21 @@ test_that("Observer to_df returns a single-row tibble", {
   expect_equal(nrow(df), 1)
   expect_named(
     df,
-    c("name", "type", "dimension", "formula", "container_tags")
+    c(
+      "name",
+      "type",
+      "dimension",
+      "formula_expression",
+      "formula_dimension",
+      "formula_references",
+      "container_tags"
+    )
   )
   expect_equal(df$name, "obs")
   expect_equal(df$type, "Amount")
+  expect_equal(df$formula_expression, "t")
+  expect_equal(df$formula_dimension, "Time")
+  expect_equal(df$formula_references, "t=Time")
   expect_equal(df$container_tags, "Brain")
 })
 
@@ -132,8 +234,27 @@ test_that("Observer to_df fills NA for missing fields", {
   expect_equal(df$name, "obs")
   expect_equal(df$type, NA_character_)
   expect_equal(df$dimension, NA_character_)
-  expect_equal(df$formula, NA_character_)
+  expect_equal(df$formula_expression, NA_character_)
+  expect_equal(df$formula_dimension, NA_character_)
+  expect_equal(df$formula_references, NA_character_)
   expect_equal(df$container_tags, NA_character_)
+})
+
+test_that("Observer to_df joins multiple formula references", {
+  observer <- Observer$new(list(
+    Name = "obs",
+    Formula = list(
+      Formula = "a+b",
+      References = list(
+        list(Alias = "a", Path = "p1", Dimension = "D"),
+        list(Alias = "b", Path = "p2", Dimension = "D")
+      )
+    )
+  ))
+
+  df <- observer$to_df()
+
+  expect_equal(df$formula_references, "a=p1|b=p2")
 })
 
 test_that("Observer round-trips raw data verbatim", {
