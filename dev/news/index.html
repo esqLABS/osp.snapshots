@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9030</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9031</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,9 @@
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<p>You can now create every kind of building block from a <code>create_*()</code> function and attach it with the matching <code>add_*()</code> mutator:</p>
+<ul><li>
+<code>add_*()</code> mutators now accept either a single building block or a list of building blocks, mirroring <code>remove_*()</code> which has accepted a character vector of names since #66. Success messages on both sides now uniformly report <code>Added N kind(s)</code> / <code>Removed N kind(s)</code> (#92).</li>
+</ul><p>You can now create every kind of building block from a <code>create_*()</code> function and attach it with the matching <code>add_*()</code> mutator:</p>
 <ul><li>
 <code><a href="../reference/create_compound.html">create_compound()</a></code> builds a compound from named arguments, with validation on <code>molecular_weight_unit</code> against <code>ospsuite::ospUnits$"Molecular weight"</code> (#27, #48). Attach with <code><a href="../reference/add_compound.html">add_compound()</a></code>, remove by name with <code><a href="../reference/remove_compound.html">remove_compound()</a></code> (#39).</li>
 <li>

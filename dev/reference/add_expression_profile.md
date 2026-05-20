@@ -1,8 +1,9 @@
-# Add an expression profile to a snapshot
+# Add one or more expression profiles to a snapshot
 
-Add an ExpressionProfile object to a Snapshot. This is a convenience
-function that calls the add_expression_profile method of the Snapshot
-class.
+Add one or more
+[ExpressionProfile](https://esqlabs.github.io/osp.snapshots/dev/reference/ExpressionProfile.md)
+objects to a
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md).
 
 ## Usage
 
@@ -18,11 +19,13 @@ add_expression_profile(snapshot, expression_profile)
 
 - expression_profile:
 
-  An ExpressionProfile object
+  An ExpressionProfile object, or a list of such objects.
 
 ## Value
 
-The updated Snapshot object
+The updated
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+object, returned invisibly.
 
 ## Examples
 
@@ -41,7 +44,10 @@ profile_data <- list(
 )
 profile <- ExpressionProfile$new(profile_data)
 
-# Add the expression profile to the snapshot
+# Add a single expression profile
 snapshot <- add_expression_profile(snapshot, profile)
+
+# Add several at once
+snapshot <- add_expression_profile(snapshot, list(profile, profile))
 } # }
 ```

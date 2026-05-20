@@ -1,8 +1,8 @@
-# Add a protocol to a snapshot
+# Add one or more protocols to a snapshot
 
-Add a
+Add one or more
 [Protocol](https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.md)
-object to a
+objects to a
 [Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md).
 
 ## Usage
@@ -24,7 +24,8 @@ add_protocol(snapshot, protocol)
   A
   [Protocol](https://esqlabs.github.io/osp.snapshots/dev/reference/Protocol.md)
   object created with
-  [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md).
+  [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md),
+  or a list of such objects.
 
 ## Value
 
@@ -43,5 +44,8 @@ prot <- create_protocol(
 )
 snapshot <- load_snapshot("Midazolam") |>
   add_protocol(prot)
+
+snapshot <- load_snapshot("Midazolam") |>
+  add_protocol(list(prot, prot))
 } # }
 ```

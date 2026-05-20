@@ -1,8 +1,8 @@
-# Add observed data to a snapshot
+# Add one or more observed-data entries to a snapshot
 
-Add an
+Add one or more
 [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
-(observed data) to a
+(observed data) objects to a
 [Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md).
 
 ## Usage
@@ -24,7 +24,8 @@ add_observed_data(snapshot, observed_data)
   A `DataSet` object, typically created with
   [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
   or
-  [`loadDataSetFromSnapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/loadDataSetFromSnapshot.md).
+  [`loadDataSetFromSnapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/loadDataSetFromSnapshot.md),
+  or a list of such objects.
 
 ## Value
 
@@ -44,5 +45,8 @@ dataset <- create_observed_data(
 )
 snapshot <- load_snapshot("Midazolam") |>
   add_observed_data(dataset)
+
+snapshot <- load_snapshot("Midazolam") |>
+  add_observed_data(list(dataset, dataset))
 } # }
 ```

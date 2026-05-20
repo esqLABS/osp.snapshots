@@ -44,6 +44,11 @@ classes are now first-class R6 objects with typed accessors.
 
 ### New features
 
+- `add_*()` mutators now accept either a single building block or a list
+  of building blocks, mirroring `remove_*()` which has accepted a
+  character vector of names since \#66. Success messages on both sides
+  now uniformly report `Added N kind(s)` / `Removed N kind(s)` (#92).
+
 You can now create every kind of building block from a `create_*()`
 function and attach it with the matching `add_*()` mutator:
 

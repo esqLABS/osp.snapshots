@@ -179,7 +179,7 @@ Invisibly returns the object
 
 ### `Snapshot$add_individual()`
 
-Add an Individual object to the snapshot
+Add one or more Individual objects to the snapshot.
 
 #### Usage
 
@@ -189,7 +189,8 @@ Add an Individual object to the snapshot
 
 - `individual`:
 
-  An Individual object created with create_individual()
+  An Individual object created with create_individual(), or a list of
+  such objects.
 
 #### Returns
 
@@ -202,6 +203,13 @@ Invisibly returns the object
 
     # Add the individual to a snapshot
     snapshot$add_individual(ind)
+
+    # Add several at once
+    patients <- list(
+      create_individual("Patient_A", age = 25),
+      create_individual("Patient_B", age = 45)
+    )
+    snapshot$add_individual(patients)
 
 ------------------------------------------------------------------------
 
@@ -232,7 +240,7 @@ Invisibly returns the object
 
 ### `Snapshot$add_formulation()`
 
-Add a Formulation object to the snapshot
+Add one or more Formulation objects to the snapshot.
 
 #### Usage
 
@@ -242,7 +250,8 @@ Add a Formulation object to the snapshot
 
 - `formulation`:
 
-  A Formulation object created with create_formulation()
+  A Formulation object created with create_formulation(), or a list of
+  such objects.
 
 #### Returns
 
@@ -255,6 +264,13 @@ Invisibly returns the object
 
     # Add the formulation to a snapshot
     snapshot$add_formulation(form)
+
+    # Add several at once
+    forms <- list(
+      create_formulation("Tablet", type = "Weibull"),
+      create_formulation("Oral solution", type = "First Order")
+    )
+    snapshot$add_formulation(forms)
 
 ------------------------------------------------------------------------
 
@@ -310,7 +326,7 @@ Invisibly returns the object
 
 ### `Snapshot$add_expression_profile()`
 
-Add an ExpressionProfile object to the snapshot
+Add one or more ExpressionProfile objects to the snapshot.
 
 #### Usage
 
@@ -320,7 +336,7 @@ Add an ExpressionProfile object to the snapshot
 
 - `expression_profile`:
 
-  An ExpressionProfile object
+  An ExpressionProfile object, or a list of such objects.
 
 #### Returns
 
@@ -340,6 +356,9 @@ Invisibly returns the object
 
     # Add the expression profile to a snapshot
     snapshot$add_expression_profile(profile)
+
+    # Add several at once
+    snapshot$add_expression_profile(list(profile, profile))
 
 ------------------------------------------------------------------------
 
@@ -386,7 +405,7 @@ Invisibly returns the object
 
 ### `Snapshot$add_observed_data()`
 
-Add a DataSet object (observed data) to the snapshot
+Add one or more DataSet objects (observed data) to the snapshot.
 
 #### Usage
 
@@ -396,7 +415,8 @@ Add a DataSet object (observed data) to the snapshot
 
 - `observed_data`:
 
-  A DataSet object created from snapshot observed data
+  A DataSet object created from snapshot observed data, or a list of
+  such objects.
 
 #### Returns
 
@@ -508,6 +528,13 @@ ind <- create_individual(name = "New Patient", age = 35, weight = 70)
 
 # Add the individual to a snapshot
 snapshot$add_individual(ind)
+
+# Add several at once
+patients <- list(
+  create_individual("Patient_A", age = 25),
+  create_individual("Patient_B", age = 45)
+)
+snapshot$add_individual(patients)
 } # }
 
 ## ------------------------------------------------
@@ -529,6 +556,13 @@ form <- create_formulation(name = "Tablet", type = "Weibull")
 
 # Add the formulation to a snapshot
 snapshot$add_formulation(form)
+
+# Add several at once
+forms <- list(
+  create_formulation("Tablet", type = "Weibull"),
+  create_formulation("Oral solution", type = "First Order")
+)
+snapshot$add_formulation(forms)
 } # }
 
 ## ------------------------------------------------
@@ -566,6 +600,9 @@ profile <- ExpressionProfile$new(profile_data)
 
 # Add the expression profile to a snapshot
 snapshot$add_expression_profile(profile)
+
+# Add several at once
+snapshot$add_expression_profile(list(profile, profile))
 } # }
 
 ## ------------------------------------------------

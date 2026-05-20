@@ -21,7 +21,9 @@ remove_expression_profile(snapshot, profile_id)
 
 ## Value
 
-The updated Snapshot object
+The updated
+[Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
+object, returned invisibly.
 
 ## Examples
 

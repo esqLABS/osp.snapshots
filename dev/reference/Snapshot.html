@@ -11,7 +11,7 @@ structure."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9030</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9031</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -199,13 +199,14 @@ versions abort.</p></dd>
 
 <p></p><hr><a id="method-Snapshot-add_individual"></a><div class="section">
 <h3 id="snapshot-add-individual-"><code>Snapshot$add_individual()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-individual-"></a></h3>
-<p>Add an Individual object to the snapshot</p><div class="section">
+<p>Add one or more Individual objects to the snapshot.</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">individual</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>individual</code></dt>
-<dd><p>An Individual object created with create_individual()</p></dd>
+<dd><p>An Individual object created with create_individual(),
+or a list of such objects.</p></dd>
 
 
 </dl><p></p></div>
@@ -218,7 +219,14 @@ versions abort.</p></dd>
 <span><span class="va">ind</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"New Patient"</span>, age <span class="op">=</span> <span class="fl">35</span>, weight <span class="op">=</span> <span class="fl">70</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add the individual to a snapshot</span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">ind</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">ind</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add several at once</span></span>
+<span><span class="va">patients</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_A"</span>, age <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_B"</span>, age <span class="op">=</span> <span class="fl">45</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 </div>
@@ -248,13 +256,14 @@ versions abort.</p></dd>
 
 <p></p><hr><a id="method-Snapshot-add_formulation"></a><div class="section">
 <h3 id="snapshot-add-formulation-"><code>Snapshot$add_formulation()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-formulation-"></a></h3>
-<p>Add a Formulation object to the snapshot</p><div class="section">
+<p>Add one or more Formulation objects to the snapshot.</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_formulation</span><span class="op">(</span><span class="va">formulation</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>formulation</code></dt>
-<dd><p>A Formulation object created with create_formulation()</p></dd>
+<dd><p>A Formulation object created with
+create_formulation(), or a list of such objects.</p></dd>
 
 
 </dl><p></p></div>
@@ -267,7 +276,14 @@ versions abort.</p></dd>
 <span><span class="va">form</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_formulation.html">create_formulation</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Tablet"</span>, type <span class="op">=</span> <span class="st">"Weibull"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add the formulation to a snapshot</span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_formulation</span><span class="op">(</span><span class="va">form</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_formulation</span><span class="op">(</span><span class="va">form</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add several at once</span></span>
+<span><span class="va">forms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/create_formulation.html">create_formulation</a></span><span class="op">(</span><span class="st">"Tablet"</span>, type <span class="op">=</span> <span class="st">"Weibull"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/create_formulation.html">create_formulation</a></span><span class="op">(</span><span class="st">"Oral solution"</span>, type <span class="op">=</span> <span class="st">"First Order"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_formulation</span><span class="op">(</span><span class="va">forms</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 </div>
@@ -320,13 +336,14 @@ versions abort.</p></dd>
 
 <p></p><hr><a id="method-Snapshot-add_expression_profile"></a><div class="section">
 <h3 id="snapshot-add-expression-profile-"><code>Snapshot$add_expression_profile()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-expression-profile-"></a></h3>
-<p>Add an ExpressionProfile object to the snapshot</p><div class="section">
+<p>Add one or more ExpressionProfile objects to the snapshot.</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_expression_profile</span><span class="op">(</span><span class="va">expression_profile</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>expression_profile</code></dt>
-<dd><p>An ExpressionProfile object</p></dd>
+<dd><p>An ExpressionProfile object, or a list of
+such objects.</p></dd>
 
 
 </dl><p></p></div>
@@ -346,7 +363,10 @@ versions abort.</p></dd>
 <span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/ExpressionProfile.html">ExpressionProfile</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">profile_data</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add the expression profile to a snapshot</span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_expression_profile</span><span class="op">(</span><span class="va">profile</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_expression_profile</span><span class="op">(</span><span class="va">profile</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add several at once</span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_expression_profile</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">profile</span>, <span class="va">profile</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 </div>
@@ -394,13 +414,14 @@ versions abort.</p></dd>
 
 <p></p><hr><a id="method-Snapshot-add_observed_data"></a><div class="section">
 <h3 id="snapshot-add-observed-data-"><code>Snapshot$add_observed_data()</code><a class="anchor" aria-label="anchor" href="#snapshot-add-observed-data-"></a></h3>
-<p>Add a DataSet object (observed data) to the snapshot</p><div class="section">
+<p>Add one or more DataSet objects (observed data) to the snapshot.</p><div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Snapshot</span><span class="op">$</span><span class="fu">add_observed_data</span><span class="op">(</span><span class="va">observed_data</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>observed_data</code></dt>
-<dd><p>A DataSet object created from snapshot observed data</p></dd>
+<dd><p>A DataSet object created from snapshot observed
+data, or a list of such objects.</p></dd>
 
 
 </dl><p></p></div>
@@ -525,6 +546,13 @@ versions abort.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Add the individual to a snapshot</span></span></span>
 <span class="r-in"><span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">ind</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add several at once</span></span></span>
+<span class="r-in"><span><span class="va">patients</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_A"</span>, age <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_B"</span>, age <span class="op">=</span> <span class="fl">45</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_individual</span><span class="op">(</span><span class="va">patients</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
@@ -546,6 +574,13 @@ versions abort.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Add the formulation to a snapshot</span></span></span>
 <span class="r-in"><span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_formulation</span><span class="op">(</span><span class="va">form</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add several at once</span></span></span>
+<span class="r-in"><span><span class="va">forms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="create_formulation.html">create_formulation</a></span><span class="op">(</span><span class="st">"Tablet"</span>, type <span class="op">=</span> <span class="st">"Weibull"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="create_formulation.html">create_formulation</a></span><span class="op">(</span><span class="st">"Oral solution"</span>, type <span class="op">=</span> <span class="st">"First Order"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_formulation</span><span class="op">(</span><span class="va">forms</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
@@ -583,6 +618,9 @@ versions abort.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Add the expression profile to a snapshot</span></span></span>
 <span class="r-in"><span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_expression_profile</span><span class="op">(</span><span class="va">profile</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add several at once</span></span></span>
+<span class="r-in"><span><span class="va">snapshot</span><span class="op">$</span><span class="fu">add_expression_profile</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">profile</span>, <span class="va">profile</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>

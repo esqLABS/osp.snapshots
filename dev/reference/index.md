@@ -99,23 +99,23 @@ Construct building blocks and leaves from named arguments
 Add and remove building blocks on a snapshot
 
 - [`add_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_compound.md)
-  : Add a compound to a snapshot
+  : Add one or more compounds to a snapshot
 - [`add_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_event.md)
-  : Add an event to a snapshot
+  : Add one or more events to a snapshot
 - [`add_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_expression_profile.md)
-  : Add an expression profile to a snapshot
+  : Add one or more expression profiles to a snapshot
 - [`add_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_formulation.md)
-  : Add a formulation to a snapshot
+  : Add one or more formulations to a snapshot
 - [`add_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_individual.md)
-  : Add an individual to a snapshot
+  : Add one or more individuals to a snapshot
 - [`add_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observed_data.md)
-  : Add observed data to a snapshot
+  : Add one or more observed-data entries to a snapshot
 - [`add_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observer_set.md)
-  : Add an observer set to a snapshot
+  : Add one or more observer sets to a snapshot
 - [`add_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_population.md)
-  : Add a population to a snapshot
+  : Add one or more populations to a snapshot
 - [`add_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_protocol.md)
-  : Add a protocol to a snapshot
+  : Add one or more protocols to a snapshot
 - [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
   : Remove compounds from a snapshot
 - [`remove_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_event.md)

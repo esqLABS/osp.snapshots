@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9030</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9031</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -573,8 +573,9 @@ it invisibly, so they chain with the base pipe.</p>
 <div class="section level3">
 <h3 id="adding-several-building-blocks-at-once">Adding several building blocks at once<a class="anchor" aria-label="anchor" href="#adding-several-building-blocks-at-once"></a>
 </h3>
-<p><code>add_*()</code> currently takes one building block at a time, so
-loop over your list to add many:</p>
+<p><code>add_*()</code> accepts either a single building block or a list
+of them, so you can attach many in one call. Each <code>add_*()</code>
+reports how many entries were added.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">patients</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_A"</span>, age <span class="op">=</span> <span class="fl">25</span>, gender <span class="op">=</span> <span class="st">"MALE"</span><span class="op">)</span>,</span>
@@ -582,9 +583,7 @@ loop over your list to add many:</p>
 <span>  <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_C"</span>, age <span class="op">=</span> <span class="fl">65</span>, gender <span class="op">=</span> <span class="st">"MALE"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">patient</span> <span class="kw">in</span> <span class="va">patients</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/add_individual.html">add_individual</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="va">patient</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
+<span><span class="fu"><a href="../reference/add_individual.html">add_individual</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="va">patients</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span></span>
 <span><span class="co">#&gt; </span></span>

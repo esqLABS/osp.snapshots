@@ -1,8 +1,8 @@
-# Add a compound to a snapshot
+# Add one or more compounds to a snapshot
 
-Add a
+Add one or more
 [Compound](https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.md)
-object to a
+objects to a
 [Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md).
 
 ## Usage
@@ -24,7 +24,8 @@ add_compound(snapshot, compound)
   A
   [Compound](https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.md)
   object created with
-  [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md).
+  [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md),
+  or a list of such objects.
 
 ## Value
 
@@ -38,5 +39,11 @@ object, returned invisibly.
 if (FALSE) { # \dontrun{
 snapshot <- load_snapshot("Midazolam") |>
   add_compound(create_compound(name = "Drug X"))
+
+snapshot <- load_snapshot("Midazolam") |>
+  add_compound(list(
+    create_compound(name = "Drug X"),
+    create_compound(name = "Drug Y")
+  ))
 } # }
 ```
