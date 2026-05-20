@@ -440,7 +440,9 @@ empty_observers_tibble <- function() {
     name = character(0),
     type = character(0),
     dimension = character(0),
-    formula = character(0),
+    formula_expression = character(0),
+    formula_dimension = character(0),
+    formula_references = character(0),
     container_tags = character(0)
   )
 }
@@ -631,8 +633,11 @@ get_protocols_dfs <- function(snapshot) {
 #'   `ObserverSet` with columns `observer_set_id`, `name`,
 #'   `n_observers`. `observers` has one row per `Observer` with columns
 #'   `observer_set_id`, `observer_set_name`, `name`, `type`,
-#'   `dimension`, `formula`, `container_tags`; rows join back to their
+#'   `dimension`, `formula_expression`, `formula_dimension`,
+#'   `formula_references`, `container_tags`; rows join back to their
 #'   parent `ObserverSet` by `observer_set_id` or `observer_set_name`.
+#'   `formula_references` flattens the underlying `ExplicitFormula`
+#'   references to `"alias=path"` pairs joined with `|`.
 #'
 #' @export
 #'

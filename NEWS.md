@@ -30,7 +30,7 @@ You can now convert any building-block collection to a tibble through one entry 
 
 - `as_tibbles(snapshot, kind)` returns either a bare tibble (`"protocols"`, `"observed_data"`) or a named list of related tibbles (every other kind). The eight existing `get_*_dfs()` functions remain available as thin wrappers (#36).
 
-Observer sets are now fully supported. Each `ObserverSet` exposes its observers as a named list of `Observer` objects with `name`, `type`, `dimension`, `formula`, and `container_tags`. `get_observer_sets_dfs()` returns two tibbles (`observer_sets` for set-level rows, `observers` joinable back via `observer_set_id` / `observer_set_name`) (#38, #42, #76).
+Observer sets are now fully supported. Each `ObserverSet` exposes its observers as a named list of `Observer` objects with `name`, `type`, `dimension`, `formula` (the full `ExplicitFormula` list), `formula_expression`, `formula_dimension`, `formula_references`, and `container_tags`. `get_observer_sets_dfs()` returns two tibbles (`observer_sets` for set-level rows, `observers` joinable back via `observer_set_id` / `observer_set_name`); the `observers` tibble carries `formula_expression`, `formula_dimension`, and `formula_references` columns alongside `name`, `type`, `dimension`, and `container_tags` (#38, #42, #76, #79).
 
 Several previously list-shaped fields are now first-class R6 objects:
 

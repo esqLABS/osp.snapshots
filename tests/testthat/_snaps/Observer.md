@@ -1,3 +1,11 @@
+# Observer formula_references is read-only
+
+    Code
+      observer$formula_references <- list()
+    Condition
+      Error:
+      ! formula_references is read-only; assign through formula instead
+
 # Observer container_tags is read-only
 
     Code
@@ -23,6 +31,6 @@
       -- Observer: brain_plasma 
       * Type: Container
       * Dimension: Concentration (molar)
-      * Formula: Conc_Br
+      * Formula expression: Conc_Br
       * Container tags: Brain
 

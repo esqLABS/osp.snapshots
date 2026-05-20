@@ -129,8 +129,31 @@ test_that("Observer dimension mutation survives a load-mutate-export-reload cycl
   expect_observer_field_roundtrip("dimension", "Concentration (molar)")
 })
 
+test_that("Observer formula_expression mutation survives a load-mutate-export-reload cycle", {
+  expect_observer_field_roundtrip("formula_expression", "3*Conc_Br")
+})
+
+test_that("Observer formula_dimension mutation survives a load-mutate-export-reload cycle", {
+  expect_observer_field_roundtrip(
+    "formula_dimension",
+    "Concentration (molar)"
+  )
+})
+
 test_that("Observer formula mutation survives a load-mutate-export-reload cycle", {
-  expect_observer_field_roundtrip("formula", "3*Conc_Br")
+  expect_observer_field_roundtrip(
+    "formula",
+    list(
+      Name = "renamed_formula",
+      Formula = "2*Conc_Br",
+      Dimension = "Concentration (molar)",
+      References = list(list(
+        Alias = "Conc_Br",
+        Path = "Organism|Brain|Plasma|Drug|Concentration",
+        Dimension = "Concentration (molar)"
+      ))
+    )
+  )
 })
 
 # ---- Mutators ----
@@ -235,7 +258,9 @@ test_that("get_observer_sets_dfs() returns observer_sets and observers", {
       "name",
       "type",
       "dimension",
-      "formula",
+      "formula_expression",
+      "formula_dimension",
+      "formula_references",
       "container_tags"
     )
   )
@@ -282,7 +307,9 @@ test_that("get_observer_sets_dfs() returns empty tibbles for empty snapshot", {
       "name",
       "type",
       "dimension",
-      "formula",
+      "formula_expression",
+      "formula_dimension",
+      "formula_references",
       "container_tags"
     )
   )
