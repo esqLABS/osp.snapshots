@@ -33,25 +33,3 @@
       #   xDimension <chr>, xUnit <chr>, yDimension <chr>, yUnit <chr>,
       #   yErrorType <chr>, yErrorUnit <chr>, molWeight <dbl>, lloq <dbl>
 
-# add_observed_data warns when the dataset has no backing snapshot slice
-
-    Code
-      snapshot$add_observed_data(dataset)
-    Condition
-      Warning:
-      1 observed data item cannot be serialized on export: "Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)"
-      i <DataSet> objects have no `$data` accessor; only entries present in the original snapshot are exported.
-    Message
-      v Added 1 observed data item(s)
-
-# add_observed_data aggregates the warning when adding several non-backed DataSets at once
-
-    Code
-      snapshot$add_observed_data(datasets)
-    Condition
-      Warning:
-      3 observed data items cannot be serialized on export: "Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)", "Backman 1996 - with Perpetrator (Rifampicin) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)", and "Backman 1998 - Phase I (Control (Perpetrator Placebo)) - Midazolam - PO - 15 mg - Plasma - agg. (n=9)"
-      i <DataSet> objects have no `$data` accessor; only entries present in the original snapshot are exported.
-    Message
-      v Added 3 observed data item(s)
-

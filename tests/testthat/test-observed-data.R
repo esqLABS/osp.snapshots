@@ -99,12 +99,10 @@ test_that("get_observed_data_dfs function works", {
 })
 
 test_that("add_observed_data method works", {
-  # Use a DataSet from test snapshot
   dataset <- test_snapshot$observed_data[[1]]
 
-  # Add to empty snapshot (warning about runtime-only DataSet is expected)
   initial_count <- length(empty_snapshot$observed_data)
-  suppressWarnings(empty_snapshot$add_observed_data(dataset))
+  empty_snapshot$add_observed_data(dataset)
 
   expect_equal(length(empty_snapshot$observed_data), initial_count + 1)
   expect_true(dataset$name %in% names(empty_snapshot$observed_data))
@@ -114,13 +112,11 @@ test_that("add_observed_data method works", {
 })
 
 test_that("remove_observed_data method works", {
-  # First add a DataSet to test removal
   dataset <- test_snapshot$observed_data[[1]]
 
-  suppressWarnings(empty_snapshot$add_observed_data(dataset))
+  empty_snapshot$add_observed_data(dataset)
   initial_count <- length(empty_snapshot$observed_data)
 
-  # Remove the added observed data
   empty_snapshot$remove_observed_data(dataset$name)
 
   expect_equal(length(empty_snapshot$observed_data), initial_count - 1)
@@ -227,22 +223,68 @@ test_that("Snapshot export preserves the user's ordering of observed data", {
   expect_equal(exported_names, cache_names)
 })
 
-test_that("add_observed_data warns when the dataset has no backing snapshot slice", {
+test_that("add_observed_data does not warn for runtime DataSets", {
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
   dataset <- test_snapshot$observed_data[[1]]
-  expect_snapshot(snapshot$add_observed_data(dataset))
+  expect_no_warning(snapshot$add_observed_data(dataset))
 })
 
-test_that("add_observed_data aggregates the warning when adding several non-backed DataSets at once", {
+test_that("export_snapshot round-trips a runtime DataSet added to an empty snapshot", {
+  dataset <- create_observed_data(
+    name = "Round-trip Study",
+    time = c(0, 1, 2, 4),
+    values = c(0, 5, 8, 4),
+    value_dimension = "Concentration (mass)",
+    value_unit = "mg/l",
+    error = c(0.1, 0.5, 0.8, 0.4),
+    error_type = "ArithmeticStdDev",
+    error_unit = "mg/l",
+    metadata = list(Source = "Test", Note = "synthetic")
+  )
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
-  datasets <- test_snapshot$observed_data[1:3]
-  expect_snapshot(snapshot$add_observed_data(datasets))
+  snapshot <- add_observed_data(snapshot, dataset)
+
+  out_path <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(snapshot, out_path)
+  reloaded <- load_snapshot(out_path)
+
+  expect_length(reloaded$observed_data, 1)
+  ds2 <- reloaded$observed_data[[1]]
+  expect_equal(ds2$name, dataset$name)
+  expect_equal(ds2$xValues, dataset$xValues)
+  expect_equal(ds2$yValues, dataset$yValues)
+  expect_equal(ds2$yErrorValues, dataset$yErrorValues)
+  expect_equal(ds2$xUnit, dataset$xUnit)
+  expect_equal(ds2$yUnit, dataset$yUnit)
+  expect_equal(ds2$yDimension, dataset$yDimension)
+  expect_equal(ds2$yErrorType, dataset$yErrorType)
+  expect_equal(ds2$yErrorUnit, dataset$yErrorUnit)
+  expect_equal(ds2$metaData, dataset$metaData)
+})
+
+test_that("export_snapshot replays the original JSON slice for backed entries even when new runtime entries are added", {
+  source_snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  original_slice <- source_snapshot$data$ObservedData[[1]]
+
+  extra <- create_observed_data(
+    name = "Extra Runtime",
+    time = c(0, 1),
+    values = c(0, 1),
+    value_dimension = "Concentration (mass)",
+    value_unit = "mg/l"
+  )
+  source_snapshot <- add_observed_data(source_snapshot, extra)
+
+  out_path <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(source_snapshot, out_path)
+  raw <- jsonlite::fromJSON(out_path, simplifyVector = FALSE)
+  expect_equal(raw$ObservedData[[1]], original_slice)
 })
 
 test_that("Snapshot$print stays quiet when runtime DataSet entries are present", {
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
   dataset <- test_snapshot$observed_data[[1]]
-  suppressWarnings(suppressMessages(snapshot$add_observed_data(dataset)))
+  suppressMessages(snapshot$add_observed_data(dataset))
   expect_no_warning(snapshot$data)
   expect_no_warning(capture.output(print(snapshot)))
 })
@@ -312,8 +354,8 @@ test_that("DataSet handles duplicate names correctly", {
   dataset1 <- test_snapshot$observed_data[[1]]
   dataset2 <- test_snapshot$observed_data[[1]] # Same DataSet
 
-  suppressWarnings(temp_empty$add_observed_data(dataset1))
-  suppressWarnings(temp_empty$add_observed_data(dataset2))
+  temp_empty$add_observed_data(dataset1)
+  temp_empty$add_observed_data(dataset2)
 
   # Check that both are added with disambiguated names
   expect_equal(length(temp_empty$observed_data), 2)
@@ -375,7 +417,7 @@ test_that("add/remove observed data updates export data", {
 
   # Add a DataSet
   dataset <- test_snapshot$observed_data[[1]]
-  suppressWarnings(temp_empty$add_observed_data(dataset))
+  temp_empty$add_observed_data(dataset)
 
   # Check export data is updated (note: export functionality may be different now)
   updated_data <- temp_empty$data
@@ -399,7 +441,7 @@ test_that("Convenience functions work correctly", {
 
   # Use method calls directly
   initial_count <- length(temp_empty$observed_data)
-  suppressWarnings(temp_empty$add_observed_data(dataset))
+  temp_empty$add_observed_data(dataset)
   expect_equal(length(temp_empty$observed_data), initial_count + 1)
 
   # Test remove_observed_data method

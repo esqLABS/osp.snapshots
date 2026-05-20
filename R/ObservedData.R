@@ -190,18 +190,106 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
 #' @export
 ObservedData <- loadDataSetFromSnapshot
 
+# Serialize a runtime `ospsuite::DataSet` back into the list shape used by the
+# snapshot JSON `ObservedData[[i]]`. This is the inverse of
+# `loadDataSetFromSnapshot()` and is, like the loader, lossy: it can only emit
+# fields the public `DataSet` API exposes. In particular `QuantityInfo$Path`
+# is synthesized from `dataset$name` (the original PK-Sim hierarchical path is
+# not preserved on load), `ExtendedProperties[[i]]$Type` is always "String"
+# (the loader coerces values via `as.character` and drops the type tag), and
+# only one y-column is emitted ("Avg"); multi-column observed-data entries
+# are not representable through a single `DataSet`. The synthesized payload
+# is sufficient for round-trip through `osp.snapshots`; round-trip through
+# PK-Sim has not been validated and may require additional fields.
+.dataset_to_snapshot_list <- function(dataset) {
+  values_as_list <- function(x) {
+    if (length(x) == 0) {
+      return(list())
+    }
+    lapply(x, identity)
+  }
+
+  base_grid <- list(
+    Name = "Time",
+    QuantityInfo = list(
+      Path = paste0(dataset$name, "|Time"),
+      Type = "Time"
+    ),
+    DataInfo = list(
+      Origin = "BaseGrid",
+      AuxiliaryType = "Undefined"
+    ),
+    Values = values_as_list(dataset$xValues),
+    Dimension = dataset$xDimension,
+    Unit = dataset$xUnit
+  )
+
+  data_info <- list(
+    Origin = "Observation",
+    AuxiliaryType = "Undefined"
+  )
+  if (!is.null(dataset$molWeight) && !is.na(dataset$molWeight)) {
+    data_info$MolWeight <- dataset$molWeight
+  }
+  if (!is.null(dataset$LLOQ) && !is.na(dataset$LLOQ)) {
+    data_info$LLOQ <- dataset$LLOQ
+  }
+
+  column <- list(
+    Name = "Avg",
+    QuantityInfo = list(
+      Path = paste0(dataset$name, "|ObservedData|", dataset$name)
+    ),
+    DataInfo = data_info,
+    Values = values_as_list(dataset$yValues),
+    Dimension = dataset$yDimension,
+    Unit = dataset$yUnit
+  )
+
+  if (length(dataset$yErrorValues) > 0) {
+    related_data_info <- list(
+      Origin = "ObservationAuxiliary",
+      AuxiliaryType = dataset$yErrorType %||% "ArithmeticStdDev"
+    )
+    if (!is.null(dataset$molWeight) && !is.na(dataset$molWeight)) {
+      related_data_info$MolWeight <- dataset$molWeight
+    }
+    column$RelatedColumns <- list(list(
+      Name = "Var",
+      QuantityInfo = list(
+        Path = paste0(dataset$name, "|ObservedData|", dataset$name)
+      ),
+      DataInfo = related_data_info,
+      Values = values_as_list(dataset$yErrorValues),
+      Dimension = dataset$yDimension,
+      Unit = dataset$yErrorUnit %||% dataset$yUnit
+    ))
+  }
+
+  extended_properties <- list()
+  meta <- dataset$metaData
+  if (length(meta) > 0) {
+    extended_properties <- lapply(names(meta), function(k) {
+      list(Name = k, Value = as.character(meta[[k]]), Type = "String")
+    })
+  }
+
+  list(
+    Name = dataset$name,
+    ExtendedProperties = extended_properties,
+    Columns = list(column),
+    BaseGrid = base_grid
+  )
+}
+
 # Export adapter for the ObservedData section of a Snapshot.
 #
-# `ospsuite::DataSet` does not round-trip back to the snapshot list shape, so
-# the export payload for `ObservedData` is always replayed from the raw JSON
-# slice that was parsed at load time. Mutations to a `DataSet` after load
-# (e.g. `dataset$xUnit <- "min"`) are silently lost on export; only
-# removals (via `remove_observed_data()`) and reorderings of surviving names
-# are honoured. Items added at runtime through `add_observed_data()` cannot be
-# serialized either: their backing JSON is not in `.original_data`, so they
-# are dropped silently here. `Snapshot$add_observed_data()` warns at the time
-# of addition so the user is informed once, rather than on every `$data`
-# access (which includes `print()`).
+# Entries that are still present in the raw JSON slice (matched by name) are
+# replayed byte-for-byte from `.original_data`, so post-load mutations to a
+# loaded `DataSet` (e.g. `dataset$xUnit <- "min"`) are NOT reflected on
+# export. Entries added at runtime via `add_observed_data()` are serialized
+# through `.dataset_to_snapshot_list()`; that path is lossy (see the comment
+# on the helper) but round-trips through `osp.snapshots` itself.
 #
 # Contract:
 #   items     cache slot value: `NULL` (untouched), `list()` (cleared by
@@ -215,14 +303,21 @@ ObservedData <- loadDataSetFromSnapshot
   if (length(items) == 0) {
     return(NULL)
   }
-  surviving_names <- vapply(items, function(od) od$name, character(1))
-  original_names <- vapply(
-    original,
-    function(od) od$Name %||% od$name,
-    character(1)
-  )
-  # Use match() so the export order tracks the user's current ordering of
-  # `items` rather than the order of the original snapshot slice.
-  indices <- match(surviving_names, original_names)
-  original[indices[!is.na(indices)]]
+  original_names <- if (length(original) == 0) {
+    character()
+  } else {
+    vapply(
+      original,
+      function(od) od$Name %||% od$name,
+      character(1)
+    )
+  }
+  lapply(items, function(item) {
+    idx <- match(item$name, original_names)
+    if (!is.na(idx)) {
+      original[[idx]]
+    } else {
+      .dataset_to_snapshot_list(item)
+    }
+  })
 }
