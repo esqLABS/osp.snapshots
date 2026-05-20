@@ -64,8 +64,11 @@ Prefer <code><a href="as_tibbles.html">as_tibbles()</a></code> in new code.</p>
 <code>ObserverSet</code> with columns <code>observer_set_id</code>, <code>name</code>,
 <code>n_observers</code>. <code>observers</code> has one row per <code>Observer</code> with columns
 <code>observer_set_id</code>, <code>observer_set_name</code>, <code>name</code>, <code>type</code>,
-<code>dimension</code>, <code>formula</code>, <code>container_tags</code>; rows join back to their
-parent <code>ObserverSet</code> by <code>observer_set_id</code> or <code>observer_set_name</code>.</p>
+<code>dimension</code>, <code>formula_expression</code>, <code>formula_dimension</code>,
+<code>formula_references</code>, <code>container_tags</code>; rows join back to their
+parent <code>ObserverSet</code> by <code>observer_set_id</code> or <code>observer_set_name</code>.
+<code>formula_references</code> flattens the underlying <code>ExplicitFormula</code>
+references to <code>"alias=path"</code> pairs joined with <code>|</code>.</p>
     </div>
 
     <div class="section level2">

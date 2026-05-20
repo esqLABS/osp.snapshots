@@ -475,9 +475,10 @@ model output. Observers travel in groups called *Observer sets*.
 builds a set from a name and a list of observers.
 
 Build each observer with `Observer$new()` (which validates the input and
-gives you typed accessors `$name`, `$type`, `$dimension`, `$formula`,
-`$container_tags`), then bundle them into a set and attach the set to a
-snapshot:
+gives you typed accessors `$name`, `$type`, `$dimension`, `$formula`
+(the full `ExplicitFormula` list), `$formula_expression`,
+`$formula_dimension`, `$formula_references`, `$container_tags`), then
+bundle them into a set and attach the set to a snapshot:
 
 ``` r
 

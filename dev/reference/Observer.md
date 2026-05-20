@@ -35,11 +35,35 @@ itself a building block; it lives inside an `ObserverSet`.
 
 - `formula`:
 
-  The formula expression string. Read from the inner `Formula$Formula`
-  field of the underlying `ExplicitFormula` object; this binding does
-  not expose `References` or `Dimension`. Setting this field writes back
-  to `Formula$Formula` only. To access the full `ExplicitFormula`, use
-  `observer$data$Formula`.
+  The full `ExplicitFormula` object backing the observer, as a list with
+  `Name`, `Formula` (the expression string), `Dimension`, and
+  `References` (a list of `FormulaUsablePath` entries, each with
+  `Alias`, `Path`, and `Dimension`). `NULL` when the observer carries no
+  formula. Setting this field replaces the whole structure; pass `NULL`
+  to drop it. For the inner expression string or dimension only, use
+  `formula_expression` or `formula_dimension`.
+
+- `formula_expression`:
+
+  The expression string of the underlying `ExplicitFormula`
+  (`Formula$Formula` in the snapshot JSON). Setting writes back to the
+  inner `Formula$Formula` field and preserves the sibling `Name`,
+  `Dimension`, and `References` entries. To build a complete
+  `ExplicitFormula` (including `Name` and `References`), assign to
+  `formula` instead.
+
+- `formula_dimension`:
+
+  The output dimension of the underlying `ExplicitFormula`
+  (`Formula$Dimension` in the snapshot JSON), resolved in PK-Sim via
+  `IDimensionRepository.DimensionByName()`. Setting writes back to the
+  inner `Formula$Dimension` field.
+
+- `formula_references`:
+
+  The `References` list of the underlying `ExplicitFormula`, where each
+  entry is a named list with `Alias`, `Path`, and `Dimension`.
+  Read-only; mutate the whole structure through `formula`.
 
 - `container_tags`:
 
@@ -107,7 +131,11 @@ Invisibly returns the Observer object.
 
 Convert the observer to a single-row tibble suitable for the
 tibble-layer exporter. Columns are `name`, `type`, `dimension`,
-`formula`, and `container_tags`.
+`formula_expression`, `formula_dimension`, `formula_references`, and
+`container_tags`. `formula_references` collapses each
+`FormulaUsablePath` entry (`Alias`, `Path`, `Dimension`) to
+`"alias=path"` and joins entries with `|`; `NA` when the observer
+carries no references.
 
 #### Usage
 
@@ -140,12 +168,35 @@ observer <- Observer$new(list(
   Name = "brain_plasma_conc",
   Type = "Container",
   Dimension = "Concentration (molar)",
-  Formula = list(Formula = "Conc_Br")
+  Formula = list(
+    Name = "brain_plasma_conc_formula",
+    Formula = "Conc_Br",
+    Dimension = "Concentration (molar)",
+    References = list(list(
+      Alias = "Conc_Br",
+      Path = "Organism|Brain|Plasma|Drug|Concentration",
+      Dimension = "Concentration (molar)"
+    ))
+  )
 ))
 observer$name
 #> [1] "brain_plasma_conc"
 observer$type
 #> [1] "Container"
-observer$dimension
+observer$formula_expression
+#> [1] "Conc_Br"
+observer$formula_dimension
 #> [1] "Concentration (molar)"
+observer$formula_references
+#> [[1]]
+#> [[1]]$Alias
+#> [1] "Conc_Br"
+#> 
+#> [[1]]$Path
+#> [1] "Organism|Brain|Plasma|Drug|Concentration"
+#> 
+#> [[1]]$Dimension
+#> [1] "Concentration (molar)"
+#> 
+#> 
 ```

@@ -304,9 +304,12 @@ two tibbles joinable on <code>observer_set_id</code> (or
 with its name and the count of observers it contains.</li>
 <li>
 <code>$observers</code> has one row per <em>Observer</em> with its
-name, type, dimension, formula, and <code>container_tags</code> (the
-<code>|</code>-joined <code>Tag</code> values from the underlying
-<code>ContainerCriteria</code>).</li>
+name, type, dimension, <code>formula_expression</code>,
+<code>formula_dimension</code>, <code>formula_references</code> (the
+underlying <code>ExplicitFormula</code> references collapsed to
+<code>"alias=path"</code> pairs joined with <code>|</code>), and
+<code>container_tags</code> (the <code>|</code>-joined <code>Tag</code>
+values from the underlying <code>ContainerCriteria</code>).</li>
 </ul>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">observer_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"observer_sets"</span><span class="op">)</span></span>

@@ -235,8 +235,11 @@ joinable on `observer_set_id` (or `observer_set_name`):
 - `$observer_sets` has one row per *ObserverSet* with its name and the
   count of observers it contains.
 - `$observers` has one row per *Observer* with its name, type,
-  dimension, formula, and `container_tags` (the `|`-joined `Tag` values
-  from the underlying `ContainerCriteria`).
+  dimension, `formula_expression`, `formula_dimension`,
+  `formula_references` (the underlying `ExplicitFormula` references
+  collapsed to `"alias=path"` pairs joined with `|`), and
+  `container_tags` (the `|`-joined `Tag` values from the underlying
+  `ContainerCriteria`).
 
 ``` r
 

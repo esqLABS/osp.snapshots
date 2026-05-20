@@ -127,11 +127,15 @@ one entry point:
 
 Observer sets are now fully supported. Each `ObserverSet` exposes its
 observers as a named list of `Observer` objects with `name`, `type`,
-`dimension`, `formula`, and `container_tags`.
+`dimension`, `formula` (the full `ExplicitFormula` list),
+`formula_expression`, `formula_dimension`, `formula_references`, and
+`container_tags`.
 [`get_observer_sets_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observer_sets_dfs.md)
 returns two tibbles (`observer_sets` for set-level rows, `observers`
-joinable back via `observer_set_id` / `observer_set_name`) (#38, \#42,
-\#76).
+joinable back via `observer_set_id` / `observer_set_name`); the
+`observers` tibble carries `formula_expression`, `formula_dimension`,
+and `formula_references` columns alongside `name`, `type`, `dimension`,
+and `container_tags` (#38, \#42, \#76, \#79).
 
 Several previously list-shaped fields are now first-class R6 objects:
 
@@ -175,12 +179,20 @@ Several previously list-shaped fields are now first-class R6 objects:
   method. The existing per-kind classes (`compound_collection`,
   `individual_collection`, …) are preserved as marker classes (#34).
 - [`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.md)
-  now documents that mutations to a `DataSet` after load (e.g. changing
-  `xUnit` on an entry in `snapshot$observed_data`) are not preserved on
-  export. The exported `ObservedData` section is replayed from the
-  original snapshot JSON, filtered to entries still present after
-  [`remove_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observed_data.md)
-  (#35).
+  now serializes `DataSet` objects attached at runtime via
+  [`add_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observed_data.md),
+  so a snapshot built from
+  [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
+  and
+  [`add_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observed_data.md)
+  round-trips through
+  [`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.md)
+  and
+  [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md).
+  Entries that were already present in the loaded snapshot are still
+  replayed from the original JSON slice, which means post-load mutations
+  to a `DataSet` (e.g. changing `xUnit` on an entry in
+  `snapshot$observed_data`) are not reflected on export (#35, \#96).
 
 ### Bug fixes
 

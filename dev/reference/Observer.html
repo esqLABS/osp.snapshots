@@ -87,11 +87,37 @@ in PK-Sim via <code>IDimensionRepository.DimensionByName()</code>.</p></dd>
 
 
     <dt><code>formula</code></dt>
-<dd><p>The formula expression string. Read from the inner
-<code>Formula$Formula</code> field of the underlying <code>ExplicitFormula</code>
-object; this binding does not expose <code>References</code> or <code>Dimension</code>.
-Setting this field writes back to <code>Formula$Formula</code> only. To
-access the full <code>ExplicitFormula</code>, use <code>observer$data$Formula</code>.</p></dd>
+<dd><p>The full <code>ExplicitFormula</code> object backing the
+observer, as a list with <code>Name</code>, <code>Formula</code> (the expression
+string), <code>Dimension</code>, and <code>References</code> (a list of
+<code>FormulaUsablePath</code> entries, each with <code>Alias</code>, <code>Path</code>, and
+<code>Dimension</code>). <code>NULL</code> when the observer carries no formula.
+Setting this field replaces the whole structure; pass <code>NULL</code> to
+drop it. For the inner expression string or dimension only, use
+<code>formula_expression</code> or <code>formula_dimension</code>.</p></dd>
+
+
+    <dt><code>formula_expression</code></dt>
+<dd><p>The expression string of the underlying
+<code>ExplicitFormula</code> (<code>Formula$Formula</code> in the snapshot JSON).
+Setting writes back to the inner <code>Formula$Formula</code> field and
+preserves the sibling <code>Name</code>, <code>Dimension</code>, and <code>References</code>
+entries. To build a complete <code>ExplicitFormula</code> (including
+<code>Name</code> and <code>References</code>), assign to <code>formula</code> instead.</p></dd>
+
+
+    <dt><code>formula_dimension</code></dt>
+<dd><p>The output dimension of the underlying
+<code>ExplicitFormula</code> (<code>Formula$Dimension</code> in the snapshot JSON),
+resolved in PK-Sim via <code>IDimensionRepository.DimensionByName()</code>.
+Setting writes back to the inner <code>Formula$Dimension</code> field.</p></dd>
+
+
+    <dt><code>formula_references</code></dt>
+<dd><p>The <code>References</code> list of the underlying
+<code>ExplicitFormula</code>, where each entry is a named list with
+<code>Alias</code>, <code>Path</code>, and <code>Dimension</code>. Read-only; mutate the whole
+structure through <code>formula</code>.</p></dd>
 
 
     <dt><code>container_tags</code></dt>
@@ -156,7 +182,11 @@ an empty list, both of which create an empty observer.</p></dd>
 <h3 id="observer-to-df-"><code>Observer$to_df()</code><a class="anchor" aria-label="anchor" href="#observer-to-df-"></a></h3>
 <p>Convert the observer to a single-row tibble suitable for the
 tibble-layer exporter. Columns are <code>name</code>, <code>type</code>, <code>dimension</code>,
-<code>formula</code>, and <code>container_tags</code>.</p><div class="section">
+<code>formula_expression</code>, <code>formula_dimension</code>, <code>formula_references</code>,
+and <code>container_tags</code>. <code>formula_references</code> collapses each
+<code>FormulaUsablePath</code> entry (<code>Alias</code>, <code>Path</code>, <code>Dimension</code>) to
+<code>"alias=path"</code> and joins entries with <code>|</code>; <code>NA</code> when the observer
+carries no references.</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">Observer</span><span class="op">$</span><span class="fu">to_df</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
@@ -191,14 +221,37 @@ tibble-layer exporter. Columns are <code>name</code>, <code>type</code>, <code>d
 <span class="r-in"><span>  Name <span class="op">=</span> <span class="st">"brain_plasma_conc"</span>,</span></span>
 <span class="r-in"><span>  Type <span class="op">=</span> <span class="st">"Container"</span>,</span></span>
 <span class="r-in"><span>  Dimension <span class="op">=</span> <span class="st">"Concentration (molar)"</span>,</span></span>
-<span class="r-in"><span>  Formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Formula <span class="op">=</span> <span class="st">"Conc_Br"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  Formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    Name <span class="op">=</span> <span class="st">"brain_plasma_conc_formula"</span>,</span></span>
+<span class="r-in"><span>    Formula <span class="op">=</span> <span class="st">"Conc_Br"</span>,</span></span>
+<span class="r-in"><span>    Dimension <span class="op">=</span> <span class="st">"Concentration (molar)"</span>,</span></span>
+<span class="r-in"><span>    References <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      Alias <span class="op">=</span> <span class="st">"Conc_Br"</span>,</span></span>
+<span class="r-in"><span>      Path <span class="op">=</span> <span class="st">"Organism|Brain|Plasma|Drug|Concentration"</span>,</span></span>
+<span class="r-in"><span>      Dimension <span class="op">=</span> <span class="st">"Concentration (molar)"</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">observer</span><span class="op">$</span><span class="va">name</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "brain_plasma_conc"</span>
 <span class="r-in"><span><span class="va">observer</span><span class="op">$</span><span class="va">type</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Container"</span>
-<span class="r-in"><span><span class="va">observer</span><span class="op">$</span><span class="va">dimension</span></span></span>
+<span class="r-in"><span><span class="va">observer</span><span class="op">$</span><span class="va">formula_expression</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Conc_Br"</span>
+<span class="r-in"><span><span class="va">observer</span><span class="op">$</span><span class="va">formula_dimension</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Concentration (molar)"</span>
+<span class="r-in"><span><span class="va">observer</span><span class="op">$</span><span class="va">formula_references</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$Alias</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Conc_Br"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$Path</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Organism|Brain|Plasma|Drug|Concentration"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$Dimension</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Concentration (molar)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

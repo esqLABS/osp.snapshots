@@ -503,9 +503,11 @@ sets</em>. <code><a href="../reference/create_observer_set.html">create_observer
 and a list of observers.</p>
 <p>Build each observer with <code>Observer$new()</code> (which validates
 the input and gives you typed accessors <code>$name</code>,
-<code>$type</code>, <code>$dimension</code>, <code>$formula</code>,
-<code>$container_tags</code>), then bundle them into a set and attach
-the set to a snapshot:</p>
+<code>$type</code>, <code>$dimension</code>, <code>$formula</code> (the
+full <code>ExplicitFormula</code> list),
+<code>$formula_expression</code>, <code>$formula_dimension</code>,
+<code>$formula_references</code>, <code>$container_tags</code>), then
+bundle them into a set and attach the set to a snapshot:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">brain_obs</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Observer.html">Observer</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  Name <span class="op">=</span> <span class="st">"brain_plasma_conc"</span>,</span>
