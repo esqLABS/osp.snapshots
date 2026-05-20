@@ -32,6 +32,13 @@ You can now convert any building-block collection to a tibble through one entry 
 
 Observer sets are now fully supported. Each `ObserverSet` exposes its observers as a named list of `Observer` objects with `name`, `type`, `dimension`, `formula` (the full `ExplicitFormula` list), `formula_expression`, `formula_dimension`, `formula_references`, and `container_tags`. `get_observer_sets_dfs()` returns two tibbles (`observer_sets` for set-level rows, `observers` joinable back via `observer_set_id` / `observer_set_name`); the `observers` tibble carries `formula_expression`, `formula_dimension`, and `formula_references` columns alongside `name`, `type`, `dimension`, and `container_tags` (#38, #42, #76, #79).
 
+Simulations are now first-class building blocks. The new `Simulation` class wraps the simulation slice of a snapshot with R6 accessors for solver settings, output schemas, compound configurations, event and observer-set selections, observed-data references, output mappings, and `LocalizedParameter` overrides. Four post-run fields (`Interactions`, `AlteredBuildingBlocks`, `IndividualAnalyses`, `PopulationAnalyses`) are preserved byte-equivalent through `$data` (#94):
+
+- `add_simulation()` attaches one or more `Simulation` objects to a `Snapshot`. Unresolved references to other building blocks (individual, population, compounds, events, observer sets, observed data, protocols, formulations) trigger one informational warning per simulation; the add proceeds either way (#94).
+- `create_compound_group_selection()`, `create_compound_process_selection()`, `create_compound_properties()`, `create_event_selection()`, `create_formulation_selection()`, `create_observer_set_selection()`, `create_output_interval()`, `create_output_mapping()`, `create_output_schema()`, `create_protocol_selection()`, `create_simulation()`, and `create_solver_settings()` build a `Simulation` and its supporting structures from named arguments (#94).
+- `remove_simulation()` removes one or more simulations from a `Snapshot` by name (#94).
+- `Simulation` enforces an XOR on `$individual` and `$population` at construction so that exactly one subject is configured (#94).
+
 Several previously list-shaped fields are now first-class R6 objects:
 
 - `compound$calculation_methods` and `individual$origin_data$calculation_methods` return a `CalculationMethods` object you can inspect (`$names`, `$length`) and mutate (`$add()`, `$remove()`) (#30).

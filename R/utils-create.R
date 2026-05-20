@@ -1,5 +1,14 @@
 # Internal helpers shared by the `create_*` factory functions.
 
+# Internal: return an empty *named* list. jsonlite serialises an unnamed
+# empty list (`list()`) as the JSON array `[]`, and a named-empty list as
+# the JSON object `{}`. Some PK-Sim snapshot fields (notably `Solver`)
+# must be objects, never arrays, or the snapshot mapper rejects the
+# enclosing simulation silently.
+empty_named_list <- function() {
+  stats::setNames(list(), character(0))
+}
+
 # Internal: assert that `value` is a non-empty scalar character.
 # Used by the create_* factories to validate required string arguments.
 check_required_string <- function(value, arg_name) {
