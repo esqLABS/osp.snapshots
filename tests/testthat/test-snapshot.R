@@ -1019,10 +1019,10 @@ test_that("add_observed_data exported wrapper round-trips", {
 
   empty <- load_snapshot(test_path("data", "empty_snapshot.json"))
   empty <- add_observed_data(empty, dataset)
-  expect_true(dataset$name %in% names(empty$observed_data))
+  expect_named(empty$observed_data, dataset$name)
 
   empty <- remove_observed_data(empty, dataset$name)
-  expect_false(dataset$name %in% names(empty$observed_data))
+  expect_length(empty$observed_data, 0)
 })
 
 test_that("add_observed_data exported wrapper errors on wrong class", {
