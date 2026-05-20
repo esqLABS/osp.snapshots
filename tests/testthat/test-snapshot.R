@@ -985,7 +985,7 @@ test_that("remove_observed_data warns when name is missing", {
   dataset <- source_snapshot$observed_data[[1]]
 
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
-  snapshot <- suppressWarnings(add_observed_data(snapshot, dataset))
+  snapshot <- add_observed_data(snapshot, dataset)
   expect_snapshot(remove_observed_data(snapshot, "Other"))
 })
 
@@ -999,7 +999,7 @@ test_that("remove_observed_data reports the actual count when some names are mis
   dataset <- source_snapshot$observed_data[[1]]
 
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
-  snapshot <- suppressWarnings(add_observed_data(snapshot, dataset))
+  snapshot <- add_observed_data(snapshot, dataset)
   expect_snapshot(remove_observed_data(snapshot, c(dataset$name, "Other")))
 })
 
@@ -1157,9 +1157,7 @@ test_that("add_observed_data accepts a list of objects", {
   dataset <- source_snapshot$observed_data[[1]]
 
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
-  snapshot <- suppressWarnings(
-    add_observed_data(snapshot, list(dataset, dataset))
-  )
+  snapshot <- add_observed_data(snapshot, list(dataset, dataset))
   expect_length(snapshot$observed_data, 2)
 })
 

@@ -47,7 +47,7 @@ Several previously list-shaped fields are now first-class R6 objects:
 ## Minor improvements
 
 - Building-block collections now share a `snapshot_collection` S3 class with a single generic `print()` method. The existing per-kind classes (`compound_collection`, `individual_collection`, ...) are preserved as marker classes (#34).
-- `export_snapshot()` now documents that mutations to a `DataSet` after load (e.g. changing `xUnit` on an entry in `snapshot$observed_data`) are not preserved on export. The exported `ObservedData` section is replayed from the original snapshot JSON, filtered to entries still present after `remove_observed_data()` (#35).
+- `export_snapshot()` now serializes `DataSet` objects attached at runtime via `add_observed_data()`, so a snapshot built from `create_observed_data()` and `add_observed_data()` round-trips through `export_snapshot()` and `load_snapshot()`. Entries that were already present in the loaded snapshot are still replayed from the original JSON slice, which means post-load mutations to a `DataSet` (e.g. changing `xUnit` on an entry in `snapshot$observed_data`) are not reflected on export (#35, #96).
 
 ## Bug fixes
 

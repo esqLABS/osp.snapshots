@@ -391,30 +391,7 @@ Snapshot <- R6::R6Class(
         named_slot = ".observed_data_named",
         ensure = private$.ensure_observed_data,
         collection_class = "observed_data_collection",
-        label_count = "observed data item(s)",
-        pre_add = function(obj) {
-          # Warn once at add time if the new DataSet has no backing JSON slice
-          # in `.original_data`; `ospsuite::DataSet` does not round-trip back
-          # to the snapshot list shape, so such entries are dropped on export.
-          # Warning here (rather than inside the export adapter) keeps
-          # `print()` and other `$data` accesses quiet.
-          original <- private$.original_data$ObservedData
-          original_names <- if (is.null(original)) {
-            character()
-          } else {
-            vapply(
-              original,
-              function(od) od$Name %||% od$name,
-              character(1)
-            )
-          }
-          if (!(obj$name %in% original_names)) {
-            cli::cli_warn(c(
-              "Observed data {.val {obj$name}} cannot be serialized on export.",
-              i = "{.cls DataSet} objects have no {.code $data} accessor; only entries present in the original snapshot are exported."
-            ))
-          }
-        }
+        label_count = "observed data item(s)"
       )
     },
 
@@ -956,9 +933,7 @@ Snapshot <- R6::R6Class(
     # rejects mixed-type lists and empty lists. Forces lazy construction via
     # `ensure()`, appends the validated objects to the unnamed cache slot in
     # one shot, rebuilds the named cache via `.build_named_list`, and emits a
-    # success message counting the entries added. `pre_add`, when supplied,
-    # runs once per element before any mutation; it is used by
-    # `add_observed_data` to warn about un-serializable DataSets.
+    # success message counting the entries added.
     .add_block = function(
       obj,
       expected_class,
@@ -968,8 +943,7 @@ Snapshot <- R6::R6Class(
       collection_class,
       label_count,
       key_fn = \(x) x$name,
-      class_article = "a",
-      pre_add = NULL
+      class_article = "a"
     ) {
       if (inherits(obj, expected_class)) {
         objs <- list(obj)
@@ -998,12 +972,6 @@ Snapshot <- R6::R6Class(
           "Must supply at least one {.cls {expected_class}}.",
           call = rlang::caller_env()
         )
-      }
-
-      if (!is.null(pre_add)) {
-        for (el in objs) {
-          pre_add(el)
-        }
       }
 
       ensure()

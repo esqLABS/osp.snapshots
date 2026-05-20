@@ -33,14 +33,3 @@
       #   xDimension <chr>, xUnit <chr>, yDimension <chr>, yUnit <chr>,
       #   yErrorType <chr>, yErrorUnit <chr>, molWeight <dbl>, lloq <dbl>
 
-# add_observed_data warns when the dataset has no backing snapshot slice
-
-    Code
-      snapshot$add_observed_data(dataset)
-    Condition
-      Warning:
-      Observed data "Backman 1996 - Control (Perpetrator Placebo) - Midazolam - PO - 15 mg - Plasma - agg. (n=10)" cannot be serialized on export.
-      i <DataSet> objects have no `$data` accessor; only entries present in the original snapshot are exported.
-    Message
-      v Added 1 observed data item(s)
-
