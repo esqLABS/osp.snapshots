@@ -49,3 +49,23 @@
       Error in `create_observed_data()`:
       ! `metadata` must be a named list
 
+# create_observed_data validates time and value units
+
+    Code
+      create_observed_data(name = "X", time = 1:3, values = 1:3, time_unit = "not-a-unit",
+      value_dimension = "Concentration (mass)")
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: not-a-unit
+      i Valid units for Time are: s, min, h, day(s), week(s), month(s), year(s), ks
+
+---
+
+    Code
+      create_observed_data(name = "X", time = 1:3, values = 1:3, value_dimension = "Concentration (mass)",
+      value_unit = "not-a-unit")
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: not-a-unit
+      i Valid units for Concentration (mass) are: g/l, mg/l, µg/l, ng/l, pg/l, mg/dl, mg/ml, µg/ml, ng/ml, pg/ml, kg/l
+
