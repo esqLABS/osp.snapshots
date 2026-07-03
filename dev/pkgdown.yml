@@ -6,7 +6,7 @@ articles:
   exporting-snapshots-to-dataframes: exporting-snapshots-to-dataframes.html
   osp-snapshots: osp-snapshots.html
   simulations: simulations.html
-last_built: 2026-07-03T16:43Z
+last_built: 2026-07-03T16:51Z
 urls:
   reference: https://esqlabs.github.io/osp.snapshots/reference
   article: https://esqlabs.github.io/osp.snapshots/articles
