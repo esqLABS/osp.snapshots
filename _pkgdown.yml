@@ -171,6 +171,11 @@ reference:
   - convert_ospsuite_time_unit_to_lubridate
   - convert_ospsuite_time_to_duration
 
+- title: "Agent tooling"
+  desc: "Scaffold a companion skill for AI coding agents"
+  contents:
+  - use_claude_code
+
 - title: "Print methods"
   desc: "Formatted display methods for building block collections"
   contents:
