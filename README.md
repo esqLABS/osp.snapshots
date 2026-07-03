@@ -3,7 +3,7 @@
 
 <!-- badges: start -->
 
-[![](https://img.shields.io/github/actions/workflow/status/esqlabs/osp.snapshots/main-workflow.yaml?branch=main&label=Build)](https://github.com/esqlabs/osp.snapshots/actions/workflows/main-workflow.yaml)
+[![](https://img.shields.io/github/actions/workflow/status/esqlabs/osp.snapshots/merge-to-main.yaml?branch=main&label=Build)](https://github.com/esqlabs/osp.snapshots/actions/workflows/merge-to-main.yaml)
 <!-- [![Codecov test coverage](https://codecov.io/gh/esqlabs/osp.snapshots/branch/main/graph/badge.svg)](https://app.codecov.io/gh/esqlabs/osp.snapshots?branch=main) -->
 
 <!-- badges: end -->
