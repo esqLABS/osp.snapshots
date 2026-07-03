@@ -48,6 +48,11 @@ classes are now first-class R6 objects with typed accessors.
   of building blocks, mirroring `remove_*()` which has accepted a
   character vector of names since \#66. Success messages on both sides
   now uniformly report `Added N kind(s)` / `Removed N kind(s)` (#92).
+- [`use_claude_code()`](https://esqlabs.github.io/osp.snapshots/dev/reference/use_claude_code.md)
+  scaffolds a companion skill for AI coding agents into a project at
+  `.claude/skills/osp-snapshots/SKILL.md`, teaching an agent to consume
+  the osp.snapshots public API and avoid its known gotchas, and stamps
+  the file with the installed package version (#105).
 
 You can now create every kind of building block from a `create_*()`
 function and attach it with the matching `add_*()` mutator:
