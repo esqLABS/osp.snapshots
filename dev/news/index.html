@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9036</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9037</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,6 +117,8 @@
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
 <code>as_tibbles(snapshot, "protocols")</code> (and the legacy <code><a href="../reference/get_protocols_dfs.html">get_protocols_dfs()</a></code> wrapper) now returns the same 13 columns whether the snapshot has any protocols or not. Previously the empty-state path returned an 18-column tibble that disagreed with the populated path, breaking <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows()</a></code> across mixed snapshots (#56).</li>
+<li>
+<code><a href="../reference/loadDataSetFromSnapshot.html">loadDataSetFromSnapshot()</a></code> now preserves the observed-data time unit (<code>BaseGrid$Unit</code>) on the resulting <code>DataSet$xUnit</code> for every ospsuite Time unit, including <code>"day(s)"</code>, <code>"week(s)"</code>, <code>"month(s)"</code>, <code>"year(s)"</code>, and <code>"ks"</code>. Previously only <code>"h"</code>, <code>"min"</code>, and <code>"s"</code> survived and any other unit silently reverted to <code>"h"</code>, misplacing time points (for example a 24x error for <code>day(s)</code>); this also affected <code>create_observed_data(time_unit = ...)</code> (#104).</li>
 <li>
 <code><a href="../reference/remove_expression_profile.html">remove_expression_profile()</a></code>, <code><a href="../reference/remove_formulation.html">remove_formulation()</a></code>, <code><a href="../reference/remove_individual.html">remove_individual()</a></code>, <code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code>, and <code><a href="../reference/remove_population.html">remove_population()</a></code> now report the actual number of entries removed instead of the length of the input vector, so the success message reads correctly when a requested name is not present in the snapshot (#66).</li>
 <li>Observed data removed via <code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code> is now dropped from the exported snapshot. Previously the export reused the full original <code>ObservedData</code> list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip. The same fix applies to every building-block section: clearing a collection via <code><a href="../reference/remove_individual.html">remove_individual()</a></code>, <code><a href="../reference/remove_formulation.html">remove_formulation()</a></code>, <code><a href="../reference/remove_population.html">remove_population()</a></code>, or <code><a href="../reference/remove_expression_profile.html">remove_expression_profile()</a></code> now writes an empty section on export instead of falling back to the original entries (#35, #59).</li>

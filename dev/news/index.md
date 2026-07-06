@@ -242,6 +242,14 @@ Several previously list-shaped fields are now first-class R6 objects:
   18-column tibble that disagreed with the populated path, breaking
   [`bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html)
   across mixed snapshots (#56).
+- [`loadDataSetFromSnapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/loadDataSetFromSnapshot.md)
+  now preserves the observed-data time unit (`BaseGrid$Unit`) on the
+  resulting `DataSet$xUnit` for every ospsuite Time unit, including
+  `"day(s)"`, `"week(s)"`, `"month(s)"`, `"year(s)"`, and `"ks"`.
+  Previously only `"h"`, `"min"`, and `"s"` survived and any other unit
+  silently reverted to `"h"`, misplacing time points (for example a 24x
+  error for `day(s)`); this also affected
+  `create_observed_data(time_unit = ...)` (#104).
 - [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md),
   [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md),
   [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md),
