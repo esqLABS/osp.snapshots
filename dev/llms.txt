@@ -353,13 +353,6 @@ Helpers for validation and data conversion
 - [`convert_ospsuite_time_to_duration()`](https://esqlabs.github.io/osp.snapshots/dev/reference/convert_ospsuite_time_to_duration.md)
   : Convert time value and unit to lubridate duration
 
-## Agent tooling
-
-Scaffold a companion skill for AI coding agents
-
-- [`use_claude_code()`](https://esqlabs.github.io/osp.snapshots/dev/reference/use_claude_code.md)
-  : Scaffold a companion skill for AI coding agents
-
 ## Print methods
 
 Formatted display methods for building block collections
