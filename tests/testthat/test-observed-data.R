@@ -57,6 +57,61 @@ test_that("loadDataSetFromSnapshot handles empty data", {
   expect_snapshot(df)
 })
 
+test_that("loadDataSetFromSnapshot preserves every ospsuite Time unit as xUnit", {
+  make_obs <- function(unit) {
+    list(
+      Name = paste0("obs ", unit),
+      BaseGrid = list(Dimension = "Time", Unit = unit, Values = list(1, 2, 3)),
+      Columns = list(list(
+        Dimension = "Concentration (molar)",
+        Unit = "µmol/l",
+        Values = list(10, 5, 2)
+      ))
+    )
+  }
+
+  units <- c("h", "min", "s", "day(s)", "week(s)", "month(s)", "year(s)", "ks")
+  for (unit in units) {
+    dataset <- loadDataSetFromSnapshot(make_obs(unit))
+    expect_equal(dataset$xUnit, unit)
+  }
+})
+
+test_that("loadDataSetFromSnapshot sets the time unit label without rescaling xValues", {
+  obs <- list(
+    Name = "obs in days",
+    BaseGrid = list(
+      Dimension = "Time",
+      Unit = "day(s)",
+      Values = list(1, 2, 3)
+    ),
+    Columns = list(list(
+      Dimension = "Concentration (molar)",
+      Unit = "µmol/l",
+      Values = list(10, 5, 2)
+    ))
+  )
+
+  dataset <- loadDataSetFromSnapshot(obs)
+
+  expect_equal(dataset$xUnit, "day(s)")
+  expect_equal(dataset$xValues, c(1, 2, 3))
+})
+
+test_that("create_observed_data preserves a non-hour time unit", {
+  dataset <- create_observed_data(
+    name = "days study",
+    time = c(1, 2, 3),
+    values = c(10, 5, 2),
+    time_unit = "day(s)",
+    value_unit = "mg/l",
+    value_dimension = "Concentration (mass)"
+  )
+
+  expect_equal(dataset$xUnit, "day(s)")
+  expect_equal(dataset$xValues, c(1, 2, 3))
+})
+
 test_that("works with unitless dimensions", {
   snapshot <- testthat::test_path(
     "data",
