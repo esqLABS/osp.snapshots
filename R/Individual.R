@@ -172,6 +172,7 @@ Individual <- R6::R6Class(
         data_list <- list(
           individual_id = individual_id,
           name = self$name,
+          description = self$description %||% NA_character_,
           seed = self$seed %||% NA_integer_,
           species = self$species %||% NA_character_,
           population = self$population %||% NA_character_,
@@ -488,9 +489,46 @@ Individual <- R6::R6Class(
       private$.origin_data$calculation_methods <- value
     },
 
-    #' @field expression_profiles The expression profiles of the individual (read-only)
-    expression_profiles = function() {
-      private$.data$ExpressionProfiles
+    #' @field expression_profiles Read/write. The expression profiles attached
+    #'   to the individual, as a character vector of composite names
+    #'   (`Molecule|Species|Category`) or `NULL` when none are attached.
+    #'   Assigning a character vector replaces the attached profiles; assigning
+    #'   `NULL` or `character(0)` removes them (no empty array is serialized).
+    expression_profiles = function(value) {
+      if (missing(value)) {
+        return(private$.data$ExpressionProfiles)
+      }
+      if (is.null(value) || (is.character(value) && length(value) == 0)) {
+        private$.data$ExpressionProfiles <- NULL
+        return(invisible(private$.data$ExpressionProfiles))
+      }
+      if (!is.character(value)) {
+        cli::cli_abort(
+          "{.field expression_profiles} must be a character vector of \\
+          expression-profile names, not {.obj_type_friendly {value}}."
+        )
+      }
+      private$.data$ExpressionProfiles <- value
+    },
+
+    #' @field description Read/write. Free-text description of the individual,
+    #'   or `NULL` when none is set. Assigning a length-1 character sets it;
+    #'   assigning `NULL` removes it.
+    description = function(value) {
+      if (missing(value)) {
+        return(private$.data$Description)
+      }
+      if (is.null(value)) {
+        private$.data$Description <- NULL
+        return(invisible(private$.data$Description))
+      }
+      if (!is.character(value) || length(value) != 1) {
+        cli::cli_abort(
+          "{.field description} must be a single character string, not \\
+          {.obj_type_friendly {value}}."
+        )
+      }
+      private$.data$Description <- value
     }
   )
 )
@@ -517,6 +555,15 @@ Individual <- R6::R6Class(
 #' @param disease_state Character. Disease state of the individual (optional)
 #' @param disease_state_parameters List. Parameters for disease state (optional)
 #' @param seed Integer. Simulation seed (optional)
+#' @param expression_profiles Character vector of expression-profile composite
+#'   names (`Molecule|Species|Category`) to attach to the individual. Default
+#'   `NULL` (no profiles).
+#' @param description Character. Free-text description of the individual.
+#'   Default `NULL` (no description).
+#' @param parameters List of localized parameters (each created with
+#'   `create_parameter(path = ...)`), or the equivalent raw list form the
+#'   loader consumes, applied as the individual's `Parameters` overrides. Each
+#'   entry must be path-bearing. Default `NULL` (no parameter overrides).
 #'
 #' @return An Individual object
 #' @export
@@ -550,6 +597,20 @@ Individual <- R6::R6Class(
 #'     list(Name = "eGFR", Value = 45.0, Unit = "ml/min/1.73m²")
 #'   )
 #' )
+#'
+#' # Create an individual referencing expression profiles with a localized
+#' # parameter and a description
+#' individual <- create_individual(
+#'   name = "Subject 1",
+#'   expression_profiles = c("CYP3A4|Human|Healthy", "P-gp|Human|Healthy"),
+#'   description = "Reference healthy adult",
+#'   parameters = list(
+#'     create_parameter(
+#'       path = "Organism|Liver|EHC continuous fraction",
+#'       value = 1
+#'     )
+#'   )
+#' )
 create_individual <- function(
   name = "New Individual",
   species = NULL,
@@ -566,7 +627,10 @@ create_individual <- function(
   calculation_methods = NULL,
   disease_state = NULL,
   disease_state_parameters = NULL,
-  seed = NULL
+  seed = NULL,
+  expression_profiles = NULL,
+  description = NULL,
+  parameters = NULL
 ) {
   # Validate inputs if provided
   if (!is.null(species)) {
@@ -590,6 +654,26 @@ create_individual <- function(
   if (!is.null(gestational_age_unit)) {
     validate_unit(gestational_age_unit, "Time")
   }
+
+  # Validate the expression profiles, description, and parameters up front so
+  # a bad argument aborts before any object is constructed (no half-built
+  # individual).
+  if (!is.null(expression_profiles) && !is.character(expression_profiles)) {
+    cli::cli_abort(
+      "{.arg expression_profiles} must be a character vector of \\
+      expression-profile names, not {.obj_type_friendly {expression_profiles}}."
+    )
+  }
+  if (
+    !is.null(description) &&
+      (!is.character(description) || length(description) != 1)
+  ) {
+    cli::cli_abort(
+      "{.arg description} must be a single character string, not \\
+      {.obj_type_friendly {description}}."
+    )
+  }
+  raw_parameters <- normalize_individual_parameters(parameters)
 
   # Create characteristics data structure
   characteristics_data <- list()
@@ -646,6 +730,66 @@ create_individual <- function(
     data$Seed <- seed
   }
 
+  # Attach expression profiles as a character vector of composite names. A
+  # length-1 name stays a length-1 vector; an empty vector adds no key so the
+  # export emits no empty array.
+  if (!is.null(expression_profiles) && length(expression_profiles) > 0) {
+    data$ExpressionProfiles <- expression_profiles
+  }
+
+  # Attach the description if provided.
+  if (!is.null(description)) {
+    data$Description <- description
+  }
+
+  # Attach localized parameters as the raw `Parameters[]` shape. Constructing
+  # the Individual then routes these through `initialize_parameters()` ->
+  # `build_parameters_from_raw(ctor = LocalizedParameter$new)`, the same path
+  # a loaded individual uses, so construct-with-parameters equals
+  # construct-then-set.
+  if (length(raw_parameters) > 0) {
+    data$Parameters <- raw_parameters
+  }
+
   # Create and return the Individual object
   Individual$new(data)
+}
+
+# Normalise the `parameters` argument of `create_individual()` into the raw
+# `Parameters[]` shape (a list of dicts) the loader consumes, validating that
+# every entry is a path-bearing (localized) parameter. Accepts a list whose
+# entries are `Parameter`/`LocalizedParameter` R6 objects or already-raw dicts.
+# Individual parameters are `LocalizedParameter[]` per the snapshot spec, so a
+# name-only (pathless) entry is rejected here rather than being silently
+# migrated by the `LocalizedParameter` constructor's `Name`->`Path` fallback.
+# Returns an empty list when `parameters` is `NULL` or empty.
+normalize_individual_parameters <- function(parameters) {
+  if (is.null(parameters)) {
+    return(list())
+  }
+  if (!is.list(parameters) || inherits(parameters, "R6")) {
+    cli::cli_abort(
+      "{.arg parameters} must be a list of localized parameters, not \\
+      {.obj_type_friendly {parameters}}."
+    )
+  }
+
+  lapply(parameters, function(entry) {
+    raw <- if (inherits(entry, "Parameter")) entry$data else entry
+    path <- if (is.list(raw)) raw$Path else NULL
+    has_path <- !is.null(path) &&
+      length(path) == 1 &&
+      !is.na(path) &&
+      nzchar(path)
+    if (!has_path) {
+      cli::cli_abort(
+        c(
+          "Each {.arg parameters} entry must be a localized parameter with a \\
+          {.field path}.",
+          i = "Create it with {.code create_parameter(path = ...)}."
+        )
+      )
+    }
+    raw
+  })
 }

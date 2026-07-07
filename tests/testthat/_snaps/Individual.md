@@ -177,6 +177,58 @@
         * Test Method 1
         * Test Method 2
 
+# assigning a non-character to expression_profiles aborts
+
+    Code
+      ind$expression_profiles <- list(1)
+    Condition
+      Error:
+      ! expression_profiles must be a character vector of expression-profile names, not a list.
+
+---
+
+    Code
+      ind$expression_profiles <- 42
+    Condition
+      Error:
+      ! expression_profiles must be a character vector of expression-profile names, not a number.
+
+# assigning an invalid description aborts
+
+    Code
+      ind$description <- 42
+    Condition
+      Error:
+      ! description must be a single character string, not a number.
+
+---
+
+    Code
+      ind$description <- c("a", "b")
+    Condition
+      Error:
+      ! description must be a single character string, not a character vector.
+
+# create_individual rejects a name-only parameter
+
+    Code
+      create_individual(name = "X", parameters = list(create_parameter(name = "SomeName",
+        value = 1)))
+    Condition
+      Error in `FUN()`:
+      ! Each `parameters` entry must be a localized parameter with a path.
+      i Create it with `create_parameter(path = ...)`.
+
+# create_individual rejects a mixed valid/invalid parameter list
+
+    Code
+      create_individual(name = "X", parameters = list(create_parameter(path = "Organism|Liver|Volume",
+        value = 1), create_parameter(name = "SomeName", value = 2)))
+    Condition
+      Error in `FUN()`:
+      ! Each `parameters` entry must be a localized parameter with a path.
+      i Create it with `create_parameter(path = ...)`.
+
 # create_individual supports gestational age
 
     Code
@@ -227,17 +279,17 @@
     Code
       dfs$individuals
     Output
-      # A tibble: 5 x 17
-        individual_id            name    seed species population gender   age age_unit
-        <chr>                    <chr>  <int> <chr>   <chr>      <chr>  <dbl> <chr>   
-      1 European (P-gp modified~ Euro~ 1.72e7 Human   European_~ MALE    30   year(s) 
-      2 Korean (Yu 2004 study)   Kore~ 5.30e7 Human   Asian_Tan~ MALE    23.3 year(s) 
-      3 ind_modified             ind_~ 4.88e8 Human   BlackAmer~ MALE    56   year(s) 
-      4 Asian                    Asian 9.18e8 Human   Asian_Tan~ MALE    26   year(s) 
-      5 CKD                      CKD   1.52e9 Human   European_~ MALE    50   year(s) 
-      # i 9 more variables: gestational_age <dbl>, gestational_age_unit <chr>,
-      #   weight <dbl>, weight_unit <chr>, height <dbl>, height_unit <chr>,
-      #   disease_state <chr>, calculation_methods <glue>,
+      # A tibble: 5 x 18
+        individual_id         name  description   seed species population gender   age
+        <chr>                 <chr> <chr>        <int> <chr>   <chr>      <chr>  <dbl>
+      1 European (P-gp modif~ Euro~ <NA>        1.72e7 Human   European_~ MALE    30  
+      2 Korean (Yu 2004 stud~ Kore~ <NA>        5.30e7 Human   Asian_Tan~ MALE    23.3
+      3 ind_modified          ind_~ <NA>        4.88e8 Human   BlackAmer~ MALE    56  
+      4 Asian                 Asian <NA>        9.18e8 Human   Asian_Tan~ MALE    26  
+      5 CKD                   CKD   <NA>        1.52e9 Human   European_~ MALE    50  
+      # i 10 more variables: age_unit <chr>, gestational_age <dbl>,
+      #   gestational_age_unit <chr>, weight <dbl>, weight_unit <chr>, height <dbl>,
+      #   height_unit <chr>, disease_state <chr>, calculation_methods <glue>,
       #   disease_state_parameters <glue>
 
 ---
@@ -284,12 +336,13 @@
     Code
       dfs_empty$individuals
     Output
-      # A tibble: 0 x 17
-      # i 17 variables: individual_id <chr>, name <chr>, seed <int>, species <chr>,
-      #   population <chr>, gender <chr>, age <dbl>, age_unit <chr>,
-      #   gestational_age <dbl>, gestational_age_unit <chr>, weight <dbl>,
-      #   weight_unit <chr>, height <dbl>, height_unit <chr>, disease_state <chr>,
-      #   calculation_methods <chr>, disease_state_parameters <chr>
+      # A tibble: 0 x 18
+      # i 18 variables: individual_id <chr>, name <chr>, description <chr>,
+      #   seed <int>, species <chr>, population <chr>, gender <chr>, age <dbl>,
+      #   age_unit <chr>, gestational_age <dbl>, gestational_age_unit <chr>,
+      #   weight <dbl>, weight_unit <chr>, height <dbl>, height_unit <chr>,
+      #   disease_state <chr>, calculation_methods <chr>,
+      #   disease_state_parameters <chr>
 
 ---
 
@@ -313,10 +366,10 @@
     Code
       dfs$individuals
     Output
-      # A tibble: 1 x 17
-        individual_id       name         seed species population gender   age age_unit
-        <chr>               <chr>       <int> <chr>   <chr>      <chr>  <dbl> <chr>   
-      1 CharExpr Individual CharExpr I~    NA Human   European_~ FEMALE    28 year(s) 
+      # A tibble: 1 x 18
+        individual_id name  description  seed species population gender   age age_unit
+        <chr>         <chr> <chr>       <int> <chr>   <chr>      <chr>  <dbl> <chr>   
+      1 CharExpr Ind~ Char~ <NA>           NA Human   European_~ FEMALE    28 year(s) 
       # i 9 more variables: gestational_age <dbl>, gestational_age_unit <chr>,
       #   weight <dbl>, weight_unit <chr>, height <dbl>, height_unit <chr>,
       #   disease_state <chr>, calculation_methods <chr>,
