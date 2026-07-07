@@ -34,6 +34,18 @@ and display a summary of its information.
 
     \item{\code{parameters}}{The parameters of the expression profile}
 
+    \item{\code{expression}}{The per-organ relative expression of the profile.
+Reading returns the raw \code{ExpressionContainer[]} list (or \code{NULL}
+when unset). Assigning accepts the same shapes as the
+\code{expression} argument of \code{\link[=create_expression_profile]{create_expression_profile()}} (a data
+frame of container rows, a raw list, or \code{NULL}/empty to clear it).}
+
+    \item{\code{disease}}{The disease state of the profile. Reading returns the
+raw \code{DiseaseState} list (or \code{NULL} when unset). Assigning accepts
+the same shape as the \code{disease} argument of
+\code{\link[=create_expression_profile]{create_expression_profile()}} (a named list with \code{name} and
+optional \code{parameters}, or \code{NULL} to clear it).}
+
     \item{\code{id}}{The unique identifier of the expression profile}
   }
   \if{html}{\out{</div>}}
