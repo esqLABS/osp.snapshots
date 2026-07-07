@@ -35,6 +35,15 @@
       Error in `create_expression_profile()`:
       ! `disease` must be a named list with a non-empty name
 
+---
+
+    Code
+      create_expression_profile(molecule = "CYP3A4", species = "Human", category = "Healthy",
+        type = "Enzyme", disease = "CKD")
+    Condition
+      Error in `create_expression_profile()`:
+      ! `disease` must be a named list with a non-empty name
+
 # create_expression_profile validates required arguments
 
     Code

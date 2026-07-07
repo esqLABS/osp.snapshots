@@ -62,3 +62,11 @@
       Error:
       ! `disease` must be a named list with a non-empty name
 
+# build_disease_state rejects a non-list value
+
+    Code
+      build_disease_state("CKD")
+    Condition
+      Error:
+      ! `disease` must be a named list with a non-empty name
+

@@ -209,9 +209,10 @@ build_disease_state <- function(disease, call = parent.frame()) {
   if (is.null(disease)) {
     return(NULL)
   }
-  name <- disease$name
+  name <- if (is.list(disease)) disease$name else NULL
   if (
     !is.list(disease) ||
+      is.object(disease) ||
       is.null(name) ||
       !is.character(name) ||
       length(name) != 1 ||

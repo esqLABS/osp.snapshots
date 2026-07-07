@@ -163,3 +163,7 @@ test_that("build_disease_state treats NULL as unset", {
 test_that("build_disease_state validates a non-empty name", {
   expect_snapshot(error = TRUE, build_disease_state(list(parameters = list())))
 })
+
+test_that("build_disease_state rejects a non-list value", {
+  expect_snapshot(error = TRUE, build_disease_state("CKD"))
+})

@@ -205,6 +205,16 @@ test_that("create_expression_profile validates expression and disease", {
       disease = list(parameters = list())
     )
   )
+  expect_snapshot(
+    error = TRUE,
+    create_expression_profile(
+      molecule = "CYP3A4",
+      species = "Human",
+      category = "Healthy",
+      type = "Enzyme",
+      disease = "CKD"
+    )
+  )
 })
 
 test_that("create_expression_profile validates required arguments", {
