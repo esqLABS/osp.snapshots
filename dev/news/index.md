@@ -6,6 +6,12 @@
   builds a container criterion (`Tag`, and an open-string `Type` such as
   `"InContainer"` or `"MatchTag"`) for an observer’s container criteria
   (#119).
+- [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
+  gains `expression` and `disease` arguments to set per-organ relative
+  expression (a data frame of container rows, or a raw list) and a
+  disease state, and `ExpressionProfile` gains read/write `expression`
+  and `disease` bindings so a loaded profile can be read and mutated
+  (#116).
 - [`create_formula_reference()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formula_reference.md)
   builds a formula reference (`Alias`, `Path`, optional `Dimension`) for
   an observer’s formula (#119).

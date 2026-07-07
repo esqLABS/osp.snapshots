@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9006</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,8 @@
 <h2 class="pkg-version" data-toc-text="development version" id="ospsnapshots-development-version">osp.snapshots (development version)<a class="anchor" aria-label="anchor" href="#ospsnapshots-development-version"></a></h2>
 <ul><li>
 <code><a href="../reference/create_descriptor_condition.html">create_descriptor_condition()</a></code> builds a container criterion (<code>Tag</code>, and an open-string <code>Type</code> such as <code>"InContainer"</code> or <code>"MatchTag"</code>) for an observer’s container criteria (#119).</li>
+<li>
+<code><a href="../reference/create_expression_profile.html">create_expression_profile()</a></code> gains <code>expression</code> and <code>disease</code> arguments to set per-organ relative expression (a data frame of container rows, or a raw list) and a disease state, and <code>ExpressionProfile</code> gains read/write <code>expression</code> and <code>disease</code> bindings so a loaded profile can be read and mutated (#116).</li>
 <li>
 <code><a href="../reference/create_formula_reference.html">create_formula_reference()</a></code> builds a formula reference (<code>Alias</code>, <code>Path</code>, optional <code>Dimension</code>) for an observer’s formula (#119).</li>
 <li>

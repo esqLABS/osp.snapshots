@@ -11,7 +11,7 @@ and display a summary of its information."><meta name="robots" content="noindex"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9006</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,6 +90,22 @@ and display a summary of its information.</p>
 
     <dt><code>parameters</code></dt>
 <dd><p>The parameters of the expression profile</p></dd>
+
+
+    <dt><code>expression</code></dt>
+<dd><p>The per-organ relative expression of the profile.
+Reading returns the raw <code>ExpressionContainer[]</code> list (or <code>NULL</code>
+when unset). Assigning accepts the same shapes as the
+<code>expression</code> argument of <code><a href="create_expression_profile.html">create_expression_profile()</a></code> (a data
+frame of container rows, a raw list, or <code>NULL</code>/empty to clear it).</p></dd>
+
+
+    <dt><code>disease</code></dt>
+<dd><p>The disease state of the profile. Reading returns the
+raw <code>DiseaseState</code> list (or <code>NULL</code> when unset). Assigning accepts
+the same shape as the <code>disease</code> argument of
+<code><a href="create_expression_profile.html">create_expression_profile()</a></code> (a named list with <code>name</code> and
+optional <code>parameters</code>, or <code>NULL</code> to clear it).</p></dd>
 
 
     <dt><code>id</code></dt>

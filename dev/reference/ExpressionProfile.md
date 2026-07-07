@@ -44,6 +44,24 @@ expression profile and display a summary of its information.
 
   The parameters of the expression profile
 
+- `expression`:
+
+  The per-organ relative expression of the profile. Reading returns the
+  raw `ExpressionContainer[]` list (or `NULL` when unset). Assigning
+  accepts the same shapes as the `expression` argument of
+  [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
+  (a data frame of container rows, a raw list, or `NULL`/empty to clear
+  it).
+
+- `disease`:
+
+  The disease state of the profile. Reading returns the raw
+  `DiseaseState` list (or `NULL` when unset). Assigning accepts the same
+  shape as the `disease` argument of
+  [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
+  (a named list with `name` and optional `parameters`, or `NULL` to
+  clear it).
+
 - `id`:
 
   The unique identifier of the expression profile

@@ -17,7 +17,7 @@ and category are required."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9006</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,6 +69,8 @@ and <code>category</code> are required.</p>
 <span>  transport_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ontogeny <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  expression <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  disease <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  description <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -117,6 +119,28 @@ list. If a string is supplied it is wrapped as
 expression and other per-organ values.</p></dd>
 
 
+<dt id="arg-expression">expression<a class="anchor" aria-label="anchor" href="#arg-expression"></a></dt>
+<dd><p>Per-organ relative expression, written to the
+snapshot's <code>Expression</code> array. Supply a data frame (or tibble), one
+row per organ/compartment, with a required <code>name</code> column
+(organ/container name, for example <code>"Liver"</code>) and the optional
+columns <code>value</code> (relative expression), <code>compartment</code> (for example
+<code>"Intracellular"</code>), and <code>transport_direction</code> (for transporter
+profiles). Missing (<code>NA</code>) or absent optional cells emit no key, so a
+row with only <code>name</code> and <code>value</code> produces a container with just those
+two fields. Row order is preserved and duplicate names are kept.
+Alternatively supply a raw list of container lists (each a named list
+with any of <code>Name</code>, <code>Value</code>, <code>CompartmentName</code>, <code>TransportDirection</code>)
+to pass through verbatim. <code>NULL</code> or an empty input writes nothing.</p></dd>
+
+
+<dt id="arg-disease">disease<a class="anchor" aria-label="anchor" href="#arg-disease"></a></dt>
+<dd><p>Disease state, written to the snapshot's <code>Disease</code>
+object. Supply a named list with <code>name</code> (required, the
+<code>DiseaseState</code> name) and an optional <code>parameters</code> list of <a href="Parameter.html">Parameter</a>
+objects or raw parameter lists. <code>NULL</code> writes nothing.</p></dd>
+
+
 <dt id="arg-description">description<a class="anchor" aria-label="anchor" href="#arg-description"></a></dt>
 <dd><p>Character. Free-text description of the profile.</p></dd>
 
@@ -144,6 +168,18 @@ expression and other per-organ values.</p></dd>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"Transporter"</span>,</span></span>
 <span class="r-in"><span>  transport_type <span class="op">=</span> <span class="st">"Efflux"</span>,</span></span>
 <span class="r-in"><span>  ontogeny <span class="op">=</span> <span class="st">"P-gp"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create an enzyme profile with per-organ relative expression</span></span></span>
+<span class="r-in"><span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu">create_expression_profile</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  molecule <span class="op">=</span> <span class="st">"CYP3A4"</span>,</span></span>
+<span class="r-in"><span>  species <span class="op">=</span> <span class="st">"Human"</span>,</span></span>
+<span class="r-in"><span>  category <span class="op">=</span> <span class="st">"Healthy"</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"Enzyme"</span>,</span></span>
+<span class="r-in"><span>  expression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Liver"</span>, <span class="st">"Kidney"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
