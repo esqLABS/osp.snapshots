@@ -17,6 +17,12 @@ test_that("Compounds are printed correctly", {
   }
 })
 
+test_that("Compound prints when is_small_molecule is unset", {
+  compound <- create_compound(name = "NoFlag")
+  expect_equal(compound$is_small_molecule, NA)
+  expect_snapshot(print(compound))
+})
+
 test_that("Compounds sections can be accessed and are correctly printed", {
   expect_no_error({
     snapshot$compounds[[1]]$name
@@ -82,6 +88,24 @@ test_that("Compounds can be converted to dataframes", {
   expect_snapshot(print(dfs$processes, n = Inf))
 })
 
+test_that("permeability is surfaced in print and the properties tibble", {
+  compound <- create_compound(
+    name = "X",
+    is_small_molecule = TRUE,
+    molecular_weight = 250,
+    permeability = 0.0069
+  )
+
+  expect_snapshot(print(compound))
+
+  snap <- add_compound(create_snapshot(), compound)
+  properties <- get_compounds_dfs(snap)$properties
+  perm_rows <- properties[properties$type == "permeability", ]
+  expect_equal(nrow(perm_rows), 1)
+  expect_equal(unname(perm_rows$value), "0.0069")
+  expect_equal(unname(perm_rows$unit), "cm/min")
+})
+
 
 # Process accessor -------------------------------------------------------
 
@@ -134,6 +158,217 @@ test_that("Deprecated category accessors warn", {
   expect_snapshot(invisible(compound$biliary_clearance))
   expect_snapshot(invisible(compound$inhibition))
   expect_snapshot(invisible(compound$induction))
+})
+
+
+# Writable physicochemical fields ----------------------------------------
+
+test_that("single-parameter physicochemical fields are writable by scalar", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  compound$lipophilicity <- 3.3
+  expect_equal(
+    compound$data$Lipophilicity[[1]]$Parameters[[1]]$Value,
+    3.3
+  )
+  expect_equal(compound$data$Lipophilicity[[1]]$Name, "User defined")
+
+  compound$fraction_unbound <- 0.2
+  fu <- compound$data$FractionUnbound[[1]]$Parameters[[1]]
+  expect_equal(fu$Value, 0.2)
+  expect_null(fu$Unit)
+
+  compound$solubility <- 500
+  sol <- compound$data$Solubility[[1]]$Parameters[[1]]
+  expect_equal(sol$Name, "Solubility at reference pH")
+  expect_equal(sol$Value, 500)
+  expect_equal(sol$Unit, "mg/l")
+
+  compound$intestinal_permeability <- 2e-05
+  ip <- compound$data$IntestinalPermeability[[1]]$Parameters[[1]]
+  expect_equal(ip$Value, 2e-05)
+  expect_equal(ip$Unit, "cm/min")
+})
+
+test_that("permeability field reads and writes on a compound without the key", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  expect_null(compound$permeability)
+
+  compound$permeability <- 0.007
+  expect_s3_class(compound$permeability, "physicochemical_property")
+  param <- compound$data$Permeability[[1]]$Parameters[[1]]
+  expect_equal(param$Name, "Permeability")
+  expect_equal(param$Value, 0.007)
+  expect_equal(param$Unit, "cm/min")
+})
+
+test_that("physicochemical fields accept a raw alternative list verbatim", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  raw <- list(list(
+    Name = "Custom",
+    IsDefault = TRUE,
+    Parameters = list(
+      list(Name = "Solubility at reference pH", Value = 12, Unit = "mg/l"),
+      list(Name = "Reference pH", Value = 7)
+    )
+  ))
+  compound$solubility <- raw
+  expect_equal(compound$data$Solubility, raw)
+})
+
+test_that("pka_types is writable via list shape and raw shape", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  compound$pka_types <- list(list(type = "Base", value = 7.9))
+  expect_equal(
+    compound$data$PkaTypes,
+    list(list(Type = "Base", Pka = 7.9))
+  )
+
+  compound$pka_types <- list(list(Type = "Acid", Pka = 1.2))
+  expect_equal(
+    compound$data$PkaTypes,
+    list(list(Type = "Acid", Pka = 1.2))
+  )
+})
+
+test_that("processes field is writable", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  compound$processes <- list(
+    create_process(
+      internal_name = "GlomerularFiltration",
+      data_source = "Publication X"
+    )
+  )
+  expect_length(compound$processes, 1)
+  expect_equal(compound$processes[[1]]$category, "renal_clearance")
+  expect_null(names(compound$data$Processes))
+})
+
+test_that("assigning NULL clears the single-parameter physicochemical keys", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  compound$lipophilicity <- NULL
+  compound$fraction_unbound <- NULL
+  compound$solubility <- NULL
+  compound$intestinal_permeability <- NULL
+  compound$permeability <- 0.007
+  compound$permeability <- NULL
+
+  expect_null(compound$data$Lipophilicity)
+  expect_null(compound$data$FractionUnbound)
+  expect_null(compound$data$Solubility)
+  expect_null(compound$data$IntestinalPermeability)
+  expect_null(compound$data$Permeability)
+})
+
+test_that("clearing pka_types and processes with NULL or list()", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  compound$pka_types <- NULL
+  expect_null(compound$data$PkaTypes)
+
+  compound$pka_types <- list(list(type = "Base", value = 7.9))
+  compound$pka_types <- list()
+  expect_null(compound$data$PkaTypes)
+
+  compound$processes <- list()
+  expect_length(compound$processes, 0)
+  expect_null(compound$data$Processes)
+
+  compound$processes <- list(
+    create_process(internal_name = "GlomerularFiltration", data_source = "X")
+  )
+  compound$processes <- NULL
+  expect_length(compound$processes, 0)
+  expect_null(compound$data$Processes)
+})
+
+test_that("invalid physicochemical field assignments abort", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+  expect_snapshot(error = TRUE, compound$lipophilicity <- "high")
+  expect_snapshot(error = TRUE, compound$permeability <- "high")
+})
+
+
+# Round trip -------------------------------------------------------------
+
+test_that("compound built with new arguments round-trips through export", {
+  compound <- create_compound(
+    name = "RTX",
+    lipophilicity = 2.5,
+    fraction_unbound = 1,
+    solubility = 9999,
+    reference_pH = 7,
+    solubility_gain_per_charge = 1000,
+    intestinal_permeability = 1.14e-05,
+    permeability = 0.0069,
+    pKa = list(list(type = "Base", value = 10.02)),
+    processes = list(
+      create_process(
+        internal_name = "GlomerularFiltration",
+        data_source = "X"
+      )
+    )
+  )
+  snap <- add_compound(create_snapshot(), compound)
+
+  path <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(snap, path)
+  reloaded <- load_snapshot(path)
+  rc <- reloaded$compounds[[1]]
+
+  expect_equal(rc$data$Lipophilicity, compound$data$Lipophilicity)
+  expect_equal(rc$data$FractionUnbound, compound$data$FractionUnbound)
+  expect_equal(rc$data$Solubility, compound$data$Solubility)
+  expect_equal(
+    rc$data$IntestinalPermeability,
+    compound$data$IntestinalPermeability
+  )
+  expect_equal(rc$data$Permeability, compound$data$Permeability)
+  expect_equal(rc$data$PkaTypes, compound$data$PkaTypes)
+  expect_equal(rc$data$Processes, compound$data$Processes)
+})
+
+test_that("mutating a loaded compound leaves unreassigned sections intact", {
+  original <- jsonlite::fromJSON(
+    txt = testthat::test_path("data", "test_snapshot.json"),
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
+  snap <- load_snapshot(testthat::test_path("data", "test_snapshot.json"))
+  compound <- snap$compounds[[1]]
+
+  compound$lipophilicity <- 4.2
+  compound$pka_types <- list(list(type = "Base", value = 5.5))
+
+  path <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(snap, path)
+  reloaded <- jsonlite::fromJSON(
+    txt = path,
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
+
+  # Value equality, not byte-identity: exporting whole-number doubles and
+  # re-parsing them can flip their JSON storage type (double <-> integer),
+  # a pre-existing artifact of the export path that is unrelated to whether
+  # a section was mutated.
+  expect_equal(
+    reloaded$Compounds[[1]]$Parameters,
+    original$Compounds[[1]]$Parameters
+  )
+  expect_equal(
+    reloaded$Compounds[[1]]$CalculationMethods,
+    original$Compounds[[1]]$CalculationMethods
+  )
+  expect_equal(
+    reloaded$Compounds[[1]]$Solubility,
+    original$Compounds[[1]]$Solubility
+  )
 })
 
 

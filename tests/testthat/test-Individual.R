@@ -532,14 +532,224 @@ test_that("Individual parameters can be modified", {
   expect_equal(test_individual$data$Parameters[[1]]$Value, 123)
 })
 
-test_that("Individual expression_profiles is read-only", {
-  # Create a test individual with expression profiles
+test_that("Individual expression_profiles reads the raw value", {
   test_individual <- Individual$new(complete_individual_data)
-
-  # Check expression profiles are returned correctly
   expect_equal(
     test_individual$expression_profiles,
     complete_individual_data$ExpressionProfiles
+  )
+})
+
+test_that("create_individual attaches expression profiles", {
+  profiles <- c("CYP3A4|Human|Healthy", "P-gp|Human|Healthy")
+  ind <- create_individual(name = "X", expression_profiles = profiles)
+  expect_equal(ind$expression_profiles, profiles)
+  expect_equal(ind$data$ExpressionProfiles, profiles)
+})
+
+test_that("expression_profiles binding is writable", {
+  ind <- create_individual(name = "X")
+  ind$expression_profiles <- c("CYP2D6|Human|Healthy")
+  expect_equal(ind$expression_profiles, "CYP2D6|Human|Healthy")
+  expect_equal(ind$data$ExpressionProfiles, "CYP2D6|Human|Healthy")
+})
+
+test_that("assigning NULL or character(0) removes expression_profiles", {
+  ind <- create_individual(
+    name = "X",
+    expression_profiles = c("CYP3A4|Human|Healthy")
+  )
+  ind$expression_profiles <- NULL
+  expect_null(ind$data$ExpressionProfiles)
+
+  ind$expression_profiles <- c("CYP3A4|Human|Healthy")
+  ind$expression_profiles <- character(0)
+  expect_null(ind$data$ExpressionProfiles)
+})
+
+test_that("assigning a non-character to expression_profiles aborts", {
+  ind <- create_individual(
+    name = "X",
+    expression_profiles = c("CYP3A4|Human|Healthy")
+  )
+  expect_snapshot(ind$expression_profiles <- list(1), error = TRUE)
+  expect_snapshot(ind$expression_profiles <- 42, error = TRUE)
+  # Prior value is unchanged after a rejected assignment.
+  expect_equal(ind$expression_profiles, "CYP3A4|Human|Healthy")
+})
+
+test_that("create_individual sets a description", {
+  ind <- create_individual(name = "X", description = "A test subject")
+  expect_equal(ind$description, "A test subject")
+  expect_equal(ind$data$Description, "A test subject")
+})
+
+test_that("description binding is read/write and clears on NULL", {
+  ind <- create_individual(name = "X")
+  ind$description <- "A test subject"
+  expect_equal(ind$description, "A test subject")
+  ind$description <- NULL
+  expect_null(ind$data$Description)
+})
+
+test_that("assigning an invalid description aborts", {
+  ind <- create_individual(name = "X", description = "keep me")
+  expect_snapshot(ind$description <- 42, error = TRUE)
+  expect_snapshot(ind$description <- c("a", "b"), error = TRUE)
+  expect_equal(ind$description, "keep me")
+})
+
+test_that("create_individual attaches localized parameters", {
+  ind <- create_individual(
+    name = "X",
+    parameters = list(
+      create_parameter(
+        path = "Organism|Liver|EHC continuous fraction",
+        value = 1
+      )
+    )
+  )
+  expect_s3_class(ind$parameters, "parameter_collection")
+  expect_length(ind$parameters, 1)
+  expect_named(ind$parameters, "Organism|Liver|EHC continuous fraction")
+  expect_s3_class(
+    ind$parameters[["Organism|Liver|EHC continuous fraction"]],
+    "LocalizedParameter"
+  )
+  expect_equal(
+    ind$data$Parameters[[1]]$Path,
+    "Organism|Liver|EHC continuous fraction"
+  )
+  expect_equal(ind$data$Parameters[[1]]$Value, 1)
+})
+
+test_that("create_individual parameters equals construct-then-set", {
+  param_list <- list(
+    create_parameter(
+      path = "Organism|Liver|EHC continuous fraction",
+      value = 1
+    )
+  )
+  with_arg <- create_individual(name = "X", parameters = param_list)
+
+  without_arg <- create_individual(name = "X")
+  without_arg$parameters <- param_list
+
+  # FR-8: the raw `Parameters` shape is identical whether the parameters are
+  # supplied to the factory or assigned afterward through the setter.
+  expect_equal(with_arg$data$Parameters, without_arg$data$Parameters)
+  expect_equal(
+    with_arg$parameters[[1]]$value,
+    without_arg$parameters[[1]]$value
+  )
+})
+
+test_that("create_individual accepts raw-list parameters", {
+  ind <- create_individual(
+    name = "X",
+    parameters = list(
+      list(Path = "Organism|Liver|Volume", Value = 1.5, Unit = "L")
+    )
+  )
+  expect_s3_class(
+    ind$parameters[["Organism|Liver|Volume"]],
+    "LocalizedParameter"
+  )
+  expect_equal(ind$parameters[["Organism|Liver|Volume"]]$value, 1.5)
+})
+
+test_that("create_individual rejects a name-only parameter", {
+  expect_snapshot(
+    create_individual(
+      name = "X",
+      parameters = list(create_parameter(name = "SomeName", value = 1))
+    ),
+    error = TRUE
+  )
+})
+
+test_that("create_individual rejects a mixed valid/invalid parameter list", {
+  expect_snapshot(
+    create_individual(
+      name = "X",
+      parameters = list(
+        create_parameter(path = "Organism|Liver|Volume", value = 1),
+        create_parameter(name = "SomeName", value = 2)
+      )
+    ),
+    error = TRUE
+  )
+})
+
+test_that("create_individual with no new args adds no keys", {
+  ind <- create_individual(name = "X")
+  expect_null(ind$data$ExpressionProfiles)
+  expect_null(ind$data$Description)
+  expect_null(ind$data$Parameters)
+})
+
+test_that("loaded deferred fields round-trip verbatim through $data", {
+  raw <- list(
+    Name = "Deferred Fields",
+    OriginData = list(
+      Species = "Human",
+      ValueOrigin = list(
+        Id = 7,
+        Source = "ParameterIdentification",
+        Method = "Optimization",
+        Description = "Fitted"
+      ),
+      Disease = list(
+        Name = "CKD",
+        Parameters = list(
+          list(Path = "eGFR", Value = 45, Unit = "ml/min/1.73m²")
+        )
+      )
+    ),
+    Molecules = list(
+      list(
+        Type = "Enzyme",
+        Species = "Human",
+        Molecule = "CYP3A4",
+        Category = "Healthy"
+      )
+    )
+  )
+
+  ind <- Individual$new(raw)
+  expect_equal(ind$data$Molecules, raw$Molecules)
+  expect_equal(ind$data$OriginData$ValueOrigin, raw$OriginData$ValueOrigin)
+  expect_equal(ind$data$OriginData$Disease, raw$OriginData$Disease)
+})
+
+test_that("individual with new fields survives a full snapshot round-trip", {
+  snapshot <- create_snapshot()
+  ind <- create_individual(
+    name = "Subject 1",
+    species = "Human",
+    expression_profiles = c("CYP3A4|Human|Healthy"),
+    description = "Reference healthy adult",
+    parameters = list(
+      create_parameter(
+        path = "Organism|Liver|EHC continuous fraction",
+        value = 1
+      )
+    )
+  )
+  snapshot$add_individual(ind)
+
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(temp_file)
+  reloaded <- Snapshot$new(temp_file)
+
+  loaded_ind <- reloaded$individuals[[1]]
+  expect_equal(loaded_ind$expression_profiles, "CYP3A4|Human|Healthy")
+  expect_type(loaded_ind$expression_profiles, "character")
+  expect_length(loaded_ind$expression_profiles, 1)
+  expect_equal(loaded_ind$description, "Reference healthy adult")
+  expect_equal(
+    loaded_ind$parameters[["Organism|Liver|EHC continuous fraction"]]$value,
+    1
   )
 })
 
@@ -635,7 +845,6 @@ test_that("Snapshot with empty individuals is handled correctly", {
 test_that("Individual read-only fields error on set", {
   ind <- Individual$new(complete_individual_data)
   expect_error(ind$data <- list(), "data is read-only")
-  expect_error(ind$expression_profiles <- c("A"), "unused argument")
 })
 
 test_that("Parameter collection class is always parameter_collection", {
@@ -663,6 +872,14 @@ test_that("to_df returns all types and errors on invalid type", {
   expect_s3_class(ind$to_df("individuals_expressions"), "tbl_df")
   expect_type(ind$to_df(), "list")
   expect_error(ind$to_df("not_a_type"), "type must be one of")
+})
+
+test_that("to_df surfaces the description column", {
+  ind <- create_individual(name = "X", description = "A test subject")
+  expect_equal(ind$to_df("individuals")$description, "A test subject")
+
+  no_desc <- create_individual(name = "Y")
+  expect_equal(no_desc$to_df("individuals")$description, NA_character_)
 })
 
 test_that("Disease state parameters handle missing fields", {
@@ -741,6 +958,7 @@ test_that("get_individuals_dfs returns correct data frames", {
     c(
       "individual_id",
       "name",
+      "description",
       "seed",
       "species",
       "population",
@@ -796,6 +1014,7 @@ test_that("get_individuals_dfs returns correct data frames", {
     c(
       "individual_id",
       "name",
+      "description",
       "seed",
       "species",
       "population",

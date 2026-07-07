@@ -15,9 +15,17 @@ and display a summary of its information.
 
     \item{\code{name}}{The name of the population}
 
+    \item{\code{description}}{A free-text description of the population}
+
     \item{\code{source_population}}{The source population name (read-only)}
 
     \item{\code{individual_name}}{The individual name (read-only)}
+
+    \item{\code{individual}}{The base individual the population samples from,
+returned as an \link{Individual} object built from the base individual
+in the population settings, or \code{NULL} when none is set
+(read-only). Author it at construction time via the \code{individual}
+argument of \code{\link[=create_population]{create_population()}}.}
 
     \item{\code{seed}}{The seed used for population generation}
 
@@ -33,7 +41,21 @@ and display a summary of its information.
 
     \item{\code{bmi_range}}{The BMI range for the population}
 
-    \item{\code{egfr_range}}{The eGFR range for the population (if available)}
+    \item{\code{gestational_age_range}}{The gestational age range used for
+population generation}
+
+    \item{\code{egfr_range}}{The eGFR range for the population (if available).
+Convenience over the case-insensitive \code{"egfr"} entry of
+\code{disease_state_parameters}; writes persist into the population
+settings so they survive export.}
+
+    \item{\code{disease_state_parameters}}{The population disease-state
+parameters as a named list mapping each parameter name to a
+\link{Range} object. Assign a named list of \code{Range} objects to
+replace them, or \code{NULL} to clear them. This population-level
+name-to-\code{Range} map is distinct from the base individual's own
+\code{disease_state_parameters}, which carries scalar parameter
+values.}
 
     \item{\code{advanced_parameters}}{Advanced parameters for the population}
   }

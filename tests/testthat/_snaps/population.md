@@ -31,6 +31,31 @@
       Proportion of females: 0%
       Age range: 30 - 40 year(s)
 
+---
+
+    Code
+      print(rich_population)
+    Output
+      
+      -- Population: Rich Population --
+      
+      Description: A richly configured cohort
+      Individual name: Base
+      Source Population: European_ICRP_2002
+      Number of individuals: 50
+      Proportion of females: 50%
+      Gestational age range: 37 - 42 week(s)
+      eGFR range: 60 - 120 ml/min/1.73m²
+
+# Population disease_state_parameters rejects non-Range values
+
+    Code
+      population$disease_state_parameters <- list(eGFR = list(min = 60))
+    Condition
+      Error:
+      ! disease_state_parameters must be a named list of Range objects
+      i Use `range()` to create one.
+
 # AdvancedParameter class works correctly
 
     Code

@@ -83,6 +83,43 @@ minimal_population_data <- list(
   )
 )
 
+# Create rich population data exercising the fields added in #118
+rich_population_data <- list(
+  Name = "Rich Population",
+  Description = "A richly configured cohort",
+  Settings = list(
+    NumberOfIndividuals = 50,
+    ProportionOfFemales = 50,
+    GestationalAge = list(
+      Min = 37.0,
+      Max = 42.0,
+      Unit = "week(s)"
+    ),
+    Individual = list(
+      Name = "Base",
+      OriginData = list(
+        Species = "Human",
+        Population = "European_ICRP_2002",
+        Gender = "MALE"
+      )
+    ),
+    DiseaseStateParameters = list(
+      list(
+        Name = "eGFR",
+        Min = 60.0,
+        Max = 120.0,
+        Unit = "ml/min/1.73m²"
+      ),
+      list(
+        Name = "Tumour Volume",
+        Min = 1.0,
+        Max = 5.0,
+        Unit = "l"
+      )
+    )
+  )
+)
+
 # ---- Population class logic tests ----
 test_that("Population class initialization works", {
   # Create test population objects
@@ -170,10 +207,12 @@ test_that("Population print method returns formatted output", {
   # Create test population objects
   complete_population <- Population$new(complete_population_data)
   minimal_population <- Population$new(minimal_population_data)
+  rich_population <- Population$new(rich_population_data)
 
   # Test print outputs
   expect_snapshot(print(complete_population))
   expect_snapshot(print(minimal_population))
+  expect_snapshot(print(rich_population))
 })
 
 test_that("Population fields can be modified through active bindings", {
@@ -304,6 +343,137 @@ test_that("Read-only fields cannot be modified", {
     ),
     "individual_name is read-only"
   )
+  expect_error(
+    tryCatch(
+      {
+        population$individual <- create_individual(species = "Human")
+        NULL
+      },
+      error = function(e) stop(e$message)
+    ),
+    "individual is read-only"
+  )
+})
+
+test_that("Population description binding reads and writes", {
+  population <- Population$new(rich_population_data)
+  expect_equal(population$description, "A richly configured cohort")
+
+  population$description <- "Updated description"
+  expect_equal(population$description, "Updated description")
+  expect_equal(population$data$Description, "Updated description")
+})
+
+test_that("Population gestational_age_range binding reads and writes", {
+  population <- Population$new(rich_population_data)
+
+  expect_s3_class(population$gestational_age_range, "Range")
+  expect_equal(population$gestational_age_range$min, 37)
+  expect_equal(population$gestational_age_range$max, 42)
+  expect_equal(population$gestational_age_range$unit, "week(s)")
+
+  population$gestational_age_range <- Range$new(38, 41, "week(s)")
+  expect_equal(
+    population$data$Settings$GestationalAge,
+    list(Min = 38, Max = 41, Unit = "week(s)")
+  )
+
+  population$gestational_age_range <- NULL
+  expect_null(population$gestational_age_range)
+  expect_null(population$data$Settings$GestationalAge)
+})
+
+test_that("Population disease_state_parameters getter and setter work", {
+  population <- Population$new(rich_population_data)
+
+  params <- population$disease_state_parameters
+  expect_named(params, c("eGFR", "Tumour Volume"))
+  expect_s3_class(params$eGFR, "Range")
+  expect_equal(params$eGFR$min, 60)
+  expect_equal(params[["Tumour Volume"]]$max, 5)
+
+  population$disease_state_parameters <- list(
+    eGFR = range(30, 90, "ml/min/1.73m²")
+  )
+  expect_length(population$data$Settings$DiseaseStateParameters, 1)
+  expect_equal(
+    population$data$Settings$DiseaseStateParameters[[1]],
+    list(Name = "eGFR", Min = 30, Max = 90, Unit = "ml/min/1.73m²")
+  )
+  expect_equal(population$egfr_range$min, 30)
+
+  population$disease_state_parameters <- NULL
+  expect_null(population$data$Settings$DiseaseStateParameters)
+  expect_null(population$egfr_range)
+})
+
+test_that("Population disease_state_parameters rejects non-Range values", {
+  population <- Population$new(rich_population_data)
+  expect_snapshot(
+    error = TRUE,
+    population$disease_state_parameters <- list(eGFR = list(min = 60))
+  )
+})
+
+test_that("egfr_range setter persists into population data", {
+  population <- Population$new(rich_population_data)
+
+  population$egfr_range <- range(30, 90, "ml/min/1.73m²")
+  egfr_entry <- Filter(
+    function(p) tolower(p$Name) == "egfr",
+    population$data$Settings$DiseaseStateParameters
+  )
+  expect_length(egfr_entry, 1)
+  expect_equal(egfr_entry[[1]]$Min, 30)
+  expect_equal(egfr_entry[[1]]$Max, 90)
+  expect_equal(
+    population$disease_state_parameters[["eGFR"]]$min,
+    30
+  )
+  # Other entries are preserved
+  expect_length(population$data$Settings$DiseaseStateParameters, 2)
+
+  population$egfr_range <- NULL
+  expect_null(population$egfr_range)
+  egfr_after <- Filter(
+    function(p) tolower(p$Name) == "egfr",
+    population$data$Settings$DiseaseStateParameters
+  )
+  expect_length(egfr_after, 0)
+  # The non-eGFR entry survives removal of eGFR
+  expect_length(population$data$Settings$DiseaseStateParameters, 1)
+})
+
+test_that("egfr_range set to NULL drops empty DiseaseStateParameters key", {
+  population <- Population$new(complete_population_data)
+  population$egfr_range <- NULL
+  expect_null(population$data$Settings$DiseaseStateParameters)
+})
+
+test_that("Population individual binding is read-only and derived", {
+  population <- Population$new(rich_population_data)
+  expect_s3_class(population$individual, "Individual")
+  expect_equal(population$individual$name, "Base")
+
+  minimal_population <- Population$new(minimal_population_data)
+  expect_null(minimal_population$individual)
+})
+
+test_that("Population round-trips all fields added in #118", {
+  pop <- create_population(
+    name = "Round Trip",
+    number_of_individuals = 25,
+    individual = create_individual(
+      name = "Base",
+      species = "Human",
+      population = "European_ICRP_2002",
+      gender = "MALE"
+    ),
+    gestational_age_range = range(37, 42, "week(s)"),
+    disease_state_parameters = list(eGFR = range(60, 120, "ml/min/1.73m²")),
+    description = "Adults with reduced renal function"
+  )
+  expect_equal(Population$new(pop$data)$data, pop$data)
 })
 
 test_that("Population to_df method returns correct data frames", {

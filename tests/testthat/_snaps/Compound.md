@@ -408,6 +408,19 @@
         * Br: 1 [Unknown]
         * Cl: 1 [Unknown]
 
+# Compound prints when is_small_molecule is unset
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: NoFlag ------------------------------------------------------------
+      
+      -- Basic Properties --
+      
+      -- Physicochemical Properties --
+      
+
 # Compounds sections can be accessed and are correctly printed
 
     Code
@@ -872,6 +885,24 @@
       182 Rifampicin    renal_c~ TubularSecr~ TSspec    55    1/min RenCL_rif   "Assu~
       # i 3 more variables: molecule <chr>, metabolite <chr>, species <chr>
 
+# permeability is surfaced in print and the properties tibble
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: X -----------------------------------------------------------------
+      
+      -- Basic Properties --
+      
+      * Type: Small Molecule
+      * Molecular Weight: 250 g/mol
+      
+      -- Physicochemical Properties --
+      
+      * Permeability:
+        * 0.0069 cm/min [Unknown]
+
 # Deprecated category accessors warn
 
     Code
@@ -943,4 +974,20 @@
       Warning:
       Compound$induction was deprecated in osp.snapshots 0.3.0.
       i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
+
+# invalid physicochemical field assignments abort
+
+    Code
+      compound$lipophilicity <- "high"
+    Condition
+      Error in `private$set_alternative_group()`:
+      ! `lipophilicity` must be a numeric value, a raw alternative list, or NULL
+
+---
+
+    Code
+      compound$permeability <- "high"
+    Condition
+      Error in `private$set_alternative_group()`:
+      ! `permeability` must be a numeric value, a raw alternative list, or NULL
 
