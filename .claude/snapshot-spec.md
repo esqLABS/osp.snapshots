@@ -192,6 +192,8 @@ Created via `IEventFactory.Create(templateName)`.
 | `Template` | `string` | Yes | Event template name passed to the factory. Determines which event type is created. |
 | `Parameters` | [Parameter](#parameter)[] | No | Mapped onto the event's parameters. |
 
+> Although the schema marks `Name` as optional, the `create_event()` factory in this package intentionally requires it, because events are added, referenced, and removed by name in a name-keyed collection (#122).
+
 ---
 
 ## ObserverSet

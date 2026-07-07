@@ -9,7 +9,11 @@
 #' emptying, or organ removal). PK-Sim creates events by cloning a named
 #' template and overriding parameters, so a template name is required.
 #'
-#' @param name Character. Name of the event (required).
+#' @param name Character. Name of the event (required). This package
+#'   requires a name because events are added, referenced, and removed by
+#'   name, so an unnamed event cannot be used. This is intentionally
+#'   stricter than the PK-Sim snapshot specification, which marks the
+#'   event name as optional.
 #' @param template Character. Event template name passed to the PK-Sim
 #'   factory (required). Determines which event type is created.
 #' @param parameters List of [Parameter] objects (created with
