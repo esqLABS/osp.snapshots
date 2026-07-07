@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,8 +39,18 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.0.9000" id="ospsnapshots-1009000">osp.snapshots 1.0.0.9000<a class="anchor" aria-label="anchor" href="#ospsnapshots-1009000"></a></h2>
+<h2 class="pkg-version" data-toc-text="development version" id="ospsnapshots-development-version">osp.snapshots (development version)<a class="anchor" aria-label="anchor" href="#ospsnapshots-development-version"></a></h2>
 <ul><li>
+<code><a href="../reference/create_descriptor_condition.html">create_descriptor_condition()</a></code> builds a container criterion (<code>Tag</code>, and an open-string <code>Type</code> such as <code>"InContainer"</code> or <code>"MatchTag"</code>) for an observer’s container criteria (#119).</li>
+<li>
+<code><a href="../reference/create_formula_reference.html">create_formula_reference()</a></code> builds a formula reference (<code>Alias</code>, <code>Path</code>, optional <code>Dimension</code>) for an observer’s formula (#119).</li>
+<li>
+<code><a href="../reference/create_molecule_list.html">create_molecule_list()</a></code> builds an observer’s molecule list from <code>for_all</code>, <code>include</code>, and <code>exclude</code> (#119).</li>
+<li>
+<code><a href="../reference/create_observer.html">create_observer()</a></code> builds a single observer for an observer set, with arguments for name, type, dimension, formula, formula references, container criteria, and molecule list (#119).</li>
+<li>
+<code>Observer</code> now exposes a lossless writable <code>container_criteria</code> field (preserving each criterion’s <code>Type</code>), a writable <code>formula_references</code> field, and a writable <code>molecule_list</code> field, and validates <code>type</code> against <code>Amount</code>/<code>Container</code> on assignment (#119).</li>
+<li>
 <code><a href="../reference/create_population.html">create_population()</a></code> gains <code>description</code>, <code>gestational_age_range</code>, <code>disease_state_parameters</code>, and <code>individual</code> arguments, the last composing a base individual from <code><a href="../reference/create_individual.html">create_individual()</a></code> to fully configure the population’s base individual (#118).</li>
 <li>
 <code>Population</code> objects gain read/write <code>description</code>, <code>gestational_age_range</code>, and <code>disease_state_parameters</code> bindings and a read-only <code>individual</code> binding exposing the base individual (#118).</li>

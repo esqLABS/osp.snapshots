@@ -216,20 +216,28 @@ Construct building blocks and leaves from named arguments
   : Create a compound process selection
 - [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md)
   : Create compound properties for a simulation
+- [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_descriptor_condition.md)
+  : Create a container criterion for an observer
 - [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
   : Create a new event
 - [`create_event_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event_selection.md)
   : Create an event selection for a simulation
 - [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
   : Create a new expression profile
+- [`create_formula_reference()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formula_reference.md)
+  : Create a formula reference for an observer
 - [`create_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
   : Create a new formulation
 - [`create_formulation_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation_selection.md)
   : Create a formulation selection for a simulation compound
 - [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
   : Create a new individual
+- [`create_molecule_list()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_molecule_list.md)
+  : Create a molecule list for an observer
 - [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
   : Create a new observed data set
+- [`create_observer()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer.md)
+  : Create a new observer
 - [`create_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set.md)
   : Create a new observer set
 - [`create_observer_set_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set_selection.md)

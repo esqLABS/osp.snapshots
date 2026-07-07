@@ -21,7 +21,7 @@ not itself a building block; it lives inside an ObserverSet."><meta name="robots
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,8 @@ JSON (read-only).</p></dd>
     <dt><code>type</code></dt>
 <dd><p>The observer type. PK-Sim recognises <code>"Amount"</code>
 (an <code>AmountObserverBuilder</code>) and <code>"Container"</code> (a
-<code>ContainerObserverBuilder</code>).</p></dd>
+<code>ContainerObserverBuilder</code>). On assignment, a non-<code>NULL</code> value is
+validated against these two; assigning <code>NULL</code> removes the type.</p></dd>
 
 
     <dt><code>dimension</code></dt>
@@ -117,8 +118,12 @@ Setting writes back to the inner <code>Formula$Dimension</code> field.</p></dd>
     <dt><code>formula_references</code></dt>
 <dd><p>The <code>References</code> list of the underlying
 <code>ExplicitFormula</code>, where each entry is a named list with
-<code>Alias</code>, <code>Path</code>, and <code>Dimension</code>. Read-only; mutate the whole
-structure through <code>formula</code>.</p></dd>
+<code>Alias</code>, <code>Path</code>, and <code>Dimension</code>. Assign a list of
+<code><a href="create_formula_reference.html">create_formula_reference()</a></code> outputs (or raw <code>{Alias, Path, Dimension}</code> lists) to replace it, preserving the sibling
+<code>Formula$Name</code>, <code>Formula$Formula</code>, and <code>Formula$Dimension</code>
+(the <code>Formula</code> is created if absent). Assign <code>NULL</code> to remove the
+references; when no <code>Formula</code> exists this is a no-op that does not
+create an empty <code>Formula</code>.</p></dd>
 
 
     <dt><code>container_tags</code></dt>
@@ -127,6 +132,22 @@ structure through <code>formula</code>.</p></dd>
 field in the snapshot JSON; this binding is synthesized from the
 tags found in <code>ContainerCriteria</code>. <code>NULL</code> when the observer
 carries no container criteria.</p></dd>
+
+
+    <dt><code>container_criteria</code></dt>
+<dd><p>The full <code>ContainerCriteria</code> list, each
+entry a named list with <code>Tag</code> and (optionally) <code>Type</code>. Unlike
+<code>container_tags</code>, this preserves each condition's <code>Type</code> verbatim
+(including non-enum values such as <code>"MatchTag"</code>). Assign a list of
+<code><a href="create_descriptor_condition.html">create_descriptor_condition()</a></code> outputs (or raw <code>{Tag, Type}</code>
+lists) to replace it; assign <code>NULL</code> to remove it.</p></dd>
+
+
+    <dt><code>molecule_list</code></dt>
+<dd><p>The full <code>MoleculeList</code> object (<code>ForAll</code>,
+<code>MoleculeNamesToInclude</code>, <code>MoleculeNamesToExclude</code>) or <code>NULL</code>.
+Assign a <code><a href="create_molecule_list.html">create_molecule_list()</a></code> output (or an equivalent raw
+list) to replace it; assign <code>NULL</code> to remove it.</p></dd>
 
 
 </dl><p></p></div>
