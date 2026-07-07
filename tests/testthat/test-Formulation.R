@@ -199,10 +199,15 @@ test_that("Formulation validates formulation type", {
     expect_equal(test_formulation$formulation_type, type)
   }
 
-  # Test invalid formulation type
-  expect_error(
-    test_formulation$formulation_type <- "InvalidType",
-    "Invalid formulation type: InvalidType"
+  # An arbitrary non-empty string is now accepted verbatim (FormulationType is
+  # a free-form repository key).
+  expect_no_error(test_formulation$formulation_type <- "InvalidType")
+  expect_equal(test_formulation$formulation_type, "InvalidType")
+
+  # An empty string is still rejected.
+  expect_snapshot(
+    error = TRUE,
+    test_formulation$formulation_type <- ""
   )
 })
 

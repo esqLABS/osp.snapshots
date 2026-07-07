@@ -7,21 +7,42 @@
 create_formulation(name, type, parameters = NULL)
 }
 \arguments{
-\item{name}{Character. Name of the formulation}
+\item{name}{Character. Name of the formulation.}
 
-\item{type}{Character. Type of formulation, one of:
+\item{type}{Character. Type of formulation. A curated human-readable alias
+or a known raw \verb{Formulation_*} key resolves to that key:
 \itemize{
 \item "Dissolved" - Immediate release solution
 \item "Weibull" - Weibull tablet formulation
 \item "Lint80" - Lint80 tablet formulation
 \item "Particle" - Particle formulation
 \item "Table" - Custom release profile table
-\item "ZeroOrder" - Zero-order release formulation
-\item "FirstOrder" - First-order release formulation
-}}
+\item "Zero Order" - Zero-order release formulation
+\item "First Order" - First-order release formulation
+}
 
-\item{parameters}{List. A named list of parameters for the formulation. The valid parameters
-depend on the formulation type. Invalid parameters will result in an error.}
+Any other non-empty string is accepted verbatim and written straight to
+\code{FormulationType}, so a new or otherwise unknown PK-Sim template type can
+be authored (mirroring how \code{\link[=create_event]{create_event()}} treats \code{template}). The
+curated parameter vocabulary below only exists for the known types.}
+
+\item{parameters}{List. Accepts either of two mutually exclusive forms
+(they are never mixed in one call):
+\itemize{
+\item Curated form: a named list drawn from the per-type alias vocabulary of a
+known \code{type} (documented in the sections below), with scalar/vector
+values. Defaults, informational messages, alias-to-\code{Name} synthesis, and
+the built-in \code{Table} shape apply. Invalid aliases error.
+\item Raw form: a list of \link{Parameter} objects (built with \code{\link[=create_parameter]{create_parameter()}})
+and/or raw \code{list(Name=, Value=, ...)} dicts. Each entry is written to
+\code{data$Parameters} with its \code{Name}, \code{Value}, \code{Unit}, \code{ValueOrigin}, and
+\code{TableFormula} preserved verbatim, for any \code{type}. This is the form that
+unlocks arbitrary real parameter names (including on \code{Dissolved}),
+per-parameter \code{ValueOrigin}, and a custom \code{TableFormula} on any type.
+}
+
+Only the raw form is valid for an unknown \code{type} (there is no alias
+vocabulary to interpret a curated-looking list against).}
 }
 \value{
 A Formulation object
@@ -140,6 +161,38 @@ custom <- create_formulation(
     tableX = c(0, 0.5, 1, 2, 4, 8),
     tableY = c(0, 0.1, 0.3, 0.6, 0.9, 1.0),
     suspension = TRUE
+  )
+)
+
+# Raw form: set an arbitrary parameter (with a ValueOrigin) on Dissolved
+raw_dissolved <- create_formulation(
+  name = "Suspension",
+  type = "Dissolved",
+  parameters = list(
+    create_parameter(
+      name = "Use as suspension",
+      value = 1,
+      source = "Lit",
+      description = "Reference XYZ"
+    )
+  )
+)
+
+# Raw form on an unknown type carrying a custom TableFormula
+custom_type <- create_formulation(
+  name = "Novel",
+  type = "Formulation_BrandNew",
+  parameters = list(
+    create_parameter(
+      name = "Fraction (dose)",
+      value = 0,
+      table_points = list(list(x = 0, y = 0), list(x = 60, y = 1)),
+      x_name = "Time",
+      y_name = "Fraction",
+      x_unit = "min",
+      x_dimension = "Time",
+      y_dimension = "Fraction"
+    )
   )
 )
 }

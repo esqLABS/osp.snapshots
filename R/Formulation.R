@@ -361,12 +361,16 @@ Formulation <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$FormulationType)
       }
-      # Validate formulation type
-      if (!(value %in% VALID_FORMULATION_TYPES)) {
-        cli::cli_abort(
-          "Invalid formulation type: {value}",
-          "Formulation type must be one of {VALID_FORMULATION_TYPES}"
-        )
+      # `FormulationType` is a free-form repository key (see snapshot-spec):
+      # accept any non-empty scalar string, rejecting only empty, `NA`,
+      # non-character, or non-scalar input.
+      if (
+        !is.character(value) ||
+          length(value) != 1 ||
+          is.na(value) ||
+          !nzchar(value)
+      ) {
+        cli::cli_abort("{.arg formulation_type} must be a non-empty string")
       }
       private$.data$FormulationType <- value
     },
@@ -444,17 +448,36 @@ Formulation <- R6::R6Class(
 #' Create a new formulation with the specified properties.
 #' All arguments are optional except for name and type.
 #'
-#' @param name Character. Name of the formulation
-#' @param type Character. Type of formulation, one of:
+#' @param name Character. Name of the formulation.
+#' @param type Character. Type of formulation. A curated human-readable alias
+#'   or a known raw `Formulation_*` key resolves to that key:
 #'   * "Dissolved" - Immediate release solution
 #'   * "Weibull" - Weibull tablet formulation
 #'   * "Lint80" - Lint80 tablet formulation
 #'   * "Particle" - Particle formulation
 #'   * "Table" - Custom release profile table
-#'   * "ZeroOrder" - Zero-order release formulation
-#'   * "FirstOrder" - First-order release formulation
-#' @param parameters List. A named list of parameters for the formulation. The valid parameters
-#'        depend on the formulation type. Invalid parameters will result in an error.
+#'   * "Zero Order" - Zero-order release formulation
+#'   * "First Order" - First-order release formulation
+#'
+#'   Any other non-empty string is accepted verbatim and written straight to
+#'   `FormulationType`, so a new or otherwise unknown PK-Sim template type can
+#'   be authored (mirroring how [create_event()] treats `template`). The
+#'   curated parameter vocabulary below only exists for the known types.
+#' @param parameters List. Accepts either of two mutually exclusive forms
+#'   (they are never mixed in one call):
+#'   * Curated form: a named list drawn from the per-type alias vocabulary of a
+#'     known `type` (documented in the sections below), with scalar/vector
+#'     values. Defaults, informational messages, alias-to-`Name` synthesis, and
+#'     the built-in `Table` shape apply. Invalid aliases error.
+#'   * Raw form: a list of [Parameter] objects (built with [create_parameter()])
+#'     and/or raw `list(Name=, Value=, ...)` dicts. Each entry is written to
+#'     `data$Parameters` with its `Name`, `Value`, `Unit`, `ValueOrigin`, and
+#'     `TableFormula` preserved verbatim, for any `type`. This is the form that
+#'     unlocks arbitrary real parameter names (including on `Dissolved`),
+#'     per-parameter `ValueOrigin`, and a custom `TableFormula` on any type.
+#'
+#'   Only the raw form is valid for an unknown `type` (there is no alias
+#'   vocabulary to interpret a curated-looking list against).
 #'
 #' @section Weibull formulation parameters:
 #' * dissolution_time - Time to achieve 50% dissolution (numeric, default: 240)
@@ -545,21 +568,82 @@ Formulation <- R6::R6Class(
 #'     suspension = TRUE
 #'   )
 #' )
+#'
+#' # Raw form: set an arbitrary parameter (with a ValueOrigin) on Dissolved
+#' raw_dissolved <- create_formulation(
+#'   name = "Suspension",
+#'   type = "Dissolved",
+#'   parameters = list(
+#'     create_parameter(
+#'       name = "Use as suspension",
+#'       value = 1,
+#'       source = "Lit",
+#'       description = "Reference XYZ"
+#'     )
+#'   )
+#' )
+#'
+#' # Raw form on an unknown type carrying a custom TableFormula
+#' custom_type <- create_formulation(
+#'   name = "Novel",
+#'   type = "Formulation_BrandNew",
+#'   parameters = list(
+#'     create_parameter(
+#'       name = "Fraction (dose)",
+#'       value = 0,
+#'       table_points = list(list(x = 0, y = 0), list(x = 60, y = 1)),
+#'       x_name = "Time",
+#'       y_name = "Fraction",
+#'       x_unit = "min",
+#'       x_dimension = "Time",
+#'       y_dimension = "Fraction"
+#'     )
+#'   )
+#' )
 create_formulation <- function(name, type, parameters = NULL) {
-  # Convert human-readable type to PK-Sim formulation type if needed
-  # Use the inverse mapping of FORMULATION_TYPE_MAP
+  check_required_string(name, "name")
+  check_required_string(type, "type")
+
+  # Resolve `type` in precedence order: a curated human alias or a known raw
+  # `Formulation_*` key maps to that key; any other non-empty string passes
+  # through verbatim (matching how `create_event()` treats `template`).
   inverse_map <- stats::setNames(
     names(FORMULATION_TYPE_MAP),
     FORMULATION_TYPE_MAP
   )
-  pk_sim_type <- inverse_map[[type]] %||% type
+  pk_sim_type <- if (type %in% names(inverse_map)) {
+    inverse_map[[type]]
+  } else {
+    type
+  }
+  known_type <- pk_sim_type %in% VALID_FORMULATION_TYPES
 
-  # Validate formulation type
-  if (!(pk_sim_type %in% VALID_FORMULATION_TYPES)) {
-    cli::cli_abort(
-      "Invalid formulation type: {type}",
-      "Formulation type must be one of {VALID_FORMULATION_TYPES}"
-    )
+  # A non-list `parameters` is invalid in either form.
+  if (!is.null(parameters) && !is.list(parameters)) {
+    cli::cli_abort("Parameters must be provided as a named list")
+  }
+
+  # The raw/passthrough form (a list of `Parameter` objects or raw dicts) is
+  # written straight to `data$Parameters` for any type, curated or unknown.
+  # This unlocks arbitrary `Name`s, per-parameter `ValueOrigin`, and custom
+  # `TableFormula` on any type, including `Dissolved` and unknown types.
+  if (is_raw_parameters_list(parameters)) {
+    data <- list(Name = name, FormulationType = pk_sim_type)
+    data$Parameters <- to_raw_parameters(parameters, "Name")
+    return(Formulation$new(data))
+  }
+
+  # From here on `parameters` is the curated alias form (or NULL/empty). The
+  # curated per-type alias vocabulary only exists for the known types.
+  if (!known_type) {
+    if (length(parameters) > 0) {
+      cli::cli_abort(c(
+        "There is no curated parameter vocabulary for the {.val {type}} formulation type.",
+        "i" = "Supply parameters for a custom type as a list of {.fn create_parameter} objects (or {.code list(Name=, Value=, ...)} dicts)."
+      ))
+    }
+    # Unknown type with no parameters: a bare formulation.
+    return(Formulation$new(list(Name = name, FormulationType = pk_sim_type)))
   }
 
   # Define valid parameters for each formulation type
@@ -602,10 +686,6 @@ create_formulation <- function(name, type, parameters = NULL) {
   )
 
   # Check if there are any invalid parameters for this formulation type
-  if (!is.null(parameters) && !is.list(parameters)) {
-    cli::cli_abort("Parameters must be provided as a named list")
-  }
-
   param_names <- names(parameters)
   if (length(param_names) > 0) {
     invalid_params <- param_names[
@@ -1073,6 +1153,25 @@ create_formulation <- function(name, type, parameters = NULL) {
 
   # Create and return the Formulation object
   Formulation$new(data)
+}
+
+# Internal: TRUE when `parameters` is the raw passthrough form (every entry
+# is a `Parameter` R6 object or a raw dict carrying a `Name`), as opposed to
+# the curated alias form (bare scalar/vector values keyed by alias names).
+# `NULL` and `list()` return FALSE (they fall to the curated branch, which
+# no-ops to an empty-parameter formulation).
+is_raw_parameters_list <- function(parameters) {
+  if (!is.list(parameters) || length(parameters) == 0) {
+    return(FALSE)
+  }
+  all(vapply(
+    parameters,
+    function(entry) {
+      inherits(entry, "Parameter") ||
+        (is.list(entry) && !is.null(entry$Name))
+    },
+    logical(1)
+  ))
 }
 
 #' Add a formulation to a snapshot
