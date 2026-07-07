@@ -1,6 +1,7 @@
 # osp.snapshots 1.0.0.9000
 
 - `create_population()` gains `description`, `gestational_age_range`, `disease_state_parameters`, and `individual` arguments, the last composing a base individual from `create_individual()` to fully configure the population's base individual (#118).
+- `create_protocol()` now validates `application_type` against the canonical PK-Sim application types and errors early on an invalid value, matching `create_schema_item()` (#121).
 - `Population` objects gain read/write `description`, `gestational_age_range`, and `disease_state_parameters` bindings and a read-only `individual` binding exposing the base individual (#118).
 - `Population$egfr_range` now persists into the population settings, so an eGFR range set on a population survives export (#118).
 

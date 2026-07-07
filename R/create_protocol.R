@@ -12,8 +12,11 @@
 #'
 #' @param name Character. Name of the protocol (required).
 #' @param application_type Character. Application type for a Simple
-#'   Protocol (for example `"Oral"`, `"IntravenousBolus"`, or
-#'   `"IntravenousInfusion"`). Mutually exclusive with `schemas`.
+#'   Protocol. Optional; when supplied it must be one of the canonical
+#'   PK-Sim application types: `"Oral"`, `"IntravenousBolus"`,
+#'   `"IntravenousInfusion"`, `"Intramuscular"`, `"Subcutaneous"`,
+#'   `"Dermal"`, `"Rectal"`, `"Inhalation"`, or `"Intraperitoneal"`.
+#'   Mutually exclusive with `schemas`.
 #' @param dosing_interval Character. Dosing interval identifier for a
 #'   Simple Protocol (for example `"Single"`, `"DI_12_12"`,
 #'   `"DI_8_8_8"`, or `"DI_24"`).
@@ -115,6 +118,16 @@ create_protocol <- function(
   if (!is.null(schemas)) {
     data$Schemas <- to_raw_r6_or_list(schemas, "Schema", "schemas")
   } else {
+    if (
+      !is.null(application_type) &&
+        !application_type %in% schema_item_application_types()
+    ) {
+      cli::cli_abort(c(
+        "{.arg application_type} must be one of the canonical PK-Sim application types.",
+        "x" = "Got {.val {application_type}}.",
+        "i" = "Valid values: {.val {schema_item_application_types()}}."
+      ))
+    }
     if (!is.null(application_type)) {
       data$ApplicationType <- application_type
     }

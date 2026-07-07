@@ -19,8 +19,11 @@ create_protocol(
 \item{name}{Character. Name of the protocol (required).}
 
 \item{application_type}{Character. Application type for a Simple
-Protocol (for example \code{"Oral"}, \code{"IntravenousBolus"}, or
-\code{"IntravenousInfusion"}). Mutually exclusive with \code{schemas}.}
+Protocol. Optional; when supplied it must be one of the canonical
+PK-Sim application types: \code{"Oral"}, \code{"IntravenousBolus"},
+\code{"IntravenousInfusion"}, \code{"Intramuscular"}, \code{"Subcutaneous"},
+\code{"Dermal"}, \code{"Rectal"}, \code{"Inhalation"}, or \code{"Intraperitoneal"}.
+Mutually exclusive with \code{schemas}.}
 
 \item{dosing_interval}{Character. Dosing interval identifier for a
 Simple Protocol (for example \code{"Single"}, \code{"DI_12_12"},

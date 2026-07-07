@@ -43,3 +43,13 @@
       Error in `create_protocol()`:
       ! `parameters` must be a list
 
+---
+
+    Code
+      create_protocol(name = "P", application_type = "NotARealType")
+    Condition
+      Error in `create_protocol()`:
+      ! `application_type` must be one of the canonical PK-Sim application types.
+      x Got "NotARealType".
+      i Valid values: "Oral", "IntravenousBolus", "IntravenousInfusion", "Intramuscular", "Subcutaneous", "Dermal", "Rectal", "Inhalation", and "Intraperitoneal".
+
