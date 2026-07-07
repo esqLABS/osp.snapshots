@@ -91,7 +91,17 @@ display a summary of its information.
 
 - `expression_profiles`:
 
-  The expression profiles of the individual (read-only)
+  Read/write. The expression profiles attached to the individual, as a
+  character vector of composite names (`Molecule|Species|Category`) or
+  `NULL` when none are attached. Assigning a character vector replaces
+  the attached profiles; assigning `NULL` or `character(0)` removes them
+  (no empty array is serialized).
+
+- `description`:
+
+  Read/write. Free-text description of the individual, or `NULL` when
+  none is set. Assigning a length-1 character sets it; assigning `NULL`
+  removes it.
 
 ## Methods
 

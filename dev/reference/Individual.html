@@ -11,7 +11,7 @@ and display a summary of its information."><meta name="robots" content="noindex"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9039</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,7 +133,17 @@ returned as a character vector for backwards compatibility. Use
 
 
     <dt><code>expression_profiles</code></dt>
-<dd><p>The expression profiles of the individual (read-only)</p></dd>
+<dd><p>Read/write. The expression profiles attached
+to the individual, as a character vector of composite names
+(<code>Molecule|Species|Category</code>) or <code>NULL</code> when none are attached.
+Assigning a character vector replaces the attached profiles; assigning
+<code>NULL</code> or <code>character(0)</code> removes them (no empty array is serialized).</p></dd>
+
+
+    <dt><code>description</code></dt>
+<dd><p>Read/write. Free-text description of the individual,
+or <code>NULL</code> when none is set. Assigning a length-1 character sets it;
+assigning <code>NULL</code> removes it.</p></dd>
 
 
 </dl><p></p></div>

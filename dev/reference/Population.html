@@ -11,7 +11,7 @@ and display a summary of its information."><meta name="robots" content="noindex"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9039</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,12 +60,24 @@ and display a summary of its information.</p>
 <dd><p>The name of the population</p></dd>
 
 
+    <dt><code>description</code></dt>
+<dd><p>A free-text description of the population</p></dd>
+
+
     <dt><code>source_population</code></dt>
 <dd><p>The source population name (read-only)</p></dd>
 
 
     <dt><code>individual_name</code></dt>
 <dd><p>The individual name (read-only)</p></dd>
+
+
+    <dt><code>individual</code></dt>
+<dd><p>The base individual the population samples from,
+returned as an <a href="Individual.html">Individual</a> object built from the base individual
+in the population settings, or <code>NULL</code> when none is set
+(read-only). Author it at construction time via the <code>individual</code>
+argument of <code><a href="create_population.html">create_population()</a></code>.</p></dd>
 
 
     <dt><code>seed</code></dt>
@@ -96,8 +108,26 @@ and display a summary of its information.</p>
 <dd><p>The BMI range for the population</p></dd>
 
 
+    <dt><code>gestational_age_range</code></dt>
+<dd><p>The gestational age range used for
+population generation</p></dd>
+
+
     <dt><code>egfr_range</code></dt>
-<dd><p>The eGFR range for the population (if available)</p></dd>
+<dd><p>The eGFR range for the population (if available).
+Convenience over the case-insensitive <code>"egfr"</code> entry of
+<code>disease_state_parameters</code>; writes persist into the population
+settings so they survive export.</p></dd>
+
+
+    <dt><code>disease_state_parameters</code></dt>
+<dd><p>The population disease-state
+parameters as a named list mapping each parameter name to a
+<a href="Range-class.html">Range</a> object. Assign a named list of <code>Range</code> objects to
+replace them, or <code>NULL</code> to clear them. This population-level
+name-to-<code>Range</code> map is distinct from the base individual's own
+<code>disease_state_parameters</code>, which carries scalar parameter
+values.</p></dd>
 
 
     <dt><code>advanced_parameters</code></dt>

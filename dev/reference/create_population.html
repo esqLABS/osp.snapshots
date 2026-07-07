@@ -17,7 +17,7 @@ themselves are not stored in the snapshot."><meta name="robots" content="noindex
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9039</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,11 @@ themselves are not stored in the snapshot.</p>
 <span>  height_range <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  bmi_range <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  advanced_parameters <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  advanced_parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  description <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gestational_age_range <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  disease_state_parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  individual <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -135,6 +139,35 @@ individual (for example <code>"European_ICRP_2002"</code>).</p></dd>
 advanced-parameter lists that override default variability
 distributions.</p></dd>
 
+
+<dt id="arg-description">description<a class="anchor" aria-label="anchor" href="#arg-description"></a></dt>
+<dd><p>Character. Free-text description of the population.</p></dd>
+
+
+<dt id="arg-gestational-age-range">gestational_age_range<a class="anchor" aria-label="anchor" href="#arg-gestational-age-range"></a></dt>
+<dd><p>A <a href="Range-class.html">Range</a> object describing the
+gestational age range used for population generation (see <code><a href="range.html">range()</a></code>).
+This is the population-settings range, distinct from the base
+individual's own scalar gestational age.</p></dd>
+
+
+<dt id="arg-disease-state-parameters">disease_state_parameters<a class="anchor" aria-label="anchor" href="#arg-disease-state-parameters"></a></dt>
+<dd><p>A named list mapping a disease-state
+parameter name to a <a href="Range-class.html">Range</a> object, for example
+<code>list(eGFR = range(60, 120, "ml/min/1.73m²"))</code>. Each entry
+becomes one range in the population settings. This population-level
+name-to-<code>Range</code> map is distinct from the base individual's own
+<code>disease_state_parameters</code>, which carries scalar parameter values.</p></dd>
+
+
+<dt id="arg-individual">individual<a class="anchor" aria-label="anchor" href="#arg-individual"></a></dt>
+<dd><p>An <a href="Individual.html">Individual</a> object (typically from
+<code><a href="create_individual.html">create_individual()</a></code>) used as the base individual the population
+samples from. When supplied, it fully configures the base individual
+(gender, origin data, calculation methods, seed, description,
+parameters) and cannot be combined with <code>individual_name</code>, <code>species</code>,
+or <code>source_population</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -158,6 +191,23 @@ distributions.</p></dd>
 <span class="r-in"><span>  source_population <span class="op">=</span> <span class="st">"European_ICRP_2002"</span>,</span></span>
 <span class="r-in"><span>  age_range <span class="op">=</span> <span class="fu"><a href="range.html">range</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">60</span>, <span class="st">"year(s)"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  weight_range <span class="op">=</span> <span class="fu"><a href="range.html">range</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">90</span>, <span class="st">"kg"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compose a base individual and set a disease-state parameter</span></span></span>
+<span class="r-in"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu">create_population</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Renal Impairment"</span>,</span></span>
+<span class="r-in"><span>  number_of_individuals <span class="op">=</span> <span class="fl">25</span>,</span></span>
+<span class="r-in"><span>  individual <span class="op">=</span> <span class="fu"><a href="create_individual.html">create_individual</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    name <span class="op">=</span> <span class="st">"Base"</span>,</span></span>
+<span class="r-in"><span>    species <span class="op">=</span> <span class="st">"Human"</span>,</span></span>
+<span class="r-in"><span>    population <span class="op">=</span> <span class="st">"European_ICRP_2002"</span>,</span></span>
+<span class="r-in"><span>    gender <span class="op">=</span> <span class="st">"MALE"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  gestational_age_range <span class="op">=</span> <span class="fu"><a href="range.html">range</a></span><span class="op">(</span><span class="fl">37</span>, <span class="fl">42</span>, <span class="st">"week(s)"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  disease_state_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    eGFR <span class="op">=</span> <span class="fu"><a href="range.html">range</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">120</span>, <span class="st">"ml/min/1.73m²"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  description <span class="op">=</span> <span class="st">"Adults with reduced renal function"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

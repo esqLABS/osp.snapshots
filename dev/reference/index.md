@@ -8,6 +8,8 @@ Load snapshots and export modifications
   : Load a snapshot from various sources
 - [`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.md)
   : Export a snapshot to a JSON file
+- [`create_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_snapshot.md)
+  : Create an empty snapshot
 - [`osp_models()`](https://esqlabs.github.io/osp.snapshots/dev/reference/osp_models.md)
   : Browse available OSPSuite building block templates
 
