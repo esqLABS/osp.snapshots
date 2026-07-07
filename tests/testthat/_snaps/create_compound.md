@@ -146,6 +146,24 @@
       Error in `create_compound()`:
       ! `solubility_table` must be a data frame with two columns (pH, value)
 
+# create_compound rejects an empty or non-numeric solubility table
+
+    Code
+      create_compound(name = "X", solubility_table = data.frame(pH = numeric(0),
+      value = numeric(0)))
+    Condition
+      Error in `create_compound()`:
+      ! `solubility_table` must have at least one row with numeric pH and value columns
+
+---
+
+    Code
+      create_compound(name = "X", solubility_table = data.frame(pH = c(3, 6), value = c(
+        "a", "b")))
+    Condition
+      Error in `create_compound()`:
+      ! `solubility_table` must have at least one row with numeric pH and value columns
+
 # create_compound validates property units
 
     Code

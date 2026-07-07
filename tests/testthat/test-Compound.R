@@ -88,6 +88,24 @@ test_that("Compounds can be converted to dataframes", {
   expect_snapshot(print(dfs$processes, n = Inf))
 })
 
+test_that("permeability is surfaced in print and the properties tibble", {
+  compound <- create_compound(
+    name = "X",
+    is_small_molecule = TRUE,
+    molecular_weight = 250,
+    permeability = 0.0069
+  )
+
+  expect_snapshot(print(compound))
+
+  snap <- add_compound(create_snapshot(), compound)
+  properties <- get_compounds_dfs(snap)$properties
+  perm_rows <- properties[properties$type == "permeability", ]
+  expect_equal(nrow(perm_rows), 1)
+  expect_equal(unname(perm_rows$value), "0.0069")
+  expect_equal(unname(perm_rows$unit), "cm/min")
+})
+
 
 # Process accessor -------------------------------------------------------
 

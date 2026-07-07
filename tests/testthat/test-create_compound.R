@@ -292,6 +292,29 @@ test_that("create_compound rejects a malformed solubility table", {
   )
 })
 
+test_that("create_compound rejects an empty or non-numeric solubility table", {
+  expect_snapshot(
+    error = TRUE,
+    create_compound(
+      name = "X",
+      solubility_table = data.frame(
+        pH = numeric(0),
+        value = numeric(0)
+      )
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_compound(
+      name = "X",
+      solubility_table = data.frame(
+        pH = c(3, 6),
+        value = c("a", "b")
+      )
+    )
+  )
+})
+
 test_that("create_compound validates property units", {
   expect_snapshot(
     error = TRUE,

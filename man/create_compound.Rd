@@ -129,8 +129,10 @@ alternative. Defaults to \code{"User defined"}.}
 \item{pKa}{List of typed pKa entries, each a list with a \code{type}
 (one of \code{"Acid"}, \code{"Base"}, \code{"Neutral"}) and a numeric \code{value}, for
 example \code{list(list(type = "Base", value = 10.02))}. Order is
-preserved. An empty \code{list()} clears the pKa types; \code{NULL} leaves them
-unset.}
+preserved. Both \code{NULL} (the default) and an empty \code{list()} leave the
+created compound with no pKa types set. (The clearing semantics, where
+an empty \code{list()} removes existing values, apply to the writable
+\code{Compound$pka_types} field, not to construction.)}
 
 \item{processes}{List of \link{Process} objects (created with
 \code{\link[=create_process]{create_process()}}) or raw process lists to attach to the compound.}

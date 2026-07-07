@@ -89,6 +89,7 @@ Compound <- R6::R6Class(
           fraction_unbound = "Fraction Unbound",
           solubility = "Solubility",
           intestinal_permeability = "Intestinal Permeability",
+          permeability = "Permeability",
           pka_types = "pKa Types"
         )
 
@@ -142,7 +143,8 @@ Compound <- R6::R6Class(
         "halogens",
         "pKa",
         "solubility",
-        "intestinal_permeability"
+        "intestinal_permeability",
+        "permeability"
       )) {
         prop_data <- private$.get_property_data(p)
         if (!is.null(prop_data) && length(prop_data) > 0) {
@@ -237,6 +239,7 @@ Compound <- R6::R6Class(
         "pKa" = private$.extract_pka(),
         "solubility" = private$.extract_solubility(),
         "intestinal_permeability" = private$.extract_intestinal_permeability(),
+        "permeability" = private$.extract_permeability(),
         NULL
       )
     },
@@ -417,6 +420,25 @@ Compound <- R6::R6Class(
         data[[j]] <- private$.extract_parameters(
           intestinal_permeability_data[[j]]$Parameters,
           "Specific intestinal permeability (transcellular)"
+        )
+      }
+      data
+    },
+
+    .extract_permeability = function() {
+      permeability_data <- private$.data$Permeability
+      if (is.null(permeability_data)) {
+        return(NULL)
+      }
+
+      names <- purrr::map_chr(permeability_data, "Name")
+      data <- vector("list", length(names))
+      names(data) <- names
+
+      for (j in seq_along(names)) {
+        data[[j]] <- private$.extract_parameters(
+          permeability_data[[j]]$Parameters,
+          "Permeability"
         )
       }
       data

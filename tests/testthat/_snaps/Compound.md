@@ -885,6 +885,24 @@
       182 Rifampicin    renal_c~ TubularSecr~ TSspec    55    1/min RenCL_rif   "Assu~
       # i 3 more variables: molecule <chr>, metabolite <chr>, species <chr>
 
+# permeability is surfaced in print and the properties tibble
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: X -----------------------------------------------------------------
+      
+      -- Basic Properties --
+      
+      * Type: Small Molecule
+      * Molecular Weight: 250 g/mol
+      
+      -- Physicochemical Properties --
+      
+      * Permeability:
+        * 0.0069 cm/min [Unknown]
+
 # Deprecated category accessors warn
 
     Code

@@ -82,8 +82,10 @@
 #' @param pKa List of typed pKa entries, each a list with a `type`
 #'   (one of `"Acid"`, `"Base"`, `"Neutral"`) and a numeric `value`, for
 #'   example `list(list(type = "Base", value = 10.02))`. Order is
-#'   preserved. An empty `list()` clears the pKa types; `NULL` leaves them
-#'   unset.
+#'   preserved. Both `NULL` (the default) and an empty `list()` leave the
+#'   created compound with no pKa types set. (The clearing semantics, where
+#'   an empty `list()` removes existing values, apply to the writable
+#'   `Compound$pka_types` field, not to construction.)
 #' @param processes List of [Process] objects (created with
 #'   [create_process()]) or raw process lists to attach to the compound.
 #'
@@ -221,6 +223,15 @@ create_compound <- function(
     if (!is.data.frame(solubility_table) || ncol(solubility_table) != 2) {
       cli::cli_abort(
         "{.arg solubility_table} must be a data frame with two columns (pH, value)"
+      )
+    }
+    if (
+      nrow(solubility_table) == 0 ||
+        !is.numeric(solubility_table[[1]]) ||
+        !is.numeric(solubility_table[[2]])
+    ) {
+      cli::cli_abort(
+        "{.arg solubility_table} must have at least one row with numeric pH and value columns"
       )
     }
   }
