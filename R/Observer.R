@@ -194,23 +194,26 @@ Observer <- R6::R6Class(
     #'   `create_formula_reference()` outputs (or raw `{Alias, Path,
     #'   Dimension}` lists) to replace it, preserving the sibling
     #'   `Formula$Name`, `Formula$Formula`, and `Formula$Dimension`
-    #'   (the `Formula` is created if absent); assign `NULL` to remove only
-    #'   the references while keeping the rest of the formula.
+    #'   (the `Formula` is created if absent). Assign `NULL` to remove the
+    #'   references; when no `Formula` exists this is a no-op that does not
+    #'   create an empty `Formula`.
     formula_references = function(value) {
       if (missing(value)) {
         return(private$.data$Formula$References)
       }
+      if (is.null(value)) {
+        if (!is.null(private$.data$Formula)) {
+          private$.data$Formula$References <- NULL
+        }
+        return(invisible(self))
+      }
+      # Validate/convert before mutating so a failed assignment is a
+      # no-op (atomic), mirroring `container_criteria`/`molecule_list`.
+      references <- to_raw_list_entries(value, "formula_references")
       if (is.null(private$.data$Formula)) {
         private$.data$Formula <- list()
       }
-      if (is.null(value)) {
-        private$.data$Formula$References <- NULL
-        return(invisible(self))
-      }
-      private$.data$Formula$References <- to_raw_list_entries(
-        value,
-        "formula_references"
-      )
+      private$.data$Formula$References <- references
     },
 
     #' @field container_tags The `Tag` values from the observer's

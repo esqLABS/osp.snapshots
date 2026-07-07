@@ -56,6 +56,26 @@ test_that("create_observer writes formula references, even without a formula", {
   expect_named(observer$data$Formula, "References")
 })
 
+test_that("create_observer formula_references override a formula's References", {
+  observer <- create_observer(
+    name = "x",
+    type = "Amount",
+    formula = list(
+      Name = "f",
+      Formula = "2*Conc",
+      References = list(list(Alias = "old", Path = "old_path"))
+    ),
+    formula_references = list(create_formula_reference("new", "new_path"))
+  )
+
+  expect_equal(
+    observer$data$Formula$References,
+    list(list(Alias = "new", Path = "new_path"))
+  )
+  expect_equal(observer$data$Formula$Name, "f")
+  expect_equal(observer$data$Formula$Formula, "2*Conc")
+})
+
 test_that("create_observer writes container criteria", {
   observer <- create_observer(
     name = "x",

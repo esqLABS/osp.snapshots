@@ -33,7 +33,9 @@ Omitted when \code{NULL}.}
 \code{\link[=create_formula_reference]{create_formula_reference()}} output or an equivalent raw
 \verb{\{Alias, Path, Dimension\}} list. Written to the formula's
 \code{References}; supplying these without \code{formula} yields a \code{Formula}
-carrying only \code{References}. Omitted when \code{NULL}.}
+carrying only \code{References}. When \code{formula} is a full \code{ExplicitFormula}
+list that already carries its own \code{References}, this argument
+overrides them. Omitted when \code{NULL}.}
 
 \item{container_criteria}{List of container criteria, each a
 \code{\link[=create_descriptor_condition]{create_descriptor_condition()}} output or an equivalent raw

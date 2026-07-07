@@ -28,7 +28,9 @@ VALID_OBSERVER_TYPES <- c("Amount", "Container")
 #'   [create_formula_reference()] output or an equivalent raw
 #'   `{Alias, Path, Dimension}` list. Written to the formula's
 #'   `References`; supplying these without `formula` yields a `Formula`
-#'   carrying only `References`. Omitted when `NULL`.
+#'   carrying only `References`. When `formula` is a full `ExplicitFormula`
+#'   list that already carries its own `References`, this argument
+#'   overrides them. Omitted when `NULL`.
 #' @param container_criteria List of container criteria, each a
 #'   [create_descriptor_condition()] output or an equivalent raw
 #'   `{Tag, Type}` list. Written to `ContainerCriteria`. Omitted when

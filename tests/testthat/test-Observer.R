@@ -214,9 +214,27 @@ test_that("Observer formula_references NULL removes only References", {
   expect_equal(observer$data$Formula$Formula, "Conc")
 })
 
+test_that("Observer formula_references NULL keeps a Formula-less observer clean", {
+  observer <- Observer$new(list(Name = "x"))
+
+  observer$formula_references <- NULL
+
+  expect_null(observer$data$Formula)
+})
+
 test_that("Observer formula_references setter aborts on non-list input", {
   observer <- Observer$new(list(Name = "x"))
   expect_snapshot(observer$formula_references <- "x", error = TRUE)
+})
+
+test_that("Observer formula_references failed assignment leaves data unchanged", {
+  observer <- Observer$new(list(Name = "x"))
+  before <- observer$data
+
+  try(observer$formula_references <- "x", silent = TRUE)
+
+  expect_equal(observer$data, before)
+  expect_null(observer$data$Formula)
 })
 
 test_that("Observer container_tags joins multiple tags", {

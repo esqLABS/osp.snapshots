@@ -41,11 +41,19 @@ create_molecule_list <- function(
     if (!is.character(include)) {
       cli::cli_abort("{.arg include} must be a character vector")
     }
+    include <- unname(include)
+    if (anyNA(include) || any(!nzchar(include))) {
+      cli::cli_abort("{.arg include} must contain only non-empty strings")
+    }
     data$MoleculeNamesToInclude <- as.list(include)
   }
   if (!is.null(exclude)) {
     if (!is.character(exclude)) {
       cli::cli_abort("{.arg exclude} must be a character vector")
+    }
+    exclude <- unname(exclude)
+    if (anyNA(exclude) || any(!nzchar(exclude))) {
+      cli::cli_abort("{.arg exclude} must contain only non-empty strings")
     }
     data$MoleculeNamesToExclude <- as.list(exclude)
   }

@@ -78,8 +78,9 @@ Setting writes back to the inner \code{Formula$Dimension} field.}
 \code{Alias}, \code{Path}, and \code{Dimension}. Assign a list of
 \code{create_formula_reference()} outputs (or raw \verb{\{Alias, Path, Dimension\}} lists) to replace it, preserving the sibling
 \code{Formula$Name}, \code{Formula$Formula}, and \code{Formula$Dimension}
-(the \code{Formula} is created if absent); assign \code{NULL} to remove only
-the references while keeping the rest of the formula.}
+(the \code{Formula} is created if absent). Assign \code{NULL} to remove the
+references; when no \code{Formula} exists this is a no-op that does not
+create an empty \code{Formula}.}
 
     \item{\code{container_tags}}{The \code{Tag} values from the observer's
 \code{ContainerCriteria}, joined with \code{|}. There is no \code{ContainerPath}
