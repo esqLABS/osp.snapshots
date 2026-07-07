@@ -408,6 +408,19 @@
         * Br: 1 [Unknown]
         * Cl: 1 [Unknown]
 
+# Compound prints when is_small_molecule is unset
+
+    Code
+      print(compound)
+    Output
+      
+      -- Compound: NoFlag ------------------------------------------------------------
+      
+      -- Basic Properties --
+      
+      -- Physicochemical Properties --
+      
+
 # Compounds sections can be accessed and are correctly printed
 
     Code

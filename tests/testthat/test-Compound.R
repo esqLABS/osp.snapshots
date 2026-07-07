@@ -17,6 +17,12 @@ test_that("Compounds are printed correctly", {
   }
 })
 
+test_that("Compound prints when is_small_molecule is unset", {
+  compound <- create_compound(name = "NoFlag")
+  expect_equal(compound$is_small_molecule, NA)
+  expect_snapshot(print(compound))
+})
+
 test_that("Compounds sections can be accessed and are correctly printed", {
   expect_no_error({
     snapshot$compounds[[1]]$name

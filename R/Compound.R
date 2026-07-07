@@ -50,7 +50,9 @@ Compound <- R6::R6Class(
 
         # Display basic compound properties
         cli::cli_h2("Basic Properties")
-        if (!is.null(self$is_small_molecule)) {
+        if (
+          !is.null(self$is_small_molecule) && !is.na(self$is_small_molecule)
+        ) {
           molecule_type <- if (self$is_small_molecule) {
             "Small Molecule"
           } else {
