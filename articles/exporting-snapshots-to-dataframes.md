@@ -113,14 +113,14 @@ names(individual_dfs)
 #> [3] "individuals_expressions"
 
 head(individual_dfs$individuals)
-#> # A tibble: 2 × 17
-#>   individual_id            name    seed species population gender   age age_unit
-#>   <chr>                    <chr>  <int> <chr>   <chr>      <chr>  <dbl> <chr>   
-#> 1 European (P-gp modified… Euro… 1.72e7 Human   European_… MALE    30   year(s) 
-#> 2 Korean (Yu 2004 study)   Kore… 5.30e7 Human   Asian_Tan… MALE    23.3 year(s) 
-#> # ℹ 9 more variables: gestational_age <dbl>, gestational_age_unit <chr>,
-#> #   weight <dbl>, weight_unit <chr>, height <dbl>, height_unit <chr>,
-#> #   disease_state <chr>, calculation_methods <glue>,
+#> # A tibble: 2 × 18
+#>   individual_id         name  description   seed species population gender   age
+#>   <chr>                 <chr> <chr>        <int> <chr>   <chr>      <chr>  <dbl>
+#> 1 European (P-gp modif… Euro… NA          1.72e7 Human   European_… MALE    30  
+#> 2 Korean (Yu 2004 stud… Kore… NA          5.30e7 Human   Asian_Tan… MALE    23.3
+#> # ℹ 10 more variables: age_unit <chr>, gestational_age <dbl>,
+#> #   gestational_age_unit <chr>, weight <dbl>, weight_unit <chr>, height <dbl>,
+#> #   height_unit <chr>, disease_state <chr>, calculation_methods <glue>,
 #> #   disease_state_parameters <chr>
 head(individual_dfs$individuals_parameters)
 #> # A tibble: 2 × 7

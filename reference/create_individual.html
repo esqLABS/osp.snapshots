@@ -20,8 +20,9 @@ All arguments are optional and will use default values if not provided."></head>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -64,7 +65,10 @@ All arguments are optional and will use default values if not provided.</p>
 <span>  calculation_methods <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  disease_state <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  disease_state_parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  expression_profiles <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  description <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -135,6 +139,24 @@ All arguments are optional and will use default values if not provided.</p>
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Integer. Simulation seed (optional)</p></dd>
 
+
+<dt id="arg-expression-profiles">expression_profiles<a class="anchor" aria-label="anchor" href="#arg-expression-profiles"></a></dt>
+<dd><p>Character vector of expression-profile composite
+names (<code>Molecule|Species|Category</code>) to attach to the individual. Default
+<code>NULL</code> (no profiles).</p></dd>
+
+
+<dt id="arg-description">description<a class="anchor" aria-label="anchor" href="#arg-description"></a></dt>
+<dd><p>Character. Free-text description of the individual.
+Default <code>NULL</code> (no description).</p></dd>
+
+
+<dt id="arg-parameters">parameters<a class="anchor" aria-label="anchor" href="#arg-parameters"></a></dt>
+<dd><p>List of localized parameters (each created with
+<code>create_parameter(path = ...)</code>), or the equivalent raw list form the
+loader consumes, applied as the individual's <code>Parameters</code> overrides. Each
+entry must be path-bearing. Default <code>NULL</code> (no parameter overrides).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -169,6 +191,20 @@ All arguments are optional and will use default values if not provided.</p>
 <span class="r-in"><span>  disease_state <span class="op">=</span> <span class="st">"CKD"</span>,</span></span>
 <span class="r-in"><span>  disease_state_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Name <span class="op">=</span> <span class="st">"eGFR"</span>, Value <span class="op">=</span> <span class="fl">45.0</span>, Unit <span class="op">=</span> <span class="st">"ml/min/1.73m²"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create an individual referencing expression profiles with a localized</span></span></span>
+<span class="r-in"><span><span class="co"># parameter and a description</span></span></span>
+<span class="r-in"><span><span class="va">individual</span> <span class="op">&lt;-</span> <span class="fu">create_individual</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Subject 1"</span>,</span></span>
+<span class="r-in"><span>  expression_profiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CYP3A4|Human|Healthy"</span>, <span class="st">"P-gp|Human|Healthy"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  description <span class="op">=</span> <span class="st">"Reference healthy adult"</span>,</span></span>
+<span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="create_parameter.html">create_parameter</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      path <span class="op">=</span> <span class="st">"Organism|Liver|EHC continuous fraction"</span>,</span></span>
+<span class="r-in"><span>      value <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>

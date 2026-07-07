@@ -22,6 +22,8 @@ create_expression_profile(
   transport_type = NULL,
   ontogeny = NULL,
   parameters = NULL,
+  expression = NULL,
+  disease = NULL,
   description = NULL
 )
 ```
@@ -69,6 +71,29 @@ create_expression_profile(
   or raw parameter lists describing relative expression and other
   per-organ values.
 
+- expression:
+
+  Per-organ relative expression, written to the snapshot's `Expression`
+  array. Supply a data frame (or tibble), one row per organ/compartment,
+  with a required `name` column (organ/container name, for example
+  `"Liver"`) and the optional columns `value` (relative expression),
+  `compartment` (for example `"Intracellular"`), and
+  `transport_direction` (for transporter profiles). Missing (`NA`) or
+  absent optional cells emit no key, so a row with only `name` and
+  `value` produces a container with just those two fields. Row order is
+  preserved and duplicate names are kept. Alternatively supply a raw
+  list of container lists (each a named list with any of `Name`,
+  `Value`, `CompartmentName`, `TransportDirection`) to pass through
+  verbatim. `NULL` or an empty input writes nothing.
+
+- disease:
+
+  Disease state, written to the snapshot's `Disease` object. Supply a
+  named list with `name` (required, the `DiseaseState` name) and an
+  optional `parameters` list of
+  [Parameter](https://esqlabs.github.io/osp.snapshots/reference/Parameter.md)
+  objects or raw parameter lists. `NULL` writes nothing.
+
 - description:
 
   Character. Free-text description of the profile.
@@ -98,5 +123,17 @@ profile <- create_expression_profile(
   type = "Transporter",
   transport_type = "Efflux",
   ontogeny = "P-gp"
+)
+
+# Create an enzyme profile with per-organ relative expression
+profile <- create_expression_profile(
+  molecule = "CYP3A4",
+  species = "Human",
+  category = "Healthy",
+  type = "Enzyme",
+  expression = data.frame(
+    name = c("Liver", "Kidney"),
+    value = c(1, 0.5)
+  )
 )
 ```

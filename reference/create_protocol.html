@@ -30,8 +30,9 @@ dosing_interval."></head><body>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -85,8 +86,11 @@ of schemas via <code>schemas</code> instead of <code>application_type</code> and
 
 <dt id="arg-application-type">application_type<a class="anchor" aria-label="anchor" href="#arg-application-type"></a></dt>
 <dd><p>Character. Application type for a Simple
-Protocol (for example <code>"Oral"</code>, <code>"IntravenousBolus"</code>, or
-<code>"IntravenousInfusion"</code>). Mutually exclusive with <code>schemas</code>.</p></dd>
+Protocol. Optional; when supplied it must be one of the canonical
+PK-Sim application types: <code>"Oral"</code>, <code>"IntravenousBolus"</code>,
+<code>"IntravenousInfusion"</code>, <code>"Intramuscular"</code>, <code>"Subcutaneous"</code>,
+<code>"Dermal"</code>, <code>"Rectal"</code>, <code>"Inhalation"</code>, or <code>"Intraperitoneal"</code>.
+Mutually exclusive with <code>schemas</code>.</p></dd>
 
 
 <dt id="arg-dosing-interval">dosing_interval<a class="anchor" aria-label="anchor" href="#arg-dosing-interval"></a></dt>

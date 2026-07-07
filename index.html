@@ -37,8 +37,9 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+<li><a class="dropdown-item" href="articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
     <li><a class="dropdown-item" href="articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="articles/simulations.html">Building simulations from scratch</a></li>
   </ul>
 </li>
@@ -61,7 +62,7 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>osp.snapshots provides a convenient R interface for working with PKSIM project snapshots. Import, navigate, modify, and export snapshot data with ease, making complex nested JSON structures accessible for analysis within the R ecosystem.</p>
+<p>osp.snapshots provides an R interface for working with PK-Sim project snapshots: import, navigate, modify, and export the nested JSON structure as R objects and data frames.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -71,39 +72,30 @@
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"esqLABS/osp.snapshots"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://esqlabs.github.io/osp.snapshots/">osp.snapshots</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Load a snapshot</span></span>
-<span><span class="va">snapshot_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span>  <span class="st">"extdata"</span>,</span>
-<span>  <span class="st">"test_snapshot.json"</span>,</span>
-<span>  package <span class="op">=</span> <span class="st">"osp.snapshots"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="va">snapshot_path</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Explore the snapshot</span></span>
+<span><span class="co"># Load a snapshot from a template name, a local .json path, or a URL</span></span>
+<span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="st">"Midazolam"</span><span class="op">)</span></span>
 <span><span class="va">snapshot</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── PKSIM Snapshot ──────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; ℹ Version: 79 (PKSIM 11.2)</span></span>
-<span><span class="co">#&gt; ℹ Path: '../../../../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/Rtmp770tJY/temp_libpath16d5e7e4ddfcf/osp.snapshots/extdata/test_snapshot.json'</span></span>
-<span><span class="co">#&gt; • Compounds: 6</span></span>
-<span><span class="co">#&gt; • Events: 10</span></span>
-<span><span class="co">#&gt; • ExpressionProfiles: 14</span></span>
-<span><span class="co">#&gt; • Formulations: 9</span></span>
-<span><span class="co">#&gt; • Individuals: 5</span></span>
-<span><span class="co">#&gt; • ObservedData: 64</span></span>
-<span><span class="co">#&gt; • ObservedDataClassifications: 20</span></span>
-<span><span class="co">#&gt; • ObserverSets: 1</span></span>
-<span><span class="co">#&gt; • ParameterIdentifications: 1</span></span>
-<span><span class="co">#&gt; • Populations: 7</span></span>
-<span><span class="co">#&gt; • Protocols: 9</span></span>
-<span><span class="co">#&gt; • Simulations: 2</span></span>
+<span><span class="co">#&gt; ℹ Version: 80 (PKSIM 12.0)</span></span>
+<span><span class="co">#&gt; • Compounds: 1</span></span>
+<span><span class="co">#&gt; • Events: 1</span></span>
+<span><span class="co">#&gt; • ExpressionProfiles: 8</span></span>
+<span><span class="co">#&gt; • Formulations: 2</span></span>
+<span><span class="co">#&gt; • Individuals: 2</span></span>
+<span><span class="co">#&gt; • ObservedData: 115</span></span>
+<span><span class="co">#&gt; • ObservedDataClassifications: 47</span></span>
+<span><span class="co">#&gt; • ParameterIdentifications: 3</span></span>
+<span><span class="co">#&gt; • Protocols: 33</span></span>
+<span><span class="co">#&gt; • SimulationClassifications: 4</span></span>
+<span><span class="co">#&gt; • Simulations: 37</span></span>
 <span></span>
-<span><span class="co"># Access building blocks</span></span>
+<span><span class="co"># Navigate the building blocks</span></span>
 <span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Individual: European (P-gp modified, CYP3A4 36 h) | Seed: 17189110 ──────────</span></span>
@@ -120,56 +112,89 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Parameters ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • Organism|Gallbladder|Gallbladder ejection fraction: 0.8</span></span>
 <span><span class="co">#&gt; • Organism|Liver|EHC continuous fraction: 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Expression Profiles ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • CYP3A4|Human|Healthy</span></span>
-<span><span class="co">#&gt; • AADAC|Human|Healthy</span></span>
-<span><span class="co">#&gt; • P-gp|Human|Healthy</span></span>
-<span><span class="co">#&gt; • OATP1B1|Human|Healthy</span></span>
-<span><span class="co">#&gt; • ATP1A2|Human|Healthy</span></span>
-<span><span class="co">#&gt; • UGT1A4|Human|Healthy</span></span>
-<span><span class="co">#&gt; • GABRG2|Human|Healthy</span></span>
+<span><span class="co">#&gt; • CYP3A4|Human|European (P-gp modified, CYP3A4 36 h)</span></span>
+<span><span class="co">#&gt; • AADAC|Human|European (P-gp modified, CYP3A4 36 h)</span></span>
+<span><span class="co">#&gt; • P-gp|Human|European (P-gp modified, CYP3A4 36 h)</span></span>
+<span><span class="co">#&gt; • OATP1B1|Human|European (P-gp modified, CYP3A4 36 h)</span></span>
+<span><span class="co">#&gt; • ATP1A2|Human|European (P-gp modified, CYP3A4 36 h)</span></span>
+<span><span class="co">#&gt; • UGT1A4|Human|European (P-gp modified, CYP3A4 36 h)</span></span>
+<span><span class="co">#&gt; • GABRG2|Human|European (P-gp modified, CYP3A4 36 h)</span></span>
 <span></span>
-<span><span class="co"># Modify parameters</span></span>
-<span><span class="va">snapshot</span><span class="op">$</span><span class="va">individuals</span><span class="op">$</span><span class="va">`European (P-gp modified, CYP3A4 36 h)`</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="fl">40</span></span>
-<span></span>
-<span><span class="co"># Convert to data frames for analysis</span></span>
-<span><span class="va">individual_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_individuals_dfs.html">get_individuals_dfs</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Convert a collection to tibbles for analysis</span></span>
+<span><span class="fu"><a href="reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"individuals"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $individuals</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 18</span></span>
+<span><span class="co">#&gt;   individual_id         name  description   seed species population gender   age</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                 &lt;chr&gt; &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 European (P-gp modif… Euro… &lt;NA&gt;        1.72e7 Human   European_… MALE    30  </span></span>
+<span><span class="co">#&gt; 2 Korean (Yu 2004 stud… Kore… &lt;NA&gt;        5.30e7 Human   Asian_Tan… MALE    23.3</span></span>
+<span><span class="co">#&gt; # ℹ 10 more variables: age_unit &lt;chr&gt;, gestational_age &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   gestational_age_unit &lt;chr&gt;, weight &lt;dbl&gt;, weight_unit &lt;chr&gt;, height &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   height_unit &lt;chr&gt;, disease_state &lt;chr&gt;, calculation_methods &lt;glue&gt;,</span></span>
+<span><span class="co">#&gt; #   disease_state_parameters &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $individuals_parameters</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 7</span></span>
+<span><span class="co">#&gt;   individual_id                   path  value unit  source description source_id</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                           &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;           &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1 European (P-gp modified, CYP3A… Orga…     1 &lt;NA&gt;  Unkno… &lt;NA&gt;               NA</span></span>
+<span><span class="co">#&gt; 2 Korean (Yu 2004 study)          Orga…     1 &lt;NA&gt;  Unkno… &lt;NA&gt;               NA</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $individuals_expressions</span></span>
+<span><span class="co">#&gt; # A tibble: 14 × 2</span></span>
+<span><span class="co">#&gt;    individual_id                         profile                                </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                                 &lt;chr&gt;                                  </span></span>
+<span><span class="co">#&gt;  1 European (P-gp modified, CYP3A4 36 h) CYP3A4|Human|European (P-gp modified, …</span></span>
+<span><span class="co">#&gt;  2 European (P-gp modified, CYP3A4 36 h) AADAC|Human|European (P-gp modified, C…</span></span>
+<span><span class="co">#&gt;  3 European (P-gp modified, CYP3A4 36 h) P-gp|Human|European (P-gp modified, CY…</span></span>
+<span><span class="co">#&gt;  4 European (P-gp modified, CYP3A4 36 h) OATP1B1|Human|European (P-gp modified,…</span></span>
+<span><span class="co">#&gt;  5 European (P-gp modified, CYP3A4 36 h) ATP1A2|Human|European (P-gp modified, …</span></span>
+<span><span class="co">#&gt;  6 European (P-gp modified, CYP3A4 36 h) UGT1A4|Human|European (P-gp modified, …</span></span>
+<span><span class="co">#&gt;  7 European (P-gp modified, CYP3A4 36 h) GABRG2|Human|European (P-gp modified, …</span></span>
+<span><span class="co">#&gt;  8 Korean (Yu 2004 study)                CYP3A4|Human|Korean (Yu 2004 study)    </span></span>
+<span><span class="co">#&gt;  9 Korean (Yu 2004 study)                AADAC|Human|European (P-gp modified, C…</span></span>
+<span><span class="co">#&gt; 10 Korean (Yu 2004 study)                P-gp|Human|European (P-gp modified, CY…</span></span>
+<span><span class="co">#&gt; 11 Korean (Yu 2004 study)                OATP1B1|Human|European (P-gp modified,…</span></span>
+<span><span class="co">#&gt; 12 Korean (Yu 2004 study)                ATP1A2|Human|European (P-gp modified, …</span></span>
+<span><span class="co">#&gt; 13 Korean (Yu 2004 study)                UGT1A4|Human|European (P-gp modified, …</span></span>
+<span><span class="co">#&gt; 14 Korean (Yu 2004 study)                GABRG2|Human|European (P-gp modified, …</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
+<h2 id="key-features">Key features<a class="anchor" aria-label="anchor" href="#key-features"></a>
 </h2>
 <ul>
 <li>
-<strong>Import/Export</strong>: Load snapshots from JSON files, URLs, or templates; export back to JSON</li>
+<strong>Import and export</strong>: Load snapshots from JSON files, URLs, or templates, and export the modified snapshot back to JSON.</li>
 <li>
-<strong>Navigate</strong>: Access all building blocks (individuals, compounds, formulations, etc.) with intuitive R syntax</li>
+<strong>Navigate</strong>: Reach every building block (individuals, compounds, formulations, and the rest) with R syntax.</li>
 <li>
-<strong>Modify</strong>: Change parameters, add/remove building blocks in place</li>
+<strong>Modify</strong>: Change parameters and add or remove building blocks in place.</li>
 <li>
-<strong>Convert</strong>: Transform any building block collection to structured data frames</li>
+<strong>Convert</strong>: Turn any building block collection into structured tibbles with <code><a href="reference/as_tibbles.html">as_tibbles()</a></code>.</li>
 <li>
-<strong>Integrate</strong>: Full compatibility with <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">ospsuite::DataSet</a></code> objects</li>
+<strong>Integrate</strong>: Bridge PK-Sim observed data to <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">ospsuite::DataSet</a></code> objects.</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="learn-more">Learn More<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
 </h2>
-<p>Get started with osp.snapshots:</p>
 <ul>
 <li>
-<code><a href="articles/osp-snapshots.html">vignette("osp-snapshots")</a></code> - Getting started guide</li>
+<code><a href="articles/osp-snapshots.html">vignette("osp-snapshots")</a></code>: getting started</li>
 <li>
-<code><a href="articles/exporting-snapshots-to-dataframes.html">vignette("exporting-snapshots-to-dataframes")</a></code> - Exporting snapshots to data frames</li>
+<code><a href="articles/creating-building-blocks.html">vignette("creating-building-blocks")</a></code>: creating and managing building blocks</li>
 <li>
-<code><a href="articles/creating-building-blocks.html">vignette("creating-building-blocks")</a></code> - Creating and managing building blocks</li>
+<code><a href="articles/exporting-snapshots-to-dataframes.html">vignette("exporting-snapshots-to-dataframes")</a></code>: exporting snapshots to data frames</li>
+<li>
+<code><a href="articles/simulations.html">vignette("simulations")</a></code>: building simulations from scratch</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+<h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
 </h2>
 <ul>
 <li><a href="https://esqlabs.github.io/osp.snapshots/reference/">Function reference</a></li>

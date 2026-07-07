@@ -33,8 +33,9 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+<li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul>
 </li>
@@ -175,14 +176,14 @@ pair.</li>
 <span><span class="co">#&gt; [3] "individuals_expressions"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">individuals</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 17</span></span></span>
-<span><span class="co">#&gt;   individual_id            name    seed species population gender   age age_unit</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> European (P-gp modified… Euro… 1.72<span style="color: #949494;">e</span>7 Human   European_… MALE    30   year(s) </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Korean (Yu 2004 study)   Kore… 5.30<span style="color: #949494;">e</span>7 Human   Asian_Tan… MALE    23.3 year(s) </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 9 more variables: gestational_age &lt;dbl&gt;, gestational_age_unit &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   weight &lt;dbl&gt;, weight_unit &lt;chr&gt;, height &lt;dbl&gt;, height_unit &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   disease_state &lt;chr&gt;, calculation_methods &lt;glue&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 18</span></span></span>
+<span><span class="co">#&gt;   individual_id         name  description   seed species population gender   age</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> European (P-gp modif… Euro… <span style="color: #BB0000;">NA</span>          1.72<span style="color: #949494;">e</span>7 Human   European_… MALE    30  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Korean (Yu 2004 stud… Kore… <span style="color: #BB0000;">NA</span>          5.30<span style="color: #949494;">e</span>7 Human   Asian_Tan… MALE    23.3</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 10 more variables: age_unit &lt;chr&gt;, gestational_age &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   gestational_age_unit &lt;chr&gt;, weight &lt;dbl&gt;, weight_unit &lt;chr&gt;, height &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   height_unit &lt;chr&gt;, disease_state &lt;chr&gt;, calculation_methods &lt;glue&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   disease_state_parameters &lt;chr&gt;</span></span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">individuals_parameters</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>

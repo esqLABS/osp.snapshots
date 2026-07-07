@@ -20,8 +20,9 @@ All arguments are optional except for name and type."></head><body>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -56,23 +57,38 @@ All arguments are optional except for name and type.</p>
 
 
 <dl><dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
-<dd><p>Character. Name of the formulation</p></dd>
+<dd><p>Character. Name of the formulation.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>Character. Type of formulation, one of:</p><ul><li><p>"Dissolved" - Immediate release solution</p></li>
+<dd><p>Character. Type of formulation. A curated human-readable alias
+or a known raw <code>Formulation_*</code> key resolves to that key:</p><ul><li><p>"Dissolved" - Immediate release solution</p></li>
 <li><p>"Weibull" - Weibull tablet formulation</p></li>
 <li><p>"Lint80" - Lint80 tablet formulation</p></li>
 <li><p>"Particle" - Particle formulation</p></li>
 <li><p>"Table" - Custom release profile table</p></li>
-<li><p>"ZeroOrder" - Zero-order release formulation</p></li>
-<li><p>"FirstOrder" - First-order release formulation</p></li>
-</ul></dd>
+<li><p>"Zero Order" - Zero-order release formulation</p></li>
+<li><p>"First Order" - First-order release formulation</p></li>
+</ul><p>Any other non-empty string is accepted verbatim and written straight to
+<code>FormulationType</code>, so a new or otherwise unknown PK-Sim template type can
+be authored (mirroring how <code><a href="create_event.html">create_event()</a></code> treats <code>template</code>). The
+curated parameter vocabulary below only exists for the known types.</p></dd>
 
 
 <dt id="arg-parameters">parameters<a class="anchor" aria-label="anchor" href="#arg-parameters"></a></dt>
-<dd><p>List. A named list of parameters for the formulation. The valid parameters
-depend on the formulation type. Invalid parameters will result in an error.</p></dd>
+<dd><p>List. Accepts either of two mutually exclusive forms
+(they are never mixed in one call):</p><ul><li><p>Curated form: a named list drawn from the per-type alias vocabulary of a
+known <code>type</code> (documented in the sections below), with scalar/vector
+values. Defaults, informational messages, alias-to-<code>Name</code> synthesis, and
+the built-in <code>Table</code> shape apply. Invalid aliases error.</p></li>
+<li><p>Raw form: a list of <a href="Parameter.html">Parameter</a> objects (built with <code><a href="create_parameter.html">create_parameter()</a></code>)
+and/or raw <code>list(Name=, Value=, ...)</code> dicts. Each entry is written to
+<code>data$Parameters</code> with its <code>Name</code>, <code>Value</code>, <code>Unit</code>, <code>ValueOrigin</code>, and
+<code>TableFormula</code> preserved verbatim, for any <code>type</code>. This is the form that
+unlocks arbitrary real parameter names (including on <code>Dissolved</code>),
+per-parameter <code>ValueOrigin</code>, and a custom <code>TableFormula</code> on any type.</p></li>
+</ul><p>Only the raw form is valid for an unknown <code>type</code> (there is no alias
+vocabulary to interpret a curated-looking list against).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -182,6 +198,38 @@ depend on the formulation type. Invalid parameters will result in an error.</p><
 <span class="r-in"><span>    tableX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    tableY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.6</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    suspension <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Raw form: set an arbitrary parameter (with a ValueOrigin) on Dissolved</span></span></span>
+<span class="r-in"><span><span class="va">raw_dissolved</span> <span class="op">&lt;-</span> <span class="fu">create_formulation</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Suspension"</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"Dissolved"</span>,</span></span>
+<span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="create_parameter.html">create_parameter</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      name <span class="op">=</span> <span class="st">"Use as suspension"</span>,</span></span>
+<span class="r-in"><span>      value <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>      source <span class="op">=</span> <span class="st">"Lit"</span>,</span></span>
+<span class="r-in"><span>      description <span class="op">=</span> <span class="st">"Reference XYZ"</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Raw form on an unknown type carrying a custom TableFormula</span></span></span>
+<span class="r-in"><span><span class="va">custom_type</span> <span class="op">&lt;-</span> <span class="fu">create_formulation</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Novel"</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"Formulation_BrandNew"</span>,</span></span>
+<span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="create_parameter.html">create_parameter</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      name <span class="op">=</span> <span class="st">"Fraction (dose)"</span>,</span></span>
+<span class="r-in"><span>      value <span class="op">=</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>      table_points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">60</span>, y <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      x_name <span class="op">=</span> <span class="st">"Time"</span>,</span></span>
+<span class="r-in"><span>      y_name <span class="op">=</span> <span class="st">"Fraction"</span>,</span></span>
+<span class="r-in"><span>      x_unit <span class="op">=</span> <span class="st">"min"</span>,</span></span>
+<span class="r-in"><span>      x_dimension <span class="op">=</span> <span class="st">"Time"</span>,</span></span>
+<span class="r-in"><span>      y_dimension <span class="op">=</span> <span class="st">"Fraction"</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>

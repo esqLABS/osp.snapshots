@@ -14,6 +14,10 @@ display a summary of its information.
 
   The name of the population
 
+- `description`:
+
+  A free-text description of the population
+
 - `source_population`:
 
   The source population name (read-only)
@@ -21,6 +25,15 @@ display a summary of its information.
 - `individual_name`:
 
   The individual name (read-only)
+
+- `individual`:
+
+  The base individual the population samples from, returned as an
+  [Individual](https://esqlabs.github.io/osp.snapshots/reference/Individual.md)
+  object built from the base individual in the population settings, or
+  `NULL` when none is set (read-only). Author it at construction time
+  via the `individual` argument of
+  [`create_population()`](https://esqlabs.github.io/osp.snapshots/reference/create_population.md).
 
 - `seed`:
 
@@ -50,9 +63,25 @@ display a summary of its information.
 
   The BMI range for the population
 
+- `gestational_age_range`:
+
+  The gestational age range used for population generation
+
 - `egfr_range`:
 
-  The eGFR range for the population (if available)
+  The eGFR range for the population (if available). Convenience over the
+  case-insensitive `"egfr"` entry of `disease_state_parameters`; writes
+  persist into the population settings so they survive export.
+
+- `disease_state_parameters`:
+
+  The population disease-state parameters as a named list mapping each
+  parameter name to a
+  [Range](https://esqlabs.github.io/osp.snapshots/reference/Range-class.md)
+  object. Assign a named list of `Range` objects to replace them, or
+  `NULL` to clear them. This population-level name-to-`Range` map is
+  distinct from the base individual's own `disease_state_parameters`,
+  which carries scalar parameter values.
 
 - `advanced_parameters`:
 

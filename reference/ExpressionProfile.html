@@ -22,8 +22,9 @@ and display a summary of its information."></head><body>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -90,6 +91,22 @@ and display a summary of its information.</p>
 
     <dt><code>parameters</code></dt>
 <dd><p>The parameters of the expression profile</p></dd>
+
+
+    <dt><code>expression</code></dt>
+<dd><p>The per-organ relative expression of the profile.
+Reading returns the raw <code>ExpressionContainer[]</code> list (or <code>NULL</code>
+when unset). Assigning accepts the same shapes as the
+<code>expression</code> argument of <code><a href="create_expression_profile.html">create_expression_profile()</a></code> (a data
+frame of container rows, a raw list, or <code>NULL</code>/empty to clear it).</p></dd>
+
+
+    <dt><code>disease</code></dt>
+<dd><p>The disease state of the profile. Reading returns the
+raw <code>DiseaseState</code> list (or <code>NULL</code> when unset). Assigning accepts
+the same shape as the <code>disease</code> argument of
+<code><a href="create_expression_profile.html">create_expression_profile()</a></code> (a named list with <code>name</code> and
+optional <code>parameters</code>, or <code>NULL</code> to clear it).</p></dd>
 
 
     <dt><code>id</code></dt>

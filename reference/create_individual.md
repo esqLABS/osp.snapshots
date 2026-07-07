@@ -22,7 +22,10 @@ create_individual(
   calculation_methods = NULL,
   disease_state = NULL,
   disease_state_parameters = NULL,
-  seed = NULL
+  seed = NULL,
+  expression_profiles = NULL,
+  description = NULL,
+  parameters = NULL
 )
 ```
 
@@ -94,6 +97,25 @@ create_individual(
 
   Integer. Simulation seed (optional)
 
+- expression_profiles:
+
+  Character vector of expression-profile composite names
+  (`Molecule|Species|Category`) to attach to the individual. Default
+  `NULL` (no profiles).
+
+- description:
+
+  Character. Free-text description of the individual. Default `NULL` (no
+  description).
+
+- parameters:
+
+  List of localized parameters (each created with
+  `create_parameter(path = ...)`), or the equivalent raw list form the
+  loader consumes, applied as the individual's `Parameters` overrides.
+  Each entry must be path-bearing. Default `NULL` (no parameter
+  overrides).
+
 ## Value
 
 An Individual object
@@ -127,6 +149,20 @@ individual <- create_individual(
   disease_state = "CKD",
   disease_state_parameters = list(
     list(Name = "eGFR", Value = 45.0, Unit = "ml/min/1.73m²")
+  )
+)
+
+# Create an individual referencing expression profiles with a localized
+# parameter and a description
+individual <- create_individual(
+  name = "Subject 1",
+  expression_profiles = c("CYP3A4|Human|Healthy", "P-gp|Human|Healthy"),
+  description = "Reference healthy adult",
+  parameters = list(
+    create_parameter(
+      path = "Organism|Liver|EHC continuous fraction",
+      value = 1
+    )
   )
 )
 ```

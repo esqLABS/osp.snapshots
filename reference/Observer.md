@@ -26,7 +26,8 @@ itself a building block; it lives inside an `ObserverSet`.
 
   The observer type. PK-Sim recognises `"Amount"` (an
   `AmountObserverBuilder`) and `"Container"` (a
-  `ContainerObserverBuilder`).
+  `ContainerObserverBuilder`). On assignment, a non-`NULL` value is
+  validated against these two; assigning `NULL` removes the type.
 
 - `dimension`:
 
@@ -62,8 +63,14 @@ itself a building block; it lives inside an `ObserverSet`.
 - `formula_references`:
 
   The `References` list of the underlying `ExplicitFormula`, where each
-  entry is a named list with `Alias`, `Path`, and `Dimension`.
-  Read-only; mutate the whole structure through `formula`.
+  entry is a named list with `Alias`, `Path`, and `Dimension`. Assign a
+  list of
+  [`create_formula_reference()`](https://esqlabs.github.io/osp.snapshots/reference/create_formula_reference.md)
+  outputs (or raw `{Alias, Path, Dimension}` lists) to replace it,
+  preserving the sibling `Formula$Name`, `Formula$Formula`, and
+  `Formula$Dimension` (the `Formula` is created if absent). Assign
+  `NULL` to remove the references; when no `Formula` exists this is a
+  no-op that does not create an empty `Formula`.
 
 - `container_tags`:
 
@@ -71,6 +78,24 @@ itself a building block; it lives inside an `ObserverSet`.
   `|`. There is no `ContainerPath` field in the snapshot JSON; this
   binding is synthesized from the tags found in `ContainerCriteria`.
   `NULL` when the observer carries no container criteria.
+
+- `container_criteria`:
+
+  The full `ContainerCriteria` list, each entry a named list with `Tag`
+  and (optionally) `Type`. Unlike `container_tags`, this preserves each
+  condition's `Type` verbatim (including non-enum values such as
+  `"MatchTag"`). Assign a list of
+  [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/reference/create_descriptor_condition.md)
+  outputs (or raw `{Tag, Type}` lists) to replace it; assign `NULL` to
+  remove it.
+
+- `molecule_list`:
+
+  The full `MoleculeList` object (`ForAll`, `MoleculeNamesToInclude`,
+  `MoleculeNamesToExclude`) or `NULL`. Assign a
+  [`create_molecule_list()`](https://esqlabs.github.io/osp.snapshots/reference/create_molecule_list.md)
+  output (or an equivalent raw list) to replace it; assign `NULL` to
+  remove it.
 
 ## Methods
 

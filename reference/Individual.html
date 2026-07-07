@@ -22,8 +22,9 @@ and display a summary of its information."></head><body>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -133,7 +134,17 @@ returned as a character vector for backwards compatibility. Use
 
 
     <dt><code>expression_profiles</code></dt>
-<dd><p>The expression profiles of the individual (read-only)</p></dd>
+<dd><p>Read/write. The expression profiles attached
+to the individual, as a character vector of composite names
+(<code>Molecule|Species|Category</code>) or <code>NULL</code> when none are attached.
+Assigning a character vector replaces the attached profiles; assigning
+<code>NULL</code> or <code>character(0)</code> removes them (no empty array is serialized).</p></dd>
+
+
+    <dt><code>description</code></dt>
+<dd><p>Read/write. Free-text description of the individual,
+or <code>NULL</code> when none is set. Assigning a length-1 character sets it;
+assigning <code>NULL</code> removes it.</p></dd>
 
 
 </dl><p></p></div>

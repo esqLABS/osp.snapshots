@@ -33,9 +33,12 @@ create_protocol(
 
 - application_type:
 
-  Character. Application type for a Simple Protocol (for example
-  `"Oral"`, `"IntravenousBolus"`, or `"IntravenousInfusion"`). Mutually
-  exclusive with `schemas`.
+  Character. Application type for a Simple Protocol. Optional; when
+  supplied it must be one of the canonical PK-Sim application types:
+  `"Oral"`, `"IntravenousBolus"`, `"IntravenousInfusion"`,
+  `"Intramuscular"`, `"Subcutaneous"`, `"Dermal"`, `"Rectal"`,
+  `"Inhalation"`, or `"Intraperitoneal"`. Mutually exclusive with
+  `schemas`.
 
 - dosing_interval:
 

@@ -22,8 +22,9 @@ and display a summary of its information."></head><body>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -60,12 +61,24 @@ and display a summary of its information.</p>
 <dd><p>The name of the population</p></dd>
 
 
+    <dt><code>description</code></dt>
+<dd><p>A free-text description of the population</p></dd>
+
+
     <dt><code>source_population</code></dt>
 <dd><p>The source population name (read-only)</p></dd>
 
 
     <dt><code>individual_name</code></dt>
 <dd><p>The individual name (read-only)</p></dd>
+
+
+    <dt><code>individual</code></dt>
+<dd><p>The base individual the population samples from,
+returned as an <a href="Individual.html">Individual</a> object built from the base individual
+in the population settings, or <code>NULL</code> when none is set
+(read-only). Author it at construction time via the <code>individual</code>
+argument of <code><a href="create_population.html">create_population()</a></code>.</p></dd>
 
 
     <dt><code>seed</code></dt>
@@ -96,8 +109,26 @@ and display a summary of its information.</p>
 <dd><p>The BMI range for the population</p></dd>
 
 
+    <dt><code>gestational_age_range</code></dt>
+<dd><p>The gestational age range used for
+population generation</p></dd>
+
+
     <dt><code>egfr_range</code></dt>
-<dd><p>The eGFR range for the population (if available)</p></dd>
+<dd><p>The eGFR range for the population (if available).
+Convenience over the case-insensitive <code>"egfr"</code> entry of
+<code>disease_state_parameters</code>; writes persist into the population
+settings so they survive export.</p></dd>
+
+
+    <dt><code>disease_state_parameters</code></dt>
+<dd><p>The population disease-state
+parameters as a named list mapping each parameter name to a
+<a href="Range-class.html">Range</a> object. Assign a named list of <code>Range</code> objects to
+replace them, or <code>NULL</code> to clear them. This population-level
+name-to-<code>Range</code> map is distinct from the base individual's own
+<code>disease_state_parameters</code>, which carries scalar parameter
+values.</p></dd>
 
 
     <dt><code>advanced_parameters</code></dt>

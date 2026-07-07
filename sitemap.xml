@@ -59,13 +59,17 @@
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_compound_group_selection.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_compound_process_selection.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_compound_properties.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_descriptor_condition.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_event.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_event_selection.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_expression_profile.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_formula_reference.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_formulation.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_formulation_selection.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_individual.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_molecule_list.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_observed_data.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_observer.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_observer_set.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_observer_set_selection.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/reference/create_output_interval.html</loc></url>
