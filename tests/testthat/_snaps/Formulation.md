@@ -87,6 +87,14 @@
       
       * New Parameter: 100 mg
 
+# Formulation validates formulation type
+
+    Code
+      test_formulation$formulation_type <- ""
+    Condition
+      Error:
+      ! `formulation_type` must be a non-empty string
+
 # formulation to_df method works correctly
 
     Code
