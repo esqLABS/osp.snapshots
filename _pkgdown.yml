@@ -46,6 +46,7 @@ reference:
   contents:
   - load_snapshot
   - export_snapshot
+  - create_snapshot
   - osp_models
 
 - title: "Building blocks"
