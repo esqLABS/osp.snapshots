@@ -47,21 +47,12 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
   ) {
     time_values <- as.numeric(unlist(observedDataStructure$BaseGrid$Values))
 
-    # Set time unit if available
+    # Set time unit directly if available, mirroring the y-column handling
+    # below. The raw snapshot unit string is a valid ospsuite Time unit
+    # (e.g. "h", "min", "day(s)", "week(s)", "ks"); the `DataSet` setter
+    # accepts it as-is and labels the axis without rescaling `xValues`.
     if (!is.null(observedDataStructure$BaseGrid$Unit)) {
-      # Map common time units to ospsuite units
-      time_unit_mapping <- list(
-        "h" = ospsuite::ospUnits$Time$h,
-        "min" = ospsuite::ospUnits$Time$min,
-        "s" = ospsuite::ospUnits$Time$s,
-        "day" = ospsuite::ospUnits$Time$day
-      )
-
-      if (observedDataStructure$BaseGrid$Unit %in% names(time_unit_mapping)) {
-        dataset$xUnit <- time_unit_mapping[[
-          observedDataStructure$BaseGrid$Unit
-        ]]
-      }
+      dataset$xUnit <- observedDataStructure$BaseGrid$Unit
     }
 
     # Process the first column for now (DataSet handles one y-series at a time)

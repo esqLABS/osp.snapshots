@@ -13,7 +13,6 @@ This release widens the building-block coverage of `osp.snapshots` and consolida
 ## New features
 
 - `add_*()` mutators now accept either a single building block or a list of building blocks, mirroring `remove_*()` which has accepted a character vector of names since #66. Success messages on both sides now uniformly report `Added N kind(s)` / `Removed N kind(s)` (#92).
-- `use_claude_code()` scaffolds a companion skill for AI coding agents into a project at `.claude/skills/osp-snapshots/SKILL.md`, teaching an agent to consume the osp.snapshots public API and avoid its known gotchas, and stamps the file with the installed package version (#105).
 
 You can now create every kind of building block from a `create_*()` function and attach it with the matching `add_*()` mutator:
 
@@ -60,6 +59,7 @@ Several previously list-shaped fields are now first-class R6 objects:
 ## Bug fixes
 
 - `as_tibbles(snapshot, "protocols")` (and the legacy `get_protocols_dfs()` wrapper) now returns the same 13 columns whether the snapshot has any protocols or not. Previously the empty-state path returned an 18-column tibble that disagreed with the populated path, breaking `bind_rows()` across mixed snapshots (#56).
+- `loadDataSetFromSnapshot()` now preserves the observed-data time unit (`BaseGrid$Unit`) on the resulting `DataSet$xUnit` for every ospsuite Time unit, including `"day(s)"`, `"week(s)"`, `"month(s)"`, `"year(s)"`, and `"ks"`. Previously only `"h"`, `"min"`, and `"s"` survived and any other unit silently reverted to `"h"`, misplacing time points (for example a 24x error for `day(s)`); this also affected `create_observed_data(time_unit = ...)` (#104).
 - `remove_expression_profile()`, `remove_formulation()`, `remove_individual()`, `remove_observed_data()`, and `remove_population()` now report the actual number of entries removed instead of the length of the input vector, so the success message reads correctly when a requested name is not present in the snapshot (#66).
 - Observed data removed via `remove_observed_data()` is now dropped from the exported snapshot. Previously the export reused the full original `ObservedData` list whenever the lazy cache had been touched, re-introducing the removed entries on round-trip. The same fix applies to every building-block section: clearing a collection via `remove_individual()`, `remove_formulation()`, `remove_population()`, or `remove_expression_profile()` now writes an empty section on export instead of falling back to the original entries (#35, #59).
 - Single-element JSON arrays remain arrays on export/import, allowing exported snapshots to load in PK-Sim (#23).
