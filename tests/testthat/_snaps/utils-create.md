@@ -30,3 +30,35 @@
       Error:
       ! Every entry of `items` must be a <SchemaItem> or a raw list
 
+# build_expression_containers validates its input
+
+    Code
+      build_expression_containers("Liver")
+    Condition
+      Error:
+      ! `expression` must be a data frame or a list
+
+---
+
+    Code
+      build_expression_containers(data.frame(value = 1))
+    Condition
+      Error:
+      ! `expression` data frame must have a name column
+
+---
+
+    Code
+      build_expression_containers(data.frame(name = c("Liver", NA), value = c(1, 2)))
+    Condition
+      Error:
+      ! Every name in `expression` must be a non-empty string
+
+# build_disease_state validates a non-empty name
+
+    Code
+      build_disease_state(list(parameters = list()))
+    Condition
+      Error:
+      ! `disease` must be a named list with a non-empty name
+

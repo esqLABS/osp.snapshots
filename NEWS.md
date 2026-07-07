@@ -1,6 +1,7 @@
 # osp.snapshots (development version)
 
 - `create_descriptor_condition()` builds a container criterion (`Tag`, and an open-string `Type` such as `"InContainer"` or `"MatchTag"`) for an observer's container criteria (#119).
+- `create_expression_profile()` gains `expression` and `disease` arguments to set per-organ relative expression (a data frame of container rows, or a raw list) and a disease state, and `ExpressionProfile` gains read/write `expression` and `disease` bindings so a loaded profile can be read and mutated (#116).
 - `create_formula_reference()` builds a formula reference (`Alias`, `Path`, optional `Dimension`) for an observer's formula (#119).
 - `create_molecule_list()` builds an observer's molecule list from `for_all`, `include`, and `exclude` (#119).
 - `create_observer()` builds a single observer for an observer set, with arguments for name, type, dimension, formula, formula references, container criteria, and molecule list (#119).

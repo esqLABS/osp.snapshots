@@ -172,6 +172,101 @@ test_that("to_df converts expression profile to tibble correctly", {
   expect_equal(nrow(result_no_cat$expression_profiles_parameters), 1)
 })
 
+test_that("ExpressionProfile$expression is a read/write binding", {
+  profile <- create_expression_profile(
+    molecule = "CYP3A4",
+    species = "Human",
+    category = "Healthy",
+    type = "Enzyme"
+  )
+  expect_null(profile$expression)
+
+  profile$expression <- data.frame(
+    name = c("Liver", "Kidney"),
+    value = c(1, 0.5)
+  )
+  expect_equal(
+    profile$expression,
+    list(list(Name = "Liver", Value = 1), list(Name = "Kidney", Value = 0.5))
+  )
+  expect_equal(profile$data$Expression, profile$expression)
+
+  profile$expression <- NULL
+  expect_null(profile$data$Expression)
+  expect_false("Expression" %in% names(profile$data))
+})
+
+test_that("ExpressionProfile$disease is a read/write binding", {
+  profile <- create_expression_profile(
+    molecule = "CYP3A4",
+    species = "Human",
+    category = "Healthy",
+    type = "Enzyme"
+  )
+  expect_null(profile$disease)
+
+  profile$disease <- list(name = "CKD")
+  expect_equal(profile$disease, list(Name = "CKD"))
+  expect_equal(profile$data$Disease, profile$disease)
+
+  profile$disease <- NULL
+  expect_null(profile$data$Disease)
+  expect_false("Disease" %in% names(profile$data))
+})
+
+test_that("ExpressionProfile reads raw Expression and Disease from load", {
+  snapshot_clone <- Snapshot$new(test_snapshot$data)
+  profile <- snapshot_clone$expression_profiles[["P-gp_Human_Healthy"]]
+
+  expect_equal(
+    profile$expression[[1]],
+    list(
+      Name = "Bone",
+      TransportDirection = "EffluxIntracellularToInterstitial",
+      CompartmentName = "Intracellular"
+    )
+  )
+
+  disease_profile <- ExpressionProfile$new(list(
+    Type = "Enzyme",
+    Species = "Human",
+    Molecule = "CYP3A4",
+    Category = "Healthy",
+    Disease = list(Name = "CKD")
+  ))
+  expect_equal(disease_profile$disease, list(Name = "CKD"))
+})
+
+test_that("expression and disease round-trip through export and reload", {
+  profile <- create_expression_profile(
+    molecule = "P-gp",
+    species = "Human",
+    category = "Healthy",
+    type = "Transporter",
+    expression = data.frame(
+      name = c("Liver", "Kidney", "Kidney"),
+      value = c(1, NA, NA),
+      compartment = c(NA, "Intracellular", "Interstitial"),
+      transport_direction = c(NA, "Efflux", "Influx")
+    ),
+    disease = list(
+      name = "CKD",
+      parameters = list(create_parameter(name = "p", value = 1))
+    )
+  )
+  snapshot <- empty_snapshot$clone()
+  snapshot$add_expression_profile(profile)
+
+  path <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(path)
+
+  reloaded <- Snapshot$new(path)
+  reloaded_profile <- reloaded$expression_profiles[["P-gp_Human_Healthy"]]
+
+  expect_equal(reloaded_profile$expression, profile$expression)
+  expect_equal(reloaded_profile$disease, profile$disease)
+})
+
 test_that("expression_profile_collection from cloned test snapshot works", {
   # Clone the test snapshot to avoid mutating the shared object
   snapshot_clone <- Snapshot$new(test_snapshot$data)

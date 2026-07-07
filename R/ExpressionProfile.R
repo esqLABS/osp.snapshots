@@ -168,6 +168,30 @@ ExpressionProfile <- R6::R6Class(
       self$data$Parameters
     },
 
+    #' @field expression The per-organ relative expression of the profile.
+    #'   Reading returns the raw `ExpressionContainer[]` list (or `NULL`
+    #'   when unset). Assigning accepts the same shapes as the
+    #'   `expression` argument of [create_expression_profile()] (a data
+    #'   frame of container rows, a raw list, or `NULL`/empty to clear it).
+    expression = function(value) {
+      if (missing(value)) {
+        return(self$data$Expression)
+      }
+      self$data$Expression <- build_expression_containers(value)
+    },
+
+    #' @field disease The disease state of the profile. Reading returns the
+    #'   raw `DiseaseState` list (or `NULL` when unset). Assigning accepts
+    #'   the same shape as the `disease` argument of
+    #'   [create_expression_profile()] (a named list with `name` and
+    #'   optional `parameters`, or `NULL` to clear it).
+    disease = function(value) {
+      if (missing(value)) {
+        return(self$data$Disease)
+      }
+      self$data$Disease <- build_disease_state(value)
+    },
+
     #' @field id The unique identifier of the expression profile
     id = function() {
       category_value <- if (is.null(self$category)) "NA" else self$category

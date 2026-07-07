@@ -13,6 +13,8 @@ create_expression_profile(
   transport_type = NULL,
   ontogeny = NULL,
   parameters = NULL,
+  expression = NULL,
+  disease = NULL,
   description = NULL
 )
 }
@@ -40,6 +42,24 @@ list. If a string is supplied it is wrapped as
 \item{parameters}{List of \link{Parameter} objects (created with
 \code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists describing relative
 expression and other per-organ values.}
+
+\item{expression}{Per-organ relative expression, written to the
+snapshot's \code{Expression} array. Supply a data frame (or tibble), one
+row per organ/compartment, with a required \code{name} column
+(organ/container name, for example \code{"Liver"}) and the optional
+columns \code{value} (relative expression), \code{compartment} (for example
+\code{"Intracellular"}), and \code{transport_direction} (for transporter
+profiles). Missing (\code{NA}) or absent optional cells emit no key, so a
+row with only \code{name} and \code{value} produces a container with just those
+two fields. Row order is preserved and duplicate names are kept.
+Alternatively supply a raw list of container lists (each a named list
+with any of \code{Name}, \code{Value}, \code{CompartmentName}, \code{TransportDirection})
+to pass through verbatim. \code{NULL} or an empty input writes nothing.}
+
+\item{disease}{Disease state, written to the snapshot's \code{Disease}
+object. Supply a named list with \code{name} (required, the
+\code{DiseaseState} name) and an optional \code{parameters} list of \link{Parameter}
+objects or raw parameter lists. \code{NULL} writes nothing.}
 
 \item{description}{Character. Free-text description of the profile.}
 }
@@ -72,5 +92,17 @@ profile <- create_expression_profile(
   type = "Transporter",
   transport_type = "Efflux",
   ontogeny = "P-gp"
+)
+
+# Create an enzyme profile with per-organ relative expression
+profile <- create_expression_profile(
+  molecule = "CYP3A4",
+  species = "Human",
+  category = "Healthy",
+  type = "Enzyme",
+  expression = data.frame(
+    name = c("Liver", "Kidney"),
+    value = c(1, 0.5)
+  )
 )
 }

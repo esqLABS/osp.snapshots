@@ -25,6 +25,22 @@
 #' @param parameters List of [Parameter] objects (created with
 #'   [create_parameter()]) or raw parameter lists describing relative
 #'   expression and other per-organ values.
+#' @param expression Per-organ relative expression, written to the
+#'   snapshot's `Expression` array. Supply a data frame (or tibble), one
+#'   row per organ/compartment, with a required `name` column
+#'   (organ/container name, for example `"Liver"`) and the optional
+#'   columns `value` (relative expression), `compartment` (for example
+#'   `"Intracellular"`), and `transport_direction` (for transporter
+#'   profiles). Missing (`NA`) or absent optional cells emit no key, so a
+#'   row with only `name` and `value` produces a container with just those
+#'   two fields. Row order is preserved and duplicate names are kept.
+#'   Alternatively supply a raw list of container lists (each a named list
+#'   with any of `Name`, `Value`, `CompartmentName`, `TransportDirection`)
+#'   to pass through verbatim. `NULL` or an empty input writes nothing.
+#' @param disease Disease state, written to the snapshot's `Disease`
+#'   object. Supply a named list with `name` (required, the
+#'   `DiseaseState` name) and an optional `parameters` list of [Parameter]
+#'   objects or raw parameter lists. `NULL` writes nothing.
 #' @param description Character. Free-text description of the profile.
 #'
 #' @return An [ExpressionProfile] object.
@@ -48,6 +64,18 @@
 #'   transport_type = "Efflux",
 #'   ontogeny = "P-gp"
 #' )
+#'
+#' # Create an enzyme profile with per-organ relative expression
+#' profile <- create_expression_profile(
+#'   molecule = "CYP3A4",
+#'   species = "Human",
+#'   category = "Healthy",
+#'   type = "Enzyme",
+#'   expression = data.frame(
+#'     name = c("Liver", "Kidney"),
+#'     value = c(1, 0.5)
+#'   )
+#' )
 create_expression_profile <- function(
   molecule,
   species,
@@ -57,6 +85,8 @@ create_expression_profile <- function(
   transport_type = NULL,
   ontogeny = NULL,
   parameters = NULL,
+  expression = NULL,
+  disease = NULL,
   description = NULL
 ) {
   check_required_string(molecule, "molecule")
@@ -94,6 +124,16 @@ create_expression_profile <- function(
       cli::cli_abort("{.arg parameters} must be a list")
     }
     data$Parameters <- to_raw_parameters(parameters, "Path")
+  }
+
+  containers <- build_expression_containers(expression)
+  if (!is.null(containers)) {
+    data$Expression <- containers
+  }
+
+  disease_state <- build_disease_state(disease)
+  if (!is.null(disease_state)) {
+    data$Disease <- disease_state
   }
 
   ExpressionProfile$new(data)
