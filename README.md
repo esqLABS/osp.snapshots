@@ -129,12 +129,12 @@ as_tibbles(snapshot, "individuals")
 
 ## Learn more
 
-- `vignette("osp-snapshots")` — getting started
-- `vignette("creating-building-blocks")` — creating and managing
-  building blocks
-- `vignette("exporting-snapshots-to-dataframes")` — exporting snapshots
+- `vignette("osp-snapshots")`: getting started
+- `vignette("creating-building-blocks")`: creating and managing building
+  blocks
+- `vignette("exporting-snapshots-to-dataframes")`: exporting snapshots
   to data frames
-- `vignette("simulations")` — building simulations from scratch
+- `vignette("simulations")`: building simulations from scratch
 
 ## Getting help
 
