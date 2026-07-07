@@ -22,7 +22,10 @@ create_event(name, template, parameters = NULL)
 
 - name:
 
-  Character. Name of the event (required).
+  Character. Name of the event (required). This package requires a name
+  because events are added, referenced, and removed by name, so an
+  unnamed event cannot be used. This is intentionally stricter than the
+  PK-Sim snapshot specification, which marks the event name as optional.
 
 - template:
 

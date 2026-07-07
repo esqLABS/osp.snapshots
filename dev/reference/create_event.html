@@ -17,7 +17,7 @@ template and overriding parameters, so a template name is required."><meta name=
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9004</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,11 @@ template and overriding parameters, so a template name is required.</p>
 
 
 <dl><dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
-<dd><p>Character. Name of the event (required).</p></dd>
+<dd><p>Character. Name of the event (required). This package
+requires a name because events are added, referenced, and removed by
+name, so an unnamed event cannot be used. This is intentionally
+stricter than the PK-Sim snapshot specification, which marks the
+event name as optional.</p></dd>
 
 
 <dt id="arg-template">template<a class="anchor" aria-label="anchor" href="#arg-template"></a></dt>
