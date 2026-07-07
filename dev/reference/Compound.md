@@ -47,23 +47,56 @@ by
 
 - `lipophilicity`:
 
-  The lipophilicity data of the compound
+  The lipophilicity data of the compound. Writable: assign a numeric
+  scalar to create a single default `Lipophilicity` alternative
+  (parameter `"Lipophilicity"`, unit `"Log Units"`), a raw alternative
+  list to set the array verbatim (the escape hatch for multiple, named,
+  or species-specific alternatives), or `NULL` to clear the property.
 
 - `fraction_unbound`:
 
-  The fraction unbound data of the compound
+  The fraction unbound data of the compound. Writable: assign a numeric
+  scalar to create a single default `FractionUnbound` alternative
+  (parameter `"Fraction unbound (plasma, reference value)"`, no unit), a
+  raw alternative list to set the array verbatim, or `NULL` to clear the
+  property.
 
 - `solubility`:
 
-  The solubility data of the compound
+  The solubility data of the compound. Writable: assign a numeric scalar
+  to create a single default `Solubility` alternative (parameter
+  `"Solubility at reference pH"`, unit `"mg/l"`), a raw alternative list
+  to set the array verbatim, or `NULL` to clear the property. The scalar
+  form cannot express reference pH, gain per charge, or table
+  solubility; set those by assigning a raw alternative list or by using
+  [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
+  with its `reference_pH`, `solubility_gain_per_charge`, or
+  `solubility_table` arguments.
 
 - `intestinal_permeability`:
 
-  The intestinal permeability data of the compound
+  The intestinal permeability data of the compound. Writable: assign a
+  numeric scalar to create a single default `IntestinalPermeability`
+  alternative (parameter
+  `"Specific intestinal permeability (transcellular)"`, unit
+  `"cm/min"`), a raw alternative list to set the array verbatim, or
+  `NULL` to clear the property.
+
+- `permeability`:
+
+  The permeability data of the compound. Writable: assign a numeric
+  scalar to create a single default `Permeability` alternative
+  (parameter `"Permeability"`, unit `"cm/min"`), a raw alternative list
+  to set the array verbatim, or `NULL` to clear the property.
 
 - `pka_types`:
 
-  The pKa types of the compound
+  The pKa types of the compound. Writable: assign a list of
+  `list(type =, value =)` entries (the
+  [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
+  `pKa` shape, converted to `list(Type =, Pka =)`), a raw `PkaType[]`
+  list (entries carrying `Type`/`Pka`, set verbatim), or `NULL` /
+  [`list()`](https://rdrr.io/r/base/list.html) to clear the pKa types.
 
 - `processes`:
 
@@ -73,7 +106,11 @@ by
   names are disambiguated with a numeric suffix (`_1`, `_2`, ...). The
   list is built once at construction so that state changes made on a
   [Process](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
-  persist across accesses.
+  persist across accesses. Writable: assign a list of
+  [Process](https://esqlabs.github.io/osp.snapshots/dev/reference/Process.md)
+  objects and/or raw process lists to rebuild the processes (duplicate
+  names are disambiguated as at construction), or `NULL` /
+  [`list()`](https://rdrr.io/r/base/list.html) to clear them.
 
 - `calculation_methods`:
 

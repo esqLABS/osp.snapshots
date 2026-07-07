@@ -70,11 +70,19 @@
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   builds a compound from named arguments, with validation on
   `molecular_weight_unit` against
-  `ospsuite::ospUnits$"Molecular weight"` (#27, \#48). Attach with
+  `ospsuite::ospUnits$"Molecular weight"` (#27, \#48). It also sets the
+  physicochemical properties directly: `lipophilicity`,
+  `fraction_unbound`, `solubility` (with `reference_pH`,
+  `solubility_gain_per_charge`, and `solubility_table`),
+  `intestinal_permeability`, `permeability`, and `pKa`, and attaches
+  `processes`; the matching `Compound` fields (`$lipophilicity`,
+  `$fraction_unbound`, `$solubility`, `$intestinal_permeability`,
+  `$permeability`, `$pka_types`, `$processes`) are writable so a loaded
+  compound can be mutated. Attach with
   [`add_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_compound.md),
   remove by name with
   [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
-  (#39).
+  (#39, \#115).
 - [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_group_selection.md),
   [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md),
   [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md),
@@ -206,6 +214,10 @@
   18-column tibble that disagreed with the populated path, breaking
   [`bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html)
   across mixed snapshots (#56).
+- [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
+  output can now be printed when `is_small_molecule` is left unset.
+  Previously printing such a compound aborted with “missing value where
+  TRUE/FALSE needed”; the type line is now omitted instead (#115).
 - [`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.md)
   now serializes `DataSet` objects attached at runtime via
   [`add_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observed_data.md),

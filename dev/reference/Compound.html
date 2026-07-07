@@ -25,7 +25,7 @@ long-form processes tibble returned by get_compounds_dfs()."><meta name="robots"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,23 +100,58 @@ objects so that mutations flow back to the export payload.</p></dd>
 
 
     <dt><code>lipophilicity</code></dt>
-<dd><p>The lipophilicity data of the compound</p></dd>
+<dd><p>The lipophilicity data of the compound. Writable:
+assign a numeric scalar to create a single default <code>Lipophilicity</code>
+alternative (parameter <code>"Lipophilicity"</code>, unit <code>"Log Units"</code>), a raw
+alternative list to set the array verbatim (the escape hatch for
+multiple, named, or species-specific alternatives), or <code>NULL</code> to
+clear the property.</p></dd>
 
 
     <dt><code>fraction_unbound</code></dt>
-<dd><p>The fraction unbound data of the compound</p></dd>
+<dd><p>The fraction unbound data of the compound.
+Writable: assign a numeric scalar to create a single default
+<code>FractionUnbound</code> alternative (parameter
+<code>"Fraction unbound (plasma, reference value)"</code>, no unit), a raw
+alternative list to set the array verbatim, or <code>NULL</code> to clear the
+property.</p></dd>
 
 
     <dt><code>solubility</code></dt>
-<dd><p>The solubility data of the compound</p></dd>
+<dd><p>The solubility data of the compound. Writable:
+assign a numeric scalar to create a single default <code>Solubility</code>
+alternative (parameter <code>"Solubility at reference pH"</code>, unit
+<code>"mg/l"</code>), a raw alternative list to set the array verbatim, or
+<code>NULL</code> to clear the property. The scalar form cannot express
+reference pH, gain per charge, or table solubility; set those by
+assigning a raw alternative list or by using <code><a href="create_compound.html">create_compound()</a></code>
+with its <code>reference_pH</code>, <code>solubility_gain_per_charge</code>, or
+<code>solubility_table</code> arguments.</p></dd>
 
 
     <dt><code>intestinal_permeability</code></dt>
-<dd><p>The intestinal permeability data of the compound</p></dd>
+<dd><p>The intestinal permeability data of the
+compound. Writable: assign a numeric scalar to create a single
+default <code>IntestinalPermeability</code> alternative (parameter
+<code>"Specific intestinal permeability (transcellular)"</code>, unit
+<code>"cm/min"</code>), a raw alternative list to set the array verbatim, or
+<code>NULL</code> to clear the property.</p></dd>
+
+
+    <dt><code>permeability</code></dt>
+<dd><p>The permeability data of the compound. Writable:
+assign a numeric scalar to create a single default <code>Permeability</code>
+alternative (parameter <code>"Permeability"</code>, unit <code>"cm/min"</code>), a raw
+alternative list to set the array verbatim, or <code>NULL</code> to clear the
+property.</p></dd>
 
 
     <dt><code>pka_types</code></dt>
-<dd><p>The pKa types of the compound</p></dd>
+<dd><p>The pKa types of the compound. Writable: assign a
+list of <code>list(type =, value =)</code> entries (the <code><a href="create_compound.html">create_compound()</a></code>
+<code>pKa</code> shape, converted to <code>list(Type =, Pka =)</code>), a raw <code>PkaType[]</code>
+list (entries carrying <code>Type</code>/<code>Pka</code>, set verbatim), or <code>NULL</code> /
+<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> to clear the pKa types.</p></dd>
 
 
     <dt><code>processes</code></dt>
@@ -124,7 +159,10 @@ objects so that mutations flow back to the export payload.</p></dd>
 entry in the compound's <code>Processes</code> array. Duplicate names are
 disambiguated with a numeric suffix (<code>_1</code>, <code>_2</code>, ...). The list is
 built once at construction so that state changes made on a
-<a href="Process.html">Process</a> persist across accesses.</p></dd>
+<a href="Process.html">Process</a> persist across accesses. Writable: assign a list of
+<a href="Process.html">Process</a> objects and/or raw process lists to rebuild the processes
+(duplicate names are disambiguated as at construction), or <code>NULL</code> /
+<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> to clear them.</p></dd>
 
 
     <dt><code>calculation_methods</code></dt>
