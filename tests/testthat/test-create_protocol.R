@@ -204,4 +204,22 @@ test_that("create_protocol validates required arguments", {
     error = TRUE,
     create_protocol(name = "P", parameters = "not a list")
   )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", application_type = "NotARealType")
+  )
+})
+
+test_that("create_protocol accepts a valid application_type and omits the check when NULL", {
+  valid <- create_protocol(name = "P", application_type = "Oral")
+  expect_s3_class(valid, "Protocol")
+  expect_equal(valid$application_type, "Oral")
+
+  no_type <- create_protocol(name = "P")
+  expect_s3_class(no_type, "Protocol")
+  expect_null(no_type$application_type)
+
+  null_type <- create_protocol(name = "P", application_type = NULL)
+  expect_s3_class(null_type, "Protocol")
+  expect_null(null_type$application_type)
 })

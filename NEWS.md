@@ -6,6 +6,7 @@
 - `create_observer()` builds a single observer for an observer set, with arguments for name, type, dimension, formula, formula references, container criteria, and molecule list (#119).
 - `Observer` now exposes a lossless writable `container_criteria` field (preserving each criterion's `Type`), a writable `formula_references` field, and a writable `molecule_list` field, and validates `type` against `Amount`/`Container` on assignment (#119).
 - `create_population()` gains `description`, `gestational_age_range`, `disease_state_parameters`, and `individual` arguments, the last composing a base individual from `create_individual()` to fully configure the population's base individual (#118).
+- `create_protocol()` now validates `application_type` against the canonical PK-Sim application types and errors early on an invalid value, matching `create_schema_item()` (#121).
 - `Population` objects gain read/write `description`, `gestational_age_range`, and `disease_state_parameters` bindings and a read-only `individual` binding exposing the base individual (#118).
 - `Population$egfr_range` now persists into the population settings, so an eGFR range set on a population survives export (#118).
 
