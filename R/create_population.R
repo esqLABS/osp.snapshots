@@ -29,6 +29,23 @@
 #' @param advanced_parameters List of [AdvancedParameter] objects or raw
 #'   advanced-parameter lists that override default variability
 #'   distributions.
+#' @param description Character. Free-text description of the population.
+#' @param gestational_age_range A [Range] object describing the
+#'   gestational age range used for population generation (see [range()]).
+#'   This is the population-settings range, distinct from the base
+#'   individual's own scalar gestational age.
+#' @param disease_state_parameters A named list mapping a disease-state
+#'   parameter name to a [Range] object, for example
+#'   `list(eGFR = range(60, 120, "ml/min/1.73m²"))`. Each entry
+#'   becomes one range in the population settings. This population-level
+#'   name-to-`Range` map is distinct from the base individual's own
+#'   `disease_state_parameters`, which carries scalar parameter values.
+#' @param individual An [Individual] object (typically from
+#'   [create_individual()]) used as the base individual the population
+#'   samples from. When supplied, it fully configures the base individual
+#'   (gender, origin data, calculation methods, seed, description,
+#'   parameters) and cannot be combined with `individual_name`, `species`,
+#'   or `source_population`.
 #'
 #' @return A [Population] object.
 #' @export
@@ -50,6 +67,23 @@
 #'   age_range = range(20, 60, "year(s)"),
 #'   weight_range = range(50, 90, "kg")
 #' )
+#'
+#' # Compose a base individual and set a disease-state parameter
+#' pop <- create_population(
+#'   name = "Renal Impairment",
+#'   number_of_individuals = 25,
+#'   individual = create_individual(
+#'     name = "Base",
+#'     species = "Human",
+#'     population = "European_ICRP_2002",
+#'     gender = "MALE"
+#'   ),
+#'   gestational_age_range = range(37, 42, "week(s)"),
+#'   disease_state_parameters = list(
+#'     eGFR = range(60, 120, "ml/min/1.73m²")
+#'   ),
+#'   description = "Adults with reduced renal function"
+#' )
 create_population <- function(
   name,
   number_of_individuals,
@@ -62,7 +96,11 @@ create_population <- function(
   height_range = NULL,
   bmi_range = NULL,
   seed = NULL,
-  advanced_parameters = NULL
+  advanced_parameters = NULL,
+  description = NULL,
+  gestational_age_range = NULL,
+  disease_state_parameters = NULL,
+  individual = NULL
 ) {
   check_required_string(name, "name")
   if (
@@ -88,6 +126,23 @@ create_population <- function(
       "{.arg proportion_of_females} must be a number between 0 and 100"
     )
   }
+  if (!is.null(individual)) {
+    if (
+      !is.null(individual_name) ||
+        !is.null(species) ||
+        !is.null(source_population)
+    ) {
+      cli::cli_abort(c(
+        "{.arg individual} cannot be combined with {.arg individual_name}, {.arg species}, or {.arg source_population}.",
+        "i" = "Fold those fields into the {.fn create_individual} call instead."
+      ))
+    }
+    if (!inherits(individual, "Individual")) {
+      cli::cli_abort(
+        "{.arg individual} must be an {.cls Individual} object (see {.fn create_individual})."
+      )
+    }
+  }
   if (!is.null(species)) {
     validate_species(species)
   }
@@ -111,22 +166,26 @@ create_population <- function(
   settings <- list(NumberOfIndividuals = number_of_individuals)
   settings$ProportionOfFemales <- proportion_of_females
 
-  individual_data <- list()
-  if (!is.null(individual_name)) {
-    individual_data$Name <- individual_name
-  }
-  origin_data <- list()
-  if (!is.null(species)) {
-    origin_data$Species <- species
-  }
-  if (!is.null(source_population)) {
-    origin_data$Population <- source_population
-  }
-  if (length(origin_data) > 0) {
-    individual_data$OriginData <- origin_data
-  }
-  if (length(individual_data) > 0) {
-    settings$Individual <- individual_data
+  if (!is.null(individual)) {
+    settings$Individual <- individual$data
+  } else {
+    individual_data <- list()
+    if (!is.null(individual_name)) {
+      individual_data$Name <- individual_name
+    }
+    origin_data <- list()
+    if (!is.null(species)) {
+      origin_data$Species <- species
+    }
+    if (!is.null(source_population)) {
+      origin_data$Population <- source_population
+    }
+    if (length(origin_data) > 0) {
+      individual_data$OriginData <- origin_data
+    }
+    if (length(individual_data) > 0) {
+      settings$Individual <- individual_data
+    }
   }
 
   age <- range_to_list(age_range, "age_range")
@@ -145,10 +204,50 @@ create_population <- function(
   if (!is.null(bmi)) {
     settings$BMI <- bmi
   }
+  gestational_age <- range_to_list(
+    gestational_age_range,
+    "gestational_age_range"
+  )
+  if (!is.null(gestational_age)) {
+    settings$GestationalAge <- gestational_age
+  }
+
+  if (!is.null(disease_state_parameters)) {
+    if (!is.list(disease_state_parameters)) {
+      cli::cli_abort(
+        "{.arg disease_state_parameters} must be a named list of {.cls Range} objects."
+      )
+    }
+    param_names <- names(disease_state_parameters)
+    if (
+      is.null(param_names) ||
+        any(is.na(param_names)) ||
+        any(param_names == "")
+    ) {
+      cli::cli_abort(c(
+        "{.arg disease_state_parameters} must be a named list of {.cls Range} objects.",
+        "i" = "Each entry must be `name = range(...)`."
+      ))
+    }
+    settings$DiseaseStateParameters <- unname(mapply(
+      function(nm, value) {
+        disease_state_param_to_list(
+          nm,
+          range_to_list(value, "disease_state_parameters")
+        )
+      },
+      param_names,
+      disease_state_parameters,
+      SIMPLIFY = FALSE
+    ))
+  }
 
   data <- list(Name = name, Settings = settings)
   if (!is.null(seed)) {
     data$Seed <- seed
+  }
+  if (!is.null(description)) {
+    data$Description <- description
   }
   if (!is.null(advanced_parameters)) {
     if (!is.list(advanced_parameters)) {

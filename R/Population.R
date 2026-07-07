@@ -53,6 +53,14 @@ Population <- R6::R6Class(
         )
       }
 
+      if (!is.null(data$Settings$GestationalAge)) {
+        private$.gestational_age_range <- Range$new(
+          data$Settings$GestationalAge$Min,
+          data$Settings$GestationalAge$Max,
+          data$Settings$GestationalAge$Unit
+        )
+      }
+
       # Initialize advanced parameters if present
       if (!is.null(data$AdvancedParameters)) {
         private$.advanced_parameters <- lapply(
@@ -63,19 +71,10 @@ Population <- R6::R6Class(
         )
       }
 
-      # Initialize disease state parameter ranges (eGFR for now)
-      private$.egfr_range <- NULL
-      if (!is.null(data$Settings$DiseaseStateParameters)) {
-        for (param in data$Settings$DiseaseStateParameters) {
-          if (!is.null(param$Name) && tolower(param$Name) == "egfr") {
-            private$.egfr_range <- Range$new(
-              param$Min,
-              param$Max,
-              param$Unit
-            )
-          }
-        }
-      }
+      # Initialize disease state parameter ranges (eGFR convenience cache)
+      private$.egfr_range <- egfr_range_from_entries(
+        data$Settings$DiseaseStateParameters
+      )
     },
 
     #' @description
@@ -93,6 +92,11 @@ Population <- R6::R6Class(
           ""
         }
         cli::cli_h2("Population: {self$name}{seed_text}")
+
+        # Description (if available)
+        if (!is.null(self$description)) {
+          cli::cli_text("Description: {self$description}")
+        }
 
         # Individual name (if available)
         if (!is.null(self$individual_name)) {
@@ -137,6 +141,13 @@ Population <- R6::R6Class(
         if (!is.null(self$bmi_range)) {
           cli::cli_text(
             "BMI range: {self$bmi_range$min} - {self$bmi_range$max} {self$bmi_range$unit}"
+          )
+        }
+
+        # Gestational age range (if available)
+        if (!is.null(self$gestational_age_range)) {
+          cli::cli_text(
+            "Gestational age range: {self$gestational_age_range$min} - {self$gestational_age_range$max} {self$gestational_age_range$unit}"
           )
         }
 
@@ -279,6 +290,14 @@ Population <- R6::R6Class(
       private$.data$Name <- value
     },
 
+    #' @field description A free-text description of the population
+    description = function(value) {
+      if (missing(value)) {
+        return(private$.data$Description)
+      }
+      private$.data$Description <- value
+    },
+
     #' @field source_population The source population name (read-only)
     source_population = function(value) {
       # not editable
@@ -295,6 +314,21 @@ Population <- R6::R6Class(
         cli::cli_abort("individual_name is read-only")
       }
       return(private$.data$Settings$Individual$Name)
+    },
+
+    #' @field individual The base individual the population samples from,
+    #'   returned as an [Individual] object built from the base individual
+    #'   in the population settings, or `NULL` when none is set
+    #'   (read-only). Author it at construction time via the `individual`
+    #'   argument of [create_population()].
+    individual = function(value) {
+      if (!missing(value)) {
+        cli::cli_abort("individual is read-only")
+      }
+      if (is.null(private$.data$Settings$Individual)) {
+        return(NULL)
+      }
+      Individual$new(private$.data$Settings$Individual)
     },
 
     #' @field seed The seed used for population generation
@@ -450,13 +484,50 @@ Population <- R6::R6Class(
       )
     },
 
-    #' @field egfr_range The eGFR range for the population (if available)
+    #' @field gestational_age_range The gestational age range used for
+    #'   population generation
+    gestational_age_range = function(value) {
+      if (missing(value)) {
+        return(private$.gestational_age_range)
+      }
+      if (is.null(value)) {
+        private$.gestational_age_range <- NULL
+        private$.data$Settings$GestationalAge <- NULL
+        return(invisible(NULL))
+      }
+      if (!inherits(value, "Range")) {
+        if (is.null(private$.gestational_age_range)) {
+          cli::cli_abort(c(
+            "gestational_age_range is empty and individual elements cannot be set",
+            "i" = "Use `...$gestational_age_range <- range(...)` to initialize a new range first."
+          ))
+        } else {
+          cli::cli_abort("gestational_age_range must be a Range object")
+        }
+      }
+      # Set gestational_age_range and update data
+      private$.gestational_age_range <- value
+      private$.data$Settings$GestationalAge <- list(
+        Min = value$min,
+        Max = value$max,
+        Unit = value$unit
+      )
+    },
+
+    #' @field egfr_range The eGFR range for the population (if available).
+    #'   Convenience over the case-insensitive `"egfr"` entry of
+    #'   `disease_state_parameters`; writes persist into the population
+    #'   settings so they survive export.
     egfr_range = function(value) {
       if (missing(value)) {
         return(private$.egfr_range)
       }
       if (is.null(value)) {
         private$.egfr_range <- NULL
+        private$.data$Settings$DiseaseStateParameters <- upsert_egfr_entry(
+          private$.data$Settings$DiseaseStateParameters,
+          NULL
+        )
         return(invisible(NULL))
       }
       if (!inherits(value, "Range")) {
@@ -470,6 +541,73 @@ Population <- R6::R6Class(
         }
       }
       private$.egfr_range <- value
+      private$.data$Settings$DiseaseStateParameters <- upsert_egfr_entry(
+        private$.data$Settings$DiseaseStateParameters,
+        value
+      )
+    },
+
+    #' @field disease_state_parameters The population disease-state
+    #'   parameters as a named list mapping each parameter name to a
+    #'   [Range] object. Assign a named list of `Range` objects to
+    #'   replace them, or `NULL` to clear them. This population-level
+    #'   name-to-`Range` map is distinct from the base individual's own
+    #'   `disease_state_parameters`, which carries scalar parameter
+    #'   values.
+    disease_state_parameters = function(value) {
+      if (missing(value)) {
+        result <- list()
+        for (param in private$.data$Settings$DiseaseStateParameters) {
+          result[[param$Name]] <- Range$new(
+            param$Min,
+            param$Max,
+            param$Unit
+          )
+        }
+        return(result)
+      }
+      if (is.null(value)) {
+        private$.data$Settings$DiseaseStateParameters <- NULL
+        private$.egfr_range <- NULL
+        return(invisible(NULL))
+      }
+      if (!is.list(value)) {
+        cli::cli_abort(c(
+          "disease_state_parameters must be a named list of Range objects",
+          "i" = "Use `range()` to create one."
+        ))
+      }
+      param_names <- names(value)
+      if (
+        is.null(param_names) ||
+          any(is.na(param_names)) ||
+          any(param_names == "")
+      ) {
+        cli::cli_abort(c(
+          "disease_state_parameters must be a named list of Range objects",
+          "i" = "Each entry must be `name = range(...)`."
+        ))
+      }
+      entries <- list()
+      for (nm in param_names) {
+        range_value <- value[[nm]]
+        if (!inherits(range_value, "Range")) {
+          cli::cli_abort(c(
+            "disease_state_parameters must be a named list of Range objects",
+            "i" = "Use `range()` to create one."
+          ))
+        }
+        entries[[length(entries) + 1]] <- disease_state_param_to_list(
+          nm,
+          list(
+            Min = range_value$min,
+            Max = range_value$max,
+            Unit = range_value$unit
+          )
+        )
+      }
+      private$.data$Settings$DiseaseStateParameters <- entries
+      private$.egfr_range <- egfr_range_from_entries(entries)
     },
 
     #' @field advanced_parameters Advanced parameters for the population
@@ -485,6 +623,7 @@ Population <- R6::R6Class(
     .weight_range = NULL,
     .height_range = NULL,
     .bmi_range = NULL,
+    .gestational_age_range = NULL,
     .egfr_range = NULL
   )
 )
@@ -578,3 +717,58 @@ AdvancedParameter <- R6::R6Class(
     .data = NULL
   )
 )
+
+# Serialize a single disease-state parameter to its `ParameterRange` shape.
+# `range_list` is the `list(Min, Max, Unit)` produced by `range_to_list()`,
+# so the element order is exactly `Name, Min, Max, Unit`.
+disease_state_param_to_list <- function(name, range_list) {
+  c(list(Name = name), range_list)
+}
+
+# Upsert or remove the case-insensitive "egfr" entry of a
+# `DiseaseStateParameters` list, preserving all other entries and their
+# order. Returns the updated list (or NULL when it becomes empty).
+upsert_egfr_entry <- function(entries, range) {
+  entries <- entries %||% list()
+  egfr_index <- NULL
+  for (i in seq_along(entries)) {
+    nm <- entries[[i]]$Name
+    if (!is.null(nm) && tolower(nm) == "egfr") {
+      egfr_index <- i
+      break
+    }
+  }
+  if (is.null(range)) {
+    if (!is.null(egfr_index)) {
+      entries[[egfr_index]] <- NULL
+    }
+    if (length(entries) == 0) {
+      return(NULL)
+    }
+    return(entries)
+  }
+  range_list <- list(Min = range$min, Max = range$max, Unit = range$unit)
+  if (is.null(egfr_index)) {
+    entries[[length(entries) + 1]] <- disease_state_param_to_list(
+      "eGFR",
+      range_list
+    )
+  } else {
+    entries[[egfr_index]] <- disease_state_param_to_list(
+      entries[[egfr_index]]$Name,
+      range_list
+    )
+  }
+  entries
+}
+
+# Reconstruct the eGFR `Range` from a `DiseaseStateParameters` list using
+# the case-insensitive "egfr" match. Returns NULL when absent.
+egfr_range_from_entries <- function(entries) {
+  for (param in entries) {
+    if (!is.null(param$Name) && tolower(param$Name) == "egfr") {
+      return(Range$new(param$Min, param$Max, param$Unit))
+    }
+  }
+  NULL
+}
