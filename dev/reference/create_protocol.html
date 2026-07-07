@@ -19,7 +19,7 @@ dosing_interval."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9003</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,8 +85,11 @@ of schemas via <code>schemas</code> instead of <code>application_type</code> and
 
 <dt id="arg-application-type">application_type<a class="anchor" aria-label="anchor" href="#arg-application-type"></a></dt>
 <dd><p>Character. Application type for a Simple
-Protocol (for example <code>"Oral"</code>, <code>"IntravenousBolus"</code>, or
-<code>"IntravenousInfusion"</code>). Mutually exclusive with <code>schemas</code>.</p></dd>
+Protocol. Optional; when supplied it must be one of the canonical
+PK-Sim application types: <code>"Oral"</code>, <code>"IntravenousBolus"</code>,
+<code>"IntravenousInfusion"</code>, <code>"Intramuscular"</code>, <code>"Subcutaneous"</code>,
+<code>"Dermal"</code>, <code>"Rectal"</code>, <code>"Inhalation"</code>, or <code>"Intraperitoneal"</code>.
+Mutually exclusive with <code>schemas</code>.</p></dd>
 
 
 <dt id="arg-dosing-interval">dosing_interval<a class="anchor" aria-label="anchor" href="#arg-dosing-interval"></a></dt>

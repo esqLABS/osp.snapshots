@@ -26,6 +26,11 @@
   composing a base individual from
   [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
   to fully configure the population’s base individual (#118).
+- [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
+  now validates `application_type` against the canonical PK-Sim
+  application types and errors early on an invalid value, matching
+  [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
+  (#121).
 - `Population` objects gain read/write `description`,
   `gestational_age_range`, and `disease_state_parameters` bindings and a
   read-only `individual` binding exposing the base individual (#118).

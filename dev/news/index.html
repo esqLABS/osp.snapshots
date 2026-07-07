@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9003</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,8 @@
 <code>Observer</code> now exposes a lossless writable <code>container_criteria</code> field (preserving each criterion’s <code>Type</code>), a writable <code>formula_references</code> field, and a writable <code>molecule_list</code> field, and validates <code>type</code> against <code>Amount</code>/<code>Container</code> on assignment (#119).</li>
 <li>
 <code><a href="../reference/create_population.html">create_population()</a></code> gains <code>description</code>, <code>gestational_age_range</code>, <code>disease_state_parameters</code>, and <code>individual</code> arguments, the last composing a base individual from <code><a href="../reference/create_individual.html">create_individual()</a></code> to fully configure the population’s base individual (#118).</li>
+<li>
+<code><a href="../reference/create_protocol.html">create_protocol()</a></code> now validates <code>application_type</code> against the canonical PK-Sim application types and errors early on an invalid value, matching <code><a href="../reference/create_schema_item.html">create_schema_item()</a></code> (#121).</li>
 <li>
 <code>Population</code> objects gain read/write <code>description</code>, <code>gestational_age_range</code>, and <code>disease_state_parameters</code> bindings and a read-only <code>individual</code> binding exposing the base individual (#118).</li>
 <li>
