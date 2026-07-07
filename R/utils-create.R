@@ -66,6 +66,24 @@ to_raw_r6_or_list <- function(
   }))
 }
 
+# Internal: validate that `items` is a bare list whose every entry is a
+# bare (unclassed) list, then return it unnamed. Used for observer leaf
+# collections (container criteria, formula references) which are raw
+# lists, not R6 objects, so `to_raw_r6_or_list()` does not fit.
+to_raw_list_entries <- function(items, arg_name, call = parent.frame()) {
+  if (!is.list(items) || is.object(items)) {
+    cli::cli_abort("{.arg {arg_name}} must be a list", call = call)
+  }
+  valid <- vapply(items, function(x) is.list(x) && !is.object(x), logical(1))
+  if (!all(valid)) {
+    cli::cli_abort(
+      "Every entry of {.arg {arg_name}} must be a raw list",
+      call = call
+    )
+  }
+  unname(items)
+}
+
 # Internal: convert a list of Parameter R6 objects (or raw parameter lists)
 # into the raw list-of-lists shape used in snapshot JSON.
 # `name_key` must be supplied explicitly and selects which field the target

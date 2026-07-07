@@ -1,3 +1,11 @@
+# osp.snapshots (development version)
+
+- `create_descriptor_condition()` builds a container criterion (`Tag`, and an open-string `Type` such as `"InContainer"` or `"MatchTag"`) for an observer's container criteria (#119).
+- `create_formula_reference()` builds a formula reference (`Alias`, `Path`, optional `Dimension`) for an observer's formula (#119).
+- `create_molecule_list()` builds an observer's molecule list from `for_all`, `include`, and `exclude` (#119).
+- `create_observer()` builds a single observer for an observer set, with arguments for name, type, dimension, formula, formula references, container criteria, and molecule list (#119).
+- `Observer` now exposes a lossless writable `container_criteria` field (preserving each criterion's `Type`), a writable `formula_references` field, and a writable `molecule_list` field, and validates `type` against `Amount`/`Container` on assignment (#119).
+
 # osp.snapshots 1.0.0
 
 ## Breaking changes
