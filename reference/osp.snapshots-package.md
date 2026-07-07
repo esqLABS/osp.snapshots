@@ -17,6 +17,12 @@ Useful links:
 
 **Maintainer**: Felix MIL <felix.mil@esqlabs.com>
 
+Authors:
+
+- Felix MIL <felix.mil@esqlabs.com>
+
+- Diane Lefaudeux <diane.lefaudeux@esqlabs.com>
+
 Other contributors:
 
 - ESQlabs, GmbH \[copyright holder, funder\]

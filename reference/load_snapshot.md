@@ -13,13 +13,23 @@ load_snapshot(source)
 
 - source:
 
-  Character string. Can be: - Path to a local file (.json) - URL to a
-  remote snapshot file - Name of a template from the
-  OSPSuite.BuildingBlockTemplates repository
+  Character string. Can be:
+
+  - Path to a local file (.json)
+
+  - URL to a remote snapshot file
+
+  - Name of a template from the OSPSuite.BuildingBlockTemplates
+    repository
 
 ## Value
 
 A Snapshot object
+
+## Details
+
+Available templates can be listed with
+[`osp_models()`](https://esqlabs.github.io/osp.snapshots/reference/osp_models.md).
 
 ## Examples
 

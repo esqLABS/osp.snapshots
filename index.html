@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>osp.snapshots • osp.snapshots</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="osp.snapshots">
 <meta name="description" content="Import and manipulate Open Systems Pharmacology project snapshots in R. Convert complex JSON structures to accessible R objects and data frames.
@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">osp.snapshots</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,8 +37,9 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/working-with-dataframes.html">Working with Data Frames</a></li>
-    <li><a class="dropdown-item" href="articles/creating-building-blocks.html">Creating Building Blocks</a></li>
+<li><a class="dropdown-item" href="articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+    <li><a class="dropdown-item" href="articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="articles/simulations.html">Building simulations from scratch</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
@@ -88,7 +89,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── PKSIM Snapshot ──────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; ℹ Version: 79 (PKSIM 11.2)</span></span>
-<span><span class="co">#&gt; ℹ Path: '../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/RtmpxzUpSR/temp_libpath44103c33cc80/osp.snapshots/extdata/test_snapshot.json'</span></span>
+<span><span class="co">#&gt; ℹ Path: '../../../../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/Rtmp770tJY/temp_libpath16d5e7e4ddfcf/osp.snapshots/extdata/test_snapshot.json'</span></span>
 <span><span class="co">#&gt; • Compounds: 6</span></span>
 <span><span class="co">#&gt; • Events: 10</span></span>
 <span><span class="co">#&gt; • ExpressionProfiles: 14</span></span>
@@ -162,7 +163,7 @@
 <li>
 <code><a href="articles/osp-snapshots.html">vignette("osp-snapshots")</a></code> - Getting started guide</li>
 <li>
-<code><a href="articles/working-with-dataframes.html">vignette("working-with-dataframes")</a></code> - Converting snapshots to data frames</li>
+<code><a href="articles/exporting-snapshots-to-dataframes.html">vignette("exporting-snapshots-to-dataframes")</a></code> - Exporting snapshots to data frames</li>
 <li>
 <code><a href="articles/creating-building-blocks.html">vignette("creating-building-blocks")</a></code> - Creating and managing building blocks</li>
 </ul>
@@ -197,6 +198,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Felix MIL <br><small class="roles"> Author, maintainer </small>   </li>
+<li>Diane Lefaudeux <br><small class="roles"> Author </small>   </li>
 <li>ESQlabs, GmbH <br><small class="roles"> Copyright holder, funder </small>   </li>
 </ul>
 </div>
@@ -208,7 +210,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
 <div class="pkgdown-footer-right">

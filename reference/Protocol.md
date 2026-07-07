@@ -5,11 +5,22 @@ provides methods to access different properties of a protocol and
 display a summary of its information. Protocols can be either simple
 (with dosing intervals) or advanced (with schemas and schema items).
 
+An Advanced Protocol's schemas are exposed as a named list of
+[Schema](https://esqlabs.github.io/osp.snapshots/reference/Schema.md)
+objects, each of which owns a list of
+[SchemaItem](https://esqlabs.github.io/osp.snapshots/reference/SchemaItem.md)
+objects. Simple Protocols expose their single application directly
+through the `application_type`, `dosing_interval`, and `parameters`
+fields.
+
 ## Active bindings
 
 - `data`:
 
-  The raw data of the protocol
+  The raw data of the protocol, refreshed from the wrapped
+  [Schema](https://esqlabs.github.io/osp.snapshots/reference/Schema.md)
+  objects so mutations through the R6 surface flow back into the
+  snapshot payload (read-only).
 
 - `name`:
 
@@ -37,13 +48,17 @@ display a summary of its information. Protocols can be either simple
 
 - `schemas`:
 
-  The schemas of the protocol (for advanced protocols)
+  A named list of
+  [Schema](https://esqlabs.github.io/osp.snapshots/reference/Schema.md)
+  objects for advanced protocols. Names are taken from each schema's
+  `name` field (duplicates are disambiguated by `make.unique`). Simple
+  protocols return an empty list.
 
 ## Methods
 
 ### Public methods
 
-- [`Protocol$new()`](#method-Protocol-new)
+- [`Protocol$new()`](#method-Protocol-initialize)
 
 - [`Protocol$print()`](#method-Protocol-print)
 
@@ -57,7 +72,7 @@ display a summary of its information. Protocols can be either simple
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Protocol$new()`
 
 Create a new Protocol object
 
@@ -77,7 +92,7 @@ A new Protocol object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Protocol$print()`
 
 Print a summary of the protocol including its properties and parameters.
 
@@ -97,9 +112,13 @@ Invisibly returns the Protocol object for method chaining
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `Protocol$to_df()`
 
-Convert protocol data to a single consolidated tibble
+Convert protocol data to a single consolidated tibble. Advanced
+protocols emit one row per
+[SchemaItem](https://esqlabs.github.io/osp.snapshots/reference/SchemaItem.md)
+and join back to the protocol via `protocol_name`. Simple protocols emit
+a single row.
 
 #### Usage
 
@@ -111,7 +130,7 @@ A tibble containing all protocol data in a single data frame
 
 ------------------------------------------------------------------------
 
-### Method `get_human_application_type()`
+### `Protocol$get_human_application_type()`
 
 Get human-readable application type
 
@@ -125,7 +144,7 @@ Character string with human-readable application type
 
 ------------------------------------------------------------------------
 
-### Method `get_human_dosing_interval()`
+### `Protocol$get_human_dosing_interval()`
 
 Get human-readable dosing interval
 
@@ -139,7 +158,7 @@ Character string with human-readable dosing interval
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Protocol$clone()`
 
 The objects of this class are cloneable with this method.
 

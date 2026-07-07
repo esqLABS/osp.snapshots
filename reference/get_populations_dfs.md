@@ -1,7 +1,10 @@
 # Get all populations in a snapshot as data frames
 
-This function extracts all populations from a snapshot and converts them
-to data frames for easier analysis and visualization.
+Thin wrapper around
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/reference/as_tibbles.md)
+with `kind = "populations"`. Prefer
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/reference/as_tibbles.md)
+in new code.
 
 ## Usage
 
@@ -13,28 +16,17 @@ get_populations_dfs(snapshot)
 
 - snapshot:
 
-  A Snapshot object
+  A `Snapshot` object.
 
 ## Value
 
-A list containing two data frames:
-
-- populations: Basic information about each population including ranges
-
-- populations_parameters: All parameters for all populations
+A list with `populations` and `populations_parameters` tibbles.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Load a snapshot
 snapshot <- load_snapshot("path/to/snapshot.json")
-
-# Get all population data as data frames
 dfs <- get_populations_dfs(snapshot)
-
-# Access specific data frames
-populations_df <- dfs$populations
-populations_parameters_df <- dfs$populations_parameters
 } # }
 ```

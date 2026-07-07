@@ -26,7 +26,7 @@ display a summary of its information.
 
 ### Public methods
 
-- [`Formulation$new()`](#method-Formulation-new)
+- [`Formulation$new()`](#method-Formulation-initialize)
 
 - [`Formulation$print()`](#method-Formulation-print)
 
@@ -38,7 +38,7 @@ display a summary of its information.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Formulation$new()`
 
 Create a new Formulation object
 
@@ -58,7 +58,7 @@ A new Formulation object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Formulation$print()`
 
 Print a summary of the formulation including its properties and
 parameters.
@@ -79,7 +79,7 @@ Invisibly returns the Formulation object for method chaining
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `Formulation$to_df()`
 
 Convert formulation data to tibbles
 
@@ -95,25 +95,41 @@ Convert formulation data to tibbles
 
 #### Returns
 
-A list of tibbles containing the requested data: \* formulations: Basic
-formulation information (ID, name, type) \* formulations_parameters: All
-parameters including table parameter points
+A list of tibbles containing the requested data:
 
-The formulations_parameters tibble includes the following columns: \*
-formulation_id: ID of the formulation \* name: Name of the parameter \*
-value: Value of the parameter (NA for table points) \* unit: Unit of the
-parameter (NA for table points) \* is_table_point: TRUE for table
-parameter points, FALSE for regular parameters \* x_value: X-axis value
-for table points (NA for regular parameters) \* y_value: Y-axis value
-for table points (NA for regular parameters) \* table_name: Name of the
-table (usually "Time" for release profiles) \* source: Source of the
-parameter (NA if not available) \* description: Description of the
-parameter (NA if not available) \* source_id: ID of the source (NA if
-not available)
+- formulations: Basic formulation information (ID, name, type)
+
+- formulations_parameters: All parameters including table parameter
+  points
+
+The formulations_parameters tibble includes the following columns:
+
+- formulation_id: ID of the formulation
+
+- name: Name of the parameter
+
+- value: Value of the parameter (NA for table points)
+
+- unit: Unit of the parameter (NA for table points)
+
+- is_table_point: TRUE for table parameter points, FALSE for regular
+  parameters
+
+- x_value: X-axis value for table points (NA for regular parameters)
+
+- y_value: Y-axis value for table points (NA for regular parameters)
+
+- table_name: Name of the table (usually "Time" for release profiles)
+
+- source: Source of the parameter (NA if not available)
+
+- description: Description of the parameter (NA if not available)
+
+- source_id: ID of the source (NA if not available)
 
 ------------------------------------------------------------------------
 
-### Method `get_human_formulation_type()`
+### `Formulation$get_human_formulation_type()`
 
 Get human-readable formulation type
 
@@ -127,7 +143,7 @@ Character string with human-readable formulation type
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Formulation$clone()`
 
 The objects of this class are cloneable with this method.
 

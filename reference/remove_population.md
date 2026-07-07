@@ -20,7 +20,9 @@ remove_population(snapshot, population_name)
 
 ## Value
 
-The updated Snapshot object
+The updated
+[Snapshot](https://esqlabs.github.io/osp.snapshots/reference/Snapshot.md)
+object, returned invisibly.
 
 ## Examples
 

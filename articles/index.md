@@ -4,7 +4,9 @@
 
 In-depth guides for specific tasks
 
-- [Working with Data
-  Frames](https://esqlabs.github.io/osp.snapshots/articles/working-with-dataframes.md):
-- [Creating and Managing Building
-  Blocks](https://esqlabs.github.io/osp.snapshots/articles/creating-building-blocks.md):
+- [Exporting snapshots to data
+  frames](https://esqlabs.github.io/osp.snapshots/articles/exporting-snapshots-to-dataframes.md):
+- [Creating and managing building
+  blocks](https://esqlabs.github.io/osp.snapshots/articles/creating-building-blocks.md):
+- [Building simulations from
+  scratch](https://esqlabs.github.io/osp.snapshots/articles/simulations.md):

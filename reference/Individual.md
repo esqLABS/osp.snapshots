@@ -18,6 +18,13 @@ display a summary of its information.
 
   The simulation seed for the individual
 
+- `origin_data`:
+
+  The
+  [OriginData](https://esqlabs.github.io/osp.snapshots/reference/OriginData.md)
+  object holding species, population, gender, physiological parameters,
+  and calculation methods.
+
 - `species`:
 
   The species of the individual
@@ -76,7 +83,11 @@ display a summary of its information.
 
 - `calculation_methods`:
 
-  The calculation methods of the individual
+  The calculation methods of the individual, returned as a character
+  vector for backwards compatibility. Use
+  `$origin_data$calculation_methods` to access the
+  [CalculationMethods](https://esqlabs.github.io/osp.snapshots/reference/CalculationMethods.md)
+  object directly.
 
 - `expression_profiles`:
 
@@ -86,7 +97,7 @@ display a summary of its information.
 
 ### Public methods
 
-- [`Individual$new()`](#method-Individual-new)
+- [`Individual$new()`](#method-Individual-initialize)
 
 - [`Individual$print()`](#method-Individual-print)
 
@@ -96,7 +107,7 @@ display a summary of its information.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Individual$new()`
 
 Create a new Individual object
 
@@ -116,7 +127,7 @@ A new Individual object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Individual$print()`
 
 Print a summary of the individual including its properties and
 parameters.
@@ -137,7 +148,7 @@ Invisibly returns the Individual object for method chaining
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `Individual$to_df()`
 
 Convert individual data to tibbles
 
@@ -158,7 +169,7 @@ A list of tibbles containing the requested data
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Individual$clone()`
 
 The objects of this class are cloneable with this method.
 

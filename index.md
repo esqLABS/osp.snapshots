@@ -9,6 +9,7 @@ You can install the development version of osp.snapshots from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("esqLABS/osp.snapshots")
 ```
@@ -16,6 +17,7 @@ pak::pak("esqLABS/osp.snapshots")
 ## Quick Start
 
 ``` r
+
 library(osp.snapshots)
 
 # Load a snapshot
@@ -31,7 +33,7 @@ snapshot
 #> 
 #> ── PKSIM Snapshot ──────────────────────────────────────────────────────────────
 #> ℹ Version: 79 (PKSIM 11.2)
-#> ℹ Path: '../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/RtmpxzUpSR/temp_libpath44103c33cc80/osp.snapshots/extdata/test_snapshot.json'
+#> ℹ Path: '../../../../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/Rtmp770tJY/temp_libpath16d5e7e4ddfcf/osp.snapshots/extdata/test_snapshot.json'
 #> • Compounds: 6
 #> • Events: 10
 #> • ExpressionProfiles: 14
@@ -101,8 +103,8 @@ Get started with osp.snapshots:
 
 - [`vignette("osp-snapshots")`](https://esqlabs.github.io/osp.snapshots/articles/osp-snapshots.md) -
   Getting started guide
-- [`vignette("working-with-dataframes")`](https://esqlabs.github.io/osp.snapshots/articles/working-with-dataframes.md) -
-  Converting snapshots to data frames
+- [`vignette("exporting-snapshots-to-dataframes")`](https://esqlabs.github.io/osp.snapshots/articles/exporting-snapshots-to-dataframes.md) -
+  Exporting snapshots to data frames
 - [`vignette("creating-building-blocks")`](https://esqlabs.github.io/osp.snapshots/articles/creating-building-blocks.md) -
   Creating and managing building blocks
 

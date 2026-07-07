@@ -40,7 +40,7 @@ display a summary of its information.
 
 ### Public methods
 
-- [`Parameter$new()`](#method-Parameter-new)
+- [`Parameter$new()`](#method-Parameter-initialize)
 
 - [`Parameter$print()`](#method-Parameter-print)
 
@@ -50,7 +50,7 @@ display a summary of its information.
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `Parameter$new()`
 
 Create a new Parameter object
 
@@ -70,7 +70,7 @@ A new Parameter object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `Parameter$print()`
 
 Print a summary of the parameter
 
@@ -90,7 +90,7 @@ Invisibly returns the object
 
 ------------------------------------------------------------------------
 
-### Method `to_df()`
+### `Parameter$to_df()`
 
 Convert parameter data to a tibble row
 
@@ -104,7 +104,7 @@ A tibble with one row containing the parameter data
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `Parameter$clone()`
 
 The objects of this class are cloneable with this method.
 
