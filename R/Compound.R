@@ -181,6 +181,34 @@ Compound <- R6::R6Class(
       value
     },
 
+    # Shared setter for the single-parameter alternative-group fields. A
+    # numeric scalar builds a single default alternative; a list is stored
+    # verbatim as the raw alternative array; NULL clears the key; anything
+    # else aborts naming the field. `unit = NULL` omits the parameter unit
+    # (fraction unbound). Returns the value to assign into private$.data.
+    set_alternative_group = function(value, param_name, unit, field) {
+      if (is.null(value)) {
+        return(NULL)
+      }
+      if (is.numeric(value)) {
+        if (length(value) != 1) {
+          cli::cli_abort("{.arg {field}} must be a numeric value")
+        }
+        return(build_single_param_alternative(
+          "User defined",
+          param_name,
+          value,
+          unit
+        ))
+      }
+      if (is.list(value)) {
+        return(unname(value))
+      }
+      cli::cli_abort(
+        "{.arg {field}} must be a numeric value, a raw alternative list, or NULL"
+      )
+    },
+
     .format_value = function(x) {
       vapply(
         x,
@@ -500,63 +528,180 @@ Compound <- R6::R6Class(
       ""
     },
 
-    #' @field lipophilicity The lipophilicity data of the compound
-    lipophilicity = function() {
-      result <- private$.data$Lipophilicity
-      if (!is.null(result)) {
-        class(result) <- c("physicochemical_property", "list")
-        attr(result, "property_name") <- "Lipophilicity"
+    #' @field lipophilicity The lipophilicity data of the compound. Writable:
+    #'   assign a numeric scalar to create a single default `Lipophilicity`
+    #'   alternative (parameter `"Lipophilicity"`, unit `"Log Units"`), a raw
+    #'   alternative list to set the array verbatim (the escape hatch for
+    #'   multiple, named, or species-specific alternatives), or `NULL` to
+    #'   clear the property.
+    lipophilicity = function(value) {
+      if (missing(value)) {
+        result <- private$.data$Lipophilicity
+        if (!is.null(result)) {
+          class(result) <- c("physicochemical_property", "list")
+          attr(result, "property_name") <- "Lipophilicity"
+        }
+        return(result)
       }
-      result
+      private$.data$Lipophilicity <- private$set_alternative_group(
+        value,
+        "Lipophilicity",
+        "Log Units",
+        "lipophilicity"
+      )
     },
 
-    #' @field fraction_unbound The fraction unbound data of the compound
-    fraction_unbound = function() {
-      result <- private$.data$FractionUnbound
-      if (!is.null(result)) {
-        class(result) <- c("physicochemical_property", "list")
-        attr(result, "property_name") <- "Fraction Unbound"
+    #' @field fraction_unbound The fraction unbound data of the compound.
+    #'   Writable: assign a numeric scalar to create a single default
+    #'   `FractionUnbound` alternative (parameter
+    #'   `"Fraction unbound (plasma, reference value)"`, no unit), a raw
+    #'   alternative list to set the array verbatim, or `NULL` to clear the
+    #'   property.
+    fraction_unbound = function(value) {
+      if (missing(value)) {
+        result <- private$.data$FractionUnbound
+        if (!is.null(result)) {
+          class(result) <- c("physicochemical_property", "list")
+          attr(result, "property_name") <- "Fraction Unbound"
+        }
+        return(result)
       }
-      result
+      private$.data$FractionUnbound <- private$set_alternative_group(
+        value,
+        "Fraction unbound (plasma, reference value)",
+        NULL,
+        "fraction_unbound"
+      )
     },
 
-    #' @field solubility The solubility data of the compound
-    solubility = function() {
-      result <- private$.data$Solubility
-      if (!is.null(result)) {
-        class(result) <- c("physicochemical_property", "list")
-        attr(result, "property_name") <- "Solubility"
+    #' @field solubility The solubility data of the compound. Writable:
+    #'   assign a numeric scalar to create a single default `Solubility`
+    #'   alternative (parameter `"Solubility at reference pH"`, unit
+    #'   `"mg/l"`), a raw alternative list to set the array verbatim, or
+    #'   `NULL` to clear the property. The scalar form cannot express
+    #'   reference pH, gain per charge, or table solubility; set those by
+    #'   assigning a raw alternative list or by using `create_compound()`
+    #'   with its `reference_pH`, `solubility_gain_per_charge`, or
+    #'   `solubility_table` arguments.
+    solubility = function(value) {
+      if (missing(value)) {
+        result <- private$.data$Solubility
+        if (!is.null(result)) {
+          class(result) <- c("physicochemical_property", "list")
+          attr(result, "property_name") <- "Solubility"
+        }
+        return(result)
       }
-      result
+      if (is.null(value)) {
+        private$.data$Solubility <- NULL
+      } else if (is.numeric(value)) {
+        if (length(value) != 1) {
+          cli::cli_abort("{.arg solubility} must be a numeric value")
+        }
+        private$.data$Solubility <- build_solubility_alternative(
+          "User defined",
+          value,
+          "mg/l"
+        )
+      } else if (is.list(value)) {
+        private$.data$Solubility <- unname(value)
+      } else {
+        cli::cli_abort(
+          "{.arg solubility} must be a numeric value, a raw alternative list, or NULL"
+        )
+      }
     },
 
-    #' @field intestinal_permeability The intestinal permeability data of the compound
-    intestinal_permeability = function() {
-      result <- private$.data$IntestinalPermeability
-      if (!is.null(result)) {
-        class(result) <- c("physicochemical_property", "list")
-        attr(result, "property_name") <- "Intestinal Permeability"
+    #' @field intestinal_permeability The intestinal permeability data of the
+    #'   compound. Writable: assign a numeric scalar to create a single
+    #'   default `IntestinalPermeability` alternative (parameter
+    #'   `"Specific intestinal permeability (transcellular)"`, unit
+    #'   `"cm/min"`), a raw alternative list to set the array verbatim, or
+    #'   `NULL` to clear the property.
+    intestinal_permeability = function(value) {
+      if (missing(value)) {
+        result <- private$.data$IntestinalPermeability
+        if (!is.null(result)) {
+          class(result) <- c("physicochemical_property", "list")
+          attr(result, "property_name") <- "Intestinal Permeability"
+        }
+        return(result)
       }
-      result
+      private$.data$IntestinalPermeability <- private$set_alternative_group(
+        value,
+        "Specific intestinal permeability (transcellular)",
+        "cm/min",
+        "intestinal_permeability"
+      )
     },
 
-    #' @field pka_types The pKa types of the compound
-    pka_types = function() {
-      result <- private$.data$PkaTypes
-      if (!is.null(result)) {
-        class(result) <- c("physicochemical_property", "list")
-        attr(result, "property_name") <- "pKa Types"
+    #' @field permeability The permeability data of the compound. Writable:
+    #'   assign a numeric scalar to create a single default `Permeability`
+    #'   alternative (parameter `"Permeability"`, unit `"cm/min"`), a raw
+    #'   alternative list to set the array verbatim, or `NULL` to clear the
+    #'   property.
+    permeability = function(value) {
+      if (missing(value)) {
+        result <- private$.data$Permeability
+        if (!is.null(result)) {
+          class(result) <- c("physicochemical_property", "list")
+          attr(result, "property_name") <- "Permeability"
+        }
+        return(result)
       }
-      result
+      private$.data$Permeability <- private$set_alternative_group(
+        value,
+        "Permeability",
+        "cm/min",
+        "permeability"
+      )
+    },
+
+    #' @field pka_types The pKa types of the compound. Writable: assign a
+    #'   list of `list(type =, value =)` entries (the `create_compound()`
+    #'   `pKa` shape, converted to `list(Type =, Pka =)`), a raw `PkaType[]`
+    #'   list (entries carrying `Type`/`Pka`, set verbatim), or `NULL` /
+    #'   `list()` to clear the pKa types.
+    pka_types = function(value) {
+      if (missing(value)) {
+        result <- private$.data$PkaTypes
+        if (!is.null(result)) {
+          class(result) <- c("physicochemical_property", "list")
+          attr(result, "property_name") <- "pKa Types"
+        }
+        return(result)
+      }
+      if (is.null(value) || length(value) == 0) {
+        private$.data$PkaTypes <- NULL
+      } else if (!is.list(value) || is.object(value)) {
+        cli::cli_abort("{.arg pka_types} must be a list")
+      } else if ("type" %in% names(value[[1]])) {
+        validate_pka(value)
+        private$.data$PkaTypes <- build_pka_types(value)
+      } else {
+        private$.data$PkaTypes <- unname(value)
+      }
     },
 
     #' @field processes A flat named list of [Process] objects, one per
     #'   entry in the compound's `Processes` array. Duplicate names are
     #'   disambiguated with a numeric suffix (`_1`, `_2`, ...). The list is
     #'   built once at construction so that state changes made on a
-    #'   [Process] persist across accesses.
-    processes = function() {
-      private$.processes
+    #'   [Process] persist across accesses. Writable: assign a list of
+    #'   [Process] objects and/or raw process lists to rebuild the processes
+    #'   (duplicate names are disambiguated as at construction), or `NULL` /
+    #'   `list()` to clear them.
+    processes = function(value) {
+      if (missing(value)) {
+        return(private$.processes)
+      }
+      raw <- if (is.null(value) || length(value) == 0) {
+        NULL
+      } else {
+        to_raw_r6_or_list(value, "Process", "processes")
+      }
+      private$.data$Processes <- raw
+      private$.processes <- build_processes_from_raw(raw)
     },
 
     #' @field calculation_methods A [CalculationMethods] object holding the

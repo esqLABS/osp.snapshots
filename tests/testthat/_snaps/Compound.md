@@ -944,3 +944,19 @@
       Compound$induction was deprecated in osp.snapshots 0.3.0.
       i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
 
+# invalid physicochemical field assignments abort
+
+    Code
+      compound$lipophilicity <- "high"
+    Condition
+      Error in `private$set_alternative_group()`:
+      ! `lipophilicity` must be a numeric value, a raw alternative list, or NULL
+
+---
+
+    Code
+      compound$permeability <- "high"
+    Condition
+      Error in `private$set_alternative_group()`:
+      ! `permeability` must be a numeric value, a raw alternative list, or NULL
+

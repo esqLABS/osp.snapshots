@@ -1,3 +1,7 @@
+# osp.snapshots 1.0.0.9000
+
+- `create_compound()` gains arguments to set lipophilicity, fraction unbound, solubility (including `reference_pH`, `solubility_gain_per_charge`, and `solubility_table`), intestinal permeability, permeability, and `pKa`, and to attach `processes`; the matching `Compound` fields (`$lipophilicity`, `$fraction_unbound`, `$solubility`, `$intestinal_permeability`, the new `$permeability`, `$pka_types`, `$processes`) are now writable (#115).
+
 # osp.snapshots 1.0.0
 
 ## Breaking changes

@@ -33,21 +33,57 @@ objects so that mutations flow back to the export payload.}
 
     \item{\code{molecular_weight_unit}}{The unit of the molecular weight}
 
-    \item{\code{lipophilicity}}{The lipophilicity data of the compound}
+    \item{\code{lipophilicity}}{The lipophilicity data of the compound. Writable:
+assign a numeric scalar to create a single default \code{Lipophilicity}
+alternative (parameter \code{"Lipophilicity"}, unit \code{"Log Units"}), a raw
+alternative list to set the array verbatim (the escape hatch for
+multiple, named, or species-specific alternatives), or \code{NULL} to
+clear the property.}
 
-    \item{\code{fraction_unbound}}{The fraction unbound data of the compound}
+    \item{\code{fraction_unbound}}{The fraction unbound data of the compound.
+Writable: assign a numeric scalar to create a single default
+\code{FractionUnbound} alternative (parameter
+\code{"Fraction unbound (plasma, reference value)"}, no unit), a raw
+alternative list to set the array verbatim, or \code{NULL} to clear the
+property.}
 
-    \item{\code{solubility}}{The solubility data of the compound}
+    \item{\code{solubility}}{The solubility data of the compound. Writable:
+assign a numeric scalar to create a single default \code{Solubility}
+alternative (parameter \code{"Solubility at reference pH"}, unit
+\code{"mg/l"}), a raw alternative list to set the array verbatim, or
+\code{NULL} to clear the property. The scalar form cannot express
+reference pH, gain per charge, or table solubility; set those by
+assigning a raw alternative list or by using \code{create_compound()}
+with its \code{reference_pH}, \code{solubility_gain_per_charge}, or
+\code{solubility_table} arguments.}
 
-    \item{\code{intestinal_permeability}}{The intestinal permeability data of the compound}
+    \item{\code{intestinal_permeability}}{The intestinal permeability data of the
+compound. Writable: assign a numeric scalar to create a single
+default \code{IntestinalPermeability} alternative (parameter
+\code{"Specific intestinal permeability (transcellular)"}, unit
+\code{"cm/min"}), a raw alternative list to set the array verbatim, or
+\code{NULL} to clear the property.}
 
-    \item{\code{pka_types}}{The pKa types of the compound}
+    \item{\code{permeability}}{The permeability data of the compound. Writable:
+assign a numeric scalar to create a single default \code{Permeability}
+alternative (parameter \code{"Permeability"}, unit \code{"cm/min"}), a raw
+alternative list to set the array verbatim, or \code{NULL} to clear the
+property.}
+
+    \item{\code{pka_types}}{The pKa types of the compound. Writable: assign a
+list of \code{list(type =, value =)} entries (the \code{create_compound()}
+\code{pKa} shape, converted to \code{list(Type =, Pka =)}), a raw \code{PkaType[]}
+list (entries carrying \code{Type}/\code{Pka}, set verbatim), or \code{NULL} /
+\code{list()} to clear the pKa types.}
 
     \item{\code{processes}}{A flat named list of \link{Process} objects, one per
 entry in the compound's \code{Processes} array. Duplicate names are
 disambiguated with a numeric suffix (\verb{_1}, \verb{_2}, ...). The list is
 built once at construction so that state changes made on a
-\link{Process} persist across accesses.}
+\link{Process} persist across accesses. Writable: assign a list of
+\link{Process} objects and/or raw process lists to rebuild the processes
+(duplicate names are disambiguated as at construction), or \code{NULL} /
+\code{list()} to clear them.}
 
     \item{\code{calculation_methods}}{A \link{CalculationMethods} object holding the
 compound's calculation methods.}
