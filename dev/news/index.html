@@ -18,8 +18,9 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
     <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -40,7 +41,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ospsnapshots-development-version">osp.snapshots (development version)<a class="anchor" aria-label="anchor" href="#ospsnapshots-development-version"></a></h2>
-<ul><li>
+<ul><li>The vignettes and README are updated to match the current API, and now document building an empty snapshot with <code><a href="../reference/create_snapshot.html">create_snapshot()</a></code>, the observed-data bridge to ospsuite, and the standalone validators (#131).</li>
+<li>
 <code><a href="../reference/create_descriptor_condition.html">create_descriptor_condition()</a></code> builds a container criterion (<code>Tag</code>, and an open-string <code>Type</code> such as <code>"InContainer"</code> or <code>"MatchTag"</code>) for an observer’s container criteria (#119).</li>
 <li>
 <code><a href="../reference/create_expression_profile.html">create_expression_profile()</a></code> gains <code>expression</code> and <code>disease</code> arguments to set per-organ relative expression (a data frame of container rows, or a raw list) and a disease state, and <code>ExpressionProfile</code> gains read/write <code>expression</code> and <code>disease</code> bindings so a loaded profile can be read and mutated (#116).</li>

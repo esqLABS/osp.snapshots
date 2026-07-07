@@ -19,6 +19,32 @@ We use the `Midazolam` template throughout:
 snapshot <- load_snapshot("Midazolam")
 ```
 
+## Starting from an empty snapshot
+
+[`create_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_snapshot.md)
+is the from-scratch counterpart to
+[`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md).
+It returns an in-memory *Snapshot* that carries the current supported
+PK-Sim version and no *Building blocks*, touches no files, and has no
+path. You then populate it with the `add_*()` verbs and serialize it
+with
+[`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.md).
+
+``` r
+
+empty <- create_snapshot(name = "My Project", description = "Notes")
+empty <- add_compound(empty, create_compound(name = "Drug X"))
+empty
+#> 
+#> ── PKSIM Snapshot ──────────────────────────────────────────────────────────────
+#> ℹ Version: 80 (PKSIM 12.0)
+#> • Compounds: 1
+```
+
+The rest of this vignette mutates the `Midazolam`-based `snapshot`
+object, so the empty snapshot uses its own `empty` object and does not
+disturb that narrative.
+
 ## Individuals
 
 [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
@@ -135,16 +161,29 @@ blocks” below).
 ## Formulations
 
 [`create_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
-covers every PK-Sim release profile (`"Dissolved"`, `"Weibull"`,
-`"First Order"`, `"Zero Order"`, `"Lint80"`, `"Particles"`, `"Table"`).
-The accepted `parameters` depend on the chosen `type`: `"Dissolved"`
-takes none; the kinetic profiles (`"Weibull"`, `"First Order"`,
-`"Zero Order"`, `"Lint80"`, `"Particles"`, `"Table"`) accept the
-release-kinetics parameters specific to that profile (for example a
-`"Weibull"` formulation accepts `dissolution_time`, `dissolution_shape`,
-`lag_time`, …). See
+builds a *Formulation* from a `type` and its `parameters`. The `type`
+argument is open rather than a closed set. Seven curated human aliases
+resolve to a known PK-Sim release profile and unlock a per-type curated
+parameter vocabulary: `"Dissolved"`, `"Weibull"`, `"Lint80"`,
+`"Particle"`, `"Table"`, `"Zero Order"`, and `"First Order"`. Any other
+non-empty string is accepted verbatim and written to `FormulationType`,
+so you can author a new or unknown PK-Sim template type the same way
+[`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
+accepts an arbitrary `template`.
+
+The `parameters` argument accepts two mutually exclusive forms. The
+curated alias form takes bare scalar or vector values keyed by the
+per-type alias vocabulary, and it exists only for the seven known types.
+For example, `"Dissolved"` takes none, and `"Weibull"` accepts
+`dissolution_time`, `dissolution_shape`, `lag_time`, and related keys.
+See
 [`?create_formulation`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
-for the parameter list per type.
+for the full parameter list per type. The raw form takes a list of
+[`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
+objects (or raw `list(Name =, Value =, ...)` dicts) written straight to
+the formulation’s `Parameters`, preserving `Unit`, `ValueOrigin`, and
+`TableFormula` verbatim, for any type. The raw form is the only valid
+form for an unknown type.
 
 ``` r
 
@@ -181,6 +220,35 @@ tablet
 #> • Dissolution time (50% dissolved): 30 min
 #> • Lag time: 5 min
 #> • Dissolution shape: 1.2
+#> • Use as suspension: 1
+```
+
+The raw form lets you set an arbitrary parameter `Name`, a per-parameter
+`ValueOrigin` (`source` and `description`), or a custom `TableFormula`
+on any type, including `"Dissolved"` and unknown types:
+
+``` r
+
+raw_dissolved <- create_formulation(
+  name = "Suspension",
+  type = "Dissolved",
+  parameters = list(
+    create_parameter(
+      name = "Use as suspension",
+      value = 1,
+      source = "Lit",
+      description = "Reference XYZ"
+    )
+  )
+)
+
+raw_dissolved
+#> 
+#> ── Formulation: Suspension ─────────────────────────────────────────────────────
+#> • Type: Dissolved
+#> 
+#> ── Parameters ──
+#> 
 #> • Use as suspension: 1
 ```
 
@@ -474,20 +542,37 @@ model output. Observers travel in groups called *Observer sets*.
 [`create_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set.md)
 builds a set from a name and a list of observers.
 
-Build each observer with `Observer$new()` (which validates the input and
-gives you typed accessors `$name`, `$type`, `$dimension`, `$formula`
-(the full `ExplicitFormula` list), `$formula_expression`,
-`$formula_dimension`, `$formula_references`, `$container_tags`), then
-bundle them into a set and attach the set to a snapshot:
+Build each observer with
+[`create_observer()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer.md).
+It validates the input and returns an *Observer* with typed accessors
+`$name`, `$type`, `$dimension`, `$formula` (the full `ExplicitFormula`
+list), `$formula_expression`, `$formula_dimension`,
+`$formula_references`, and `$container_tags`. The companions
+[`create_formula_reference()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formula_reference.md),
+[`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_descriptor_condition.md),
+and
+[`create_molecule_list()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_molecule_list.md)
+build the observer’s sub-properties. Bundle the observers into a set and
+attach the set to a snapshot:
 
 ``` r
 
-brain_obs <- Observer$new(list(
-  Name = "brain_plasma_conc",
-  Type = "Container",
-  Dimension = "Concentration (molar)",
-  Formula = list(Formula = "Conc_Br")
-))
+brain_obs <- create_observer(
+  name = "brain_plasma_conc",
+  type = "Container",
+  dimension = "Concentration (molar)",
+  formula = "Conc_Br",
+  formula_references = list(
+    create_formula_reference(
+      "Conc_Br",
+      "Organism|Brain|Plasma|Midazolam|Concentration"
+    )
+  ),
+  container_criteria = list(
+    create_descriptor_condition("Brain", "InContainer")
+  ),
+  molecule_list = create_molecule_list(for_all = FALSE, include = "Midazolam")
+)
 
 brain_set <- create_observer_set(
   name = "BrainPlasmaConcentration",
@@ -508,8 +593,10 @@ snapshot <- add_observer_set(snapshot, brain_set)
 builds an
 [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
 from named arguments for the time grid, measurement values, units, and
-optional error series. `value_dimension` is required and gates the unit
-validation.
+optional error series. `value_dimension` is required (it has no default)
+and gates the unit validation. `time_unit` defaults to `"h"`, and
+`error`, `error_type`, `error_unit`, `molecular_weight`, `lloq`, and
+`metadata` are optional.
 
 ``` r
 
@@ -535,6 +622,43 @@ obs
 #>   • LLOQ: NULL
 #> Meta data:
 ```
+
+[`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
+is a thin factory around
+[`loadDataSetFromSnapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/loadDataSetFromSnapshot.md),
+the lower-level function that converts a raw snapshot observed-data
+structure into an
+[`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html).
+Call
+[`loadDataSetFromSnapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/loadDataSetFromSnapshot.md)
+directly when you already hold the raw structure (for example a slice
+read from a snapshot JSON) rather than the named-argument inputs.
+
+The bridge also exposes two time helpers.
+[`convert_ospsuite_time_unit_to_lubridate()`](https://esqlabs.github.io/osp.snapshots/dev/reference/convert_ospsuite_time_unit_to_lubridate.md)
+maps an ospsuite time unit to its lubridate unit, and
+[`convert_ospsuite_time_to_duration()`](https://esqlabs.github.io/osp.snapshots/dev/reference/convert_ospsuite_time_to_duration.md)
+maps a value and unit to a lubridate duration. The `"ks"` (kilosecond)
+unit is a special case: the duration helper converts it to seconds by
+multiplying the value by 1000.
+
+``` r
+
+convert_ospsuite_time_unit_to_lubridate("day(s)")
+#> [1] "days"
+convert_ospsuite_time_to_duration(2, "ks")
+#> [1] "2000s (~33.33 minutes)"
+```
+
+The observed-data export path is asymmetric. A loaded observed-data
+entry replays byte-for-byte from the original JSON on export, so
+post-load mutations of a loaded `DataSet` are not reflected on export. A
+`DataSet` added at runtime with
+[`add_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observed_data.md)
+is serialized through a lossy adapter that round-trips through
+`osp.snapshots` itself, but its PK-Sim round-trip is unvalidated. Treat
+runtime-added observed data as a convenience for the R side, not as a
+guaranteed PK-Sim round-trip.
 
 ## Managing building blocks
 
@@ -675,12 +799,32 @@ tryCatch(
 #> • Type: NonexistentType
 ```
 
-The same checks are also exported as standalone helpers
-([`validate_species()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_species.md),
-[`validate_gender()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_gender.md),
-[`validate_unit()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_unit.md),
-[`validate_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_population.md))
-when you need them outside a `create_*()` call.
+The same checks are exported as standalone helpers when you need them
+outside a `create_*()` call. Each returns `TRUE` on success and aborts
+with an informative message otherwise:
+
+- [`validate_species()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_species.md)
+  checks a species against
+  [`ospsuite::Species`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html).
+- [`validate_gender()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_gender.md)
+  checks a gender against
+  [`ospsuite::Gender`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Gender.html).
+- [`validate_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_population.md)
+  checks a population against
+  [`ospsuite::HumanPopulation`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/HumanPopulation.html),
+  the human population enum, not a general population list.
+- [`validate_unit()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_unit.md)
+  checks a unit against a dimension via ospsuite.
+- [`validate_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_snapshot.md)
+  checks that an object is a *Snapshot*.
+
+``` r
+
+validate_species("Human")
+#> [1] TRUE
+validate_unit("mg/l", "Concentration (mass)")
+#> [1] TRUE
+```
 
 ## Exporting
 

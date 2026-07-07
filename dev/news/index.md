@@ -2,6 +2,11 @@
 
 ## osp.snapshots (development version)
 
+- The vignettes and README are updated to match the current API, and now
+  document building an empty snapshot with
+  [`create_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_snapshot.md),
+  the observed-data bridge to ospsuite, and the standalone validators
+  (#131).
 - [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_descriptor_condition.md)
   builds a container criterion (`Tag`, and an open-string `Type` such as
   `"InContainer"` or `"MatchTag"`) for an observer’s container criteria

@@ -1,7 +1,6 @@
-osp.snapshots provides a convenient R interface for working with PKSIM
-project snapshots. Import, navigate, modify, and export snapshot data
-with ease, making complex nested JSON structures accessible for analysis
-within the R ecosystem.
+osp.snapshots provides an R interface for working with PK-Sim project
+snapshots: import, navigate, modify, and export the nested JSON
+structure as R objects and data frames.
 
 ## Installation
 
@@ -14,40 +13,31 @@ You can install the development version of osp.snapshots from
 pak::pak("esqLABS/osp.snapshots")
 ```
 
-## Quick Start
+## Usage
 
 ``` r
 
 library(osp.snapshots)
 
-# Load a snapshot
-snapshot_path <- system.file(
-  "extdata",
-  "test_snapshot.json",
-  package = "osp.snapshots"
-)
-snapshot <- load_snapshot(snapshot_path)
-
-# Explore the snapshot
+# Load a snapshot from a template name, a local .json path, or a URL
+snapshot <- load_snapshot("Midazolam")
 snapshot
 #> 
 #> ── PKSIM Snapshot ──────────────────────────────────────────────────────────────
-#> ℹ Version: 79 (PKSIM 11.2)
-#> ℹ Path: '../../../../../../../private/var/folders/_6/hdp78hfx2qg6415svlx5rb680000gn/T/Rtmp770tJY/temp_libpath16d5e7e4ddfcf/osp.snapshots/extdata/test_snapshot.json'
-#> • Compounds: 6
-#> • Events: 10
-#> • ExpressionProfiles: 14
-#> • Formulations: 9
-#> • Individuals: 5
-#> • ObservedData: 64
-#> • ObservedDataClassifications: 20
-#> • ObserverSets: 1
-#> • ParameterIdentifications: 1
-#> • Populations: 7
-#> • Protocols: 9
-#> • Simulations: 2
+#> ℹ Version: 80 (PKSIM 12.0)
+#> • Compounds: 1
+#> • Events: 1
+#> • ExpressionProfiles: 8
+#> • Formulations: 2
+#> • Individuals: 2
+#> • ObservedData: 115
+#> • ObservedDataClassifications: 47
+#> • ParameterIdentifications: 3
+#> • Protocols: 33
+#> • SimulationClassifications: 4
+#> • Simulations: 37
 
-# Access building blocks
+# Navigate the building blocks
 snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 #> 
 #> ── Individual: European (P-gp modified, CYP3A4 36 h) | Seed: 17189110 ──────────
@@ -64,51 +54,85 @@ snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
 #> 
 #> ── Parameters ──
 #> 
-#> • Organism|Gallbladder|Gallbladder ejection fraction: 0.8
 #> • Organism|Liver|EHC continuous fraction: 1
 #> 
 #> ── Expression Profiles ──
 #> 
-#> • CYP3A4|Human|Healthy
-#> • AADAC|Human|Healthy
-#> • P-gp|Human|Healthy
-#> • OATP1B1|Human|Healthy
-#> • ATP1A2|Human|Healthy
-#> • UGT1A4|Human|Healthy
-#> • GABRG2|Human|Healthy
+#> • CYP3A4|Human|European (P-gp modified, CYP3A4 36 h)
+#> • AADAC|Human|European (P-gp modified, CYP3A4 36 h)
+#> • P-gp|Human|European (P-gp modified, CYP3A4 36 h)
+#> • OATP1B1|Human|European (P-gp modified, CYP3A4 36 h)
+#> • ATP1A2|Human|European (P-gp modified, CYP3A4 36 h)
+#> • UGT1A4|Human|European (P-gp modified, CYP3A4 36 h)
+#> • GABRG2|Human|European (P-gp modified, CYP3A4 36 h)
 
-# Modify parameters
-snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$age <- 40
-
-# Convert to data frames for analysis
-individual_dfs <- get_individuals_dfs(snapshot)
+# Convert a collection to tibbles for analysis
+as_tibbles(snapshot, "individuals")
+#> $individuals
+#> # A tibble: 2 × 18
+#>   individual_id         name  description   seed species population gender   age
+#>   <chr>                 <chr> <chr>        <int> <chr>   <chr>      <chr>  <dbl>
+#> 1 European (P-gp modif… Euro… <NA>        1.72e7 Human   European_… MALE    30  
+#> 2 Korean (Yu 2004 stud… Kore… <NA>        5.30e7 Human   Asian_Tan… MALE    23.3
+#> # ℹ 10 more variables: age_unit <chr>, gestational_age <dbl>,
+#> #   gestational_age_unit <chr>, weight <dbl>, weight_unit <chr>, height <dbl>,
+#> #   height_unit <chr>, disease_state <chr>, calculation_methods <glue>,
+#> #   disease_state_parameters <chr>
+#> 
+#> $individuals_parameters
+#> # A tibble: 2 × 7
+#>   individual_id                   path  value unit  source description source_id
+#>   <chr>                           <chr> <dbl> <chr> <chr>  <chr>           <int>
+#> 1 European (P-gp modified, CYP3A… Orga…     1 <NA>  Unkno… <NA>               NA
+#> 2 Korean (Yu 2004 study)          Orga…     1 <NA>  Unkno… <NA>               NA
+#> 
+#> $individuals_expressions
+#> # A tibble: 14 × 2
+#>    individual_id                         profile                                
+#>    <chr>                                 <chr>                                  
+#>  1 European (P-gp modified, CYP3A4 36 h) CYP3A4|Human|European (P-gp modified, …
+#>  2 European (P-gp modified, CYP3A4 36 h) AADAC|Human|European (P-gp modified, C…
+#>  3 European (P-gp modified, CYP3A4 36 h) P-gp|Human|European (P-gp modified, CY…
+#>  4 European (P-gp modified, CYP3A4 36 h) OATP1B1|Human|European (P-gp modified,…
+#>  5 European (P-gp modified, CYP3A4 36 h) ATP1A2|Human|European (P-gp modified, …
+#>  6 European (P-gp modified, CYP3A4 36 h) UGT1A4|Human|European (P-gp modified, …
+#>  7 European (P-gp modified, CYP3A4 36 h) GABRG2|Human|European (P-gp modified, …
+#>  8 Korean (Yu 2004 study)                CYP3A4|Human|Korean (Yu 2004 study)    
+#>  9 Korean (Yu 2004 study)                AADAC|Human|European (P-gp modified, C…
+#> 10 Korean (Yu 2004 study)                P-gp|Human|European (P-gp modified, CY…
+#> 11 Korean (Yu 2004 study)                OATP1B1|Human|European (P-gp modified,…
+#> 12 Korean (Yu 2004 study)                ATP1A2|Human|European (P-gp modified, …
+#> 13 Korean (Yu 2004 study)                UGT1A4|Human|European (P-gp modified, …
+#> 14 Korean (Yu 2004 study)                GABRG2|Human|European (P-gp modified, …
 ```
 
-## Key Features
+## Key features
 
-- **Import/Export**: Load snapshots from JSON files, URLs, or templates;
-  export back to JSON
-- **Navigate**: Access all building blocks (individuals, compounds,
-  formulations, etc.) with intuitive R syntax
-- **Modify**: Change parameters, add/remove building blocks in place
-- **Convert**: Transform any building block collection to structured
-  data frames
-- **Integrate**: Full compatibility with
+- **Import and export**: Load snapshots from JSON files, URLs, or
+  templates, and export the modified snapshot back to JSON.
+- **Navigate**: Reach every building block (individuals, compounds,
+  formulations, and the rest) with R syntax.
+- **Modify**: Change parameters and add or remove building blocks in
+  place.
+- **Convert**: Turn any building block collection into structured
+  tibbles with
+  [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md).
+- **Integrate**: Bridge PK-Sim observed data to
   [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
-  objects
+  objects.
 
-## Learn More
+## Learn more
 
-Get started with osp.snapshots:
+- [`vignette("osp-snapshots")`](https://esqlabs.github.io/osp.snapshots/dev/articles/osp-snapshots.md):
+  getting started
+- [`vignette("creating-building-blocks")`](https://esqlabs.github.io/osp.snapshots/dev/articles/creating-building-blocks.md):
+  creating and managing building blocks
+- [`vignette("exporting-snapshots-to-dataframes")`](https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.md):
+  exporting snapshots to data frames
+- [`vignette("simulations")`](https://esqlabs.github.io/osp.snapshots/dev/articles/simulations.md):
+  building simulations from scratch
 
-- [`vignette("osp-snapshots")`](https://esqlabs.github.io/osp.snapshots/dev/articles/osp-snapshots.md) -
-  Getting started guide
-- [`vignette("exporting-snapshots-to-dataframes")`](https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.md) -
-  Exporting snapshots to data frames
-- [`vignette("creating-building-blocks")`](https://esqlabs.github.io/osp.snapshots/dev/articles/creating-building-blocks.md) -
-  Creating and managing building blocks
-
-## Getting Help
+## Getting help
 
 - [Function
   reference](https://esqlabs.github.io/osp.snapshots/reference/)
@@ -400,9 +424,11 @@ Formatted display methods for building block collections
 
 In-depth guides for specific tasks
 
-- [Exporting snapshots to data
-  frames](https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.md):
+- [Getting started with
+  osp.snapshots](https://esqlabs.github.io/osp.snapshots/dev/articles/osp-snapshots.md):
 - [Creating and managing building
   blocks](https://esqlabs.github.io/osp.snapshots/dev/articles/creating-building-blocks.md):
+- [Exporting snapshots to data
+  frames](https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.md):
 - [Building simulations from
   scratch](https://esqlabs.github.io/osp.snapshots/dev/articles/simulations.md):
