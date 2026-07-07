@@ -1,5 +1,6 @@
 # osp.snapshots (development version)
 
+- The vignettes and README are updated to match the current API, and now document building an empty snapshot with `create_snapshot()`, the observed-data bridge to ospsuite, and the standalone validators (#131).
 - `create_descriptor_condition()` builds a container criterion (`Tag`, and an open-string `Type` such as `"InContainer"` or `"MatchTag"`) for an observer's container criteria (#119).
 - `create_expression_profile()` gains `expression` and `disease` arguments to set per-organ relative expression (a data frame of container rows, or a raw list) and a disease state, and `ExpressionProfile` gains read/write `expression` and `disease` bindings so a loaded profile can be read and mutated (#116).
 - `create_formula_reference()` builds a formula reference (`Alias`, `Path`, optional `Dimension`) for an observer's formula (#119).

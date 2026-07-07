@@ -17,10 +17,12 @@ navbar:
     articles:
       text: "Articles"
       menu:
-      - text: "Exporting snapshots to data frames"
-        href: articles/exporting-snapshots-to-dataframes.html
+      - text: "Getting started with osp.snapshots"
+        href: articles/osp-snapshots.html
       - text: "Creating and managing building blocks"
         href: articles/creating-building-blocks.html
+      - text: "Exporting snapshots to data frames"
+        href: articles/exporting-snapshots-to-dataframes.html
       - text: "Building simulations from scratch"
         href: articles/simulations.html
 
@@ -35,8 +37,9 @@ articles:
 - title: "Guides"
   desc: "In-depth guides for specific tasks"
   contents:
-  - exporting-snapshots-to-dataframes
+  - osp-snapshots
   - creating-building-blocks
+  - exporting-snapshots-to-dataframes
   - simulations
 
 reference:
