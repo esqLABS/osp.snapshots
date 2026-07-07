@@ -1,10 +1,18 @@
-# Observer formula_references is read-only
+# Observer type setter validates against Amount/Container
 
     Code
-      observer$formula_references <- list()
+      observer$type <- "Bogus"
     Condition
       Error:
-      ! formula_references is read-only; assign through formula instead
+      ! `type` must be one of "Amount" and "Container"
+
+# Observer formula_references setter aborts on non-list input
+
+    Code
+      observer$formula_references <- "x"
+    Condition
+      Error:
+      ! `formula_references` must be a list
 
 # Observer container_tags is read-only
 
@@ -13,6 +21,22 @@
     Condition
       Error:
       ! container_tags is read-only
+
+# Observer container_criteria setter aborts on non-list input
+
+    Code
+      observer$container_criteria <- "x"
+    Condition
+      Error:
+      ! `container_criteria` must be a list
+
+# Observer molecule_list setter aborts on non-list input
+
+    Code
+      observer$molecule_list <- "x"
+    Condition
+      Error:
+      ! `molecule_list` must be a list
 
 # Observer data is read-only
 

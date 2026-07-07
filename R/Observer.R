@@ -120,10 +120,16 @@ Observer <- R6::R6Class(
 
     #' @field type The observer type. PK-Sim recognises `"Amount"`
     #'   (an `AmountObserverBuilder`) and `"Container"` (a
-    #'   `ContainerObserverBuilder`).
+    #'   `ContainerObserverBuilder`). On assignment, a non-`NULL` value is
+    #'   validated against these two; assigning `NULL` removes the type.
     type = function(value) {
       if (missing(value)) {
         return(private$.data$Type)
+      }
+      if (!is.null(value) && !(value %in% VALID_OBSERVER_TYPES)) {
+        cli::cli_abort(
+          "{.arg type} must be one of {.val {VALID_OBSERVER_TYPES}}"
+        )
       }
       private$.data$Type <- value
     },
@@ -184,15 +190,30 @@ Observer <- R6::R6Class(
 
     #' @field formula_references The `References` list of the underlying
     #'   `ExplicitFormula`, where each entry is a named list with
-    #'   `Alias`, `Path`, and `Dimension`. Read-only; mutate the whole
-    #'   structure through `formula`.
+    #'   `Alias`, `Path`, and `Dimension`. Assign a list of
+    #'   `create_formula_reference()` outputs (or raw `{Alias, Path,
+    #'   Dimension}` lists) to replace it, preserving the sibling
+    #'   `Formula$Name`, `Formula$Formula`, and `Formula$Dimension`
+    #'   (the `Formula` is created if absent). Assign `NULL` to remove the
+    #'   references; when no `Formula` exists this is a no-op that does not
+    #'   create an empty `Formula`.
     formula_references = function(value) {
-      if (!missing(value)) {
-        cli::cli_abort(
-          "{.field formula_references} is read-only; assign through {.field formula} instead"
-        )
+      if (missing(value)) {
+        return(private$.data$Formula$References)
       }
-      private$.data$Formula$References
+      if (is.null(value)) {
+        if (!is.null(private$.data$Formula)) {
+          private$.data$Formula$References <- NULL
+        }
+        return(invisible(self))
+      }
+      # Validate/convert before mutating so a failed assignment is a
+      # no-op (atomic), mirroring `container_criteria`/`molecule_list`.
+      references <- to_raw_list_entries(value, "formula_references")
+      if (is.null(private$.data$Formula)) {
+        private$.data$Formula <- list()
+      }
+      private$.data$Formula$References <- references
     },
 
     #' @field container_tags The `Tag` values from the observer's
@@ -218,6 +239,44 @@ Observer <- R6::R6Class(
         return(NULL)
       }
       paste(tags, collapse = "|")
+    },
+
+    #' @field container_criteria The full `ContainerCriteria` list, each
+    #'   entry a named list with `Tag` and (optionally) `Type`. Unlike
+    #'   `container_tags`, this preserves each condition's `Type` verbatim
+    #'   (including non-enum values such as `"MatchTag"`). Assign a list of
+    #'   `create_descriptor_condition()` outputs (or raw `{Tag, Type}`
+    #'   lists) to replace it; assign `NULL` to remove it.
+    container_criteria = function(value) {
+      if (missing(value)) {
+        return(private$.data$ContainerCriteria)
+      }
+      if (is.null(value)) {
+        private$.data$ContainerCriteria <- NULL
+        return(invisible(self))
+      }
+      private$.data$ContainerCriteria <- to_raw_list_entries(
+        value,
+        "container_criteria"
+      )
+    },
+
+    #' @field molecule_list The full `MoleculeList` object (`ForAll`,
+    #'   `MoleculeNamesToInclude`, `MoleculeNamesToExclude`) or `NULL`.
+    #'   Assign a `create_molecule_list()` output (or an equivalent raw
+    #'   list) to replace it; assign `NULL` to remove it.
+    molecule_list = function(value) {
+      if (missing(value)) {
+        return(private$.data$MoleculeList)
+      }
+      if (is.null(value)) {
+        private$.data$MoleculeList <- NULL
+        return(invisible(self))
+      }
+      if (!is.list(value) || is.object(value)) {
+        cli::cli_abort("{.arg molecule_list} must be a list")
+      }
+      private$.data$MoleculeList <- value
     }
   ),
   private = list(

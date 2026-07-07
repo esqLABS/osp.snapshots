@@ -46,7 +46,8 @@ JSON (read-only).}
 
     \item{\code{type}}{The observer type. PK-Sim recognises \code{"Amount"}
 (an \code{AmountObserverBuilder}) and \code{"Container"} (a
-\code{ContainerObserverBuilder}).}
+\code{ContainerObserverBuilder}). On assignment, a non-\code{NULL} value is
+validated against these two; assigning \code{NULL} removes the type.}
 
     \item{\code{dimension}}{The dimension of the observed quantity, resolved
 in PK-Sim via \code{IDimensionRepository.DimensionByName()}.}
@@ -74,14 +75,30 @@ Setting writes back to the inner \code{Formula$Dimension} field.}
 
     \item{\code{formula_references}}{The \code{References} list of the underlying
 \code{ExplicitFormula}, where each entry is a named list with
-\code{Alias}, \code{Path}, and \code{Dimension}. Read-only; mutate the whole
-structure through \code{formula}.}
+\code{Alias}, \code{Path}, and \code{Dimension}. Assign a list of
+\code{create_formula_reference()} outputs (or raw \verb{\{Alias, Path, Dimension\}} lists) to replace it, preserving the sibling
+\code{Formula$Name}, \code{Formula$Formula}, and \code{Formula$Dimension}
+(the \code{Formula} is created if absent). Assign \code{NULL} to remove the
+references; when no \code{Formula} exists this is a no-op that does not
+create an empty \code{Formula}.}
 
     \item{\code{container_tags}}{The \code{Tag} values from the observer's
 \code{ContainerCriteria}, joined with \code{|}. There is no \code{ContainerPath}
 field in the snapshot JSON; this binding is synthesized from the
 tags found in \code{ContainerCriteria}. \code{NULL} when the observer
 carries no container criteria.}
+
+    \item{\code{container_criteria}}{The full \code{ContainerCriteria} list, each
+entry a named list with \code{Tag} and (optionally) \code{Type}. Unlike
+\code{container_tags}, this preserves each condition's \code{Type} verbatim
+(including non-enum values such as \code{"MatchTag"}). Assign a list of
+\code{create_descriptor_condition()} outputs (or raw \verb{\{Tag, Type\}}
+lists) to replace it; assign \code{NULL} to remove it.}
+
+    \item{\code{molecule_list}}{The full \code{MoleculeList} object (\code{ForAll},
+\code{MoleculeNamesToInclude}, \code{MoleculeNamesToExclude}) or \code{NULL}.
+Assign a \code{create_molecule_list()} output (or an equivalent raw
+list) to replace it; assign \code{NULL} to remove it.}
   }
   \if{html}{\out{</div>}}
 }

@@ -156,6 +156,27 @@ test_that("Observer formula mutation survives a load-mutate-export-reload cycle"
   )
 })
 
+test_that("Observer container_criteria mutation survives a round-trip cycle", {
+  expect_observer_field_roundtrip(
+    "container_criteria",
+    list(create_descriptor_condition("Liver", "InContainer"))
+  )
+})
+
+test_that("Observer formula_references mutation survives a round-trip cycle", {
+  expect_observer_field_roundtrip(
+    "formula_references",
+    list(create_formula_reference("a", "p", "D"))
+  )
+})
+
+test_that("Observer molecule_list mutation survives a round-trip cycle", {
+  expect_observer_field_roundtrip(
+    "molecule_list",
+    create_molecule_list(for_all = TRUE, include = c("A", "B"))
+  )
+})
+
 # ---- Mutators ----
 test_that("add_observer_set() appends an observer set", {
   snapshot <- empty_snapshot$clone()

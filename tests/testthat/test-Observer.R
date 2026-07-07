@@ -53,6 +53,15 @@ test_that("Observer type setter round-trips through data", {
   expect_equal(observer$data$Type, "Amount")
 })
 
+test_that("Observer type setter validates against Amount/Container", {
+  observer <- Observer$new(list(Name = "x"))
+  expect_snapshot(observer$type <- "Bogus", error = TRUE)
+})
+
+test_that("Observer type is NULL for an empty observer", {
+  expect_null(Observer$new(list())$type)
+})
+
 test_that("Observer dimension setter round-trips through data", {
   observer <- Observer$new(list(Name = "x"))
 
@@ -162,9 +171,70 @@ test_that("Observer formula_references is NULL when no formula present", {
   expect_null(observer$formula_references)
 })
 
-test_that("Observer formula_references is read-only", {
+test_that("Observer formula_references setter preserves sibling fields", {
+  observer <- Observer$new(list(
+    Name = "x",
+    Formula = list(Name = "f", Formula = "Conc", Dimension = "D")
+  ))
+
+  observer$formula_references <- list(create_formula_reference("a", "p"))
+
+  expect_equal(
+    observer$data$Formula$References,
+    list(list(Alias = "a", Path = "p"))
+  )
+  expect_equal(observer$data$Formula$Name, "f")
+  expect_equal(observer$data$Formula$Formula, "Conc")
+  expect_equal(observer$data$Formula$Dimension, "D")
+})
+
+test_that("Observer formula_references creates Formula when absent", {
   observer <- Observer$new(list(Name = "x"))
-  expect_snapshot(observer$formula_references <- list(), error = TRUE)
+
+  observer$formula_references <- list(create_formula_reference("a", "p"))
+
+  expect_equal(
+    observer$data$Formula$References,
+    list(list(Alias = "a", Path = "p"))
+  )
+})
+
+test_that("Observer formula_references NULL removes only References", {
+  observer <- Observer$new(list(
+    Name = "x",
+    Formula = list(
+      Formula = "Conc",
+      References = list(list(Alias = "a", Path = "p"))
+    )
+  ))
+
+  observer$formula_references <- NULL
+
+  expect_null(observer$data$Formula$References)
+  expect_equal(observer$data$Formula$Formula, "Conc")
+})
+
+test_that("Observer formula_references NULL keeps a Formula-less observer clean", {
+  observer <- Observer$new(list(Name = "x"))
+
+  observer$formula_references <- NULL
+
+  expect_null(observer$data$Formula)
+})
+
+test_that("Observer formula_references setter aborts on non-list input", {
+  observer <- Observer$new(list(Name = "x"))
+  expect_snapshot(observer$formula_references <- "x", error = TRUE)
+})
+
+test_that("Observer formula_references failed assignment leaves data unchanged", {
+  observer <- Observer$new(list(Name = "x"))
+  before <- observer$data
+
+  try(observer$formula_references <- "x", silent = TRUE)
+
+  expect_equal(observer$data, before)
+  expect_null(observer$data$Formula)
 })
 
 test_that("Observer container_tags joins multiple tags", {
@@ -182,6 +252,52 @@ test_that("Observer container_tags joins multiple tags", {
 test_that("Observer container_tags is read-only", {
   observer <- Observer$new(list(Name = "x"))
   expect_snapshot(observer$container_tags <- "x", error = TRUE)
+})
+
+test_that("Observer container_criteria getter preserves Type verbatim", {
+  criteria <- list(list(Tag = "Brain", Type = "MatchTag"))
+  observer <- Observer$new(list(Name = "x", ContainerCriteria = criteria))
+
+  expect_equal(observer$container_criteria, criteria)
+  expect_equal(observer$container_tags, "Brain")
+})
+
+test_that("Observer container_criteria setter writes and removes", {
+  observer <- Observer$new(list(Name = "x"))
+
+  observer$container_criteria <- list(
+    create_descriptor_condition("Liver", "NotInContainer")
+  )
+  expect_equal(
+    observer$data$ContainerCriteria,
+    list(list(Tag = "Liver", Type = "NotInContainer"))
+  )
+
+  observer$container_criteria <- NULL
+  expect_null(observer$data$ContainerCriteria)
+})
+
+test_that("Observer container_criteria setter aborts on non-list input", {
+  observer <- Observer$new(list(Name = "x"))
+  expect_snapshot(observer$container_criteria <- "x", error = TRUE)
+})
+
+test_that("Observer molecule_list getter, setter, and removal work", {
+  observer <- Observer$new(list(Name = "x"))
+
+  molecule_list <- create_molecule_list(for_all = FALSE, include = "Drug")
+  observer$molecule_list <- molecule_list
+
+  expect_equal(observer$data$MoleculeList, molecule_list)
+  expect_equal(observer$molecule_list, molecule_list)
+
+  observer$molecule_list <- NULL
+  expect_null(observer$data$MoleculeList)
+})
+
+test_that("Observer molecule_list setter aborts on non-list input", {
+  observer <- Observer$new(list(Name = "x"))
+  expect_snapshot(observer$molecule_list <- "x", error = TRUE)
 })
 
 test_that("Observer data is read-only", {

@@ -96,13 +96,17 @@ reference:
   - create_compound_group_selection
   - create_compound_process_selection
   - create_compound_properties
+  - create_descriptor_condition
   - create_event
   - create_event_selection
   - create_expression_profile
+  - create_formula_reference
   - create_formulation
   - create_formulation_selection
   - create_individual
+  - create_molecule_list
   - create_observed_data
+  - create_observer
   - create_observer_set
   - create_observer_set_selection
   - create_output_interval
