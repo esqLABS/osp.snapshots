@@ -1,5 +1,18 @@
 # Changelog
 
+## osp.snapshots 1.0.0.9000
+
+### New features
+
+- [`create_snapshot()`](https://esqlabs.github.io/osp.snapshots/reference/create_snapshot.md)
+  creates an empty snapshot carrying the current supported PK-Sim
+  version, optionally named and described, as a snapshot-level
+  counterpart to
+  [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/reference/load_snapshot.md)
+  and
+  [`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/reference/export_snapshot.md)
+  (#112).
+
 ## osp.snapshots 1.0.0
 
 This release widens the building-block coverage of `osp.snapshots` and
