@@ -53,7 +53,15 @@ returned as a character vector for backwards compatibility. Use
 \verb{$origin_data$calculation_methods} to access the
 \link{CalculationMethods} object directly.}
 
-    \item{\code{expression_profiles}}{The expression profiles of the individual (read-only)}
+    \item{\code{expression_profiles}}{Read/write. The expression profiles attached
+to the individual, as a character vector of composite names
+(\code{Molecule|Species|Category}) or \code{NULL} when none are attached.
+Assigning a character vector replaces the attached profiles; assigning
+\code{NULL} or \code{character(0)} removes them (no empty array is serialized).}
+
+    \item{\code{description}}{Read/write. Free-text description of the individual,
+or \code{NULL} when none is set. Assigning a length-1 character sets it;
+assigning \code{NULL} removes it.}
   }
   \if{html}{\out{</div>}}
 }

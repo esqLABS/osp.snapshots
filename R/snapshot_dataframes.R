@@ -114,6 +114,7 @@ as_tibbles_individuals <- function(snapshot) {
     individuals = tibble::tibble(
       individual_id = character(0),
       name = character(0),
+      description = character(0),
       seed = integer(0),
       species = character(0),
       population = character(0),
