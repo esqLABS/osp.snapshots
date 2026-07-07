@@ -1,3 +1,9 @@
+# osp.snapshots 1.0.0.9000
+
+## New features
+
+- `create_snapshot()` creates an empty snapshot carrying the current supported PK-Sim version, optionally named and described, as a snapshot-level counterpart to `load_snapshot()` and `export_snapshot()` (#112).
+
 # osp.snapshots 1.0.0
 
 This release widens the building-block coverage of `osp.snapshots` and consolidates the public surface. You can now build every PK-Sim building block from named arguments through a single `create_*()` factory family (compounds, events, expression profiles, observed data, observer sets, populations, processes, protocols, schemas, and schema items), attach or remove them with paired `add_*()` / `remove_*()` mutators that chain with the base pipe, and convert any collection to a tibble through one dispatched `as_tibbles()` entry point. Observer sets are supported end to end (load, mutate, convert, export). Several previously list-shaped fields on existing classes are now first-class R6 objects with typed accessors.
