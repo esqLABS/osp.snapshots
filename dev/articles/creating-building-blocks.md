@@ -670,7 +670,9 @@ tryCatch(
   },
   error = function(e) cat("Error:", e$message, "\n")
 )
-#> Error: subscript out of bounds
+#> 
+#> ── Formulation: Invalid Form ───────────────────────────────────────────────────
+#> • Type: NonexistentType
 ```
 
 The same checks are also exported as standalone helpers

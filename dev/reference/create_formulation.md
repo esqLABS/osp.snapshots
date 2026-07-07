@@ -13,11 +13,12 @@ create_formulation(name, type, parameters = NULL)
 
 - name:
 
-  Character. Name of the formulation
+  Character. Name of the formulation.
 
 - type:
 
-  Character. Type of formulation, one of:
+  Character. Type of formulation. A curated human-readable alias or a
+  known raw `Formulation_*` key resolves to that key:
 
   - "Dissolved" - Immediate release solution
 
@@ -29,15 +30,41 @@ create_formulation(name, type, parameters = NULL)
 
   - "Table" - Custom release profile table
 
-  - "ZeroOrder" - Zero-order release formulation
+  - "Zero Order" - Zero-order release formulation
 
-  - "FirstOrder" - First-order release formulation
+  - "First Order" - First-order release formulation
+
+  Any other non-empty string is accepted verbatim and written straight
+  to `FormulationType`, so a new or otherwise unknown PK-Sim template
+  type can be authored (mirroring how
+  [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
+  treats `template`). The curated parameter vocabulary below only exists
+  for the known types.
 
 - parameters:
 
-  List. A named list of parameters for the formulation. The valid
-  parameters depend on the formulation type. Invalid parameters will
-  result in an error.
+  List. Accepts either of two mutually exclusive forms (they are never
+  mixed in one call):
+
+  - Curated form: a named list drawn from the per-type alias vocabulary
+    of a known `type` (documented in the sections below), with
+    scalar/vector values. Defaults, informational messages,
+    alias-to-`Name` synthesis, and the built-in `Table` shape apply.
+    Invalid aliases error.
+
+  - Raw form: a list of
+    [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
+    objects (built with
+    [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md))
+    and/or raw `list(Name=, Value=, ...)` dicts. Each entry is written
+    to `data$Parameters` with its `Name`, `Value`, `Unit`,
+    `ValueOrigin`, and `TableFormula` preserved verbatim, for any
+    `type`. This is the form that unlocks arbitrary real parameter names
+    (including on `Dissolved`), per-parameter `ValueOrigin`, and a
+    custom `TableFormula` on any type.
+
+  Only the raw form is valid for an unknown `type` (there is no alias
+  vocabulary to interpret a curated-looking list against).
 
 ## Value
 
@@ -177,6 +204,38 @@ custom <- create_formulation(
     tableX = c(0, 0.5, 1, 2, 4, 8),
     tableY = c(0, 0.1, 0.3, 0.6, 0.9, 1.0),
     suspension = TRUE
+  )
+)
+
+# Raw form: set an arbitrary parameter (with a ValueOrigin) on Dissolved
+raw_dissolved <- create_formulation(
+  name = "Suspension",
+  type = "Dissolved",
+  parameters = list(
+    create_parameter(
+      name = "Use as suspension",
+      value = 1,
+      source = "Lit",
+      description = "Reference XYZ"
+    )
+  )
+)
+
+# Raw form on an unknown type carrying a custom TableFormula
+custom_type <- create_formulation(
+  name = "Novel",
+  type = "Formulation_BrandNew",
+  parameters = list(
+    create_parameter(
+      name = "Fraction (dose)",
+      value = 0,
+      table_points = list(list(x = 0, y = 0), list(x = 60, y = 1)),
+      x_name = "Time",
+      y_name = "Fraction",
+      x_unit = "min",
+      x_dimension = "Time",
+      y_dimension = "Fraction"
+    )
   )
 )
 ```

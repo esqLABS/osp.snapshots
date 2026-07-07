@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9005</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,6 +44,8 @@
 <code><a href="../reference/create_descriptor_condition.html">create_descriptor_condition()</a></code> builds a container criterion (<code>Tag</code>, and an open-string <code>Type</code> such as <code>"InContainer"</code> or <code>"MatchTag"</code>) for an observer’s container criteria (#119).</li>
 <li>
 <code><a href="../reference/create_formula_reference.html">create_formula_reference()</a></code> builds a formula reference (<code>Alias</code>, <code>Path</code>, optional <code>Dimension</code>) for an observer’s formula (#119).</li>
+<li>
+<code><a href="../reference/create_formulation.html">create_formulation()</a></code> accepts an arbitrary <code>FormulationType</code> string and a raw <code>parameters</code> form (a list of <code><a href="../reference/create_parameter.html">create_parameter()</a></code> objects or <code>list(Name=, Value=, ...)</code> dicts), so you can author unknown formulation types and set arbitrary parameters by name, per-parameter <code>ValueOrigin</code>, and a custom <code>TableFormula</code> on any type; the curated alias form is unchanged and <code>Formulation$formulation_type</code> now accepts any non-empty string (#120).</li>
 <li>
 <code><a href="../reference/create_molecule_list.html">create_molecule_list()</a></code> builds an observer’s molecule list from <code>for_all</code>, <code>include</code>, and <code>exclude</code> (#119).</li>
 <li>

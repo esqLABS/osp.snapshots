@@ -9,6 +9,15 @@
 - [`create_formula_reference()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formula_reference.md)
   builds a formula reference (`Alias`, `Path`, optional `Dimension`) for
   an observer’s formula (#119).
+- [`create_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
+  accepts an arbitrary `FormulationType` string and a raw `parameters`
+  form (a list of
+  [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
+  objects or `list(Name=, Value=, ...)` dicts), so you can author
+  unknown formulation types and set arbitrary parameters by name,
+  per-parameter `ValueOrigin`, and a custom `TableFormula` on any type;
+  the curated alias form is unchanged and `Formulation$formulation_type`
+  now accepts any non-empty string (#120).
 - [`create_molecule_list()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_molecule_list.md)
   builds an observer’s molecule list from `for_all`, `include`, and
   `exclude` (#119).
