@@ -112,6 +112,30 @@
 ---
 
     Code
+      advanced_param$distribution_type <- character(0)
+    Condition
+      Error:
+      ! `distribution_type` must be a non-empty string
+
+---
+
+    Code
+      advanced_param$distribution_type <- NA
+    Condition
+      Error:
+      ! `distribution_type` must be a non-empty string
+
+---
+
+    Code
+      advanced_param$distribution_type <- c("Normal", "Uniform")
+    Condition
+      Error:
+      ! `distribution_type` must be a non-empty string
+
+---
+
+    Code
       print(advanced_param)
     Output
       Parameter: Modified Parameter

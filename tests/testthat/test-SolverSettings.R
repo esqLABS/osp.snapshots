@@ -72,6 +72,13 @@ test_that("SolverSettings$mx_step requires a single positive whole number", {
   expect_snapshot(error = TRUE, solver$mx_step <- -1)
 })
 
+test_that("SolverSettings$mx_step rejects values beyond the integer range", {
+  solver <- SolverSettings$new(list())
+  expect_snapshot(error = TRUE, solver$mx_step <- 3e9)
+  solver$mx_step <- .Machine$integer.max
+  expect_identical(solver$mx_step, .Machine$integer.max)
+})
+
 test_that("SolverSettings fields accept NULL to clear", {
   solver <- SolverSettings$new(list(AbsTol = 1e-6, MxStep = 100L))
   solver$abs_tol <- NULL

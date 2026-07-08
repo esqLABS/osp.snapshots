@@ -93,7 +93,7 @@ OutputMapping <- R6::R6Class(
       if (!is.null(value) && !is.numeric(value)) {
         cli::cli_abort("{.arg weights} must be a numeric vector")
       }
-      private$.data[["Weights"]] <- value
+      private$.data[["Weights"]] <- if (is.null(value)) NULL else as.list(value)
     }
   ),
   private = list(

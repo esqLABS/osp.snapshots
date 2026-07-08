@@ -110,3 +110,11 @@
       Error:
       ! `mx_step` must be a single positive whole number
 
+# SolverSettings$mx_step rejects values beyond the integer range
+
+    Code
+      solver$mx_step <- 3e+09
+    Condition
+      Error:
+      ! `mx_step` must be a single positive whole number
+

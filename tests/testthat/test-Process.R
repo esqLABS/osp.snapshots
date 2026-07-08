@@ -101,6 +101,10 @@ test_that("Process$molecule, $metabolite, $species accept NULL or a non-empty st
   expect_snapshot(error = TRUE, p$species <- 5)
   p$molecule <- NULL
   expect_null(p$molecule)
+  p$metabolite <- NULL
+  expect_null(p$metabolite)
+  p$species <- NULL
+  expect_null(p$species)
 })
 
 test_that("Process parameters setter accepts Parameter R6 objects", {

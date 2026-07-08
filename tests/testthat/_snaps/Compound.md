@@ -469,6 +469,22 @@
       Error:
       ! `plasma_protein_binding_partner` must be one of "Unknown", "Albumin", and "Glycoprotein"
 
+# plasma_protein_binding_partner rejects non-scalar-character input
+
+    Code
+      compound$plasma_protein_binding_partner <- character(0)
+    Condition
+      Error:
+      ! `plasma_protein_binding_partner` must be one of "Unknown", "Albumin", and "Glycoprotein"
+
+---
+
+    Code
+      compound$plasma_protein_binding_partner <- c("Albumin", "Unknown")
+    Condition
+      Error:
+      ! `plasma_protein_binding_partner` must be one of "Unknown", "Albumin", and "Glycoprotein"
+
 # Compounds sections can be accessed and are correctly printed
 
     Code

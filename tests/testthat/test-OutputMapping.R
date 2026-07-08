@@ -53,6 +53,19 @@ test_that("OutputMapping$weight and $weights are type-checked", {
   expect_snapshot(error = TRUE, mapping$weight <- "x")
 
   mapping$weights <- c(1, 2, 3)
-  expect_equal(mapping$weights, c(1, 2, 3))
+  expect_equal(mapping$weights, list(1, 2, 3))
   expect_snapshot(error = TRUE, mapping$weights <- "x")
+})
+
+test_that("OutputMapping$weights stores the same shape as create_output_mapping()", {
+  mapping <- OutputMapping$new(list())
+  mapping$weights <- 2.5
+  expect_true(is.list(mapping$weights))
+
+  from_factory <- create_output_mapping(
+    path = "Organism|Plasma",
+    observed_data = "Study A",
+    weights = 2.5
+  )
+  expect_identical(mapping$weights, from_factory$weights)
 })

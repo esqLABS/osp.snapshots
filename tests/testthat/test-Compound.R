@@ -54,6 +54,18 @@ test_that("plasma_protein_binding_partner is validated against the enum", {
   expect_null(compound$plasma_protein_binding_partner)
 })
 
+test_that("plasma_protein_binding_partner rejects non-scalar-character input", {
+  compound <- create_compound(name = "X")
+  expect_snapshot(
+    error = TRUE,
+    compound$plasma_protein_binding_partner <- character(0)
+  )
+  expect_snapshot(
+    error = TRUE,
+    compound$plasma_protein_binding_partner <- c("Albumin", "Unknown")
+  )
+})
+
 test_that("Compounds sections can be accessed and are correctly printed", {
   expect_no_error({
     snapshot$compounds[[1]]$name

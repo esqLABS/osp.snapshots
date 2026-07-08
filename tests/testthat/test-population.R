@@ -282,6 +282,14 @@ test_that("Population validates input values", {
     population$number_of_individuals <- "many",
     "must be a positive integer"
   )
+  expect_error(
+    population$number_of_individuals <- Inf,
+    "must be a positive integer"
+  )
+  expect_error(
+    population$number_of_individuals <- -Inf,
+    "must be a positive integer"
+  )
 
   # Test invalid proportion of females
   expect_error(
@@ -600,6 +608,15 @@ test_that("AdvancedParameter class works correctly", {
   advanced_param$distribution_type <- "LogNormal"
   expect_equal(advanced_param$distribution_type, "LogNormal")
   expect_snapshot(error = TRUE, advanced_param$distribution_type <- "Weibull")
+  expect_snapshot(
+    error = TRUE,
+    advanced_param$distribution_type <- character(0)
+  )
+  expect_snapshot(error = TRUE, advanced_param$distribution_type <- NA)
+  expect_snapshot(
+    error = TRUE,
+    advanced_param$distribution_type <- c("Normal", "Uniform")
+  )
 
   # Test print method
   expect_snapshot(print(advanced_param))

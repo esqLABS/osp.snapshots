@@ -355,7 +355,7 @@ Population <- R6::R6Class(
       if (
         !is.numeric(value) ||
           length(value) != 1 ||
-          is.na(value) ||
+          !is.finite(value) ||
           value < 1 ||
           value != round(value)
       ) {
@@ -732,10 +732,13 @@ AdvancedParameter <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$DistributionType)
       }
-      if (!is.null(value) && !(value %in% DISTRIBUTION_TYPES)) {
-        cli::cli_abort(
-          "{.arg distribution_type} must be one of {.val {DISTRIBUTION_TYPES}}"
-        )
+      if (!is.null(value)) {
+        check_required_string(value, "distribution_type")
+        if (!(value %in% DISTRIBUTION_TYPES)) {
+          cli::cli_abort(
+            "{.arg distribution_type} must be one of {.val {DISTRIBUTION_TYPES}}"
+          )
+        }
       }
       private$.data$DistributionType <- value
     },

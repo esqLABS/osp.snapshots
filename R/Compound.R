@@ -539,7 +539,12 @@ Compound <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$PlasmaProteinBindingPartner)
       }
-      if (!is.null(value) && !(value %in% PLASMA_PROTEIN_BINDING_PARTNERS)) {
+      if (
+        !is.null(value) &&
+          (!is.character(value) ||
+            length(value) != 1 ||
+            !(value %in% PLASMA_PROTEIN_BINDING_PARTNERS))
+      ) {
         cli::cli_abort(
           "{.arg plasma_protein_binding_partner} must be one of {.val {PLASMA_PROTEIN_BINDING_PARTNERS}}"
         )

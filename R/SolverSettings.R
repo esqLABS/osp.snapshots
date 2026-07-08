@@ -149,7 +149,8 @@ check_positive_whole_number <- function(value, arg, call = parent.frame()) {
     !is.numeric(value) ||
       length(value) != 1 ||
       !is.finite(value) ||
-      value != as.integer(value) ||
+      value %% 1 != 0 ||
+      value > .Machine$integer.max ||
       value < 1
   ) {
     cli::cli_abort(
