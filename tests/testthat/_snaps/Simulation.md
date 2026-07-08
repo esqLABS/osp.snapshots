@@ -26,6 +26,53 @@
       Error in `snap$add_simulation()`:
       ! Every element of a named `formulation` map must have a slot key name
 
+# add_simulation rejects a formulation map with a duplicate slot key
+
+    Code
+      suppressMessages(snap$add_simulation(name = "DuplicateSlotKey", individual = "Korean (Yu 2004 study)",
+        compounds = list(list(name = "Rifampicin", protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+          formulation = c(Formulation = "A", Formulation = "B")))))
+    Condition
+      Error in `snap$add_simulation()`:
+      ! `formulation` names slot key "Formulation" more than once; a slot can be bound at most once.
+
+# add_simulation rejects a formulation map with an empty value
+
+    Code
+      suppressMessages(snap$add_simulation(name = "EmptyFormulationValue",
+        individual = "Korean (Yu 2004 study)", compounds = list(list(name = "Rifampicin",
+          protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+          formulation = c(Formulation = "A", Other = "")))))
+    Condition
+      Error in `snap$add_simulation()`:
+      ! Every value of a named `formulation` map must be a non-empty string
+
+# add_simulation warns, but does not error, on an unknown formulation slot key
+
+    Code
+      snap$add_simulation(name = "UnknownSlotKey", individual = "Korean (Yu 2004 study)",
+        compounds = list(list(name = "Rifampicin", protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+          formulation = c(`form-Lint80` = "form_Lint80", `Nonexistent-Slot` = "Oral solution"))))
+    Message
+      i Derived defaults for 1 compound from the snapshot:
+      * Rifampicin: calculation methods, alternatives
+      ! A `formulation` map names a slot key not found on the referenced protocol:
+      * Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56): Nonexistent-Slot
+      i PK-Sim rejects an unbound or mis-bound slot when the snapshot is loaded.
+      v Added 1 simulation(s)
+
+# add_simulation emits no unknown-slot-key warning against an unresolved protocol
+
+    Code
+      suppressMessages(snap$add_simulation(name = "UnresolvedProtocolSlot",
+        individual = "Korean (Yu 2004 study)", compounds = list(list(name = "Rifampicin",
+          protocol = "NoSuchProtocol", formulation = c(AnySlot = "Oral solution")))))
+    Condition
+      Warning:
+      Simulation "UnresolvedProtocolSlot" references building blocks that are not in the snapshot:
+      * Protocols: NoSuchProtocol
+      i PK-Sim will fail to resolve these at load time.
+
 # add_simulation notes a multi-slot protocol when the formulation key is inferred
 
     Code

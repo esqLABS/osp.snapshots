@@ -281,6 +281,96 @@ test_that("add_simulation rejects a formulation map with an unnamed element", {
   )
 })
 
+test_that("add_simulation rejects a formulation map with a duplicate slot key", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "DuplicateSlotKey",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+          formulation = c(Formulation = "A", Formulation = "B")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation rejects a formulation map with an empty value", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "EmptyFormulationValue",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+          formulation = c(Formulation = "A", Other = "")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation warns, but does not error, on an unknown formulation slot key", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  # The formulation map's Formulations payload is still emitted verbatim
+  # and the simulation is still added; the unknown slot key only produces
+  # a non-fatal, informational message (the protocol itself decides at
+  # PK-Sim load time whether an unbound slot is acceptable).
+  expect_snapshot(
+    snap$add_simulation(
+      name = "UnknownSlotKey",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(
+        name = "Rifampicin",
+        protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+        formulation = c(
+          "form-Lint80" = "form_Lint80",
+          "Nonexistent-Slot" = "Oral solution"
+        )
+      ))
+    )
+  )
+
+  built <- snap$simulations[["UnknownSlotKey"]]$compounds[[1]]$protocol
+  expect_equal(
+    built$data$Formulations,
+    list(
+      list(Name = "form_Lint80", Key = "form-Lint80"),
+      list(Name = "Oral solution", Key = "Nonexistent-Slot")
+    )
+  )
+})
+
+test_that("add_simulation emits no unknown-slot-key warning against an unresolved protocol", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  # The protocol is not in the snapshot, so its real slot keys are
+  # unknown; the existing missing-reference warning is the only signal.
+  expect_snapshot(
+    suppressMessages(
+      snap$add_simulation(
+        name = "UnresolvedProtocolSlot",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          protocol = "NoSuchProtocol",
+          formulation = c(AnySlot = "Oral solution")
+        ))
+      )
+    )
+  )
+})
+
 test_that("add_simulation notes a multi-slot protocol when the formulation key is inferred", {
   snap <- load_snapshot(test_path("data", "test_snapshot.json"))
 

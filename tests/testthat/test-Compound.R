@@ -272,6 +272,14 @@ test_that("solubility field rejects a list containing a non-matching helper", {
   )
 })
 
+test_that("solubility field rejects duplicate alternative names", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+  expect_snapshot(
+    error = TRUE,
+    compound$solubility <- list(solubility(9999), solubility(200))
+  )
+})
+
 test_that("assigning the wrong helper to a physicochemical field aborts", {
   compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
   expect_snapshot(error = TRUE, compound$lipophilicity <- weight(70))

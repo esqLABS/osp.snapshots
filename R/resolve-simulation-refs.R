@@ -156,6 +156,8 @@ build_protocol_selection <- function(
 
   if (is_formulation_map(formulation)) {
     check_formulation_map_names(formulation, call = call)
+    protocol <- snapshot$protocols[[protocol_name]]
+    warn_unknown_slot_keys(protocol, protocol_name, names(formulation), notes)
     result$Formulations <- Map(
       function(key, name) list(Name = name, Key = key),
       names(formulation),
@@ -189,15 +191,75 @@ is_formulation_map <- function(formulation) {
   is_named_chr || is_named_list_of_strings
 }
 
-# Internal: abort if a named formulation map has an empty/missing slot key.
+# Internal: validate the shape of a named `formulation` map: every slot key
+# must be a non-empty name, no slot key may repeat, and every mapped value
+# must be a non-empty string. These are input-shape errors (not a check of
+# the slot key against the referenced protocol, which stays a non-fatal
+# warning, see `warn_unknown_slot_keys()`).
 check_formulation_map_names <- function(formulation, call = parent.frame()) {
-  if (any(!nzchar(names(formulation)))) {
+  keys <- names(formulation)
+  if (any(!nzchar(keys))) {
     cli::cli_abort(
       "Every element of a named {.arg formulation} map must have a slot key name",
       call = call
     )
   }
+  dupes <- unique(keys[duplicated(keys)])
+  if (length(dupes) > 0) {
+    cli::cli_abort(
+      "{.arg formulation} names slot key {.val {dupes}} more than once; a \\
+      slot can be bound at most once.",
+      call = call
+    )
+  }
+  values <- unlist(formulation, use.names = FALSE)
+  valid_values <- is.character(values) &&
+    length(values) == length(formulation) &&
+    !anyNA(values) &&
+    all(nzchar(values))
+  if (!valid_values) {
+    cli::cli_abort(
+      "Every value of a named {.arg formulation} map must be a non-empty \\
+      string",
+      call = call
+    )
+  }
   invisible(formulation)
+}
+
+# Internal: the non-fatal counterpart to `check_formulation_map_names()`.
+# Warns (does not error, per the spec's decision that a bad slot key
+# surfaces through PK-Sim's own load-time validation) when a formulation
+# map names a slot key the referenced protocol does not have. Emits
+# nothing when the protocol is not in the snapshot (its real slot keys are
+# unknown, and the missing-reference warning already covers that case).
+warn_unknown_slot_keys <- function(protocol, protocol_name, keys, notes) {
+  if (is.null(protocol)) {
+    return(invisible(NULL))
+  }
+  valid_keys <- protocol_slot_keys(protocol)
+  unknown <- setdiff(keys, valid_keys)
+  if (length(unknown) > 0) {
+    notes$add_unknown_slot_key(protocol_name, unknown)
+  }
+  invisible(NULL)
+}
+
+# Internal: the non-empty application-slot keys carried by a protocol's
+# schemas. Shared by `infer_formulation_key()` and
+# `warn_unknown_slot_keys()` so both read a protocol's real slot keys the
+# same way.
+protocol_slot_keys <- function(protocol) {
+  keys <- character()
+  for (schema in protocol$schemas) {
+    for (item in schema$items) {
+      key <- item$formulation_key
+      if (!is.null(key) && nzchar(key)) {
+        keys <- c(keys, key)
+      }
+    }
+  }
+  keys
 }
 
 # FR-5.2: infer the formulation key from a Protocol's application slots.
@@ -211,15 +273,7 @@ infer_formulation_key <- function(protocol, notes) {
     return("Formulation")
   }
 
-  keys <- character()
-  for (schema in protocol$schemas) {
-    for (item in schema$items) {
-      key <- item$formulation_key
-      if (!is.null(key) && nzchar(key)) {
-        keys <- c(keys, key)
-      }
-    }
-  }
+  keys <- protocol_slot_keys(protocol)
 
   if (length(keys) == 0) {
     return("Formulation")
@@ -477,6 +531,7 @@ is_systemic_process <- function(name) {
 new_derivation_notes <- function() {
   derived <- list()
   multi_slot <- character()
+  unknown_slot_keys <- list()
   list(
     add = function(kind, compound_name) {
       derived[[compound_name]] <<- unique(c(derived[[compound_name]], kind))
@@ -484,8 +539,15 @@ new_derivation_notes <- function() {
     add_multi_slot = function(protocol_name) {
       multi_slot <<- unique(c(multi_slot, protocol_name))
     },
+    add_unknown_slot_key = function(protocol_name, keys) {
+      unknown_slot_keys[[protocol_name]] <<- unique(c(
+        unknown_slot_keys[[protocol_name]],
+        keys
+      ))
+    },
     derived = function() derived,
-    multi_slot = function() multi_slot
+    multi_slot = function() multi_slot,
+    unknown_slot_keys = function() unknown_slot_keys
   )
 }
 
@@ -513,6 +575,25 @@ emit_derivation_notes <- function(notes) {
       multiple application slots; mapped the formulation to the first slot.",
       "i" = "Pass a named {.arg formulation} map (slot key = formulation \\
       name) to bind every slot explicitly."
+    ))
+  }
+
+  unknown_slot_keys <- notes$unknown_slot_keys()
+  if (length(unknown_slot_keys) > 0) {
+    protocol_names <- names(unknown_slot_keys)
+    lines <- vapply(
+      protocol_names,
+      function(name) {
+        paste0(name, ": ", paste(unknown_slot_keys[[name]], collapse = ", "))
+      },
+      character(1)
+    )
+    cli::cli_inform(c(
+      "!" = "{cli::qty(protocol_names)}A {.arg formulation} map names a \\
+      slot key not found on the referenced protocol{?s}:",
+      stats::setNames(lines, rep("*", length(lines))),
+      "i" = "PK-Sim rejects an unbound or mis-bound slot when the snapshot \\
+      is loaded."
     ))
   }
 }

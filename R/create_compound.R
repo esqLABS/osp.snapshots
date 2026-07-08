@@ -355,34 +355,55 @@ build_solubility_alternatives <- function(
 # Internal: build a multi-alternative array from a list of matching
 # physicochemical-property specs. Element order is preserved; the first
 # element is `IsDefault = TRUE`, the rest `IsDefault = FALSE` (D-1, FR-2).
-# Duplicate `name`s are rejected (FR-4).
+# Duplicate `name`s are rejected (FR-4). Thin wrapper around
+# `specs_to_alternatives()`, passing the single-parameter converter.
 specs_to_single_param_alternatives <- function(
   specs,
   param_name,
   property,
   call = parent.frame()
 ) {
-  check_unique_alternative_names(specs, property, call = call)
-  alts <- lapply(specs, function(spec) {
-    spec_to_single_param_alternative(spec, param_name)[[1]]
-  })
-  alts <- mark_default_alternative(alts)
-  unname(alts)
+  specs_to_alternatives(
+    specs,
+    property,
+    function(spec) spec_to_single_param_alternative(spec, param_name)[[1]],
+    call = call
+  )
 }
 
 # Internal: the solubility equivalent of
 # `specs_to_single_param_alternatives()`. Each element independently
 # branches scalar vs table form via `spec_to_solubility_alternative()`
-# (edge case: a list may mix scalar-form and table-form elements).
+# (edge case: a list may mix scalar-form and table-form elements). Thin
+# wrapper around `specs_to_alternatives()`, passing the solubility
+# converter.
 specs_to_solubility_alternatives <- function(
   specs,
   property,
   call = parent.frame()
 ) {
+  specs_to_alternatives(
+    specs,
+    property,
+    function(spec) spec_to_solubility_alternative(spec)[[1]],
+    call = call
+  )
+}
+
+# Internal: the shared list-of-specs-to-alternative-array flow behind
+# `specs_to_single_param_alternatives()` and
+# `specs_to_solubility_alternatives()`, which differ only in how a single
+# spec is converted into its alternative. Validates unique alternative
+# `name`s (FR-4), converts every element with `converter`, and marks the
+# first element as the default (D-1, FR-2).
+specs_to_alternatives <- function(
+  specs,
+  property,
+  converter,
+  call = parent.frame()
+) {
   check_unique_alternative_names(specs, property, call = call)
-  alts <- lapply(specs, function(spec) {
-    spec_to_solubility_alternative(spec)[[1]]
-  })
+  alts <- lapply(specs, converter)
   alts <- mark_default_alternative(alts)
   unname(alts)
 }

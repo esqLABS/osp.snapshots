@@ -47,6 +47,7 @@ NULL
 lipophilicity <- function(value, unit = "Log Units", name = "User defined") {
   check_numeric_scalar(value, "value")
   validate_unit(unit, "Log Units")
+  check_required_string(name, "name")
   new_value_spec(
     "lipophilicity_spec",
     list(
@@ -80,6 +81,7 @@ lipophilicity <- function(value, unit = "Log Units", name = "User defined") {
 #' create_compound(name = "Drug X", fraction_unbound = fraction_unbound(0.1))
 fraction_unbound <- function(value, name = "User defined") {
   check_numeric_scalar(value, "value")
+  check_required_string(name, "name")
   new_value_spec(
     "fraction_unbound_spec",
     list(
@@ -139,6 +141,8 @@ solubility <- function(
   table = NULL,
   name = "User defined"
 ) {
+  check_required_string(name, "name")
+
   is_table <- !is.null(table)
   scalar_supplied <- !is.null(value) ||
     !is.null(reference_pH) ||
@@ -232,6 +236,7 @@ intestinal_permeability <- function(
 ) {
   check_numeric_scalar(value, "value")
   validate_unit(unit, "Velocity")
+  check_required_string(name, "name")
   new_value_spec(
     "intestinal_permeability_spec",
     list(
@@ -266,6 +271,7 @@ intestinal_permeability <- function(
 permeability <- function(value, unit = "cm/min", name = "User defined") {
   check_numeric_scalar(value, "value")
   validate_unit(unit, "Velocity")
+  check_required_string(name, "name")
   new_value_spec(
     "permeability_spec",
     list(

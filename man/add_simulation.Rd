@@ -52,9 +52,9 @@ select on that compound, for example
 default for the named groups only, every other group is still
 defaulted from the compound. \code{formulation} accepts a single string
 (bound to the protocol's inferred first slot key, unchanged) or a
-named character vector mapping application-slot key to formulation
-name for a multi-slot protocol, for example
-\code{formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")}.}
+named character vector (or named list of length-one strings) mapping
+application-slot key to formulation name for a multi-slot protocol,
+for example \code{formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")}.}
 
 \item{events}{List of \link{EventSelection} objects or raw lists.}
 

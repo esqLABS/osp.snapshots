@@ -557,10 +557,11 @@ Snapshot <- R6::R6Class(
     #'   it overrides the derived default for the named groups only, every
     #'   other group is still defaulted from the compound. `formulation`
     #'   accepts a single string (bound to the protocol's inferred first
-    #'   slot key, unchanged) or a named character vector mapping
-    #'   application-slot key to formulation name for a multi-slot
-    #'   protocol, for example `formulation = c(Formulation = "Oral
-    #'   solution", "Formulation 2" = "IV solution")`.
+    #'   slot key, unchanged) or a named character vector (or named list of
+    #'   length-one strings) mapping application-slot key to formulation
+    #'   name for a multi-slot protocol, for example
+    #'   `formulation = c(Formulation = "Oral solution",
+    #'   "Formulation 2" = "IV solution")`.
     #' @param events List of [EventSelection] objects or raw lists.
     #' @param observer_sets List of [ObserverSetSelection] objects or raw
     #'   lists.
@@ -2365,9 +2366,9 @@ remove_observed_data <- function(snapshot, observed_data_name) {
 #'   default for the named groups only, every other group is still
 #'   defaulted from the compound. `formulation` accepts a single string
 #'   (bound to the protocol's inferred first slot key, unchanged) or a
-#'   named character vector mapping application-slot key to formulation
-#'   name for a multi-slot protocol, for example
-#'   `formulation = c(Formulation = "Oral solution",
+#'   named character vector (or named list of length-one strings) mapping
+#'   application-slot key to formulation name for a multi-slot protocol,
+#'   for example `formulation = c(Formulation = "Oral solution",
 #'   "Formulation 2" = "IV solution")`.
 #' @param events List of [EventSelection] objects or raw lists.
 #' @param observer_sets List of [ObserverSetSelection] objects or raw
