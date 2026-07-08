@@ -1,7 +1,5 @@
 # osp.snapshots (development version)
 
-# osp.snapshots 1.0.0
-
 ## Breaking changes
 
 - `compound$calculation_methods` returns a `CalculationMethods` R6 object instead of a plain list with class `compound_calculation_methods`. Read the names with `compound$calculation_methods$names` and mutate with `$add(name)`, `$remove(name)`; `$length` reports the count (#30).
