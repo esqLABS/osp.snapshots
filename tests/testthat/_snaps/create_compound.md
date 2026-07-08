@@ -47,15 +47,14 @@
       ! Invalid unit: not-a-unit
       i Valid units for Molecular weight are: kg/µmol, kg/mol, kDa, g/mol
 
-# create_compound rejects both scalar and table solubility
+# solubility() rejects both scalar and table forms
 
     Code
-      create_compound(name = "X", solubility = 1, solubility_table = data.frame(pH = 3,
-        value = 5000))
+      solubility(1, table = data.frame(pH = 3, value = 5000))
     Condition
-      Error in `create_compound()`:
+      Error in `solubility()`:
       ! Solubility is set either by a single value or by a table, not both.
-      i Supply `solubility` or `solubility_table`, not both.
+      i Supply the scalar form (`value`, `reference_pH`, `gain_per_charge`) or `table`, not both.
 
 # create_compound rejects invalid pKa entries
 
@@ -74,61 +73,79 @@
       Error in `create_compound()`:
       ! Entry 1 of `pKa` must have a numeric value
 
-# create_compound rejects non-numeric property values
+# physicochemical helpers reject non-numeric values
 
     Code
-      create_compound(name = "X", lipophilicity = "a")
+      lipophilicity("a")
     Condition
-      Error in `create_compound()`:
-      ! `lipophilicity` must be a numeric value
+      Error in `lipophilicity()`:
+      ! `value` must be a numeric value
 
 ---
 
     Code
-      create_compound(name = "X", fraction_unbound = "a")
+      fraction_unbound("a")
     Condition
-      Error in `create_compound()`:
-      ! `fraction_unbound` must be a numeric value
+      Error in `fraction_unbound()`:
+      ! `value` must be a numeric value
 
 ---
 
     Code
-      create_compound(name = "X", solubility = "a")
+      solubility("a")
     Condition
-      Error in `create_compound()`:
-      ! `solubility` must be a numeric value
+      Error in `solubility()`:
+      ! `value` must be a numeric value
 
 ---
 
     Code
-      create_compound(name = "X", reference_pH = "a")
+      solubility(9999, reference_pH = "a")
     Condition
-      Error in `create_compound()`:
+      Error in `solubility()`:
       ! `reference_pH` must be a numeric value
 
 ---
 
     Code
-      create_compound(name = "X", solubility_gain_per_charge = "a")
+      solubility(9999, gain_per_charge = "a")
     Condition
-      Error in `create_compound()`:
-      ! `solubility_gain_per_charge` must be a numeric value
+      Error in `solubility()`:
+      ! `gain_per_charge` must be a numeric value
 
 ---
 
     Code
-      create_compound(name = "X", intestinal_permeability = "a")
+      intestinal_permeability("a")
     Condition
-      Error in `create_compound()`:
-      ! `intestinal_permeability` must be a numeric value
+      Error in `intestinal_permeability()`:
+      ! `value` must be a numeric value
 
 ---
 
     Code
-      create_compound(name = "X", permeability = "a")
+      permeability("a")
+    Condition
+      Error in `permeability()`:
+      ! `value` must be a numeric value
+
+# create_compound rejects a plain scalar or the wrong helper
+
+    Code
+      create_compound(name = "X", lipophilicity = 2.5)
     Condition
       Error in `create_compound()`:
-      ! `permeability` must be a numeric value
+      ! `lipophilicity` must be built with `lipophilicity()`.
+      i For example `lipophilicity = lipophilicity(2.5)`.
+
+---
+
+    Code
+      create_compound(name = "X", lipophilicity = weight(70))
+    Condition
+      Error in `create_compound()`:
+      ! `lipophilicity` was built with the wrong helper.
+      i Use `lipophilicity()` for `lipophilicity`, e.g. `lipophilicity = lipophilicity(2.5)`.
 
 # create_compound rejects a non-list processes argument
 
@@ -138,36 +155,34 @@
       Error in `create_compound()`:
       ! `processes` must be a list
 
-# create_compound rejects a malformed solubility table
+# solubility() rejects a malformed table
 
     Code
-      create_compound(name = "X", solubility_table = c(3, 6))
+      solubility(table = c(3, 6))
     Condition
-      Error in `create_compound()`:
-      ! `solubility_table` must be a data frame with two columns (pH, value)
+      Error in `solubility()`:
+      ! `table` must be a data frame with two columns (pH, value)
 
-# create_compound rejects an empty or non-numeric solubility table
+# solubility() rejects an empty or non-numeric table
 
     Code
-      create_compound(name = "X", solubility_table = data.frame(pH = numeric(0),
-      value = numeric(0)))
+      solubility(table = data.frame(pH = numeric(0), value = numeric(0)))
     Condition
-      Error in `create_compound()`:
-      ! `solubility_table` must have at least one row with numeric pH and value columns
+      Error in `solubility()`:
+      ! `table` must have at least one row with numeric pH and value columns
 
 ---
 
     Code
-      create_compound(name = "X", solubility_table = data.frame(pH = c(3, 6), value = c(
-        "a", "b")))
+      solubility(table = data.frame(pH = c(3, 6), value = c("a", "b")))
     Condition
-      Error in `create_compound()`:
-      ! `solubility_table` must have at least one row with numeric pH and value columns
+      Error in `solubility()`:
+      ! `table` must have at least one row with numeric pH and value columns
 
-# create_compound validates property units
+# physicochemical helpers validate units
 
     Code
-      create_compound(name = "X", lipophilicity = 2.5, lipophilicity_unit = "nope")
+      lipophilicity(2.5, unit = "nope")
     Condition
       Error in `validate_unit()`:
       ! Invalid unit: nope
@@ -176,7 +191,7 @@
 ---
 
     Code
-      create_compound(name = "X", solubility = 1, solubility_unit = "nope")
+      solubility(1, unit = "nope")
     Condition
       Error in `validate_unit()`:
       ! Invalid unit: nope
@@ -185,8 +200,7 @@
 ---
 
     Code
-      create_compound(name = "X", intestinal_permeability = 1,
-        intestinal_permeability_unit = "nope")
+      intestinal_permeability(1, unit = "nope")
     Condition
       Error in `validate_unit()`:
       ! Invalid unit: nope
@@ -195,7 +209,7 @@
 ---
 
     Code
-      create_compound(name = "X", permeability = 1, permeability_unit = "nope")
+      permeability(1, unit = "nope")
     Condition
       Error in `validate_unit()`:
       ! Invalid unit: nope

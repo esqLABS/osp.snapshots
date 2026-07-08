@@ -101,11 +101,12 @@ test_that("loadDataSetFromSnapshot sets the time unit label without rescaling xV
 test_that("create_observed_data preserves a non-hour time unit", {
   dataset <- create_observed_data(
     name = "days study",
-    time = c(1, 2, 3),
-    values = c(10, 5, 2),
-    time_unit = "day(s)",
-    value_unit = "mg/l",
-    value_dimension = "Concentration (mass)"
+    time = time(c(1, 2, 3), unit = "day(s)"),
+    values = values(
+      c(10, 5, 2),
+      unit = "mg/l",
+      dimension = "Concentration (mass)"
+    )
   )
 
   expect_equal(dataset$xUnit, "day(s)")
@@ -287,13 +288,17 @@ test_that("add_observed_data does not warn for runtime DataSets", {
 test_that("export_snapshot round-trips a runtime DataSet added to an empty snapshot", {
   dataset <- create_observed_data(
     name = "Round-trip Study",
-    time = c(0, 1, 2, 4),
-    values = c(0, 5, 8, 4),
-    value_dimension = "Concentration (mass)",
-    value_unit = "mg/l",
-    error = c(0.1, 0.5, 0.8, 0.4),
-    error_type = "ArithmeticStdDev",
-    error_unit = "mg/l",
+    time = time(c(0, 1, 2, 4)),
+    values = values(
+      c(0, 5, 8, 4),
+      unit = "mg/l",
+      dimension = "Concentration (mass)"
+    ),
+    error = error(
+      c(0.1, 0.5, 0.8, 0.4),
+      unit = "mg/l",
+      type = "ArithmeticStdDev"
+    ),
     metadata = list(Source = "Test", Note = "synthetic")
   )
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
@@ -324,10 +329,8 @@ test_that("export_snapshot replays the original JSON slice for backed entries ev
 
   extra <- create_observed_data(
     name = "Extra Runtime",
-    time = c(0, 1),
-    values = c(0, 1),
-    value_dimension = "Concentration (mass)",
-    value_unit = "mg/l"
+    time = time(c(0, 1)),
+    values = values(c(0, 1), unit = "mg/l", dimension = "Concentration (mass)")
   )
   source_snapshot <- add_observed_data(source_snapshot, extra)
 

@@ -186,13 +186,26 @@ Compound <- R6::R6Class(
     },
 
     # Shared setter for the single-parameter alternative-group fields. A
-    # numeric scalar builds a single default alternative; a list is stored
-    # verbatim as the raw alternative array; NULL clears the key; anything
-    # else aborts naming the field. `unit = NULL` omits the parameter unit
-    # (fraction unbound). Returns the value to assign into private$.data.
+    # matching value-object helper (e.g. `lipophilicity()`) builds the
+    # alternative from its own value/unit/name; a numeric scalar builds a
+    # single default alternative; a list is stored verbatim as the raw
+    # alternative array; NULL clears the key; anything else aborts naming
+    # the field. `unit = NULL` omits the parameter unit (fraction unbound).
+    # Returns the value to assign into private$.data.
     set_alternative_group = function(value, param_name, unit, field) {
       if (is.null(value)) {
         return(NULL)
+      }
+      if (inherits(value, "osp_value_spec")) {
+        require_value_spec(value, paste0(field, "_spec"), field)
+        # `value$unit` is NULL for fraction unbound (no unit slot), which the
+        # builder treats as "omit unit" - the same as the scalar path.
+        return(build_single_param_alternative(
+          value$name,
+          param_name,
+          value$value,
+          value$unit
+        ))
       }
       if (is.numeric(value)) {
         if (length(value) != 1) {
@@ -553,11 +566,11 @@ Compound <- R6::R6Class(
     },
 
     #' @field lipophilicity The lipophilicity data of the compound. Writable:
-    #'   assign a numeric scalar to create a single default `Lipophilicity`
-    #'   alternative (parameter `"Lipophilicity"`, unit `"Log Units"`), a raw
-    #'   alternative list to set the array verbatim (the escape hatch for
-    #'   multiple, named, or species-specific alternatives), or `NULL` to
-    #'   clear the property.
+    #'   assign a [lipophilicity()] object, a numeric scalar to create a
+    #'   single default `Lipophilicity` alternative (parameter
+    #'   `"Lipophilicity"`, unit `"Log Units"`), a raw alternative list to
+    #'   set the array verbatim (the escape hatch for multiple, named, or
+    #'   species-specific alternatives), or `NULL` to clear the property.
     lipophilicity = function(value) {
       if (missing(value)) {
         result <- private$.data$Lipophilicity
@@ -576,8 +589,8 @@ Compound <- R6::R6Class(
     },
 
     #' @field fraction_unbound The fraction unbound data of the compound.
-    #'   Writable: assign a numeric scalar to create a single default
-    #'   `FractionUnbound` alternative (parameter
+    #'   Writable: assign a [fraction_unbound()] object, a numeric scalar to
+    #'   create a single default `FractionUnbound` alternative (parameter
     #'   `"Fraction unbound (plasma, reference value)"`, no unit), a raw
     #'   alternative list to set the array verbatim, or `NULL` to clear the
     #'   property.
@@ -599,14 +612,14 @@ Compound <- R6::R6Class(
     },
 
     #' @field solubility The solubility data of the compound. Writable:
-    #'   assign a numeric scalar to create a single default `Solubility`
-    #'   alternative (parameter `"Solubility at reference pH"`, unit
-    #'   `"mg/l"`), a raw alternative list to set the array verbatim, or
-    #'   `NULL` to clear the property. The scalar form cannot express
-    #'   reference pH, gain per charge, or table solubility; set those by
-    #'   assigning a raw alternative list or by using `create_compound()`
-    #'   with its `reference_pH`, `solubility_gain_per_charge`, or
-    #'   `solubility_table` arguments.
+    #'   assign a [solubility()] object to express reference pH, gain per
+    #'   charge, or a pH/value table, a numeric scalar to create a single
+    #'   default `Solubility` alternative (parameter
+    #'   `"Solubility at reference pH"`, unit `"mg/l"`), a raw alternative
+    #'   list to set the array verbatim, or `NULL` to clear the property.
+    #'   The numeric-scalar form cannot express reference pH, gain per
+    #'   charge, or table solubility; use a [solubility()] object or a raw
+    #'   alternative list for those.
     solubility = function(value) {
       if (missing(value)) {
         result <- private$.data$Solubility
@@ -618,6 +631,23 @@ Compound <- R6::R6Class(
       }
       if (is.null(value)) {
         private$.data$Solubility <- NULL
+      } else if (inherits(value, "osp_value_spec")) {
+        require_value_spec(value, "solubility_spec", "solubility")
+        private$.data$Solubility <- if (identical(value$form, "table")) {
+          build_solubility_table_alternative(
+            value$name,
+            value$table,
+            value$unit
+          )
+        } else {
+          build_solubility_alternative(
+            value$name,
+            value$value,
+            value$unit,
+            value$reference_pH,
+            value$gain_per_charge
+          )
+        }
       } else if (is.numeric(value)) {
         if (length(value) != 1) {
           cli::cli_abort("{.arg solubility} must be a numeric value")
@@ -637,8 +667,9 @@ Compound <- R6::R6Class(
     },
 
     #' @field intestinal_permeability The intestinal permeability data of the
-    #'   compound. Writable: assign a numeric scalar to create a single
-    #'   default `IntestinalPermeability` alternative (parameter
+    #'   compound. Writable: assign an [intestinal_permeability()] object, a
+    #'   numeric scalar to create a single default `IntestinalPermeability`
+    #'   alternative (parameter
     #'   `"Specific intestinal permeability (transcellular)"`, unit
     #'   `"cm/min"`), a raw alternative list to set the array verbatim, or
     #'   `NULL` to clear the property.
@@ -660,10 +691,10 @@ Compound <- R6::R6Class(
     },
 
     #' @field permeability The permeability data of the compound. Writable:
-    #'   assign a numeric scalar to create a single default `Permeability`
-    #'   alternative (parameter `"Permeability"`, unit `"cm/min"`), a raw
-    #'   alternative list to set the array verbatim, or `NULL` to clear the
-    #'   property.
+    #'   assign a [permeability()] object, a numeric scalar to create a
+    #'   single default `Permeability` alternative (parameter
+    #'   `"Permeability"`, unit `"cm/min"`), a raw alternative list to set
+    #'   the array verbatim, or `NULL` to clear the property.
     permeability = function(value) {
       if (missing(value)) {
         result <- private$.data$Permeability

@@ -1064,8 +1064,8 @@ test_that("add_compound accepts a list of objects", {
 test_that("add_individual accepts a list of objects", {
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
   objs <- list(
-    create_individual(name = "A", age = 25),
-    create_individual(name = "B", age = 45)
+    create_individual(name = "A", age = age(25)),
+    create_individual(name = "B", age = age(45))
   )
   snapshot <- add_individual(snapshot, objs)
   expect_named(snapshot$individuals, c("A", "B"))
@@ -1183,7 +1183,7 @@ test_that("add_compound rejects a list with a wrong-class element", {
 
 test_that("add_individual rejects a list with a wrong-class element", {
   snapshot <- load_snapshot(test_path("data", "empty_snapshot.json"))
-  bad <- list(create_individual(name = "A", age = 25), "nope")
+  bad <- list(create_individual(name = "A", age = age(25)), "nope")
   expect_snapshot(add_individual(snapshot, bad), error = TRUE)
 })
 

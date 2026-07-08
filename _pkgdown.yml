@@ -125,6 +125,22 @@ reference:
   - create_simulation
   - create_solver_settings
 
+- title: "Value-object helpers"
+  desc: "Bundle a value, unit, and field-specific extras for the create_* factory arguments"
+  contents:
+  - lipophilicity
+  - fraction_unbound
+  - solubility
+  - intestinal_permeability
+  - permeability
+  - age
+  - weight
+  - height
+  - gestational_age
+  - time
+  - values
+  - error
+
 - title: "Mutators"
   desc: "Add and remove building blocks on a snapshot"
   contents:

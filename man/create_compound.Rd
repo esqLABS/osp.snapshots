@@ -14,22 +14,10 @@ create_compound(
   calculation_methods = NULL,
   parameters = NULL,
   lipophilicity = NULL,
-  lipophilicity_unit = "Log Units",
-  lipophilicity_name = "User defined",
   fraction_unbound = NULL,
-  fraction_unbound_name = "User defined",
   solubility = NULL,
-  solubility_unit = "mg/l",
-  reference_pH = NULL,
-  solubility_gain_per_charge = NULL,
-  solubility_table = NULL,
-  solubility_name = "User defined",
   intestinal_permeability = NULL,
-  intestinal_permeability_unit = "cm/min",
-  intestinal_permeability_name = "User defined",
   permeability = NULL,
-  permeability_unit = "cm/min",
-  permeability_name = "User defined",
   pKa = NULL,
   processes = NULL
 )
@@ -58,73 +46,24 @@ that PK-Sim uses to derive compound quantities.}
 compound parameters. This does not set physicochemical properties;
 use the dedicated arguments below for those.}
 
-\item{lipophilicity}{Numeric scalar. Lipophilicity value. When supplied,
-one default \code{Lipophilicity} alternative is created.}
+\item{lipophilicity}{A \code{\link[=lipophilicity]{lipophilicity()}} object, or \code{NULL}. When
+supplied, one default \code{Lipophilicity} alternative is created.}
 
-\item{lipophilicity_unit}{Character. Unit for the lipophilicity
-parameter, validated against dimension \code{"Log Units"}. Defaults to
-\code{"Log Units"}.}
+\item{fraction_unbound}{A \code{\link[=fraction_unbound]{fraction_unbound()}} object, or \code{NULL}. When
+supplied, one default \code{FractionUnbound} alternative is created.}
 
-\item{lipophilicity_name}{Character. \code{Name} of the created lipophilicity
-alternative. Defaults to \code{"User defined"}.}
+\item{solubility}{A \code{\link[=solubility]{solubility()}} object, or \code{NULL}. Expresses either
+the scalar form (value at a reference pH, with optional gain per
+charge) or the table form (a pH/value table). When supplied, one
+\code{Solubility} alternative is created. See \code{\link[=solubility]{solubility()}} for the scalar
+vs table forms and the mutual-exclusivity rule.}
 
-\item{fraction_unbound}{Numeric scalar. Fraction unbound value. When
-supplied, one default \code{FractionUnbound} alternative is created. The
-fraction-unbound parameter carries no unit.}
-
-\item{fraction_unbound_name}{Character. \code{Name} of the created
-fraction-unbound alternative. Defaults to \code{"User defined"}.}
-
-\item{solubility}{Numeric scalar. Solubility-at-reference-pH value. When
-supplied, one scalar-based \code{Solubility} alternative is created.
-Mutually exclusive with \code{solubility_table}.}
-
-\item{solubility_unit}{Character. Unit for the solubility parameter,
-validated against dimension \code{"Concentration (mass)"}. Reused as the
-table Y unit. Defaults to \code{"mg/l"}.}
-
-\item{reference_pH}{Numeric scalar. Reference pH added to the same
-scalar \code{Solubility} alternative as \code{solubility}. Not a standalone
-property: it is ignored unless \code{solubility} is supplied, and it does
-not apply to the table path.}
-
-\item{solubility_gain_per_charge}{Numeric scalar. Optional
-\verb{Solubility gain per charge} parameter added to the same scalar
-\code{Solubility} alternative as \code{solubility}. Not a standalone property:
-it is ignored unless \code{solubility} is supplied.}
-
-\item{solubility_table}{Two-column data frame giving table-based
-solubility: the first column is pH and the second is the solubility
-value. When supplied, one \code{Solubility} alternative with a
-\verb{Solubility table} parameter carrying a \code{TableFormula} is created
-instead of a scalar solubility. Mutually exclusive with \code{solubility}.
-Note: on import PK-Sim runs a table-solubility preparation step that
-this package does not perform; the package emits the faithful raw
-\verb{Solubility table} + \code{TableFormula} shape that round-trips through
-load/export at the JSON level.}
-
-\item{solubility_name}{Character. \code{Name} of the created solubility
-alternative (scalar or table). Defaults to \code{"User defined"}.}
-
-\item{intestinal_permeability}{Numeric scalar. Intestinal permeability
-value. When supplied, one default \code{IntestinalPermeability} alternative
+\item{intestinal_permeability}{An \code{\link[=intestinal_permeability]{intestinal_permeability()}} object, or
+\code{NULL}. When supplied, one default \code{IntestinalPermeability} alternative
 is created.}
 
-\item{intestinal_permeability_unit}{Character. Unit for the
-intestinal-permeability parameter, validated against dimension
-\code{"Velocity"}. Defaults to \code{"cm/min"}.}
-
-\item{intestinal_permeability_name}{Character. \code{Name} of the created
-intestinal-permeability alternative. Defaults to \code{"User defined"}.}
-
-\item{permeability}{Numeric scalar. Permeability value. When supplied,
+\item{permeability}{A \code{\link[=permeability]{permeability()}} object, or \code{NULL}. When supplied,
 one default \code{Permeability} alternative is created.}
-
-\item{permeability_unit}{Character. Unit for the permeability parameter,
-validated against dimension \code{"Velocity"}. Defaults to \code{"cm/min"}.}
-
-\item{permeability_name}{Character. \code{Name} of the created permeability
-alternative. Defaults to \code{"User defined"}.}
 
 \item{pKa}{List of typed pKa entries, each a list with a \code{type}
 (one of \code{"Acid"}, \code{"Base"}, \code{"Neutral"}) and a numeric \code{value}, for
@@ -168,26 +107,26 @@ compound <- create_compound(
 # Set the single-parameter physicochemical properties
 compound <- create_compound(
   name = "Drug X",
-  lipophilicity = 2.5,
-  fraction_unbound = 0.1,
-  intestinal_permeability = 1.14e-05,
-  permeability = 0.0069
+  lipophilicity = lipophilicity(2.5),
+  fraction_unbound = fraction_unbound(0.1),
+  intestinal_permeability = intestinal_permeability(1.14e-05),
+  permeability = permeability(0.0069)
 )
 
 # Solubility with reference pH and gain per charge
 compound <- create_compound(
   name = "Drug X",
-  solubility = 9999,
-  reference_pH = 7,
-  solubility_gain_per_charge = 1000
+  solubility = solubility(9999, reference_pH = 7, gain_per_charge = 1000)
 )
 
 # Table-based solubility (first column pH, second column value)
 compound <- create_compound(
   name = "Drug X",
-  solubility_table = data.frame(
-    pH = c(3, 6, 6.8),
-    value = c(5000, 3000, 90)
+  solubility = solubility(
+    table = data.frame(
+      pH = c(3, 6, 6.8),
+      value = c(5000, 3000, 90)
+    )
   )
 )
 
@@ -218,4 +157,9 @@ compound <- create_compound(
     create_parameter(name = "Cl_spec", value = 5, unit = "ml/min/kg")
   )
 )
+}
+\seealso{
+\code{\link[=lipophilicity]{lipophilicity()}}, \code{\link[=fraction_unbound]{fraction_unbound()}}, \code{\link[=solubility]{solubility()}},
+\code{\link[=intestinal_permeability]{intestinal_permeability()}}, \code{\link[=permeability]{permeability()}} for the physicochemical
+property helpers.
 }

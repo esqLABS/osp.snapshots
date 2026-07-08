@@ -124,9 +124,18 @@ OriginData <- R6::R6Class(
     },
 
     #' @field age Numeric age value of the individual (in `age_unit`).
+    #'   Writable: assign an [age()] object to set the value and unit
+    #'   together, or a numeric scalar (the unit defaults to `"year(s)"`
+    #'   when not already set).
     age = function(value) {
       if (missing(value)) {
         return(private$.data$Age$Value)
+      }
+      if (inherits(value, "osp_value_spec")) {
+        require_value_spec(value, "age_spec", "age")
+        private$.data$Age$Value <- value$value
+        private$.data$Age$Unit <- value$unit
+        return(invisible(NULL))
       }
       private$.data$Age$Value <- value
       if (is.null(private$.data$Age$Unit)) {
@@ -148,10 +157,19 @@ OriginData <- R6::R6Class(
     },
 
     #' @field gestational_age Numeric gestational age value (in
-    #'   `gestational_age_unit`), used for preterm individuals.
+    #'   `gestational_age_unit`), used for preterm individuals. Writable:
+    #'   assign a [gestational_age()] object to set the value and unit
+    #'   together, or a numeric scalar (the unit defaults to `"week(s)"`
+    #'   when not already set).
     gestational_age = function(value) {
       if (missing(value)) {
         return(private$.data$GestationalAge$Value)
+      }
+      if (inherits(value, "osp_value_spec")) {
+        require_value_spec(value, "gestational_age_spec", "gestational_age")
+        private$.data$GestationalAge$Value <- value$value
+        private$.data$GestationalAge$Unit <- value$unit
+        return(invisible(NULL))
       }
       private$.data$GestationalAge$Value <- value
       if (is.null(private$.data$GestationalAge$Unit)) {
@@ -173,10 +191,18 @@ OriginData <- R6::R6Class(
     },
 
     #' @field weight Numeric weight value of the individual (in
-    #'   `weight_unit`).
+    #'   `weight_unit`). Writable: assign a [weight()] object to set the
+    #'   value and unit together, or a numeric scalar (the unit defaults to
+    #'   `"kg"` when not already set).
     weight = function(value) {
       if (missing(value)) {
         return(private$.data$Weight$Value)
+      }
+      if (inherits(value, "osp_value_spec")) {
+        require_value_spec(value, "weight_spec", "weight")
+        private$.data$Weight$Value <- value$value
+        private$.data$Weight$Unit <- value$unit
+        return(invisible(NULL))
       }
       private$.data$Weight$Value <- value
       if (is.null(private$.data$Weight$Unit)) {
@@ -198,10 +224,18 @@ OriginData <- R6::R6Class(
     },
 
     #' @field height Numeric height value of the individual (in
-    #'   `height_unit`).
+    #'   `height_unit`). Writable: assign a [height()] object to set the
+    #'   value and unit together, or a numeric scalar (the unit defaults to
+    #'   `"cm"` when not already set).
     height = function(value) {
       if (missing(value)) {
         return(private$.data$Height$Value)
+      }
+      if (inherits(value, "osp_value_spec")) {
+        require_value_spec(value, "height_spec", "height")
+        private$.data$Height$Value <- value$value
+        private$.data$Height$Unit <- value$unit
+        return(invisible(NULL))
       }
       private$.data$Height$Value <- value
       if (is.null(private$.data$Height$Unit)) {
