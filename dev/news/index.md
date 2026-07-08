@@ -60,14 +60,19 @@
   formulation key from the protocol’s slot, alternatives from each
   group’s default) before attaching. Configure each compound inline
   through
-  `compounds = list(list(name =, protocol =, formulation =, processes =, ...))`,
-  or pass a
-  [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md)
-  object through the same slot as an escape hatch. Unresolved references
-  to other building blocks (individual, population, compounds, events,
-  observer sets, observed data, protocols, formulations) trigger one
-  informational warning per simulation; the add proceeds either way
-  (#94, \#135).
+  `compounds = list(list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =, ...))`:
+  select a specific alternative by friendly property name and label
+  (`alternatives = c(solubility = "FaSSIF")`, overriding the derived
+  default for that group only) or bind a multi-slot protocol’s
+  formulations explicitly
+  (`formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")`);
+  a named `formulation` map that names a slot key the referenced
+  protocol does not have is not an error, only an informational message,
+  since PK-Sim itself rejects an unbound or mis-bound slot at load time.
+  Unresolved references to other building blocks (individual,
+  population, compounds, events, observer sets, observed data,
+  protocols, formulations) trigger one informational warning per
+  simulation; the add proceeds either way (#94, \#135, \#144).
 - `add_*()` mutators now accept either a single building block or a list
   of building blocks, mirroring `remove_*()` which has accepted a
   character vector of names since \#66. Success messages on both sides
@@ -120,18 +125,18 @@
   [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md),
   and
   [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md),
-  plus `pKa` and `processes`; the matching `Compound` fields
+  plus `pKa` and `processes`; each property argument also accepts a list
+  of these objects to define several named alternatives, with the first
+  element as the default; the matching `Compound` fields
   (`$lipophilicity`, `$fraction_unbound`, `$solubility`,
   `$intestinal_permeability`, `$permeability`, `$pka_types`,
-  `$processes`) are writable and also accept the helper objects so a
-  loaded compound can be mutated. Attach with
+  `$processes`) are writable and also accept the helper objects (single
+  or list) so a loaded compound can be mutated. Attach with
   [`add_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_compound.md),
   remove by name with
   [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
-  (#39, \#115, \#133).
-- [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_group_selection.md),
-  [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md),
-  [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md),
+  (#39, \#115, \#133, \#144).
+- [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md),
   [`create_event_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event_selection.md),
   [`create_formulation_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation_selection.md),
   [`create_observer_set_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set_selection.md),
@@ -142,9 +147,10 @@
   and
   [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_solver_settings.md)
   build a `Simulation`’s supporting structures from named arguments, for
-  use as the escape hatch to
-  [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
-  and for hand-built configurations (#94).
+  use as escape hatches for hand-built `Simulation` objects passed
+  through
+  [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)’s
+  `simulation` argument (#94).
 - [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_descriptor_condition.md)
   builds a container criterion (`Tag`, and an open-string `Type` such as
   `"InContainer"` or `"MatchTag"`) for an observer’s container criteria

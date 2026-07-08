@@ -85,24 +85,28 @@ create_compound(
 
   A
   [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md)
-  object, or `NULL`. When supplied, one default `Lipophilicity`
-  alternative is created.
+  object, a list of such objects to define several named alternatives
+  (the first element is the default), or `NULL`. When supplied, one
+  `Lipophilicity` alternative is created per element.
 
 - fraction_unbound:
 
   A
   [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
-  object, or `NULL`. When supplied, one default `FractionUnbound`
-  alternative is created.
+  object, a list of such objects to define several named alternatives
+  (the first element is the default), or `NULL`. When supplied, one
+  `FractionUnbound` alternative is created per element.
 
 - solubility:
 
   A
   [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
-  object, or `NULL`. Expresses either the scalar form (value at a
-  reference pH, with optional gain per charge) or the table form (a
-  pH/value table). When supplied, one `Solubility` alternative is
-  created. See
+  object, a list of such objects to define several named alternatives
+  (the first element is the default), or `NULL`. Each object expresses
+  either the scalar form (value at a reference pH, with optional gain
+  per charge) or the table form (a pH/value table); a list may mix both
+  forms. When supplied, one `Solubility` alternative is created per
+  element. See
   [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
   for the scalar vs table forms and the mutual-exclusivity rule.
 
@@ -110,15 +114,17 @@ create_compound(
 
   An
   [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md)
-  object, or `NULL`. When supplied, one default `IntestinalPermeability`
-  alternative is created.
+  object, a list of such objects to define several named alternatives
+  (the first element is the default), or `NULL`. When supplied, one
+  `IntestinalPermeability` alternative is created per element.
 
 - permeability:
 
   A
   [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md)
-  object, or `NULL`. When supplied, one default `Permeability`
-  alternative is created.
+  object, a list of such objects to define several named alternatives
+  (the first element is the default), or `NULL`. When supplied, one
+  `Permeability` alternative is created per element.
 
 - pKa:
 
@@ -192,6 +198,15 @@ compound <- create_compound(
       pH = c(3, 6, 6.8),
       value = c(5000, 3000, 90)
     )
+  )
+)
+
+# Several named solubility alternatives (the first is the default)
+compound <- create_compound(
+  name = "Drug X",
+  solubility = list(
+    solubility(9999, name = "Aqueous"),
+    solubility(200, name = "FaSSIF")
   )
 )
 

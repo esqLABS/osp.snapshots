@@ -186,12 +186,8 @@ Reusable R6 leaf classes and sub-structures held inside building blocks
   : AdvancedParameter class for Population advanced parameters
 - [`CalculationMethods`](https://esqlabs.github.io/osp.snapshots/dev/reference/CalculationMethods.md)
   : CalculationMethods class for OSP snapshots
-- [`CompoundGroupSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundGroupSelection.md)
-  : CompoundGroupSelection class for compound alternative selections
 - [`CompoundProcessSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundProcessSelection.md)
   : CompoundProcessSelection class for compound process selections
-- [`CompoundProperties`](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundProperties.md)
-  : CompoundProperties class for Simulation compound configurations
 - [`EventSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/EventSelection.md)
   : EventSelection class for Simulation event references
 - [`FormulationSelection`](https://esqlabs.github.io/osp.snapshots/dev/reference/FormulationSelection.md)
@@ -234,12 +230,8 @@ Construct building blocks and leaves from named arguments
 
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   : Create a new compound
-- [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_group_selection.md)
-  : Create a compound alternative group selection
 - [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md)
   : Create a compound process selection
-- [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md)
-  : Create compound properties for a simulation
 - [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_descriptor_condition.md)
   : Create a container criterion for an observer
 - [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)

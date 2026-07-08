@@ -519,10 +519,9 @@ The build mode is the entry point: with the snapshot in hand it resolves
 compound references and derives defaults (calculation methods,
 formulation key, alternatives) before attaching. Supply `name` plus
 exactly one of `individual` / `population` to build; each inline
-`compounds` entry is either a config list
-(`list(name =, protocol =, formulation =, processes =, ...)`) or a
-[CompoundProperties](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundProperties.md)
-escape-hatch object. Alternatively supply a pre-built
+`compounds` entry is a config list
+(`list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)`).
+Alternatively supply a pre-built
 [Simulation](https://esqlabs.github.io/osp.snapshots/dev/reference/Simulation.md)
 (or a list of them) through `simulation`. References to building blocks
 not yet in the snapshot trigger one informational warning per
@@ -580,10 +579,19 @@ simulation; the add proceeds either way.
 - `compounds`:
 
   List of inline compound-config lists
-  (`list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)`)
-  and/or
-  [CompoundProperties](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundProperties.md)
-  objects (the escape hatch).
+  (`list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)`).
+  `alternatives` is a named character vector (or named list of
+  length-one strings) mapping a friendly property name (`lipophilicity`,
+  `fraction_unbound`, `solubility`, `intestinal_permeability`,
+  `permeability`) to the alternative label to select on that compound,
+  for example `alternatives = c(solubility = "FaSSIF")`; it overrides
+  the derived default for the named groups only, every other group is
+  still defaulted from the compound. `formulation` accepts a single
+  string (bound to the protocol's inferred first slot key, unchanged) or
+  a named character vector (or named list of length-one strings) mapping
+  application-slot key to formulation name for a multi-slot protocol,
+  for example
+  `formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")`.
 
 - `events`:
 

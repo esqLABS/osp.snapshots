@@ -11,7 +11,7 @@ structure."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9906</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -531,9 +531,8 @@ pre-built simulation.</p>
 resolves compound references and derives defaults (calculation
 methods, formulation key, alternatives) before attaching. Supply
 <code>name</code> plus exactly one of <code>individual</code> / <code>population</code> to build; each
-inline <code>compounds</code> entry is either a config list
-(<code>list(name =, protocol =, formulation =, processes =, ...)</code>) or a
-<a href="CompoundProperties.html">CompoundProperties</a> escape-hatch object. Alternatively supply a
+inline <code>compounds</code> entry is a config list
+(<code>list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)</code>). Alternatively supply a
 pre-built <a href="Simulation.html">Simulation</a> (or a list of them) through <code>simulation</code>.
 References to building blocks not yet in the snapshot trigger one
 informational warning per simulation; the add proceeds either way.</p><div class="section">
@@ -580,8 +579,19 @@ Mutually exclusive with <code>individual</code>.</p></dd>
 
       <dt><code>compounds</code></dt>
 <dd><p>List of inline compound-config lists
-(<code>list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)</code>) and/or <a href="CompoundProperties.html">CompoundProperties</a>
-objects (the escape hatch).</p></dd>
+(<code>list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)</code>). <code>alternatives</code> is a
+named character vector (or named list of length-one strings)
+mapping a friendly property name (<code>lipophilicity</code>,
+<code>fraction_unbound</code>, <code>solubility</code>, <code>intestinal_permeability</code>,
+<code>permeability</code>) to the alternative label to select on that
+compound, for example <code>alternatives = c(solubility = "FaSSIF")</code>;
+it overrides the derived default for the named groups only, every
+other group is still defaulted from the compound. <code>formulation</code>
+accepts a single string (bound to the protocol's inferred first
+slot key, unchanged) or a named character vector (or named list of
+length-one strings) mapping application-slot key to formulation
+name for a multi-slot protocol, for example
+<code>formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")</code>.</p></dd>
 
       <dt><code>events</code></dt>
 <dd><p>List of <a href="EventSelection.html">EventSelection</a> objects or raw lists.</p></dd>

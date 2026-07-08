@@ -13,16 +13,11 @@ snapshot is its entry point. In build mode, with the snapshot in hand,
 defaults (calculation methods, formulation key, alternatives) from the
 referenced building blocks before attaching. Supply `name` plus exactly
 one of `individual` / `population`, and configure each compound inline
-through `compounds`. The escape-hatch factories
-([`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md),
-[`create_protocol_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol_selection.md),
-[`create_formulation_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation_selection.md))
-still work: pass a
-[CompoundProperties](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundProperties.md)
-object through the same `compounds` slot for multi-slot protocols and
-hand-built configurations. References to building blocks not yet in the
-snapshot trigger one informational warning per simulation; the add
-proceeds either way.
+through `compounds`, selecting a specific alternative by friendly
+property name and label, or a multi-slot protocol's formulations, where
+the derived defaults are not enough. References to building blocks not
+yet in the snapshot trigger one informational warning per simulation;
+the add proceeds either way.
 
 ## Usage
 
@@ -85,11 +80,20 @@ add_simulation(
 - compounds:
 
   List of inline compound-config lists
-  (`list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)`)
-  and/or
-  [CompoundProperties](https://esqlabs.github.io/osp.snapshots/dev/reference/CompoundProperties.md)
-  objects (the escape hatch). Inline entries are resolved against the
-  snapshot; `CompoundProperties` objects are passed through unchanged.
+  (`list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)`).
+  Each entry is resolved against the snapshot. `alternatives` is a named
+  character vector (or named list of length-one strings) mapping a
+  friendly property name (`lipophilicity`, `fraction_unbound`,
+  `solubility`, `intestinal_permeability`, `permeability`) to the
+  alternative label to select on that compound, for example
+  `alternatives = c(solubility = "FaSSIF")`; it overrides the derived
+  default for the named groups only, every other group is still
+  defaulted from the compound. `formulation` accepts a single string
+  (bound to the protocol's inferred first slot key, unchanged) or a
+  named character vector (or named list of length-one strings) mapping
+  application-slot key to formulation name for a multi-slot protocol,
+  for example
+  `formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")`.
 
 - events:
 
@@ -168,7 +172,8 @@ snapshot <- load_snapshot("Midazolam") |>
       name = "Rifampicin",
       protocol = "Yu 2004 - Rifampicin - 600 mg MD OD 10 days",
       formulation = "Oral solution",
-      processes = c("Hepatic")
+      processes = c("Hepatic"),
+      alternatives = c(solubility = "FaSSIF")
     ))
   )
 } # }

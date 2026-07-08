@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9906</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -165,9 +165,7 @@ the optional inputs you did not.</p>
 <h2 id="configuring-compounds">Configuring compounds<a class="anchor" aria-label="anchor" href="#configuring-compounds"></a>
 </h2>
 <p>Each entry of <code>compounds</code> configures one compound for the
-simulation. The common path is an inline config list, as above; the
-escape-hatch factories are still accepted through the same slot (see
-below).</p>
+simulation. Every configuration is an inline config list, as above.</p>
 <div class="section level3">
 <h3 id="compound-vs-compound-configuration">Compound vs compound configuration<a class="anchor" aria-label="anchor" href="#compound-vs-compound-configuration"></a>
 </h3>
@@ -200,12 +198,17 @@ block.</li>
 <li>
 <code>alternatives</code>: each alternative group is defaulted to
 that group’s default alternative (the one marked <code>IsDefault</code>,
-or <code>"User defined"</code> as a fallback).</li>
+or <code>"User defined"</code> as a fallback). Select a specific
+alternative by giving <code>alternatives</code> a named vector, friendly
+property name to alternative label, for the groups you care about; every
+group you do not name is still defaulted as above.</li>
 <li>
-<code>formulation</code> (together with <code>protocol</code>): the
-resolver infers the formulation key from the referenced protocol’s
-application slot, falling back to the literal <code>"Formulation"</code>
-key for simple protocols.</li>
+<code>formulation</code> (together with <code>protocol</code>): a
+single string binds to the protocol’s inferred first application slot,
+falling back to the literal <code>"Formulation"</code> key for simple
+protocols. For a protocol with more than one application slot, supply
+<code>formulation</code> as a named character vector mapping slot key to
+formulation name, binding every slot explicitly.</li>
 <li>
 <code>processes</code>: <strong>never defaulted.</strong> Omitting
 <code>processes</code> produces no process array, which deselects the
@@ -225,68 +228,55 @@ metabolically).</li>
 compound in the snapshot.</p>
 </div>
 <div class="section level3">
-<h3 id="the-escape-hatch">The escape hatch<a class="anchor" aria-label="anchor" href="#the-escape-hatch"></a>
+<h3 id="selecting-a-specific-alternative">Selecting a specific alternative<a class="anchor" aria-label="anchor" href="#selecting-a-specific-alternative"></a>
 </h3>
-<p>For a multi-slot protocol, or any hand-built configuration you want
-full control over, build the compound entry with the factory functions
-and pass the resulting <code>CompoundProperties</code> object through
-the same <code>compounds</code> slot. When you do, the resolver leaves
-it untouched (no defaulting):</p>
+<p>Midazolam carries several solubility alternatives; the default
+derivation above would pick the one marked <code>IsDefault</code>, but
+<code>alternatives</code> lets you pick a different one by its
+label:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">compound</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_compound_properties.html">create_compound_properties</a></span><span class="op">(</span></span>
-<span>  name <span class="op">=</span> <span class="st">"Midazolam"</span>,</span>
-<span>  calculation_methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Cellular partition coefficient method - Rodgers and Rowland"</span>,</span>
-<span>    <span class="st">"Cellular permeability - PK-Sim Standard"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  processes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="../reference/create_compound_process_selection.html">create_compound_process_selection</a></span><span class="op">(</span>systemic_process_type <span class="op">=</span> <span class="st">"Hepatic"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  protocol <span class="op">=</span> <span class="fu"><a href="../reference/create_protocol_selection.html">create_protocol_selection</a></span><span class="op">(</span></span>
-<span>    name <span class="op">=</span> <span class="st">"po 15 mg"</span>,</span>
-<span>    formulations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      <span class="fu"><a href="../reference/create_formulation_selection.html">create_formulation_selection</a></span><span class="op">(</span></span>
-<span>        name <span class="op">=</span> <span class="st">"Oral solution"</span>,</span>
-<span>        key <span class="op">=</span> <span class="st">"Formulation"</span></span>
-<span>      <span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">$</span><span class="va">compounds</span><span class="op">[[</span><span class="st">"Midazolam"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">solubility</span><span class="op">)</span></span>
+<span><span class="co">#&gt; NULL</span></span>
 <span></span>
 <span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="va">snapshot</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/add_simulation.html">add_simulation</a></span><span class="op">(</span></span>
-<span>    name <span class="op">=</span> <span class="st">"Midazolam (hand-built compound)"</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"Midazolam oral dose (FaSSIF solubility)"</span>,</span>
 <span>    individual <span class="op">=</span> <span class="st">"Korean (Yu 2004 study)"</span>,</span>
-<span>    compounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">compound</span><span class="op">)</span></span>
+<span>    compounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        name <span class="op">=</span> <span class="st">"Midazolam"</span>,</span>
+<span>        protocol <span class="op">=</span> <span class="st">"po 15 mg"</span>,</span>
+<span>        formulation <span class="op">=</span> <span class="st">"Oral solution"</span>,</span>
+<span>        processes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Hepatic"</span><span class="op">)</span>,</span>
+<span>        alternatives <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>solubility <span class="op">=</span> <span class="st">"FaSSIF"</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p>The supporting factories follow the same convention:</p>
-<ul>
-<li>
-<code><a href="../reference/create_compound_process_selection.html">create_compound_process_selection()</a></code>: every field is
-optional; PK-Sim resolves the right placeholder from whichever
-combination of <code>name</code>, <code>molecule_name</code>,
-<code>metabolite_name</code>, <code>compound_name</code>, and
-<code>systemic_process_type</code> is supplied. Does not reference a
-building block; the <code>name</code> field here is a process name
-internal to the parent compound.</li>
-<li>
-<code><a href="../reference/create_compound_group_selection.html">create_compound_group_selection()</a></code>:
-<code>group_name</code> and <code>alternative_name</code> are both
-required. Does not reference a building block; it picks an alternative
-inside an alternative group defined on the parent compound.</li>
-<li>
-<code><a href="../reference/create_protocol_selection.html">create_protocol_selection()</a></code>: points at one protocol in
-<code>snapshot$protocols</code> by <code>name</code> and records which
-<code>Formulation</code> fills each of the protocol’s application slots
-through <code>formulations</code>. Supply a <code>formulations</code>
-entry for every slot the protocol requires; PK-Sim rejects the
-simulation at load time if a required slot is unbound.</li>
-<li>
-<code><a href="../reference/create_formulation_selection.html">create_formulation_selection()</a></code>: binds one formulation
-in <code>snapshot$formulations</code> (by <code>name</code>) to one
-application slot inside the chosen protocol (by <code>key</code>). Both
-are required.</li>
-</ul>
+<p>Only the named group (<code>solubility</code>) is overridden; every
+other group (lipophilicity, fraction unbound, …) is still defaulted from
+the compound. Selecting an unknown property name or a label the compound
+does not carry errors immediately, naming the compound, the property,
+and the available labels.</p>
+<p>For a protocol with more than one application slot, bind every slot
+in one call:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="va">snapshot</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/add_simulation.html">add_simulation</a></span><span class="op">(</span></span>
+<span>    name <span class="op">=</span> <span class="st">"Midazolam (multi-slot protocol)"</span>,</span>
+<span>    individual <span class="op">=</span> <span class="st">"Korean (Yu 2004 study)"</span>,</span>
+<span>    compounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        name <span class="op">=</span> <span class="st">"Midazolam"</span>,</span>
+<span>        protocol <span class="op">=</span> <span class="st">"A protocol with two application slots"</span>,</span>
+<span>        formulation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Formulation <span class="op">=</span> <span class="st">"Oral solution"</span>, <span class="st">"Formulation 2"</span> <span class="op">=</span> <span class="st">"IV solution"</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><code><a href="../reference/create_protocol_selection.html">create_protocol_selection()</a></code> and
+<code><a href="../reference/create_formulation_selection.html">create_formulation_selection()</a></code> remain available for
+building a <code>Simulation</code> object by hand and passing it through
+the <code>simulation</code> argument; they are not part of the inline
+<code>compounds</code> configuration above.</p>
 </div>
 </div>
 <div class="section level2">
@@ -304,7 +294,7 @@ arguments to the same <code><a href="../reference/add_simulation.html">add_simul
 supplies its <code>start_time</code> (hours) for this simulation; aside
 from <code>start_time</code>, events carry no per-simulation
 overlay.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">event</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_event_selection.html">create_event_selection</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"High-fat breakfast"</span>, start_time <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></code></pre></div>
 <p>An <code>ObserverSet</code> building block (in
 <code>snapshot$observer_sets</code>) is a project-level observer bundle.
@@ -313,7 +303,7 @@ overlay.</p>
 the factory takes only that one argument. The <code>Midazolam</code>
 template ships no observer sets, but with a template that does the call
 would look like:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">observer_set</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_observer_set_selection.html">create_observer_set_selection</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"BrainPlasmaConcentration"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -323,7 +313,7 @@ would look like:</p>
 configuration; every argument is optional. Each field you omit is filled
 by PK-Sim’s built-in CVODE defaults on load, so calling it with no
 arguments is the same as not supplying <code>solver</code> at all.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">solver</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_solver_settings.html">create_solver_settings</a></span><span class="op">(</span></span>
 <span>  abs_tol <span class="op">=</span> <span class="fl">1e-9</span>,</span>
 <span>  rel_tol <span class="op">=</span> <span class="fl">1e-9</span>,</span>
@@ -340,7 +330,7 @@ output. Each <code><a href="../reference/create_output_interval.html">create_out
 <code>start_time</code>, <code>end_time</code>, and
 <code>resolution</code> (in PK-Sim’s default units <code>h</code>,
 <code>h</code>, <code>pts/h</code>).</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_output_schema.html">create_output_schema</a></span><span class="op">(</span></span>
 <span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="../reference/create_output_interval.html">create_output_interval</a></span><span class="op">(</span>start_time <span class="op">=</span> <span class="fl">0</span>, end_time <span class="op">=</span> <span class="fl">2</span>, resolution <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
@@ -358,7 +348,7 @@ reports.</p>
 identified by their full container path inside the simulation’s
 parameter tree. Use <code>create_parameter(path = ...)</code> to obtain
 one.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">overrides</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/create_parameter.html">create_parameter</a></span><span class="op">(</span></span>
 <span>    path <span class="op">=</span> <span class="st">"Organism|Liver|Volume"</span>,</span>
@@ -371,7 +361,7 @@ one.</p>
 <h3 id="putting-the-optional-inputs-together">Putting the optional inputs together<a class="anchor" aria-label="anchor" href="#putting-the-optional-inputs-together"></a>
 </h3>
 <p>The prepared inputs slot straight into the same call:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="va">snapshot</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/add_simulation.html">add_simulation</a></span><span class="op">(</span></span>
 <span>    name <span class="op">=</span> <span class="st">"Midazolam oral dose (full)"</span>,</span>
@@ -394,7 +384,7 @@ one.</p>
 </h2>
 <p>Export with <code><a href="../reference/export_snapshot.html">export_snapshot()</a></code> and PK-Sim will load the
 resulting JSON.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/export_snapshot.html">export_snapshot</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"midazolam-with-new-sim.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -406,7 +396,7 @@ Once the snapshot is on disk, hand the JSON to
 <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/runSimulationsFromSnapshot.html" class="external-link">ospsuite::runSimulationsFromSnapshot()</a></code>, which loads every
 simulation it contains and writes the results to an output
 directory.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/open-systems-pharmacology/ospsuite-r" class="external-link">ospsuite</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/runSimulationsFromSnapshot.html" class="external-link">runSimulationsFromSnapshot</a></span><span class="op">(</span></span>
@@ -417,7 +407,7 @@ directory.</p>
 <div class="section level2">
 <h2 id="removing-a-simulation">Removing a simulation<a class="anchor" aria-label="anchor" href="#removing-a-simulation"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="va">snapshot</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/remove_simulation.html">remove_simulation</a></span><span class="op">(</span><span class="st">"Midazolam oral dose"</span><span class="op">)</span></span></code></pre></div>
 </div>

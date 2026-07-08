@@ -7,13 +7,11 @@ add_simulation() resolves compound references and derives sensible
 defaults (calculation methods, formulation key, alternatives) from the
 referenced building blocks before attaching. Supply name plus exactly
 one of individual / population, and configure each compound inline
-through compounds. The escape-hatch factories
-(create_compound_properties(), create_protocol_selection(),
-create_formulation_selection()) still work: pass a
-CompoundProperties object through the same compounds slot for
-multi-slot protocols and hand-built configurations. References to
-building blocks not yet in the snapshot trigger one informational
-warning per simulation; the add proceeds either way."><meta property="og:description" content="Build a Simulation from named arguments and attach it to a
+through compounds, selecting a specific alternative by friendly
+property name and label, or a multi-slot protocol's formulations, where
+the derived defaults are not enough. References to building blocks not
+yet in the snapshot trigger one informational warning per simulation;
+the add proceeds either way."><meta property="og:description" content="Build a Simulation from named arguments and attach it to a
 Snapshot, or attach a pre-built Simulation.
 A simulation is almost pure references into the snapshot, so the
 snapshot is its entry point. In build mode, with the snapshot in hand,
@@ -21,13 +19,11 @@ add_simulation() resolves compound references and derives sensible
 defaults (calculation methods, formulation key, alternatives) from the
 referenced building blocks before attaching. Supply name plus exactly
 one of individual / population, and configure each compound inline
-through compounds. The escape-hatch factories
-(create_compound_properties(), create_protocol_selection(),
-create_formulation_selection()) still work: pass a
-CompoundProperties object through the same compounds slot for
-multi-slot protocols and hand-built configurations. References to
-building blocks not yet in the snapshot trigger one informational
-warning per simulation; the add proceeds either way."><meta name="robots" content="noindex"></head><body>
+through compounds, selecting a specific alternative by friendly
+property name and label, or a multi-slot protocol's formulations, where
+the derived defaults are not enough. References to building blocks not
+yet in the snapshot trigger one informational warning per simulation;
+the add proceeds either way."><meta name="robots" content="noindex"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +31,7 @@ warning per simulation; the add proceeds either way."><meta name="robots" conten
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9906</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,13 +72,11 @@ snapshot is its entry point. In build mode, with the snapshot in hand,
 defaults (calculation methods, formulation key, alternatives) from the
 referenced building blocks before attaching. Supply <code>name</code> plus exactly
 one of <code>individual</code> / <code>population</code>, and configure each compound inline
-through <code>compounds</code>. The escape-hatch factories
-(<code><a href="create_compound_properties.html">create_compound_properties()</a></code>, <code><a href="create_protocol_selection.html">create_protocol_selection()</a></code>,
-<code><a href="create_formulation_selection.html">create_formulation_selection()</a></code>) still work: pass a
-<a href="CompoundProperties.html">CompoundProperties</a> object through the same <code>compounds</code> slot for
-multi-slot protocols and hand-built configurations. References to
-building blocks not yet in the snapshot trigger one informational
-warning per simulation; the add proceeds either way.</p>
+through <code>compounds</code>, selecting a specific alternative by friendly
+property name and label, or a multi-slot protocol's formulations, where
+the derived defaults are not enough. References to building blocks not
+yet in the snapshot trigger one informational warning per simulation;
+the add proceeds either way.</p>
     </div>
 
     <div class="section level2">
@@ -142,9 +136,19 @@ Mutually exclusive with <code>individual</code>.</p></dd>
 
 <dt id="arg-compounds">compounds<a class="anchor" aria-label="anchor" href="#arg-compounds"></a></dt>
 <dd><p>List of inline compound-config lists
-(<code>list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)</code>) and/or <a href="CompoundProperties.html">CompoundProperties</a>
-objects (the escape hatch). Inline entries are resolved against the
-snapshot; <code>CompoundProperties</code> objects are passed through unchanged.</p></dd>
+(<code>list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)</code>). Each entry is resolved
+against the snapshot. <code>alternatives</code> is a named character vector (or
+named list of length-one strings) mapping a friendly property name
+(<code>lipophilicity</code>, <code>fraction_unbound</code>, <code>solubility</code>,
+<code>intestinal_permeability</code>, <code>permeability</code>) to the alternative label to
+select on that compound, for example
+<code>alternatives = c(solubility = "FaSSIF")</code>; it overrides the derived
+default for the named groups only, every other group is still
+defaulted from the compound. <code>formulation</code> accepts a single string
+(bound to the protocol's inferred first slot key, unchanged) or a
+named character vector (or named list of length-one strings) mapping
+application-slot key to formulation name for a multi-slot protocol,
+for example <code>formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")</code>.</p></dd>
 
 
 <dt id="arg-events">events<a class="anchor" aria-label="anchor" href="#arg-events"></a></dt>
@@ -212,7 +216,8 @@ lists (population simulations only).</p></dd>
 <span class="r-in"><span>      name <span class="op">=</span> <span class="st">"Rifampicin"</span>,</span></span>
 <span class="r-in"><span>      protocol <span class="op">=</span> <span class="st">"Yu 2004 - Rifampicin - 600 mg MD OD 10 days"</span>,</span></span>
 <span class="r-in"><span>      formulation <span class="op">=</span> <span class="st">"Oral solution"</span>,</span></span>
-<span class="r-in"><span>      processes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Hepatic"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      processes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Hepatic"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      alternatives <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>solubility <span class="op">=</span> <span class="st">"FaSSIF"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>

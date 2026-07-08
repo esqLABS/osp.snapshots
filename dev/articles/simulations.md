@@ -105,8 +105,7 @@ optional inputs you did not.
 ## Configuring compounds
 
 Each entry of `compounds` configures one compound for the simulation.
-The common path is an inline config list, as above; the escape-hatch
-factories are still accepted through the same slot (see below).
+Every configuration is an inline config list, as above.
 
 ### Compound vs compound configuration
 
@@ -136,10 +135,16 @@ the rest:
   the referenced `Compound` building block.
 - `alternatives`: each alternative group is defaulted to that group’s
   default alternative (the one marked `IsDefault`, or `"User defined"`
-  as a fallback).
-- `formulation` (together with `protocol`): the resolver infers the
-  formulation key from the referenced protocol’s application slot,
-  falling back to the literal `"Formulation"` key for simple protocols.
+  as a fallback). Select a specific alternative by giving `alternatives`
+  a named vector, friendly property name to alternative label, for the
+  groups you care about; every group you do not name is still defaulted
+  as above.
+- `formulation` (together with `protocol`): a single string binds to the
+  protocol’s inferred first application slot, falling back to the
+  literal `"Formulation"` key for simple protocols. For a protocol with
+  more than one application slot, supply `formulation` as a named
+  character vector mapping slot key to formulation name, binding every
+  slot explicitly.
 - `processes`: **never defaulted.** Omitting `processes` produces no
   process array, which deselects the compound’s processes in PK-Sim (it
   materialises the right placeholder so the simulation runs as if you
@@ -155,66 +160,64 @@ the rest:
 The only required field is `name`, which must match a compound in the
 snapshot.
 
-### The escape hatch
+### Selecting a specific alternative
 
-For a multi-slot protocol, or any hand-built configuration you want full
-control over, build the compound entry with the factory functions and
-pass the resulting `CompoundProperties` object through the same
-`compounds` slot. When you do, the resolver leaves it untouched (no
-defaulting):
+Midazolam carries several solubility alternatives; the default
+derivation above would pick the one marked `IsDefault`, but
+`alternatives` lets you pick a different one by its label:
 
 ``` r
 
-compound <- create_compound_properties(
-  name = "Midazolam",
-  calculation_methods = c(
-    "Cellular partition coefficient method - Rodgers and Rowland",
-    "Cellular permeability - PK-Sim Standard"
-  ),
-  processes = list(
-    create_compound_process_selection(systemic_process_type = "Hepatic")
-  ),
-  protocol = create_protocol_selection(
-    name = "po 15 mg",
-    formulations = list(
-      create_formulation_selection(
-        name = "Oral solution",
-        key = "Formulation"
-      )
-    )
-  )
-)
+names(snapshot$compounds[["Midazolam"]]$solubility)
+#> NULL
 
 snapshot <- snapshot |>
   add_simulation(
-    name = "Midazolam (hand-built compound)",
+    name = "Midazolam oral dose (FaSSIF solubility)",
     individual = "Korean (Yu 2004 study)",
-    compounds = list(compound)
+    compounds = list(
+      list(
+        name = "Midazolam",
+        protocol = "po 15 mg",
+        formulation = "Oral solution",
+        processes = c("Hepatic"),
+        alternatives = c(solubility = "FaSSIF")
+      )
+    )
   )
 ```
 
-The supporting factories follow the same convention:
+Only the named group (`solubility`) is overridden; every other group
+(lipophilicity, fraction unbound, …) is still defaulted from the
+compound. Selecting an unknown property name or a label the compound
+does not carry errors immediately, naming the compound, the property,
+and the available labels.
 
-- [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md):
-  every field is optional; PK-Sim resolves the right placeholder from
-  whichever combination of `name`, `molecule_name`, `metabolite_name`,
-  `compound_name`, and `systemic_process_type` is supplied. Does not
-  reference a building block; the `name` field here is a process name
-  internal to the parent compound.
-- [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_group_selection.md):
-  `group_name` and `alternative_name` are both required. Does not
-  reference a building block; it picks an alternative inside an
-  alternative group defined on the parent compound.
-- [`create_protocol_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol_selection.md):
-  points at one protocol in `snapshot$protocols` by `name` and records
-  which `Formulation` fills each of the protocol’s application slots
-  through `formulations`. Supply a `formulations` entry for every slot
-  the protocol requires; PK-Sim rejects the simulation at load time if a
-  required slot is unbound.
-- [`create_formulation_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation_selection.md):
-  binds one formulation in `snapshot$formulations` (by `name`) to one
-  application slot inside the chosen protocol (by `key`). Both are
-  required.
+For a protocol with more than one application slot, bind every slot in
+one call:
+
+``` r
+
+snapshot <- snapshot |>
+  add_simulation(
+    name = "Midazolam (multi-slot protocol)",
+    individual = "Korean (Yu 2004 study)",
+    compounds = list(
+      list(
+        name = "Midazolam",
+        protocol = "A protocol with two application slots",
+        formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")
+      )
+    )
+  )
+```
+
+[`create_protocol_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol_selection.md)
+and
+[`create_formulation_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation_selection.md)
+remain available for building a `Simulation` object by hand and passing
+it through the `simulation` argument; they are not part of the inline
+`compounds` configuration above.
 
 ## Optional inputs
 

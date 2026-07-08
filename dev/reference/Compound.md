@@ -49,31 +49,35 @@ by
 
   The lipophilicity data of the compound. Writable: assign a
   [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md)
-  object, a numeric scalar to create a single default `Lipophilicity`
-  alternative (parameter `"Lipophilicity"`, unit `"Log Units"`), a raw
-  alternative list to set the array verbatim (the escape hatch for
-  multiple, named, or species-specific alternatives), or `NULL` to clear
-  the property.
+  object, a list of such objects to define several named alternatives
+  (the first element is the default), a numeric scalar to create a
+  single default `Lipophilicity` alternative (parameter
+  `"Lipophilicity"`, unit `"Log Units"`), a raw alternative list to set
+  the array verbatim (the escape hatch for species-specific
+  alternatives), or `NULL` to clear the property.
 
 - `fraction_unbound`:
 
   The fraction unbound data of the compound. Writable: assign a
   [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
-  object, a numeric scalar to create a single default `FractionUnbound`
-  alternative (parameter `"Fraction unbound (plasma, reference value)"`,
-  no unit), a raw alternative list to set the array verbatim, or `NULL`
-  to clear the property.
+  object, a list of such objects to define several named alternatives
+  (the first element is the default), a numeric scalar to create a
+  single default `FractionUnbound` alternative (parameter
+  `"Fraction unbound (plasma, reference value)"`, no unit), a raw
+  alternative list to set the array verbatim, or `NULL` to clear the
+  property.
 
 - `solubility`:
 
   The solubility data of the compound. Writable: assign a
   [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
   object to express reference pH, gain per charge, or a pH/value table,
-  a numeric scalar to create a single default `Solubility` alternative
-  (parameter `"Solubility at reference pH"`, unit `"mg/l"`), a raw
-  alternative list to set the array verbatim, or `NULL` to clear the
-  property. The numeric-scalar form cannot express reference pH, gain
-  per charge, or table solubility; use a
+  a list of such objects to define several named alternatives (the first
+  element is the default), a numeric scalar to create a single default
+  `Solubility` alternative (parameter `"Solubility at reference pH"`,
+  unit `"mg/l"`), a raw alternative list to set the array verbatim, or
+  `NULL` to clear the property. The numeric-scalar form cannot express
+  reference pH, gain per charge, or table solubility; use a
   [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
   object or a raw alternative list for those.
 
@@ -81,8 +85,9 @@ by
 
   The intestinal permeability data of the compound. Writable: assign an
   [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md)
-  object, a numeric scalar to create a single default
-  `IntestinalPermeability` alternative (parameter
+  object, a list of such objects to define several named alternatives
+  (the first element is the default), a numeric scalar to create a
+  single default `IntestinalPermeability` alternative (parameter
   `"Specific intestinal permeability (transcellular)"`, unit
   `"cm/min"`), a raw alternative list to set the array verbatim, or
   `NULL` to clear the property.
@@ -91,10 +96,11 @@ by
 
   The permeability data of the compound. Writable: assign a
   [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md)
-  object, a numeric scalar to create a single default `Permeability`
-  alternative (parameter `"Permeability"`, unit `"cm/min"`), a raw
-  alternative list to set the array verbatim, or `NULL` to clear the
-  property.
+  object, a list of such objects to define several named alternatives
+  (the first element is the default), a numeric scalar to create a
+  single default `Permeability` alternative (parameter `"Permeability"`,
+  unit `"cm/min"`), a raw alternative list to set the array verbatim, or
+  `NULL` to clear the property.
 
 - `pka_types`:
 
