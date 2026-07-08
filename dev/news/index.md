@@ -2,63 +2,6 @@
 
 ## osp.snapshots (development version)
 
-- The vignettes and README are updated to match the current API, and now
-  document building an empty snapshot with
-  [`create_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_snapshot.md),
-  the observed-data bridge to ospsuite, and the standalone validators
-  (#131).
-- [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_descriptor_condition.md)
-  builds a container criterion (`Tag`, and an open-string `Type` such as
-  `"InContainer"` or `"MatchTag"`) for an observer’s container criteria
-  (#119).
-- [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
-  gains `expression` and `disease` arguments to set per-organ relative
-  expression (a data frame of container rows, or a raw list) and a
-  disease state, and `ExpressionProfile` gains read/write `expression`
-  and `disease` bindings so a loaded profile can be read and mutated
-  (#116).
-- [`create_formula_reference()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formula_reference.md)
-  builds a formula reference (`Alias`, `Path`, optional `Dimension`) for
-  an observer’s formula (#119).
-- [`create_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
-  accepts an arbitrary `FormulationType` string and a raw `parameters`
-  form (a list of
-  [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
-  objects or `list(Name=, Value=, ...)` dicts), so you can author
-  unknown formulation types and set arbitrary parameters by name,
-  per-parameter `ValueOrigin`, and a custom `TableFormula` on any type;
-  the curated alias form is unchanged and `Formulation$formulation_type`
-  now accepts any non-empty string (#120).
-- [`create_molecule_list()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_molecule_list.md)
-  builds an observer’s molecule list from `for_all`, `include`, and
-  `exclude` (#119).
-- [`create_observer()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer.md)
-  builds a single observer for an observer set, with arguments for name,
-  type, dimension, formula, formula references, container criteria, and
-  molecule list (#119).
-- `Observer` now exposes a lossless writable `container_criteria` field
-  (preserving each criterion’s `Type`), a writable `formula_references`
-  field, and a writable `molecule_list` field, and validates `type`
-  against `Amount`/`Container` on assignment (#119).
-- [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
-  gains `description`, `gestational_age_range`,
-  `disease_state_parameters`, and `individual` arguments, the last
-  composing a base individual from
-  [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
-  to fully configure the population’s base individual (#118).
-- [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
-  now validates `application_type` against the canonical PK-Sim
-  application types and errors early on an invalid value, matching
-  [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
-  (#121).
-- `Population` objects gain read/write `description`,
-  `gestational_age_range`, and `disease_state_parameters` bindings and a
-  read-only `individual` binding exposing the base individual (#118).
-- `Population$egfr_range` now persists into the population settings, so
-  an eGFR range set on a population survives export (#118).
-
-## osp.snapshots 1.0.0
-
 ### Breaking changes
 
 - `compound$calculation_methods` returns a `CalculationMethods` R6
@@ -141,6 +84,10 @@
   [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_solver_settings.md)
   build a `Simulation` and its supporting structures from named
   arguments (#94).
+- [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_descriptor_condition.md)
+  builds a container criterion (`Tag`, and an open-string `Type` such as
+  `"InContainer"` or `"MatchTag"`) for an observer’s container criteria
+  (#119).
 - [`create_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event.md)
   builds an event from a template name and an optional list of parameter
   overrides (#27). Attach with
@@ -150,13 +97,32 @@
   (#39).
 - [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md)
   builds an expression profile, requiring molecule, species, category,
-  and type (#27).
+  and type, and accepts `expression` (per-organ relative expression as a
+  data frame of container rows or a raw list) and `disease` (a disease
+  state); the `ExpressionProfile` object gains read/write `expression`
+  and `disease` bindings so a loaded profile can be read and mutated
+  (#27, \#116).
+- [`create_formula_reference()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formula_reference.md)
+  builds a formula reference (`Alias`, `Path`, optional `Dimension`) for
+  an observer’s formula (#119).
+- [`create_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation.md)
+  accepts an arbitrary `FormulationType` string and a raw `parameters`
+  form (a list of
+  [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
+  objects or `list(Name=, Value=, ...)` dicts), so you can author
+  unknown formulation types and set arbitrary parameters by name,
+  per-parameter `ValueOrigin`, and a custom `TableFormula` on any type;
+  the curated alias form is unchanged and `Formulation$formulation_type`
+  now accepts any non-empty string (#120).
 - [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
   gains `expression_profiles`, `description`, and `parameters` arguments
   to attach expression-profile references, a description, and localized
   parameter overrides at creation time; the
   `Individual$expression_profiles` binding is now writable and a new
   read/write `Individual$description` binding is available (#117).
+- [`create_molecule_list()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_molecule_list.md)
+  builds an observer’s molecule list from `for_all`, `include`, and
+  `exclude` (#119).
 - [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
   builds an
   [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
@@ -167,6 +133,14 @@
   remove with
   [`remove_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observed_data.md)
   (#39).
+- [`create_observer()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer.md)
+  builds a single observer for an observer set, with arguments for name,
+  type, dimension, formula, formula references, container criteria, and
+  molecule list. `Observer` now exposes a lossless writable
+  `container_criteria` field (preserving each criterion’s `Type`), a
+  writable `formula_references` field, and a writable `molecule_list`
+  field, and validates `type` against `Amount`/`Container` on assignment
+  (#119).
 - [`create_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set.md)
   builds an observer set from a `name` and a list of observers (#43).
   Attach with
@@ -176,9 +150,15 @@
   (#38).
 - [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
   builds a population, taking `Range` objects for age, weight, height,
-  and BMI bounds. `number_of_individuals` must be a positive integer;
-  `proportion_of_females` must be a length-1 number (#27, \#48). Attach
-  with
+  and BMI bounds, and accepting `description`, `gestational_age_range`,
+  `disease_state_parameters`, and an `individual` composed from
+  [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
+  to fully configure the population’s base individual.
+  `number_of_individuals` must be a positive integer;
+  `proportion_of_females` must be a length-1 number. `Population`
+  objects gain read/write `description`, `gestational_age_range`, and
+  `disease_state_parameters` bindings and a read-only `individual`
+  binding exposing the base individual (#27, \#48, \#118). Attach with
   [`add_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_population.md)
   (#39).
 - [`create_process()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_process.md)
@@ -261,6 +241,11 @@
   output can now be printed when `is_small_molecule` is left unset.
   Previously printing such a compound aborted with “missing value where
   TRUE/FALSE needed”; the type line is now omitted instead (#115).
+- [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
+  now validates `application_type` against the canonical PK-Sim
+  application types and errors early on an invalid value, matching
+  [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
+  (#121).
 - [`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.md)
   now serializes `DataSet` objects attached at runtime via
   [`add_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observed_data.md),
@@ -284,6 +269,8 @@
   silently reverted to `"h"`, misplacing time points (for example a 24x
   error for `day(s)`); this also affected
   `create_observed_data(time_unit = ...)` (#104).
+- `Population$egfr_range` now persists into the population settings, so
+  an eGFR range set on a population survives export (#118).
 - [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md),
   [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md),
   [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md),

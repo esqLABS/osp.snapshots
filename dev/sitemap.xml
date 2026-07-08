@@ -1,4 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/AGENTS.html</loc></url>
+<url><loc>https://esqlabs.github.io/osp.snapshots/dev/CLAUDE.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/LICENSE-text.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/articles/creating-building-blocks.html</loc></url>
 <url><loc>https://esqlabs.github.io/osp.snapshots/dev/articles/exporting-snapshots-to-dataframes.html</loc></url>
