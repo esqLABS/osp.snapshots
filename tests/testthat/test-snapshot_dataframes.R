@@ -101,6 +101,7 @@ test_that("as_tibbles() returns empty shapes for an empty snapshot", {
     "events",
     "expression_profiles",
     "protocols",
+    "observer_sets",
     "observed_data"
   )) {
     result <- as_tibbles(empty_snapshot, kind)
@@ -114,6 +115,68 @@ test_that("as_tibbles() returns empty shapes for an empty snapshot", {
   }
 })
 
+test_that("as_tibbles() with no kind returns all nine kinds", {
+  kinds <- c(
+    "compounds",
+    "individuals",
+    "formulations",
+    "populations",
+    "events",
+    "expression_profiles",
+    "protocols",
+    "observer_sets",
+    "observed_data"
+  )
+
+  result <- as_tibbles(test_snapshot)
+
+  expect_named(result, kinds)
+  expect_identical(as_tibbles(test_snapshot, NULL), result)
+
+  # A length-9 request in dispatch order equals the NULL result.
+  expect_identical(as_tibbles(test_snapshot, kinds), result)
+
+  # Each entry is identical to the matching single-kind call.
+  for (kind in kinds) {
+    expect_identical(result[[kind]], as_tibbles(test_snapshot, kind))
+  }
+})
+
+test_that("as_tibbles() with no kind returns empty shapes for an empty snapshot", {
+  kinds <- c(
+    "compounds",
+    "individuals",
+    "formulations",
+    "populations",
+    "events",
+    "expression_profiles",
+    "protocols",
+    "observer_sets",
+    "observed_data"
+  )
+
+  result <- as_tibbles(empty_snapshot)
+
+  expect_named(result, kinds)
+  for (entry in result) {
+    if (is.data.frame(entry)) {
+      expect_equal(nrow(entry), 0)
+    } else {
+      for (slot in names(entry)) {
+        expect_equal(nrow(entry[[slot]]), 0)
+      }
+    }
+  }
+})
+
+test_that("as_tibbles() with a kind vector returns a keyed list", {
+  result <- as_tibbles(test_snapshot, c("compounds", "protocols"))
+
+  expect_named(result, c("compounds", "protocols"))
+  expect_identical(result$compounds, as_tibbles(test_snapshot, "compounds"))
+  expect_identical(result$protocols, as_tibbles(test_snapshot, "protocols"))
+})
+
 test_that("as_tibbles() errors for non-Snapshot input", {
   expect_snapshot(error = TRUE, as_tibbles(list(), "compounds"))
 })
@@ -125,6 +188,12 @@ test_that("as_tibbles() errors for unknown kind", {
 test_that("as_tibbles() errors for malformed kind", {
   expect_snapshot(error = TRUE, as_tibbles(test_snapshot, c("a", "b")))
   expect_snapshot(error = TRUE, as_tibbles(test_snapshot, NA_character_))
+  expect_snapshot(
+    error = TRUE,
+    as_tibbles(test_snapshot, c("compounds", "nope"))
+  )
+  expect_snapshot(error = TRUE, as_tibbles(test_snapshot, 1))
+  expect_snapshot(error = TRUE, as_tibbles(test_snapshot, character(0)))
 })
 
 test_that("legacy get_*_dfs wrappers match as_tibbles output", {
