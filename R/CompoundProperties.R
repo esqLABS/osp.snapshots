@@ -4,10 +4,13 @@
 #' An R6 class representing one entry in a [Simulation]'s `Compounds`
 #' array. Carries the compound reference (by name) plus the simulation's
 #' calculation-method overrides, alternative selections, process
-#' selections, and optional [ProtocolSelection].
+#' selections, and optional [ProtocolSelection]. Internal machinery only:
+#' [add_simulation()]'s inline `compounds` argument is the user-facing way
+#' to configure a compound for a simulation; this class is not part of the
+#' public API.
 #'
 #' @importFrom R6 R6Class
-#' @export
+#' @keywords internal
 CompoundProperties <- R6::R6Class(
   classname = "CompoundProperties",
   public = list(

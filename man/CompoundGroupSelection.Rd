@@ -7,8 +7,12 @@
 An R6 class representing one entry in a \link{CompoundProperties}'s
 \code{Alternatives} array. Each entry pairs an alternative group (e.g.
 \code{"COMPOUND_SOLUBILITY"}) with the selected alternative within that
-group.
+group. Internal machinery only: \code{\link[=add_simulation]{add_simulation()}}'s friendly
+\code{alternatives} selection (by property name and label) is the
+user-facing way to select an alternative; this class and the
+\verb{COMPOUND_*} group constants it carries are not part of the public API.
 }
+\keyword{internal}
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{

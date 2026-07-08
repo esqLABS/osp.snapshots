@@ -28,20 +28,29 @@
 #'   [create_parameter()]) or raw parameter lists to attach as additional
 #'   compound parameters. This does not set physicochemical properties;
 #'   use the dedicated arguments below for those.
-#' @param lipophilicity A [lipophilicity()] object, or `NULL`. When
-#'   supplied, one default `Lipophilicity` alternative is created.
-#' @param fraction_unbound A [fraction_unbound()] object, or `NULL`. When
-#'   supplied, one default `FractionUnbound` alternative is created.
-#' @param solubility A [solubility()] object, or `NULL`. Expresses either
-#'   the scalar form (value at a reference pH, with optional gain per
-#'   charge) or the table form (a pH/value table). When supplied, one
-#'   `Solubility` alternative is created. See [solubility()] for the scalar
-#'   vs table forms and the mutual-exclusivity rule.
-#' @param intestinal_permeability An [intestinal_permeability()] object, or
-#'   `NULL`. When supplied, one default `IntestinalPermeability` alternative
-#'   is created.
-#' @param permeability A [permeability()] object, or `NULL`. When supplied,
-#'   one default `Permeability` alternative is created.
+#' @param lipophilicity A [lipophilicity()] object, a list of such objects
+#'   to define several named alternatives (the first element is the
+#'   default), or `NULL`. When supplied, one `Lipophilicity` alternative is
+#'   created per element.
+#' @param fraction_unbound A [fraction_unbound()] object, a list of such
+#'   objects to define several named alternatives (the first element is the
+#'   default), or `NULL`. When supplied, one `FractionUnbound` alternative
+#'   is created per element.
+#' @param solubility A [solubility()] object, a list of such objects to
+#'   define several named alternatives (the first element is the default),
+#'   or `NULL`. Each object expresses either the scalar form (value at a
+#'   reference pH, with optional gain per charge) or the table form (a
+#'   pH/value table); a list may mix both forms. When supplied, one
+#'   `Solubility` alternative is created per element. See [solubility()]
+#'   for the scalar vs table forms and the mutual-exclusivity rule.
+#' @param intestinal_permeability An [intestinal_permeability()] object, a
+#'   list of such objects to define several named alternatives (the first
+#'   element is the default), or `NULL`. When supplied, one
+#'   `IntestinalPermeability` alternative is created per element.
+#' @param permeability A [permeability()] object, a list of such objects to
+#'   define several named alternatives (the first element is the default),
+#'   or `NULL`. When supplied, one `Permeability` alternative is created
+#'   per element.
 #' @param pKa List of typed pKa entries, each a list with a `type`
 #'   (one of `"Acid"`, `"Base"`, `"Neutral"`) and a numeric `value`, for
 #'   example `list(list(type = "Base", value = 10.02))`. Order is
@@ -93,6 +102,15 @@
 #'       pH = c(3, 6, 6.8),
 #'       value = c(5000, 3000, 90)
 #'     )
+#'   )
+#' )
+#'
+#' # Several named solubility alternatives (the first is the default)
+#' compound <- create_compound(
+#'   name = "Drug X",
+#'   solubility = list(
+#'     solubility(9999, name = "Aqueous"),
+#'     solubility(200, name = "FaSSIF")
 #'   )
 #' )
 #'
@@ -225,31 +243,37 @@ create_compound <- function(
     data$Parameters <- parameter_list
   }
 
-  if (!is.null(lipophilicity)) {
-    data$Lipophilicity <- spec_to_single_param_alternative(
+  if (!is.null(lipophilicity) && length(lipophilicity) > 0) {
+    data$Lipophilicity <- build_single_param_alternatives(
       lipophilicity,
-      "Lipophilicity"
+      "Lipophilicity",
+      "lipophilicity"
     )
   }
-  if (!is.null(fraction_unbound)) {
-    data$FractionUnbound <- spec_to_single_param_alternative(
+  if (!is.null(fraction_unbound) && length(fraction_unbound) > 0) {
+    data$FractionUnbound <- build_single_param_alternatives(
       fraction_unbound,
-      "Fraction unbound (plasma, reference value)"
+      "Fraction unbound (plasma, reference value)",
+      "fraction_unbound"
     )
   }
-  if (!is.null(solubility)) {
-    data$Solubility <- spec_to_solubility_alternative(solubility)
+  if (!is.null(solubility) && length(solubility) > 0) {
+    data$Solubility <- build_solubility_alternatives(solubility, "solubility")
   }
-  if (!is.null(intestinal_permeability)) {
-    data$IntestinalPermeability <- spec_to_single_param_alternative(
+  if (
+    !is.null(intestinal_permeability) && length(intestinal_permeability) > 0
+  ) {
+    data$IntestinalPermeability <- build_single_param_alternatives(
       intestinal_permeability,
-      "Specific intestinal permeability (transcellular)"
+      "Specific intestinal permeability (transcellular)",
+      "intestinal_permeability"
     )
   }
-  if (!is.null(permeability)) {
-    data$Permeability <- spec_to_single_param_alternative(
+  if (!is.null(permeability) && length(permeability) > 0) {
+    data$Permeability <- build_single_param_alternatives(
       permeability,
-      "Permeability"
+      "Permeability",
+      "permeability"
     )
   }
   if (!is.null(pKa) && length(pKa) > 0) {
@@ -293,6 +317,133 @@ spec_to_solubility_alternative <- function(spec) {
       spec$gain_per_charge
     )
   }
+}
+
+# Internal: dispatch a single-parameter physicochemical-property argument
+# (lipophilicity, fraction unbound, intestinal permeability, permeability)
+# to either the single-spec path (one `IsDefault = TRUE` alternative,
+# unchanged) or the list-of-specs path (one alternative per element, first
+# element default, FR-1/FR-2). Shared by the factory and the `Compound`
+# writable-field setters.
+build_single_param_alternatives <- function(
+  value,
+  param_name,
+  property,
+  call = parent.frame()
+) {
+  if (inherits(value, "osp_value_spec")) {
+    return(spec_to_single_param_alternative(value, param_name))
+  }
+  specs_to_single_param_alternatives(value, param_name, property, call = call)
+}
+
+# Internal: dispatch the `solubility` argument to either the single-spec
+# path or the list-of-specs path, mirroring
+# `build_single_param_alternatives()`. Each list element independently
+# branches scalar vs table form.
+build_solubility_alternatives <- function(
+  value,
+  property,
+  call = parent.frame()
+) {
+  if (inherits(value, "osp_value_spec")) {
+    return(spec_to_solubility_alternative(value))
+  }
+  specs_to_solubility_alternatives(value, property, call = call)
+}
+
+# Internal: build a multi-alternative array from a list of matching
+# physicochemical-property specs. Element order is preserved; the first
+# element is `IsDefault = TRUE`, the rest `IsDefault = FALSE` (D-1, FR-2).
+# Duplicate `name`s are rejected (FR-4). Thin wrapper around
+# `specs_to_alternatives()`, passing the single-parameter converter.
+specs_to_single_param_alternatives <- function(
+  specs,
+  param_name,
+  property,
+  call = parent.frame()
+) {
+  specs_to_alternatives(
+    specs,
+    property,
+    function(spec) spec_to_single_param_alternative(spec, param_name)[[1]],
+    call = call
+  )
+}
+
+# Internal: the solubility equivalent of
+# `specs_to_single_param_alternatives()`. Each element independently
+# branches scalar vs table form via `spec_to_solubility_alternative()`
+# (edge case: a list may mix scalar-form and table-form elements). Thin
+# wrapper around `specs_to_alternatives()`, passing the solubility
+# converter.
+specs_to_solubility_alternatives <- function(
+  specs,
+  property,
+  call = parent.frame()
+) {
+  specs_to_alternatives(
+    specs,
+    property,
+    function(spec) spec_to_solubility_alternative(spec)[[1]],
+    call = call
+  )
+}
+
+# Internal: the shared list-of-specs-to-alternative-array flow behind
+# `specs_to_single_param_alternatives()` and
+# `specs_to_solubility_alternatives()`, which differ only in how a single
+# spec is converted into its alternative. Validates unique alternative
+# `name`s (FR-4), converts every element with `converter`, and marks the
+# first element as the default (D-1, FR-2).
+specs_to_alternatives <- function(
+  specs,
+  property,
+  converter,
+  call = parent.frame()
+) {
+  check_unique_alternative_names(specs, property, call = call)
+  alts <- lapply(specs, converter)
+  alts <- mark_default_alternative(alts)
+  unname(alts)
+}
+
+# Internal: set `IsDefault = TRUE` on the first alternative and `FALSE` on
+# every other, matching a single-object alternative's shape exactly when
+# `alts` has length one (no redundant explicit `IsDefault` sibling to
+# worry about, since the source alternative already carries
+# `IsDefault = TRUE`).
+mark_default_alternative <- function(alts) {
+  alts[[1]]$IsDefault <- TRUE
+  if (length(alts) > 1) {
+    for (i in seq_along(alts)[-1]) {
+      alts[[i]]$IsDefault <- FALSE
+    }
+  }
+  alts
+}
+
+# Internal: abort if two elements of a physicochemical-property list share
+# the same alternative `name` (FR-4). PK-Sim resolves an alternative by
+# name within its group, so duplicate labels within one property are
+# ambiguous.
+check_unique_alternative_names <- function(
+  specs,
+  property,
+  call = parent.frame()
+) {
+  names <- vapply(specs, function(s) s$name, character(1))
+  dupes <- unique(names[duplicated(names)])
+  if (length(dupes) > 0) {
+    cli::cli_abort(
+      c(
+        "{.arg {property}} has duplicate alternative names: {.val {dupes}}.",
+        "i" = "Give each alternative in the list a distinct {.field name}."
+      ),
+      call = call
+    )
+  }
+  invisible(specs)
 }
 
 # Internal: build a one-element (unnamed) alternative array holding a single

@@ -234,6 +234,52 @@ test_that("solubility field accepts a helper matching the factory raw shape", {
   expect_equal(compound$data$Solubility, factory$data$Solubility)
 })
 
+test_that("physicochemical fields accept a list of value objects matching the factory", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  compound$solubility <- list(
+    solubility(9999, name = "Aqueous"),
+    solubility(200, name = "FaSSIF")
+  )
+  factory <- create_compound(
+    name = "X",
+    solubility = list(
+      solubility(9999, name = "Aqueous"),
+      solubility(200, name = "FaSSIF")
+    )
+  )
+  expect_equal(compound$data$Solubility, factory$data$Solubility)
+
+  compound$lipophilicity <- list(
+    lipophilicity(2.5, name = "Measured"),
+    lipophilicity(3.1, name = "Predicted")
+  )
+  factory_lipo <- create_compound(
+    name = "X",
+    lipophilicity = list(
+      lipophilicity(2.5, name = "Measured"),
+      lipophilicity(3.1, name = "Predicted")
+    )
+  )
+  expect_equal(compound$data$Lipophilicity, factory_lipo$data$Lipophilicity)
+})
+
+test_that("solubility field rejects a list containing a non-matching helper", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+  expect_snapshot(
+    error = TRUE,
+    compound$solubility <- list(solubility(9999), lipophilicity(2.5))
+  )
+})
+
+test_that("solubility field rejects duplicate alternative names", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+  expect_snapshot(
+    error = TRUE,
+    compound$solubility <- list(solubility(9999), solubility(200))
+  )
+})
+
 test_that("assigning the wrong helper to a physicochemical field aborts", {
   compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
   expect_snapshot(error = TRUE, compound$lipophilicity <- weight(70))

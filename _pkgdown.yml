@@ -69,9 +69,7 @@ reference:
   contents:
   - AdvancedParameter
   - CalculationMethods
-  - CompoundGroupSelection
   - CompoundProcessSelection
-  - CompoundProperties
   - EventSelection
   - FormulationSelection
   - LocalizedParameter
@@ -94,9 +92,7 @@ reference:
   desc: "Construct building blocks and leaves from named arguments"
   contents:
   - create_compound
-  - create_compound_group_selection
   - create_compound_process_selection
-  - create_compound_properties
   - create_descriptor_condition
   - create_event
   - create_event_selection
