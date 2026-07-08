@@ -99,64 +99,285 @@ test_that("Snapshot lazily wraps Simulations as Simulation R6 objects", {
   expect_named(sims, c("simulation1", "simulation2"))
 })
 
-test_that("add_simulation appends a single Simulation", {
+test_that("add_simulation build mode appends one simulation", {
   snap <- load_snapshot(test_path("data", "test_snapshot.json"))
-  sim <- create_simulation(
-    name = "NewSim",
-    individual = "Korean (Yu 2004 study)",
-    compounds = list(create_compound_properties(name = "Rifampicin"))
-  )
 
-  suppressMessages(snap$add_simulation(sim))
+  suppressMessages(
+    snap$add_simulation(
+      name = "NewSim",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(name = "Rifampicin"))
+    )
+  )
 
   expect_length(snap$simulations, 3)
   expect_equal(snap$simulations[["NewSim"]]$name, "NewSim")
 })
 
-test_that("add_simulation vectorized appends multiple Simulations", {
+test_that("add_simulation build mode works through the functional wrapper", {
   snap <- load_snapshot(test_path("data", "test_snapshot.json"))
-  sims <- list(
-    create_simulation(
-      name = "S1",
+
+  out <- suppressMessages(
+    add_simulation(
+      snap,
+      name = "WrapperSim",
       individual = "Korean (Yu 2004 study)",
-      compounds = list(create_compound_properties(name = "Rifampicin"))
-    ),
-    create_simulation(
-      name = "S2",
-      individual = "Korean (Yu 2004 study)",
-      compounds = list(create_compound_properties(name = "Rifampicin"))
+      compounds = list(list(name = "Rifampicin"))
     )
   )
-  suppressMessages(snap$add_simulation(sims))
-  expect_length(snap$simulations, 4)
-  expect_in(c("S1", "S2"), names(snap$simulations))
+
+  expect_s3_class(out, "Snapshot")
+  expect_equal(out$simulations[["WrapperSim"]]$name, "WrapperSim")
+})
+
+test_that("add_simulation derives calculation_methods from the compound", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  suppressMessages(
+    snap$add_simulation(
+      name = "CalcSim",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(name = "Rifampicin"))
+    )
+  )
+
+  built <- snap$simulations[["CalcSim"]]$compounds[[1]]
+  expected <- as.list(snap$compounds[["Rifampicin"]]$calculation_methods$names)
+  expect_equal(built$calculation_methods, expected)
+})
+
+test_that("add_simulation infers the formulation key from the protocol", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  # Simple protocol (no schema items): falls back to the "Formulation" key.
+  suppressMessages(
+    snap$add_simulation(
+      name = "SimpleKey",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(
+        name = "Rifampicin",
+        protocol = "Shin 2016 - Midazolam - iv 1 mg (Control)",
+        formulation = "Oral solution"
+      ))
+    )
+  )
+  simple <- snap$simulations[["SimpleKey"]]$compounds[[1]]$protocol
+  expect_equal(simple$formulations[[1]]$data$Key, "Formulation")
+
+  # Advanced protocol with a single slot: the slot's formulation_key wins.
+  suppressMessages(
+    snap$add_simulation(
+      name = "AdvancedKey",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(
+        name = "Rifampicin",
+        protocol = "Backman 1996 - Midazolam - 15 mg (Control)",
+        formulation = "Tablet (Dormicum)"
+      ))
+    )
+  )
+  advanced <- snap$simulations[["AdvancedKey"]]$compounds[[1]]$protocol
+  expect_equal(advanced$formulations[[1]]$data$Key, "Tablet (Dormicum)")
+})
+
+test_that("add_simulation defaults alternatives to each group default", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  suppressMessages(
+    snap$add_simulation(
+      name = "AltSim",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(name = "Rifampicin"))
+    )
+  )
+
+  alternatives <- snap$simulations[["AltSim"]]$compounds[[1]]$data$Alternatives
+  expect_snapshot_value(alternatives, style = "json2")
+})
+
+test_that("add_simulation omits Processes when processes not supplied", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  suppressMessages(
+    snap$add_simulation(
+      name = "NoProc",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(name = "Rifampicin"))
+    )
+  )
+
+  expect_null(snap$simulations[["NoProc"]]$compounds[[1]]$data$Processes)
+})
+
+test_that("add_simulation builds process selections from a name vector", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  suppressMessages(
+    snap$add_simulation(
+      name = "ProcSim",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(
+        name = "Rifampicin",
+        processes = c("P-gp", "Hepatic")
+      ))
+    )
+  )
+
+  processes <- snap$simulations[["ProcSim"]]$compounds[[1]]$processes
+  expect_length(processes, 2)
+  expect_equal(processes[[1]]$molecule_name, "P-gp")
+  expect_null(processes[[1]]$systemic_process_type)
+  expect_equal(processes[[2]]$systemic_process_type, "Hepatic")
+  expect_null(processes[[2]]$molecule_name)
+})
+
+test_that("add_simulation passes explicit process objects through unchanged", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  proc <- create_compound_process_selection(
+    molecule_name = "CYP3A4",
+    metabolite_name = "1-OH-Midazolam"
+  )
+  suppressMessages(
+    snap$add_simulation(
+      name = "ExplicitProc",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(name = "Rifampicin", processes = list(proc)))
+    )
+  )
+
+  built <- snap$simulations[["ExplicitProc"]]$compounds[[1]]$processes[[1]]
+  expect_equal(built$data, proc$data)
+})
+
+test_that("add_simulation passes CompoundProperties escape-hatch through unchanged", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  cp <- create_compound_properties(
+    name = "Rifampicin",
+    calculation_methods = c("Only this one")
+  )
+  suppressMessages(
+    snap$add_simulation(
+      name = "EscapeSim",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(cp)
+    )
+  )
+
+  built <- snap$simulations[["EscapeSim"]]$compounds[[1]]
+  # The factory output is attached verbatim: no resolver defaulting, so
+  # calculation methods are exactly what was supplied and no alternatives
+  # are derived from the compound building block.
+  expect_equal(built$data, cp$data)
+})
+
+test_that("add_simulation build mode enforces XOR on individual/population", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+  expect_snapshot(error = TRUE, snap$add_simulation(name = "S"))
+  expect_snapshot(
+    error = TRUE,
+    snap$add_simulation(name = "S", individual = "A", population = "P")
+  )
+})
+
+test_that("add_simulation build mode validates required arguments", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+  expect_snapshot(error = TRUE, snap$add_simulation())
+  expect_snapshot(
+    error = TRUE,
+    snap$add_simulation(name = "", individual = "A")
+  )
+  expect_snapshot(
+    error = TRUE,
+    snap$add_simulation(name = "S", individual = "A", allow_aging = "no")
+  )
+})
+
+test_that("add_simulation default Solver serialises as a JSON object", {
+  # PK-Sim's snapshot mapper rejects `Solver: []` silently. The default
+  # Solver (when no `solver` argument is supplied) must round-trip as
+  # `{}`, not `[]`, so the simulation is loadable.
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+  suppressMessages(
+    snap$add_simulation(
+      name = "SolverSim",
+      individual = "Korean (Yu 2004 study)"
+    )
+  )
+  expect_equal(
+    as.character(
+      jsonlite::toJSON(
+        snap$simulations[["SolverSim"]]$data$Solver,
+        auto_unbox = TRUE
+      )
+    ),
+    "{}"
+  )
+})
+
+test_that("add_simulation accepts every optional argument", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+  # "Study A" is not in the fixture, so the add warns and proceeds; this
+  # test only asserts that every optional argument is carried through.
+  suppressWarnings(suppressMessages(
+    snap$add_simulation(
+      name = "FullSim",
+      individual = "Korean (Yu 2004 study)",
+      description = "demo",
+      allow_aging = FALSE,
+      solver = create_solver_settings(abs_tol = 1e-9),
+      observed_data_names = c("Study A"),
+      output_selections = c("Organism|Liver"),
+      output_mappings = list(
+        create_output_mapping(path = "p", observed_data = "Study A")
+      ),
+      parameters = list(create_parameter(path = "Organism|Liver", value = 1))
+    )
+  ))
+
+  built <- snap$simulations[["FullSim"]]
+  expect_equal(built$description, "demo")
+  expect_identical(built$allow_aging, FALSE)
+  expect_equal(built$solver$abs_tol, 1e-9)
+  expect_equal(built$observed_data_names, list("Study A"))
+  expect_equal(built$output_selections, list("Organism|Liver"))
+  expect_length(built$output_mappings, 1)
+  expect_length(built$parameters, 1)
+})
+
+test_that("add_simulation attaches a pre-built Simulation object", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  # Round-trip a loaded simulation back through the pre-built path.
+  prebuilt <- snap$simulations[[1]]$clone(deep = TRUE)
+  prebuilt$name <- "Prebuilt"
+  suppressMessages(snap$add_simulation(prebuilt))
+
+  expect_length(snap$simulations, 3)
+  expect_equal(snap$simulations[["Prebuilt"]]$name, "Prebuilt")
 })
 
 test_that("add_simulation warns about unresolved references", {
   snap <- load_snapshot(test_path("data", "test_snapshot.json"))
-  sim <- create_simulation(
-    name = "MissingRefs",
-    individual = "NoSuchIndividual",
-    compounds = list(
-      create_compound_properties(
-        name = "NoSuchCompound",
-        protocol = create_protocol_selection(
-          name = "NoSuchProtocol",
-          formulations = list(
-            create_formulation_selection(
-              name = "NoSuchFormulation",
-              key = "K"
-            )
-          )
-        )
-      )
-    ),
-    events = list(create_event_selection(name = "NoSuchEvent", start_time = 1)),
-    observer_sets = list(create_observer_set_selection(name = "NoSuchSet")),
-    observed_data_names = c("NoSuchData")
-  )
 
-  expect_snapshot(snap$add_simulation(sim))
+  expect_snapshot(
+    snap$add_simulation(
+      name = "MissingRefs",
+      individual = "NoSuchIndividual",
+      compounds = list(list(
+        name = "NoSuchCompound",
+        protocol = "NoSuchProtocol",
+        formulation = "NoSuchFormulation"
+      )),
+      events = list(create_event_selection(
+        name = "NoSuchEvent",
+        start_time = 1
+      )),
+      observer_sets = list(create_observer_set_selection(name = "NoSuchSet")),
+      observed_data_names = c("NoSuchData")
+    )
+  )
 })
 
 test_that("remove_simulation drops simulations by name", {

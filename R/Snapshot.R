@@ -160,7 +160,9 @@ Snapshot <- R6::R6Class(
     },
 
     #' @description
-    #' Add one or more Individual objects to the snapshot.
+    #' Add one or more Individual objects to the snapshot. References to
+    #' expression profiles not yet in the snapshot trigger one
+    #' informational warning per individual; the add proceeds either way.
     #' @param individual An Individual object created with create_individual(),
     #'   or a list of such objects.
     #' @return Invisibly returns the object
@@ -180,6 +182,24 @@ Snapshot <- R6::R6Class(
     #' snapshot$add_individual(patients)
     #' }
     add_individual = function(individual) {
+      # Warn once per individual about unresolved expression-profile
+      # references before `.add_block` mutates the cache. `.add_block`
+      # repeats the type validation, so keep this loop tolerant: skip
+      # entries that are not Individual objects (their errors surface in
+      # `.add_block` immediately after).
+      inds <- if (inherits(individual, "Individual")) {
+        list(individual)
+      } else if (is.list(individual)) {
+        individual
+      } else {
+        list()
+      }
+      for (ind in inds) {
+        if (inherits(ind, "Individual")) {
+          private$.warn_unresolved_individual_refs(ind)
+        }
+      }
+
       private$.add_block(
         obj = individual,
         expected_class = "Individual",
@@ -504,11 +524,98 @@ Snapshot <- R6::R6Class(
     },
 
     #' @description
-    #' Add one or more Simulation objects to the snapshot.
-    #' @param simulation A Simulation object created with
-    #'   create_simulation(), or a list of such objects.
+    #' Build a simulation from named arguments and attach it, or attach a
+    #' pre-built simulation.
+    #'
+    #' The build mode is the entry point: with the snapshot in hand it
+    #' resolves compound references and derives defaults (calculation
+    #' methods, formulation key, alternatives) before attaching. Supply
+    #' `name` plus exactly one of `individual` / `population` to build; each
+    #' inline `compounds` entry is either a config list
+    #' (`list(name =, protocol =, formulation =, processes =, ...)`) or a
+    #' [CompoundProperties] escape-hatch object. Alternatively supply a
+    #' pre-built [Simulation] (or a list of them) through `simulation`.
+    #' References to building blocks not yet in the snapshot trigger one
+    #' informational warning per simulation; the add proceeds either way.
+    #' @param simulation A pre-built [Simulation] object, or a list of such
+    #'   objects. Leave `NULL` to build a simulation from the named
+    #'   arguments instead.
+    #' @param name Character. Simulation name (required in build mode).
+    #' @param model Character. PK-Sim model name (defaults to `"4Comp"`).
+    #' @param individual Character. Name of the individual building block.
+    #'   Mutually exclusive with `population`.
+    #' @param population Character. Name of the population building block.
+    #'   Mutually exclusive with `individual`.
+    #' @param compounds List of inline compound-config lists
+    #'   (`list(name =, protocol =, formulation =, processes =,
+    #'   calculation_methods =, alternatives =)`) and/or [CompoundProperties]
+    #'   objects (the escape hatch).
+    #' @param events List of [EventSelection] objects or raw lists.
+    #' @param observer_sets List of [ObserverSetSelection] objects or raw
+    #'   lists.
+    #' @param observed_data_names Character vector of observed-data names.
+    #' @param solver A [SolverSettings] object or raw list. Defaults to
+    #'   PK-Sim defaults.
+    #' @param output_schema An [OutputSchema] object or raw list. Defaults
+    #'   to an empty schema.
+    #' @param output_selections Character vector of output quantity paths.
+    #' @param output_mappings List of [OutputMapping] objects or raw lists.
+    #' @param parameters List of [LocalizedParameter] objects (created with
+    #'   `create_parameter(path = ..., ...)`) or raw parameter lists.
+    #' @param advanced_parameters List of [AdvancedParameter] objects or raw
+    #'   lists (population simulations only).
+    #' @param description Character. Free-text description of the simulation.
+    #' @param allow_aging Logical. Whether the simulation allows aging.
     #' @return Invisibly returns the object
-    add_simulation = function(simulation) {
+    add_simulation = function(
+      simulation = NULL,
+      name = NULL,
+      model = "4Comp",
+      individual = NULL,
+      population = NULL,
+      compounds = NULL,
+      events = NULL,
+      observer_sets = NULL,
+      observed_data_names = NULL,
+      solver = NULL,
+      output_schema = NULL,
+      output_selections = NULL,
+      output_mappings = NULL,
+      parameters = NULL,
+      advanced_parameters = NULL,
+      description = NULL,
+      allow_aging = NULL
+    ) {
+      # Build mode: no pre-built simulation, `name` supplied. Build,
+      # resolving compounds and deriving defaults against this snapshot.
+      if (is.null(simulation)) {
+        if (is.null(name)) {
+          cli::cli_abort(c(
+            "Nothing to add.",
+            i = "Supply a pre-built {.cls Simulation} via {.arg simulation}, \\
+            or {.arg name} plus {.arg individual}/{.arg population} to build one."
+          ))
+        }
+        simulation <- private$.build_simulation(
+          name = name,
+          model = model,
+          individual = individual,
+          population = population,
+          compounds = compounds,
+          events = events,
+          observer_sets = observer_sets,
+          observed_data_names = observed_data_names,
+          solver = solver,
+          output_schema = output_schema,
+          output_selections = output_selections,
+          output_mappings = output_mappings,
+          parameters = parameters,
+          advanced_parameters = advanced_parameters,
+          description = description,
+          allow_aging = allow_aging
+        )
+      }
+
       # Walk every simulation that looks valid, emit a missing-refs warning
       # per simulation before `.add_block` mutates the cache. `.add_block`
       # repeats the type validation so we keep this loop tolerant: we skip
@@ -1127,13 +1234,216 @@ Snapshot <- R6::R6Class(
       invisible(self)
     },
 
+    # Build a `Simulation` from named arguments, resolving compound
+    # references and deriving defaults against this snapshot. Assembles the
+    # raw simulation payload with the same validations, defaults, and error
+    # messages as the standalone factory did, then wraps it in `Simulation`.
+    # Compounds run through `resolve_compounds()` (inline configs resolved
+    # against the snapshot; `CompoundProperties` objects passed through).
+    .build_simulation = function(
+      name,
+      model,
+      individual,
+      population,
+      compounds,
+      events,
+      observer_sets,
+      observed_data_names,
+      solver,
+      output_schema,
+      output_selections,
+      output_mappings,
+      parameters,
+      advanced_parameters,
+      description,
+      allow_aging,
+      call = parent.frame()
+    ) {
+      check_required_string(name, "name", call = call)
+      check_required_string(model, "model", call = call)
+
+      has_individual <- !is.null(individual)
+      has_population <- !is.null(population)
+      if (has_individual == has_population) {
+        cli::cli_abort(
+          c(
+            "Simulation must reference exactly one of {.arg individual} or {.arg population}.",
+            i = "Supply one and leave the other {.code NULL}."
+          ),
+          call = call
+        )
+      }
+      if (has_individual) {
+        check_required_string(individual, "individual", call = call)
+      } else {
+        check_required_string(population, "population", call = call)
+      }
+
+      if (!is.null(allow_aging)) {
+        if (!is.logical(allow_aging) || length(allow_aging) != 1) {
+          cli::cli_abort(
+            "{.arg allow_aging} must be a single logical value",
+            call = call
+          )
+        }
+      }
+      if (!is.null(description)) {
+        check_required_string(description, "description", call = call)
+      }
+
+      data <- list(Name = name, Model = model)
+
+      if (!is.null(description)) {
+        data$Description <- description
+      }
+      if (!is.null(allow_aging)) {
+        data$AllowAging <- allow_aging
+      }
+      if (has_individual) {
+        data$Individual <- individual
+      }
+      if (has_population) {
+        data$Population <- population
+      }
+
+      resolved_compounds <- resolve_compounds(compounds, self, call = call)
+      if (!is.null(resolved_compounds)) {
+        data$Compounds <- resolved_compounds
+      }
+      if (!is.null(events)) {
+        data$Events <- to_raw_r6_or_list(events, "EventSelection", "events")
+      }
+      if (!is.null(observer_sets)) {
+        data$ObserverSets <- to_raw_r6_or_list(
+          observer_sets,
+          "ObserverSetSelection",
+          "observer_sets"
+        )
+      }
+      if (!is.null(observed_data_names)) {
+        if (!is.character(observed_data_names)) {
+          cli::cli_abort(
+            "{.arg observed_data_names} must be a character vector",
+            call = call
+          )
+        }
+        data$ObservedData <- as.list(observed_data_names)
+      }
+      if (!is.null(output_selections)) {
+        if (!is.character(output_selections)) {
+          cli::cli_abort(
+            "{.arg output_selections} must be a character vector",
+            call = call
+          )
+        }
+        data$OutputSelections <- as.list(output_selections)
+      }
+      if (!is.null(output_mappings)) {
+        data$OutputMappings <- to_raw_r6_or_list(
+          output_mappings,
+          "OutputMapping",
+          "output_mappings"
+        )
+      }
+      if (!is.null(advanced_parameters)) {
+        data$AdvancedParameters <- to_raw_r6_or_list(
+          advanced_parameters,
+          "AdvancedParameter",
+          "advanced_parameters"
+        )
+      }
+
+      # Solver: pre-resolve so the raw $data carries it.
+      if (!is.null(solver)) {
+        if (inherits(solver, "SolverSettings")) {
+          data$Solver <- solver$data
+        } else if (is.list(solver) && !is.object(solver)) {
+          data$Solver <- solver
+        } else {
+          cli::cli_abort(
+            "{.arg solver} must be a {.cls SolverSettings} or a raw list",
+            call = call
+          )
+        }
+      } else {
+        # Empty *named* list so jsonlite writes `{}` (an object). An
+        # unnamed `list()` serialises to `[]` (an array), which PK-Sim's
+        # snapshot mapper rejects silently.
+        data$Solver <- empty_named_list()
+      }
+
+      if (!is.null(output_schema)) {
+        if (inherits(output_schema, "OutputSchema")) {
+          data$OutputSchema <- output_schema$data
+        } else if (is.list(output_schema) && !is.object(output_schema)) {
+          data$OutputSchema <- output_schema
+        } else {
+          cli::cli_abort(
+            "{.arg output_schema} must be an {.cls OutputSchema} or a raw list",
+            call = call
+          )
+        }
+      } else {
+        data$OutputSchema <- list()
+      }
+
+      if (!is.null(parameters)) {
+        data$Parameters <- to_raw_parameters(parameters, "Path")
+      }
+
+      Simulation$new(data)
+    },
+
+    # Pre-add hook for `add_individual()`. Warns once per individual when
+    # any expression profile it references (by composite
+    # `Molecule|Species|Category` id) does not resolve to an expression
+    # profile currently in the snapshot. The add proceeds either way;
+    # PK-Sim will surface unresolved references at load time.
+    .warn_unresolved_individual_refs = function(individual) {
+      refs <- individual$expression_profiles
+      if (is.null(refs) || length(refs) == 0) {
+        return()
+      }
+
+      known <- vapply(
+        self$expression_profiles,
+        function(profile) {
+          category <- profile$category
+          paste(
+            profile$molecule %||% "",
+            profile$species %||% "",
+            category %||% "",
+            sep = "|"
+          )
+        },
+        character(1)
+      )
+
+      missing_ids <- setdiff(refs, known)
+      if (length(missing_ids) == 0) {
+        return()
+      }
+
+      ind_name <- individual$name %||% "<unnamed>"
+      cli::cli_warn(c(
+        "Individual {.val {ind_name}} references expression profiles that are not in the snapshot:",
+        stats::setNames(
+          paste0("ExpressionProfiles: ", paste(missing_ids, collapse = ", ")),
+          "*"
+        ),
+        i = "PK-Sim will fail to resolve these at load time."
+      ))
+    },
+
     # Pre-add hook for `add_simulation()`. Warns once per simulation when
     # any name referenced by the simulation does not resolve to a
     # currently-known building block in the snapshot. The add proceeds
     # either way; PK-Sim will surface unresolved references at load time.
     .warn_unresolved_simulation_refs = function(sim) {
       collect_names <- function(items, accessor) {
-        if (length(items) == 0) return(character())
+        if (length(items) == 0) {
+          return(character())
+        }
         vapply(items, accessor, character(1))
       }
 
@@ -1169,7 +1479,9 @@ Snapshot <- R6::R6Class(
 
       missing <- list()
       record <- function(kind, name) {
-        if (is.null(name) || !nzchar(name)) return()
+        if (is.null(name) || !nzchar(name)) {
+          return()
+        }
         missing[[kind]] <<- unique(c(missing[[kind]], name))
       }
 
@@ -1223,7 +1535,9 @@ Snapshot <- R6::R6Class(
         }
       }
 
-      if (length(missing) == 0) return()
+      if (length(missing) == 0) {
+        return()
+      }
 
       lines <- vapply(
         names(missing),
@@ -2001,29 +2315,113 @@ remove_observed_data <- function(snapshot, observed_data_name) {
   invisible(snapshot)
 }
 
-#' Add one or more simulations to a snapshot
+#' Build a simulation from a snapshot and attach it
 #'
 #' @description
-#' Add one or more [Simulation] objects to a [Snapshot]. References to
-#' missing building blocks (individual, population, compounds, events,
-#' observer sets, observed data, protocols, formulations) trigger one
-#' informational warning per simulation; the add proceeds either way.
+#' Build a [Simulation] from named arguments and attach it to a
+#' [Snapshot], or attach a pre-built [Simulation].
+#'
+#' A simulation is almost pure references into the snapshot, so the
+#' snapshot is its entry point. In build mode, with the snapshot in hand,
+#' `add_simulation()` resolves compound references and derives sensible
+#' defaults (calculation methods, formulation key, alternatives) from the
+#' referenced building blocks before attaching. Supply `name` plus exactly
+#' one of `individual` / `population`, and configure each compound inline
+#' through `compounds`. The escape-hatch factories
+#' ([create_compound_properties()], [create_protocol_selection()],
+#' [create_formulation_selection()]) still work: pass a
+#' [CompoundProperties] object through the same `compounds` slot for
+#' multi-slot protocols and hand-built configurations. References to
+#' building blocks not yet in the snapshot trigger one informational
+#' warning per simulation; the add proceeds either way.
 #'
 #' @param snapshot A [Snapshot] object.
-#' @param simulation A [Simulation] object created with
-#'   [create_simulation()], or a list of such objects.
+#' @param simulation A pre-built [Simulation] object, or a list of such
+#'   objects. Leave `NULL` to build a simulation from the named arguments.
+#' @param name Character. Simulation name (required in build mode).
+#' @param model Character. PK-Sim model name (defaults to `"4Comp"`).
+#' @param individual Character. Name of the individual building block.
+#'   Mutually exclusive with `population`.
+#' @param population Character. Name of the population building block.
+#'   Mutually exclusive with `individual`.
+#' @param compounds List of inline compound-config lists
+#'   (`list(name =, protocol =, formulation =, processes =,
+#'   calculation_methods =, alternatives =)`) and/or [CompoundProperties]
+#'   objects (the escape hatch). Inline entries are resolved against the
+#'   snapshot; `CompoundProperties` objects are passed through unchanged.
+#' @param events List of [EventSelection] objects or raw lists.
+#' @param observer_sets List of [ObserverSetSelection] objects or raw
+#'   lists.
+#' @param observed_data_names Character vector of observed-data names.
+#' @param solver A [SolverSettings] object or raw list. Defaults to
+#'   PK-Sim defaults.
+#' @param output_schema An [OutputSchema] object or raw list. Defaults to
+#'   an empty schema.
+#' @param output_selections Character vector of output quantity paths.
+#' @param output_mappings List of [OutputMapping] objects or raw lists.
+#' @param parameters List of [LocalizedParameter] objects (created with
+#'   `create_parameter(path = ..., ...)`) or raw parameter lists.
+#' @param advanced_parameters List of [AdvancedParameter] objects or raw
+#'   lists (population simulations only).
+#' @param description Character. Free-text description of the simulation.
+#' @param allow_aging Logical. Whether the simulation allows aging.
 #' @return The updated [Snapshot] object, returned invisibly.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' sim <- create_simulation(name = "Sim 1", individual = "Adult")
 #' snapshot <- load_snapshot("Midazolam") |>
-#'   add_simulation(sim)
+#'   add_simulation(
+#'     name = "Sim 1",
+#'     individual = "Korean (Yu 2004 study)",
+#'     compounds = list(list(
+#'       name = "Rifampicin",
+#'       protocol = "Yu 2004 - Rifampicin - 600 mg MD OD 10 days",
+#'       formulation = "Oral solution",
+#'       processes = c("Hepatic")
+#'     ))
+#'   )
 #' }
-add_simulation <- function(snapshot, simulation) {
+add_simulation <- function(
+  snapshot,
+  simulation = NULL,
+  name = NULL,
+  model = "4Comp",
+  individual = NULL,
+  population = NULL,
+  compounds = NULL,
+  events = NULL,
+  observer_sets = NULL,
+  observed_data_names = NULL,
+  solver = NULL,
+  output_schema = NULL,
+  output_selections = NULL,
+  output_mappings = NULL,
+  parameters = NULL,
+  advanced_parameters = NULL,
+  description = NULL,
+  allow_aging = NULL
+) {
   validate_snapshot(snapshot)
-  snapshot$add_simulation(simulation)
+  snapshot$add_simulation(
+    simulation = simulation,
+    name = name,
+    model = model,
+    individual = individual,
+    population = population,
+    compounds = compounds,
+    events = events,
+    observer_sets = observer_sets,
+    observed_data_names = observed_data_names,
+    solver = solver,
+    output_schema = output_schema,
+    output_selections = output_selections,
+    output_mappings = output_mappings,
+    parameters = parameters,
+    advanced_parameters = advanced_parameters,
+    description = description,
+    allow_aging = allow_aging
+  )
   invisible(snapshot)
 }
 
