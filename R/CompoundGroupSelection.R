@@ -4,10 +4,13 @@
 #' An R6 class representing one entry in a [CompoundProperties]'s
 #' `Alternatives` array. Each entry pairs an alternative group (e.g.
 #' `"COMPOUND_SOLUBILITY"`) with the selected alternative within that
-#' group.
+#' group. Internal machinery only: [add_simulation()]'s friendly
+#' `alternatives` selection (by property name and label) is the
+#' user-facing way to select an alternative; this class and the
+#' `COMPOUND_*` group constants it carries are not part of the public API.
 #'
 #' @importFrom R6 R6Class
-#' @export
+#' @keywords internal
 CompoundGroupSelection <- R6::R6Class(
   classname = "CompoundGroupSelection",
   public = list(

@@ -191,15 +191,21 @@ Compound <- R6::R6Class(
 
     # Shared setter for the single-parameter alternative-group fields. A
     # matching value-object helper (e.g. `lipophilicity()`) builds the
-    # alternative from its own value/unit/name; a raw alternative list is
-    # stored verbatim (a deliberate escape hatch); NULL clears the key; a
-    # bare numeric scalar (or anything else) is rejected via
-    # `require_value_spec()`, which names the required helper. `unit = NULL`
+    # alternative from its own value/unit/name; a list of matching helper
+    # objects builds one alternative per element (first element default,
+    # FR-5); a raw alternative list is stored verbatim (a deliberate escape
+    # hatch); NULL clears the key; a bare numeric scalar (or anything else)
+    # is rejected via `require_value_spec()`, which names the required
+    # helper and also validates a list of helper objects. `unit = NULL`
     # omits the parameter unit (fraction unbound). Returns the value to
     # assign into private$.data.
     set_alternative_group = function(value, param_name, unit, field) {
       if (is.null(value)) {
         return(NULL)
+      }
+      if (is_value_spec_list(value)) {
+        require_value_spec_list(value, paste0(field, "_spec"), field)
+        return(specs_to_single_param_alternatives(value, param_name, field))
       }
       if (is.list(value) && !inherits(value, "osp_value_spec")) {
         return(unname(value))
@@ -566,10 +572,12 @@ Compound <- R6::R6Class(
     },
 
     #' @field lipophilicity The lipophilicity data of the compound. Writable:
-    #'   assign a [lipophilicity()] object, a raw alternative list to set
-    #'   the array verbatim (the escape hatch for multiple, named, or
-    #'   species-specific alternatives), or `NULL` to clear the property. A
-    #'   bare numeric scalar is rejected; use [lipophilicity()] instead.
+    #'   assign a [lipophilicity()] object, a list of such objects to
+    #'   define several named alternatives (the first element is the
+    #'   default), a raw alternative list to set the array verbatim (the
+    #'   escape hatch for species-specific alternatives), or `NULL` to
+    #'   clear the property. A bare numeric scalar is rejected; use
+    #'   [lipophilicity()] instead.
     lipophilicity = function(value) {
       if (missing(value)) {
         result <- private$.data$Lipophilicity
@@ -588,9 +596,11 @@ Compound <- R6::R6Class(
     },
 
     #' @field fraction_unbound The fraction unbound data of the compound.
-    #'   Writable: assign a [fraction_unbound()] object, a raw alternative
-    #'   list to set the array verbatim, or `NULL` to clear the property. A
-    #'   bare numeric scalar is rejected; use [fraction_unbound()] instead.
+    #'   Writable: assign a [fraction_unbound()] object, a list of such
+    #'   objects to define several named alternatives (the first element is
+    #'   the default), a raw alternative list to set the array verbatim, or
+    #'   `NULL` to clear the property. A bare numeric scalar is rejected;
+    #'   use [fraction_unbound()] instead.
     fraction_unbound = function(value) {
       if (missing(value)) {
         result <- private$.data$FractionUnbound
@@ -610,9 +620,11 @@ Compound <- R6::R6Class(
 
     #' @field solubility The solubility data of the compound. Writable:
     #'   assign a [solubility()] object to express reference pH, gain per
-    #'   charge, or a pH/value table, a raw alternative list to set the
-    #'   array verbatim, or `NULL` to clear the property. A bare numeric
-    #'   scalar is rejected; use [solubility()] instead.
+    #'   charge, or a pH/value table, a list of such objects to define
+    #'   several named alternatives (the first element is the default), a
+    #'   raw alternative list to set the array verbatim, or `NULL` to clear
+    #'   the property. A bare numeric scalar is rejected; use [solubility()]
+    #'   instead.
     solubility = function(value) {
       if (missing(value)) {
         result <- private$.data$Solubility
@@ -624,6 +636,12 @@ Compound <- R6::R6Class(
       }
       if (is.null(value)) {
         private$.data$Solubility <- NULL
+      } else if (is_value_spec_list(value)) {
+        require_value_spec_list(value, "solubility_spec", "solubility")
+        private$.data$Solubility <- specs_to_solubility_alternatives(
+          value,
+          "solubility"
+        )
       } else if (is.list(value) && !inherits(value, "osp_value_spec")) {
         private$.data$Solubility <- unname(value)
       } else {
@@ -634,9 +652,10 @@ Compound <- R6::R6Class(
 
     #' @field intestinal_permeability The intestinal permeability data of the
     #'   compound. Writable: assign an [intestinal_permeability()] object, a
-    #'   raw alternative list to set the array verbatim, or `NULL` to clear
-    #'   the property. A bare numeric scalar is rejected; use
-    #'   [intestinal_permeability()] instead.
+    #'   list of such objects to define several named alternatives (the
+    #'   first element is the default), a raw alternative list to set the
+    #'   array verbatim, or `NULL` to clear the property. A bare numeric
+    #'   scalar is rejected; use [intestinal_permeability()] instead.
     intestinal_permeability = function(value) {
       if (missing(value)) {
         result <- private$.data$IntestinalPermeability
@@ -655,9 +674,11 @@ Compound <- R6::R6Class(
     },
 
     #' @field permeability The permeability data of the compound. Writable:
-    #'   assign a [permeability()] object, a raw alternative list to set the
-    #'   array verbatim, or `NULL` to clear the property. A bare numeric
-    #'   scalar is rejected; use [permeability()] instead.
+    #'   assign a [permeability()] object, a list of such objects to define
+    #'   several named alternatives (the first element is the default), a
+    #'   raw alternative list to set the array verbatim, or `NULL` to clear
+    #'   the property. A bare numeric scalar is rejected; use
+    #'   [permeability()] instead.
     permeability = function(value) {
       if (missing(value)) {
         result <- private$.data$Permeability

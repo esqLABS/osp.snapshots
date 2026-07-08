@@ -23,6 +23,32 @@ test_that("Simulation wraps fixture data", {
   expect_s3_class(sim$parameters[[1]], "LocalizedParameter")
 })
 
+test_that("Simulation load path still wraps a multi-alternative compound's Alternatives (AC-15)", {
+  # The retired create_compound_group_selection()/create_compound_properties()
+  # constructors are gone from the public API, but CompoundGroupSelection and
+  # CompoundProperties remain as unexported internal machinery that the
+  # Simulation load path still relies on to parse a loaded simulation's
+  # Alternatives array.
+  snap <- jsonlite::fromJSON(
+    test_path("data", "test_snapshot.json"),
+    simplifyVector = FALSE,
+    simplifyDataFrame = FALSE
+  )
+  raw <- snap$Simulations[[1]]
+  sim <- Simulation$new(raw)
+
+  alternatives <- sim$compounds[[1]]$alternatives
+  expect_true(length(alternatives) >= 2)
+  for (alt in alternatives) {
+    expect_s3_class(alt, "CompoundGroupSelection")
+  }
+
+  expect_equal(
+    sim$data$Compounds[[1]]$Alternatives,
+    raw$Compounds[[1]]$Alternatives
+  )
+})
+
 test_that("Simulation preserves passthrough fields byte-equivalent", {
   snap <- jsonlite::fromJSON(
     test_path("data", "test_snapshot.json"),
@@ -190,6 +216,192 @@ test_that("add_simulation infers the formulation key from the protocol", {
   expect_equal(advanced$formulations[[1]]$data$Key, "Tablet (Dormicum)")
 })
 
+test_that("add_simulation binds a multi-slot formulation map", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  suppressMessages(
+    snap$add_simulation(
+      name = "MultiSlot",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(
+        name = "Rifampicin",
+        protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+        formulation = c(
+          "form-Lint80" = "form_Lint80",
+          "Oral solution" = "Oral solution",
+          "form-ZO" = "form-ZO"
+        )
+      ))
+    )
+  )
+
+  built <- snap$simulations[["MultiSlot"]]$compounds[[1]]$protocol
+
+  expected <- create_protocol_selection(
+    name = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+    formulations = list(
+      create_formulation_selection(name = "form_Lint80", key = "form-Lint80"),
+      create_formulation_selection(
+        name = "Oral solution",
+        key = "Oral solution"
+      ),
+      create_formulation_selection(name = "form-ZO", key = "form-ZO")
+    )
+  )
+
+  expect_equal(built$data$Formulations, expected$data$Formulations)
+})
+
+test_that("add_simulation binds a single named-slot formulation", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  suppressMessages(
+    snap$add_simulation(
+      name = "NamedSlot",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(
+        name = "Rifampicin",
+        protocol = "Yu 2004 - Rifampicin - 600 mg MD OD 10 days",
+        formulation = c(Formulation = "Oral solution")
+      ))
+    )
+  )
+
+  built <- snap$simulations[["NamedSlot"]]$compounds[[1]]$protocol
+  expect_equal(built$formulations[[1]]$data$Key, "Formulation")
+  expect_equal(built$formulations[[1]]$data$Name, "Oral solution")
+})
+
+test_that("add_simulation rejects a formulation map with an unnamed element", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "BadFormulationMap",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+          formulation = c("form-Lint80" = "Lint 80mg tablet", "ZO tablet")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation rejects a formulation map with a duplicate slot key", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "DuplicateSlotKey",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+          formulation = c(Formulation = "A", Formulation = "B")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation rejects a formulation map with an empty value", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "EmptyFormulationValue",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+          formulation = c(Formulation = "A", Other = "")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation warns, but does not error, on an unknown formulation slot key", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  # The formulation map's Formulations payload is still emitted verbatim
+  # and the simulation is still added; the unknown slot key only produces
+  # a non-fatal, informational message (the protocol itself decides at
+  # PK-Sim load time whether an unbound slot is acceptable).
+  expect_snapshot(
+    snap$add_simulation(
+      name = "UnknownSlotKey",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(
+        name = "Rifampicin",
+        protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+        formulation = c(
+          "form-Lint80" = "form_Lint80",
+          "Nonexistent-Slot" = "Oral solution"
+        )
+      ))
+    )
+  )
+
+  built <- snap$simulations[["UnknownSlotKey"]]$compounds[[1]]$protocol
+  expect_equal(
+    built$data$Formulations,
+    list(
+      list(Name = "form_Lint80", Key = "form-Lint80"),
+      list(Name = "Oral solution", Key = "Nonexistent-Slot")
+    )
+  )
+})
+
+test_that("add_simulation emits no unknown-slot-key warning against an unresolved protocol", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  # The protocol is not in the snapshot, so its real slot keys are
+  # unknown; the existing missing-reference warning is the only signal.
+  expect_snapshot(
+    suppressMessages(
+      snap$add_simulation(
+        name = "UnresolvedProtocolSlot",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          protocol = "NoSuchProtocol",
+          formulation = c(AnySlot = "Oral solution")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation notes a multi-slot protocol when the formulation key is inferred", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  # A plain (unnamed) formulation string against a protocol with several
+  # distinct slot keys falls back to inference and points the user at the
+  # friendly multi-slot `formulation` map instead.
+  expect_snapshot(
+    suppressWarnings(
+      snap$add_simulation(
+        name = "InferredMultiSlot",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          protocol = "Reitman 2011 - Midazolam - po 2 mg (day 28, 35, 42 and 56)",
+          formulation = "Oral solution"
+        ))
+      )
+    )
+  )
+})
+
 test_that("add_simulation defaults alternatives to each group default", {
   snap <- load_snapshot(test_path("data", "test_snapshot.json"))
 
@@ -201,8 +413,312 @@ test_that("add_simulation defaults alternatives to each group default", {
     )
   )
 
+  # AC-10 regression guard: omitting `alternatives` must resolve
+  # byte-identically to derivation, with no behavioural change from the
+  # friendly-selection feature. Do not touch this test's expectations.
   alternatives <- snap$simulations[["AltSim"]]$compounds[[1]]$data$Alternatives
   expect_snapshot_value(alternatives, style = "json2")
+})
+
+test_that("add_simulation selects an alternative by friendly name and label", {
+  snap <- local_snapshot(list(
+    Version = 80,
+    Compounds = list(list(
+      Name = "Drug X",
+      Solubility = list(
+        list(
+          Name = "Aqueous",
+          IsDefault = TRUE,
+          Parameters = list(list(
+            Name = "Solubility at reference pH",
+            Value = 9999,
+            Unit = "mg/l"
+          ))
+        ),
+        list(
+          Name = "FaSSIF",
+          IsDefault = FALSE,
+          Parameters = list(list(
+            Name = "Solubility at reference pH",
+            Value = 200,
+            Unit = "mg/l"
+          ))
+        )
+      ),
+      Lipophilicity = list(list(
+        Name = "User defined",
+        IsDefault = TRUE,
+        Parameters = list(list(
+          Name = "Lipophilicity",
+          Value = 2.5,
+          Unit = "Log Units"
+        ))
+      ))
+    )),
+    Individuals = list(list(Name = "Ind1", OriginData = list()))
+  ))
+
+  suppressMessages(
+    snap$add_simulation(
+      name = "FriendlySim",
+      individual = "Ind1",
+      compounds = list(list(
+        name = "Drug X",
+        alternatives = c(solubility = "FaSSIF")
+      ))
+    )
+  )
+
+  alternatives <- snap$simulations[["FriendlySim"]]$compounds[[
+    1
+  ]]$data$Alternatives
+  expect_snapshot_value(alternatives, style = "json2")
+})
+
+test_that("add_simulation alternatives selection accepts a named list of strings", {
+  snap <- local_snapshot(list(
+    Version = 80,
+    Compounds = list(list(
+      Name = "Drug X",
+      Solubility = list(
+        list(
+          Name = "Aqueous",
+          IsDefault = TRUE,
+          Parameters = list(list(
+            Name = "Solubility at reference pH",
+            Value = 9999,
+            Unit = "mg/l"
+          ))
+        ),
+        list(
+          Name = "FaSSIF",
+          IsDefault = FALSE,
+          Parameters = list(list(
+            Name = "Solubility at reference pH",
+            Value = 200,
+            Unit = "mg/l"
+          ))
+        )
+      )
+    )),
+    Individuals = list(list(Name = "Ind1", OriginData = list()))
+  ))
+
+  vector_form <- local_snapshot(snap$data)
+  list_form <- local_snapshot(snap$data)
+
+  suppressMessages(
+    vector_form$add_simulation(
+      name = "VectorSim",
+      individual = "Ind1",
+      compounds = list(list(
+        name = "Drug X",
+        alternatives = c(solubility = "FaSSIF")
+      ))
+    )
+  )
+  suppressMessages(
+    list_form$add_simulation(
+      name = "ListSim",
+      individual = "Ind1",
+      compounds = list(list(
+        name = "Drug X",
+        alternatives = list(solubility = "FaSSIF")
+      ))
+    )
+  )
+
+  expect_equal(
+    vector_form$simulations[["VectorSim"]]$compounds[[1]]$data$Alternatives,
+    list_form$simulations[["ListSim"]]$compounds[[1]]$data$Alternatives
+  )
+})
+
+test_that("add_simulation alternatives selection overrides one group and derives the rest", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  suppressMessages(
+    snap$add_simulation(
+      name = "PartialOverride",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(
+        name = "Rifampicin",
+        alternatives = c(solubility = "test")
+      ))
+    )
+  )
+  suppressMessages(
+    snap$add_simulation(
+      name = "PlainDerivation",
+      individual = "Korean (Yu 2004 study)",
+      compounds = list(list(name = "Rifampicin"))
+    )
+  )
+
+  overridden <- snap$simulations[["PartialOverride"]]$compounds[[
+    1
+  ]]$data$Alternatives
+  derived <- snap$simulations[["PlainDerivation"]]$compounds[[
+    1
+  ]]$data$Alternatives
+
+  group_name <- function(alt) alt$GroupName
+  alt_name <- function(alt) alt$AlternativeName
+
+  # The overridden group carries the selected label.
+  sol <- Filter(function(a) group_name(a) == "COMPOUND_SOLUBILITY", overridden)
+  expect_equal(alt_name(sol[[1]]), "test")
+
+  # Every other group matches plain derivation exactly.
+  other_overridden <- Filter(
+    function(a) group_name(a) != "COMPOUND_SOLUBILITY",
+    overridden
+  )
+  other_derived <- Filter(
+    function(a) group_name(a) != "COMPOUND_SOLUBILITY",
+    derived
+  )
+  expect_equal(other_overridden, other_derived)
+})
+
+test_that("add_simulation errors selecting an unknown alternative label", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "BadLabel",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          alternatives = c(solubility = "Not a real label")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation errors selecting an unknown friendly property name", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "BadProperty",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          alternatives = c(not_a_property = "Aqueous")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation rejects a raw CompoundGroupSelection-shaped alternatives entry", {
+  # The old escape-hatch shape (a raw `list(GroupName =, AlternativeName =)`
+  # dict, or a `create_compound_group_selection()` result) is no longer an
+  # accepted `alternatives` shape; only the friendly named vector/list is.
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "RawSelection",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          alternatives = list(list(
+            GroupName = "COMPOUND_SOLUBILITY",
+            AlternativeName = "Aqueous"
+          ))
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation errors on a duplicate friendly property name in alternatives", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "DupProperty",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          alternatives = c(solubility = "Aqueous", solubility = "test")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation alternatives selection against a property with no alternatives available errors", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "NoAlternatives",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          alternatives = c(permeability = "Anything")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation alternatives selection against the wrong property is still an error", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  # "Optimized" exists on lipophilicity, not solubility.
+  expect_snapshot(
+    error = TRUE,
+    suppressMessages(
+      snap$add_simulation(
+        name = "WrongProperty",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "Rifampicin",
+          alternatives = c(solubility = "Optimized")
+        ))
+      )
+    )
+  )
+})
+
+test_that("add_simulation with alternatives against an unresolved compound is emitted verbatim", {
+  snap <- load_snapshot(test_path("data", "test_snapshot.json"))
+
+  expect_snapshot(
+    suppressMessages(
+      snap$add_simulation(
+        name = "UnresolvedCompound",
+        individual = "Korean (Yu 2004 study)",
+        compounds = list(list(
+          name = "NoSuchCompound",
+          alternatives = c(solubility = "FaSSIF")
+        ))
+      )
+    )
+  )
+
+  alternatives <- snap$simulations[[
+    "UnresolvedCompound"
+  ]]$compounds[[1]]$data$Alternatives
+  expect_equal(
+    alternatives,
+    list(list(GroupName = "COMPOUND_SOLUBILITY", AlternativeName = "FaSSIF"))
+  )
 })
 
 test_that("add_simulation omits Processes when processes not supplied", {
@@ -260,26 +776,26 @@ test_that("add_simulation passes explicit process objects through unchanged", {
   expect_equal(built$data, proc$data)
 })
 
-test_that("add_simulation passes CompoundProperties escape-hatch through unchanged", {
+test_that("add_simulation errors when compounds contains a CompoundProperties object", {
+  # `create_compound_properties()` / `create_compound_group_selection()`
+  # are retired as the compound-configuration path: an inline
+  # compound-config list is the only accepted `compounds` entry shape, and
+  # a `CompoundProperties` object (the old escape hatch) now errors,
+  # pointing at the inline shape (FR-13, AC-14).
   snap <- load_snapshot(test_path("data", "test_snapshot.json"))
 
   cp <- create_compound_properties(
     name = "Rifampicin",
     calculation_methods = c("Only this one")
   )
-  suppressMessages(
+  expect_snapshot(
+    error = TRUE,
     snap$add_simulation(
       name = "EscapeSim",
       individual = "Korean (Yu 2004 study)",
       compounds = list(cp)
     )
   )
-
-  built <- snap$simulations[["EscapeSim"]]$compounds[[1]]
-  # The factory output is attached verbatim: no resolver defaulting, so
-  # calculation methods are exactly what was supplied and no alternatives
-  # are derived from the compound building block.
-  expect_equal(built$data, cp$data)
 })
 
 test_that("add_simulation build mode enforces XOR on individual/population", {

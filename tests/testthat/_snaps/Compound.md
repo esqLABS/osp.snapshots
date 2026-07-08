@@ -1068,6 +1068,24 @@
       ! `permeability` must be built with `permeability()`.
       i For example `permeability = permeability(...)`.
 
+# solubility field rejects a list containing a non-matching helper
+
+    Code
+      compound$solubility <- list(solubility(9999), lipophilicity(2.5))
+    Condition
+      Error:
+      ! Element 2 of `solubility` was built with the wrong helper.
+      i Use `solubility()` for `solubility`, e.g. `solubility = solubility(...)`.
+
+# solubility field rejects duplicate alternative names
+
+    Code
+      compound$solubility <- list(solubility(9999), solubility(200))
+    Condition
+      Error:
+      ! `solubility` has duplicate alternative names: "User defined".
+      i Give each alternative in the list a distinct name.
+
 # assigning the wrong helper to a physicochemical field aborts
 
     Code

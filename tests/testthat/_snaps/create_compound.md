@@ -56,6 +56,44 @@
       ! Solubility is set either by a single value or by a table, not both.
       i Supply the scalar form (`value`, `reference_pH`, `gain_per_charge`) or `table`, not both.
 
+# create_compound rejects a list containing a non-matching helper or a bare scalar
+
+    Code
+      create_compound(name = "X", solubility = list(solubility(9999), lipophilicity(
+        2.5)))
+    Condition
+      Error in `create_compound()`:
+      ! Element 2 of `solubility` was built with the wrong helper.
+      i Use `solubility()` for `solubility`, e.g. `solubility = solubility(9999)`.
+
+---
+
+    Code
+      create_compound(name = "X", solubility = list(solubility(9999), 200))
+    Condition
+      Error in `create_compound()`:
+      ! Element 2 of `solubility` must be built with `solubility()`.
+      i For example `solubility = solubility(9999)`.
+
+# create_compound rejects duplicate alternative names within one property
+
+    Code
+      create_compound(name = "X", solubility = list(solubility(9999), solubility(200)))
+    Condition
+      Error in `create_compound()`:
+      ! `solubility` has duplicate alternative names: "User defined".
+      i Give each alternative in the list a distinct name.
+
+---
+
+    Code
+      create_compound(name = "X", solubility = list(solubility(9999, name = "Aqueous"),
+      solubility(200, name = "Aqueous")))
+    Condition
+      Error in `create_compound()`:
+      ! `solubility` has duplicate alternative names: "Aqueous".
+      i Give each alternative in the list a distinct name.
+
 # create_compound rejects invalid pKa entries
 
     Code

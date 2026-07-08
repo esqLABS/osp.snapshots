@@ -3,7 +3,11 @@
 #' @description
 #' Build a [CompoundProperties] entry, used inside a [Simulation] to
 #' configure a [Compound] building block: which calculation methods to
-#' apply, which alternatives, processes, and protocol to use.
+#' apply, which alternatives, processes, and protocol to use. Internal
+#' machinery only: [add_simulation()]'s inline `compounds` argument (a
+#' friendly config list, with `alternatives` selected by property name and
+#' label) is the user-facing way to configure a compound for a simulation;
+#' this constructor is not part of the public API.
 #'
 #' @param name Character. Name of the compound building block (required).
 #' @param calculation_methods Character vector. Calculation method names
@@ -15,24 +19,7 @@
 #' @param protocol A [ProtocolSelection] object or raw list.
 #'
 #' @return A [CompoundProperties] object.
-#' @export
-#'
-#' @examples
-#' create_compound_properties(
-#'   name = "Rifampicin",
-#'   calculation_methods = c(
-#'     "Cellular partition coefficient method - Rodgers and Rowland"
-#'   ),
-#'   processes = list(
-#'     create_compound_process_selection(systemic_process_type = "Hepatic")
-#'   ),
-#'   protocol = create_protocol_selection(
-#'     name = "Rifampicin Protocol",
-#'     formulations = list(
-#'       create_formulation_selection(name = "Oral solution", key = "Formulation")
-#'     )
-#'   )
-#' )
+#' @keywords internal
 create_compound_properties <- function(
   name,
   calculation_methods = NULL,

@@ -39,32 +39,41 @@ partner of the compound. Writable: one of \code{"Unknown"}, \code{"Albumin"},
     \item{\code{molecular_weight_unit}}{The unit of the molecular weight}
 
     \item{\code{lipophilicity}}{The lipophilicity data of the compound. Writable:
-assign a \code{\link[=lipophilicity]{lipophilicity()}} object, a raw alternative list to set
-the array verbatim (the escape hatch for multiple, named, or
-species-specific alternatives), or \code{NULL} to clear the property. A
-bare numeric scalar is rejected; use \code{\link[=lipophilicity]{lipophilicity()}} instead.}
+assign a \code{\link[=lipophilicity]{lipophilicity()}} object, a list of such objects to
+define several named alternatives (the first element is the
+default), a raw alternative list to set the array verbatim (the
+escape hatch for species-specific alternatives), or \code{NULL} to
+clear the property. A bare numeric scalar is rejected; use
+\code{\link[=lipophilicity]{lipophilicity()}} instead.}
 
     \item{\code{fraction_unbound}}{The fraction unbound data of the compound.
-Writable: assign a \code{\link[=fraction_unbound]{fraction_unbound()}} object, a raw alternative
-list to set the array verbatim, or \code{NULL} to clear the property. A
-bare numeric scalar is rejected; use \code{\link[=fraction_unbound]{fraction_unbound()}} instead.}
+Writable: assign a \code{\link[=fraction_unbound]{fraction_unbound()}} object, a list of such
+objects to define several named alternatives (the first element is
+the default), a raw alternative list to set the array verbatim, or
+\code{NULL} to clear the property. A bare numeric scalar is rejected;
+use \code{\link[=fraction_unbound]{fraction_unbound()}} instead.}
 
     \item{\code{solubility}}{The solubility data of the compound. Writable:
 assign a \code{\link[=solubility]{solubility()}} object to express reference pH, gain per
-charge, or a pH/value table, a raw alternative list to set the
-array verbatim, or \code{NULL} to clear the property. A bare numeric
-scalar is rejected; use \code{\link[=solubility]{solubility()}} instead.}
+charge, or a pH/value table, a list of such objects to define
+several named alternatives (the first element is the default), a
+raw alternative list to set the array verbatim, or \code{NULL} to clear
+the property. A bare numeric scalar is rejected; use \code{\link[=solubility]{solubility()}}
+instead.}
 
     \item{\code{intestinal_permeability}}{The intestinal permeability data of the
 compound. Writable: assign an \code{\link[=intestinal_permeability]{intestinal_permeability()}} object, a
-raw alternative list to set the array verbatim, or \code{NULL} to clear
-the property. A bare numeric scalar is rejected; use
-\code{\link[=intestinal_permeability]{intestinal_permeability()}} instead.}
+list of such objects to define several named alternatives (the
+first element is the default), a raw alternative list to set the
+array verbatim, or \code{NULL} to clear the property. A bare numeric
+scalar is rejected; use \code{\link[=intestinal_permeability]{intestinal_permeability()}} instead.}
 
     \item{\code{permeability}}{The permeability data of the compound. Writable:
-assign a \code{\link[=permeability]{permeability()}} object, a raw alternative list to set the
-array verbatim, or \code{NULL} to clear the property. A bare numeric
-scalar is rejected; use \code{\link[=permeability]{permeability()}} instead.}
+assign a \code{\link[=permeability]{permeability()}} object, a list of such objects to define
+several named alternatives (the first element is the default), a
+raw alternative list to set the array verbatim, or \code{NULL} to clear
+the property. A bare numeric scalar is rejected; use
+\code{\link[=permeability]{permeability()}} instead.}
 
     \item{\code{pka_types}}{The pKa types of the compound. Writable: assign a
 list of \code{list(type =, value =)} entries (the \code{create_compound()}
