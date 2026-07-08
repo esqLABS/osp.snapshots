@@ -59,34 +59,25 @@ create_observed_data <- function(
   metadata = NULL
 ) {
   check_required_string(name, "name")
-  # `time` and `values` are required and must be built with their helpers.
-  # The values dimension (required) is enforced by `values()` itself, so by
-  # the time the factory runs, `values$dimension` is guaranteed present.
+  # `time` and `values` are required and must be built with their helpers;
+  # `required = TRUE` makes `require_value_spec()` reject a missing value with
+  # the same helper-pointing message. The values dimension (required) is
+  # enforced by `values()` itself, so by the time the factory runs,
+  # `values$dimension` is guaranteed present.
   require_value_spec(
     time,
     "time_spec",
     "time",
-    example = "time = time(c(0, 1, 2))"
+    example = "time = time(c(0, 1, 2))",
+    required = TRUE
   )
-  if (is.null(time)) {
-    cli::cli_abort(c(
-      "{.arg time} must be built with {.fn time}.",
-      "i" = "For example {.code time = time(c(0, 1, 2))}."
-    ))
-  }
   require_value_spec(
     values,
     "values_spec",
     "values",
-    example = "values = values(c(0, 12), dimension = \"Concentration (mass)\")"
+    example = "values = values(c(0, 12), dimension = \"Concentration (mass)\")",
+    required = TRUE
   )
-  if (is.null(values)) {
-    cli::cli_abort(c(
-      "{.arg values} must be built with {.fn values}.",
-      "i" = "For example {.code values = values(c(0, 12), dimension = \\
-      \"Concentration (mass)\")}."
-    ))
-  }
   require_value_spec(
     error,
     "error_spec",

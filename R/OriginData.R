@@ -131,16 +131,7 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$Age$Value)
       }
-      if (inherits(value, "osp_value_spec")) {
-        require_value_spec(value, "age_spec", "age")
-        private$.data$Age$Value <- value$value
-        private$.data$Age$Unit <- value$unit
-        return(invisible(NULL))
-      }
-      private$.data$Age$Value <- value
-      if (is.null(private$.data$Age$Unit)) {
-        private$.data$Age$Unit <- "year(s)"
-      }
+      private$set_demographic("Age", value, "age_spec", "age", "year(s)")
     },
 
     #' @field age_unit Unit string for `age`.
@@ -165,16 +156,13 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$GestationalAge$Value)
       }
-      if (inherits(value, "osp_value_spec")) {
-        require_value_spec(value, "gestational_age_spec", "gestational_age")
-        private$.data$GestationalAge$Value <- value$value
-        private$.data$GestationalAge$Unit <- value$unit
-        return(invisible(NULL))
-      }
-      private$.data$GestationalAge$Value <- value
-      if (is.null(private$.data$GestationalAge$Unit)) {
-        private$.data$GestationalAge$Unit <- "week(s)"
-      }
+      private$set_demographic(
+        "GestationalAge",
+        value,
+        "gestational_age_spec",
+        "gestational_age",
+        "week(s)"
+      )
     },
 
     #' @field gestational_age_unit Unit string for `gestational_age`.
@@ -198,16 +186,7 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$Weight$Value)
       }
-      if (inherits(value, "osp_value_spec")) {
-        require_value_spec(value, "weight_spec", "weight")
-        private$.data$Weight$Value <- value$value
-        private$.data$Weight$Unit <- value$unit
-        return(invisible(NULL))
-      }
-      private$.data$Weight$Value <- value
-      if (is.null(private$.data$Weight$Unit)) {
-        private$.data$Weight$Unit <- "kg"
-      }
+      private$set_demographic("Weight", value, "weight_spec", "weight", "kg")
     },
 
     #' @field weight_unit Unit string for `weight`.
@@ -231,16 +210,7 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$Height$Value)
       }
-      if (inherits(value, "osp_value_spec")) {
-        require_value_spec(value, "height_spec", "height")
-        private$.data$Height$Value <- value$value
-        private$.data$Height$Unit <- value$unit
-        return(invisible(NULL))
-      }
-      private$.data$Height$Value <- value
-      if (is.null(private$.data$Height$Unit)) {
-        private$.data$Height$Unit <- "cm"
-      }
+      private$set_demographic("Height", value, "height_spec", "height", "cm")
     },
 
     #' @field height_unit Unit string for `height`.
@@ -290,6 +260,28 @@ OriginData <- R6::R6Class(
   ),
   private = list(
     .data = NULL,
-    .calculation_methods = NULL
+    .calculation_methods = NULL,
+
+    # Shared setter for the four demographic value fields (`Age`,
+    # `GestationalAge`, `Weight`, `Height`). Each field's writable binding
+    # delegates here after handling its own getter path. When `value` is a
+    # value-object helper it must match the field's `subclass` and sets both
+    # `Value` and `Unit`; otherwise `value` is treated as a legacy scalar and
+    # the unit defaults to `default_unit` only when not already set.
+    set_demographic = function(field, value, subclass, arg, default_unit) {
+      if (inherits(value, "osp_value_spec")) {
+        # Point the abort at the active-binding setter that delegated here, so
+        # the error reads the same as when the guard lived inline in it.
+        require_value_spec(value, subclass, arg, call = parent.frame())
+        private$.data[[field]]$Value <- value$value
+        private$.data[[field]]$Unit <- value$unit
+        return(invisible(NULL))
+      }
+      private$.data[[field]]$Value <- value
+      if (is.null(private$.data[[field]]$Unit)) {
+        private$.data[[field]]$Unit <- default_unit
+      }
+      invisible(NULL)
+    }
   )
 )

@@ -226,52 +226,30 @@ create_compound <- function(
   }
 
   if (!is.null(lipophilicity)) {
-    data$Lipophilicity <- build_single_param_alternative(
-      lipophilicity$name,
-      "Lipophilicity",
-      lipophilicity$value,
-      lipophilicity$unit
+    data$Lipophilicity <- spec_to_single_param_alternative(
+      lipophilicity,
+      "Lipophilicity"
     )
   }
   if (!is.null(fraction_unbound)) {
-    data$FractionUnbound <- build_single_param_alternative(
-      fraction_unbound$name,
-      "Fraction unbound (plasma, reference value)",
-      fraction_unbound$value,
-      unit = NULL
+    data$FractionUnbound <- spec_to_single_param_alternative(
+      fraction_unbound,
+      "Fraction unbound (plasma, reference value)"
     )
   }
   if (!is.null(solubility)) {
-    data$Solubility <- if (identical(solubility$form, "table")) {
-      build_solubility_table_alternative(
-        solubility$name,
-        solubility$table,
-        solubility$unit
-      )
-    } else {
-      build_solubility_alternative(
-        solubility$name,
-        solubility$value,
-        solubility$unit,
-        solubility$reference_pH,
-        solubility$gain_per_charge
-      )
-    }
+    data$Solubility <- spec_to_solubility_alternative(solubility)
   }
   if (!is.null(intestinal_permeability)) {
-    data$IntestinalPermeability <- build_single_param_alternative(
-      intestinal_permeability$name,
-      "Specific intestinal permeability (transcellular)",
-      intestinal_permeability$value,
-      intestinal_permeability$unit
+    data$IntestinalPermeability <- spec_to_single_param_alternative(
+      intestinal_permeability,
+      "Specific intestinal permeability (transcellular)"
     )
   }
   if (!is.null(permeability)) {
-    data$Permeability <- build_single_param_alternative(
-      permeability$name,
-      "Permeability",
-      permeability$value,
-      permeability$unit
+    data$Permeability <- spec_to_single_param_alternative(
+      permeability,
+      "Permeability"
     )
   }
   if (!is.null(pKa) && length(pKa) > 0) {
@@ -285,6 +263,37 @@ create_compound <- function(
 }
 
 # Internal ----
+
+# Internal: unwrap a single-value physicochemical-property value-spec into its
+# alternative array via `build_single_param_alternative()`. Shared by the
+# factory and the `Compound` writable-field setter so the unwrapping lives in
+# one place. `spec$unit` is `NULL` for fraction unbound (no unit slot), which
+# the builder treats as "omit unit".
+spec_to_single_param_alternative <- function(spec, param_name) {
+  build_single_param_alternative(
+    spec$name,
+    param_name,
+    spec$value,
+    spec$unit
+  )
+}
+
+# Internal: unwrap a `solubility_spec` into its `Solubility` alternative,
+# branching on the spec's `form` (scalar vs table) onto the matching builder.
+# Shared by the factory and the `Compound$solubility` setter.
+spec_to_solubility_alternative <- function(spec) {
+  if (identical(spec$form, "table")) {
+    build_solubility_table_alternative(spec$name, spec$table, spec$unit)
+  } else {
+    build_solubility_alternative(
+      spec$name,
+      spec$value,
+      spec$unit,
+      spec$reference_pH,
+      spec$gain_per_charge
+    )
+  }
+}
 
 # Internal: build a one-element (unnamed) alternative array holding a single
 # default alternative with one parameter. Shared by the four single-parameter

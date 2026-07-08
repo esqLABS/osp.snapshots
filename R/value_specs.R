@@ -504,19 +504,19 @@ new_value_spec <- function(subclass, slots) {
   structure(slots, class = c(subclass, "osp_value_spec"))
 }
 
-# Internal: abort unless `value` is a numeric scalar. Wording mirrors the
-# previous factory guards so error snapshots read the same.
+# Internal: abort unless `value` is a non-missing numeric scalar. Wording
+# mirrors the previous factory guards so error snapshots read the same.
 check_numeric_scalar <- function(value, arg, call = parent.frame()) {
-  if (!is.numeric(value) || length(value) != 1) {
+  if (!is.numeric(value) || length(value) != 1 || is.na(value)) {
     cli::cli_abort("{.arg {arg}} must be a numeric value", call = call)
   }
   invisible(value)
 }
 
-# Internal: abort unless `value` is a non-empty numeric vector. Used by the
-# observed-data series helpers.
+# Internal: abort unless `value` is a non-empty numeric vector free of missing
+# values. Used by the observed-data series helpers.
 check_numeric_vector <- function(value, arg, call = parent.frame()) {
-  if (!is.numeric(value) || length(value) == 0) {
+  if (!is.numeric(value) || length(value) == 0 || anyNA(value)) {
     cli::cli_abort(
       "{.arg {arg}} must be a non-empty numeric vector",
       call = call
@@ -526,20 +526,26 @@ check_numeric_vector <- function(value, arg, call = parent.frame()) {
 }
 
 # Internal: the field-mismatch / plain-scalar guard. Returns invisibly when
-# `value` is `NULL` or the expected `*_spec` object; otherwise aborts. Two
-# message branches: another value-spec (wrong helper for the argument), or
-# anything else (a bare numeric, list, ...), which points the user at the
-# helper. `helper` is the constructor name to suggest; `example` is a short
-# usage hint.
+# `value` is the expected `*_spec` object (or `NULL` when `required` is
+# `FALSE`); otherwise aborts. When `required = TRUE`, a `NULL` value also
+# aborts with the same helper-pointing message, so a factory need not add a
+# separate null-check. Two message branches for a non-`NULL` mismatch:
+# another value-spec (wrong helper for the argument), or anything else (a bare
+# numeric, list, ...), which points the user at the helper. `helper` is the
+# constructor name to suggest; `example` is a short usage hint.
 require_value_spec <- function(
   value,
   subclass,
   arg,
   helper = sub("_spec$", "", subclass),
   example = NULL,
+  required = FALSE,
   call = parent.frame()
 ) {
-  if (is.null(value) || inherits(value, subclass)) {
+  if (inherits(value, subclass)) {
+    return(invisible(value))
+  }
+  if (is.null(value) && !required) {
     return(invisible(value))
   }
   hint <- example %||% sprintf("%s = %s(...)", arg, helper)

@@ -74,6 +74,12 @@ test_that("single-value helpers reject non-numeric or non-scalar values", {
   expect_snapshot(error = TRUE, age("x"))
 })
 
+test_that("single-value helpers reject missing values", {
+  expect_snapshot(error = TRUE, lipophilicity(NA))
+  expect_snapshot(error = TRUE, lipophilicity(NA_real_))
+  expect_snapshot(error = TRUE, age(NA_real_))
+})
+
 test_that("series helpers reject non-numeric or empty vectors", {
   expect_snapshot(error = TRUE, time("x"))
   expect_snapshot(error = TRUE, time(numeric(0)))
@@ -82,6 +88,15 @@ test_that("series helpers reject non-numeric or empty vectors", {
     values(numeric(0), dimension = "Concentration (mass)")
   )
   expect_snapshot(error = TRUE, error(numeric(0)))
+})
+
+test_that("series helpers reject vectors containing missing values", {
+  expect_snapshot(error = TRUE, time(c(0, NA, 2)))
+  expect_snapshot(
+    error = TRUE,
+    values(c(0, NA), dimension = "Concentration (mass)")
+  )
+  expect_snapshot(error = TRUE, error(c(0, NA)))
 })
 
 test_that("solubility() enforces scalar-vs-table exclusivity", {

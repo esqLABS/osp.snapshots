@@ -313,6 +313,30 @@
       Error in `age()`:
       ! `value` must be a numeric value
 
+# single-value helpers reject missing values
+
+    Code
+      lipophilicity(NA)
+    Condition
+      Error in `lipophilicity()`:
+      ! `value` must be a numeric value
+
+---
+
+    Code
+      lipophilicity(NA_real_)
+    Condition
+      Error in `lipophilicity()`:
+      ! `value` must be a numeric value
+
+---
+
+    Code
+      age(NA_real_)
+    Condition
+      Error in `age()`:
+      ! `value` must be a numeric value
+
 # series helpers reject non-numeric or empty vectors
 
     Code
@@ -341,6 +365,30 @@
 
     Code
       error(numeric(0))
+    Condition
+      Error in `error()`:
+      ! `value` must be a non-empty numeric vector
+
+# series helpers reject vectors containing missing values
+
+    Code
+      time(c(0, NA, 2))
+    Condition
+      Error in `time()`:
+      ! `value` must be a non-empty numeric vector
+
+---
+
+    Code
+      values(c(0, NA), dimension = "Concentration (mass)")
+    Condition
+      Error in `values()`:
+      ! `value` must be a non-empty numeric vector
+
+---
+
+    Code
+      error(c(0, NA))
     Condition
       Error in `error()`:
       ! `value` must be a non-empty numeric vector

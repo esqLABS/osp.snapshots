@@ -198,14 +198,9 @@ Compound <- R6::R6Class(
       }
       if (inherits(value, "osp_value_spec")) {
         require_value_spec(value, paste0(field, "_spec"), field)
-        # `value$unit` is NULL for fraction unbound (no unit slot), which the
-        # builder treats as "omit unit" - the same as the scalar path.
-        return(build_single_param_alternative(
-          value$name,
-          param_name,
-          value$value,
-          value$unit
-        ))
+        # Unwrapping (including `value$unit` being NULL for fraction unbound,
+        # which the builder treats as "omit unit") lives in the shared helper.
+        return(spec_to_single_param_alternative(value, param_name))
       }
       if (is.numeric(value)) {
         if (length(value) != 1) {
@@ -633,21 +628,7 @@ Compound <- R6::R6Class(
         private$.data$Solubility <- NULL
       } else if (inherits(value, "osp_value_spec")) {
         require_value_spec(value, "solubility_spec", "solubility")
-        private$.data$Solubility <- if (identical(value$form, "table")) {
-          build_solubility_table_alternative(
-            value$name,
-            value$table,
-            value$unit
-          )
-        } else {
-          build_solubility_alternative(
-            value$name,
-            value$value,
-            value$unit,
-            value$reference_pH,
-            value$gain_per_charge
-          )
-        }
+        private$.data$Solubility <- spec_to_solubility_alternative(value)
       } else if (is.numeric(value)) {
         if (length(value) != 1) {
           cli::cli_abort("{.arg solubility} must be a numeric value")
