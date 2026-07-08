@@ -40,3 +40,9 @@ test_that("ProtocolSelection without Formulations works", {
   expect_length(sel$formulations, 0)
   expect_identical(sel$data, list(Name = "Protocol-A"))
 })
+
+test_that("ProtocolSelection$name requires a non-empty scalar string", {
+  sel <- ProtocolSelection$new(list(Name = "Protocol-A"))
+  expect_snapshot(error = TRUE, sel$name <- "")
+  expect_snapshot(error = TRUE, sel$name <- 5)
+})

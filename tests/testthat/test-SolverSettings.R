@@ -47,3 +47,35 @@ test_that("SolverSettings setters mutate raw data", {
   solver$abs_tol <- 1e-6
   expect_equal(solver$data$AbsTol, 1e-6)
 })
+
+test_that("SolverSettings numeric fields reject non-numeric or non-scalar values", {
+  solver <- SolverSettings$new(list())
+  for (field in c("abs_tol", "rel_tol", "h0", "h_min", "h_max")) {
+    expect_snapshot(error = TRUE, solver[[field]] <- "x")
+    expect_snapshot(error = TRUE, solver[[field]] <- c(1, 2))
+  }
+})
+
+test_that("SolverSettings$use_jacobian requires a single logical", {
+  solver <- SolverSettings$new(list())
+  solver$use_jacobian <- TRUE
+  expect_true(solver$use_jacobian)
+  expect_snapshot(error = TRUE, solver$use_jacobian <- 1)
+})
+
+test_that("SolverSettings$mx_step requires a single positive whole number", {
+  solver <- SolverSettings$new(list())
+  solver$mx_step <- 100000
+  expect_identical(solver$mx_step, 100000L)
+  expect_snapshot(error = TRUE, solver$mx_step <- 3.5)
+  expect_snapshot(error = TRUE, solver$mx_step <- 0)
+  expect_snapshot(error = TRUE, solver$mx_step <- -1)
+})
+
+test_that("SolverSettings fields accept NULL to clear", {
+  solver <- SolverSettings$new(list(AbsTol = 1e-6, MxStep = 100L))
+  solver$abs_tol <- NULL
+  expect_null(solver$abs_tol)
+  solver$mx_step <- NULL
+  expect_null(solver$mx_step)
+})

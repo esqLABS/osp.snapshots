@@ -44,6 +44,12 @@ test_that("Observer name setter round-trips through data", {
   expect_equal(observer$data$Name, "new")
 })
 
+test_that("Observer name setter requires a non-empty scalar string", {
+  observer <- Observer$new(list(Name = "old"))
+  expect_snapshot(error = TRUE, observer$name <- "")
+  expect_snapshot(error = TRUE, observer$name <- 5)
+})
+
 test_that("Observer type setter round-trips through data", {
   observer <- Observer$new(list(Name = "x"))
 
@@ -69,6 +75,15 @@ test_that("Observer dimension setter round-trips through data", {
 
   expect_equal(observer$dimension, "Time")
   expect_equal(observer$data$Dimension, "Time")
+})
+
+test_that("Observer dimension setter requires a non-empty string or NULL", {
+  observer <- Observer$new(list(Name = "x"))
+  expect_snapshot(error = TRUE, observer$dimension <- "")
+  expect_snapshot(error = TRUE, observer$dimension <- 5)
+  observer$dimension <- "Concentration (molar)"
+  observer$dimension <- NULL
+  expect_null(observer$dimension)
 })
 
 test_that("Observer formula returns the full ExplicitFormula list", {

@@ -21,3 +21,11 @@ test_that("FormulationSelection$data is read-only", {
   sel <- FormulationSelection$new(list(Name = "A", Key = "K"))
   expect_snapshot(error = TRUE, sel$data <- list())
 })
+
+test_that("FormulationSelection$name and $key require non-empty scalar strings", {
+  sel <- FormulationSelection$new(list(Name = "A", Key = "K"))
+  expect_snapshot(error = TRUE, sel$name <- "")
+  expect_snapshot(error = TRUE, sel$name <- 5)
+  expect_snapshot(error = TRUE, sel$key <- "")
+  expect_snapshot(error = TRUE, sel$key <- 5)
+})

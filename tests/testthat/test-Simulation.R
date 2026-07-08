@@ -60,6 +60,16 @@ test_that("Simulation preserves all four documented passthrough fields", {
   expect_identical(sim$data$PopulationAnalyses, pop_analyses)
 })
 
+test_that("Simulation$allow_aging requires a single logical or NULL", {
+  sim <- Simulation$new(list(Name = "S", Model = "4Comp", Individual = "Adult"))
+  sim$allow_aging <- TRUE
+  expect_true(sim$allow_aging)
+  expect_snapshot(error = TRUE, sim$allow_aging <- "yes")
+  expect_snapshot(error = TRUE, sim$allow_aging <- c(TRUE, FALSE))
+  sim$allow_aging <- NULL
+  expect_null(sim$allow_aging)
+})
+
 test_that("Simulation reflects compound mutations in $data", {
   raw <- list(
     Name = "S",

@@ -16,10 +16,12 @@ selections, and optional \link{ProtocolSelection}.
 nested caches so that mutations on the wrapped objects flow back
 to the export payload.}
 
-    \item{\code{name}}{The name of the compound building block.}
+    \item{\code{name}}{The name of the compound building block. Writable: must
+be a non-empty scalar string.}
 
     \item{\code{calculation_methods}}{Character vector of calculation method
-names that override the compound's defaults in this simulation.}
+names that override the compound's defaults in this simulation.
+Writable: must be a character vector, or \code{NULL} to clear.}
 
     \item{\code{alternatives}}{List of \link{CompoundGroupSelection} objects.}
 

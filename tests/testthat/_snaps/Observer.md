@@ -1,3 +1,19 @@
+# Observer name setter requires a non-empty scalar string
+
+    Code
+      observer$name <- ""
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      observer$name <- 5
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
 # Observer type setter validates against Amount/Container
 
     Code
@@ -5,6 +21,22 @@
     Condition
       Error:
       ! `type` must be one of "Amount" and "Container"
+
+# Observer dimension setter requires a non-empty string or NULL
+
+    Code
+      observer$dimension <- ""
+    Condition
+      Error:
+      ! `dimension` must be a non-empty string
+
+---
+
+    Code
+      observer$dimension <- 5
+    Condition
+      Error:
+      ! `dimension` must be a non-empty string
 
 # Observer formula_references setter aborts on non-list input
 

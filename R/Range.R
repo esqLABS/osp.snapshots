@@ -165,7 +165,13 @@ Range <- R6::R6Class(
       private$.max <- value
     },
 
-    #' @field unit The unit of the range
+    #' @field unit The unit of the range. `Range` is dimension-agnostic
+    #'   (it holds no dimension of its own), so `unit` is not validated
+    #'   here; dimension-aware unit validation happens at the `Population`
+    #'   range setters that consume a `Range` (`age_range`, `weight_range`,
+    #'   `height_range`, `gestational_age_range`, `bmi_range`), where the
+    #'   field's dimension is known. Do not add dimension validation to
+    #'   this binding.
     unit = function(value) {
       if (missing(value)) {
         return(private$.unit)

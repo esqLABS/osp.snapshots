@@ -313,11 +313,13 @@ Individual <- R6::R6Class(
       cli::cli_abort("data is read-only")
     },
 
-    #' @field name The name of the individual
+    #' @field name The name of the individual. Writable: must be a
+    #'   non-empty scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 
@@ -365,7 +367,9 @@ Individual <- R6::R6Class(
       private$.origin_data$gender <- value
     },
 
-    #' @field age The age value of the individual
+    #' @field age The age value of the individual. Writable: assign an
+    #'   [age()] object; see [OriginData]'s `age` field for the full
+    #'   contract (a bare numeric scalar is rejected).
     age = function(value) {
       if (missing(value)) {
         return(private$.origin_data$age)
@@ -381,7 +385,9 @@ Individual <- R6::R6Class(
       private$.origin_data$age_unit <- value
     },
 
-    #' @field weight The weight value of the individual
+    #' @field weight The weight value of the individual. Writable: assign a
+    #'   [weight()] object; see [OriginData]'s `weight` field for the full
+    #'   contract (a bare numeric scalar is rejected).
     weight = function(value) {
       if (missing(value)) {
         return(private$.origin_data$weight)
@@ -397,7 +403,9 @@ Individual <- R6::R6Class(
       private$.origin_data$weight_unit <- value
     },
 
-    #' @field height The height value of the individual
+    #' @field height The height value of the individual. Writable: assign a
+    #'   [height()] object; see [OriginData]'s `height` field for the full
+    #'   contract (a bare numeric scalar is rejected).
     height = function(value) {
       if (missing(value)) {
         return(private$.origin_data$height)
@@ -413,7 +421,10 @@ Individual <- R6::R6Class(
       private$.origin_data$height_unit <- value
     },
 
-    #' @field gestational_age The gestational age value of the individual
+    #' @field gestational_age The gestational age value of the individual.
+    #'   Writable: assign a [gestational_age()] object; see [OriginData]'s
+    #'   `gestational_age` field for the full contract (a bare numeric
+    #'   scalar is rejected).
     gestational_age = function(value) {
       if (missing(value)) {
         return(private$.origin_data$gestational_age)
@@ -445,7 +456,8 @@ Individual <- R6::R6Class(
       private$.origin_data$disease_state_parameters <- value
     },
 
-    #' @field parameters The list of parameter objects with a custom print method
+    #' @field parameters The list of parameter objects with a custom print
+    #'   method. Writable: must be a list, or `NULL` to clear.
     parameters = function(value) {
       if (missing(value)) {
         if (is.null(private$.parameters)) {
@@ -453,6 +465,10 @@ Individual <- R6::R6Class(
           class(private$.parameters) <- c("parameter_collection", "list")
         }
         return(private$.parameters)
+      }
+
+      if (!is.null(value) && !is.list(value)) {
+        cli::cli_abort("{.arg parameters} must be a list")
       }
 
       if (is.null(value)) {

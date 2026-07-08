@@ -85,6 +85,24 @@ test_that("Process active bindings allow mutation", {
   expect_equal(p$parameters[[1]]$name, "Kd")
 })
 
+test_that("Process$internal_name and $data_source require non-empty strings", {
+  p <- Process$new(list(InternalName = "SpecificBinding"))
+  expect_snapshot(error = TRUE, p$internal_name <- "")
+  expect_snapshot(error = TRUE, p$internal_name <- 5)
+  expect_snapshot(error = TRUE, p$data_source <- "")
+  expect_snapshot(error = TRUE, p$data_source <- 5)
+})
+
+test_that("Process$molecule, $metabolite, $species accept NULL or a non-empty string", {
+  p <- Process$new(list(InternalName = "SpecificBinding"))
+  expect_snapshot(error = TRUE, p$molecule <- "")
+  expect_snapshot(error = TRUE, p$molecule <- 5)
+  expect_snapshot(error = TRUE, p$metabolite <- "")
+  expect_snapshot(error = TRUE, p$species <- 5)
+  p$molecule <- NULL
+  expect_null(p$molecule)
+})
+
 test_that("Process parameters setter accepts Parameter R6 objects", {
   p <- Process$new(list(InternalName = "SpecificBinding"))
   param <- create_parameter(name = "Kd", value = 1.2, unit = "nmol/l")

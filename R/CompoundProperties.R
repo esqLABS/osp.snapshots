@@ -74,19 +74,25 @@ CompoundProperties <- R6::R6Class(
       cli::cli_abort("data is read-only")
     },
 
-    #' @field name The name of the compound building block.
+    #' @field name The name of the compound building block. Writable: must
+    #'   be a non-empty scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 
     #' @field calculation_methods Character vector of calculation method
     #'   names that override the compound's defaults in this simulation.
+    #'   Writable: must be a character vector, or `NULL` to clear.
     calculation_methods = function(value) {
       if (missing(value)) {
         return(private$.data$CalculationMethods)
+      }
+      if (!is.null(value) && !is.character(value)) {
+        cli::cli_abort("{.arg calculation_methods} must be a character vector")
       }
       private$.data$CalculationMethods <- value
     },

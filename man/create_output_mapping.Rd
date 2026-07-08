@@ -17,8 +17,8 @@ create_output_mapping(
 
 \item{observed_data}{Character. Observed-data repository name.}
 
-\item{scaling}{Character. Scaling used for the mapping (e.g.
-\code{"Linear"}, \code{"Log"}).}
+\item{scaling}{Character. Scaling used for the mapping: one of
+\code{"Linear"}, \code{"Log"}.}
 
 \item{weight}{Numeric. Single weight applied to all points.}
 

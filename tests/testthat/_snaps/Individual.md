@@ -195,6 +195,22 @@
         * Test Method 1
         * Test Method 2
 
+# Individual$parameters requires a list
+
+    Code
+      test_individual$parameters <- 5
+    Condition
+      Error:
+      ! `parameters` must be a list
+
+---
+
+    Code
+      test_individual$parameters <- "x"
+    Condition
+      Error:
+      ! `parameters` must be a list
+
 # assigning a non-character to expression_profiles aborts
 
     Code
@@ -291,6 +307,42 @@
       
       -- Individuals (0) -------------------------------------------------------------
       i No individuals found
+
+# bare numeric scalars are rejected for demographic fields
+
+    Code
+      ind$age <- 25
+    Condition
+      Error:
+      ! `age` must be built with `age()`.
+      i For example `age = age(...)`.
+
+---
+
+    Code
+      ind$weight <- 80
+    Condition
+      Error:
+      ! `weight` must be built with `weight()`.
+      i For example `weight = weight(...)`.
+
+---
+
+    Code
+      ind$height <- 180
+    Condition
+      Error:
+      ! `height` must be built with `height()`.
+      i For example `height = height(...)`.
+
+---
+
+    Code
+      ind$gestational_age <- 32
+    Condition
+      Error:
+      ! `gestational_age` must be built with `gestational_age()`.
+      i For example `gestational_age = gestational_age(...)`.
 
 # assigning the wrong helper to a demographic field aborts
 

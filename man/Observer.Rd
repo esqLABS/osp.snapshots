@@ -42,7 +42,8 @@ observer$formula_references
     \item{\code{data}}{The raw \code{Observer} list as it appears in the snapshot
 JSON (read-only).}
 
-    \item{\code{name}}{The name of the observer.}
+    \item{\code{name}}{The name of the observer. Writable: must be a non-empty
+scalar string.}
 
     \item{\code{type}}{The observer type. PK-Sim recognises \code{"Amount"}
 (an \code{AmountObserverBuilder}) and \code{"Container"} (a
@@ -50,7 +51,10 @@ JSON (read-only).}
 validated against these two; assigning \code{NULL} removes the type.}
 
     \item{\code{dimension}}{The dimension of the observed quantity, resolved
-in PK-Sim via \code{IDimensionRepository.DimensionByName()}.}
+in PK-Sim via \code{IDimensionRepository.DimensionByName()}. Writable:
+must be a non-empty scalar string, or \code{NULL} to clear. There is no
+closed set of dimension names to validate against, so a required
+string is the strongest check available.}
 
     \item{\code{formula}}{The full \code{ExplicitFormula} object backing the
 observer, as a list with \code{Name}, \code{Formula} (the expression

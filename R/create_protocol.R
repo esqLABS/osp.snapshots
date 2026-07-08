@@ -30,7 +30,8 @@
 #'   be [Schema] objects (created with [create_schema()]) or raw schema
 #'   lists with `Name`, `Parameters`, and `SchemaItems`. If provided,
 #'   the protocol is created as an Advanced Protocol.
-#' @param time_unit Character. Display time unit for the protocol.
+#' @param time_unit Character. Display time unit for the protocol, validated
+#'   against dimension `"Time"`.
 #'
 #' @return A [Protocol] object.
 #' @export
@@ -147,6 +148,7 @@ create_protocol <- function(
   }
 
   if (!is.null(time_unit)) {
+    validate_unit(time_unit, "Time")
     data$TimeUnit <- time_unit
   }
 

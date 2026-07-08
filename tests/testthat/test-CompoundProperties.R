@@ -68,3 +68,20 @@ test_that("CompoundProperties protocol setter accepts NULL and ProtocolSelection
   props$protocol <- NULL
   expect_null(props$data$Protocol)
 })
+
+test_that("CompoundProperties$name requires a non-empty scalar string", {
+  props <- CompoundProperties$new(list(Name = "X"))
+  props$name <- "Renamed"
+  expect_equal(props$name, "Renamed")
+  expect_snapshot(error = TRUE, props$name <- "")
+  expect_snapshot(error = TRUE, props$name <- 5)
+})
+
+test_that("CompoundProperties$calculation_methods requires a character vector", {
+  props <- CompoundProperties$new(list(Name = "X"))
+  props$calculation_methods <- c("A", "B")
+  expect_equal(props$calculation_methods, c("A", "B"))
+  expect_snapshot(error = TRUE, props$calculation_methods <- 5)
+  props$calculation_methods <- NULL
+  expect_null(props$calculation_methods)
+})

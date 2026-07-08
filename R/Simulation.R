@@ -276,10 +276,14 @@ Simulation <- R6::R6Class(
       private$.data[["Model"]] <- value
     },
 
-    #' @field allow_aging Whether the simulation allows aging.
+    #' @field allow_aging Whether the simulation allows aging. Writable: a
+    #'   single logical value, or `NULL` to clear.
     allow_aging = function(value) {
       if (missing(value)) {
         return(private$.data[["AllowAging"]])
+      }
+      if (!is.null(value) && (!is.logical(value) || length(value) != 1)) {
+        cli::cli_abort("{.arg allow_aging} must be a single logical value")
       }
       private$.data[["AllowAging"]] <- value
     },

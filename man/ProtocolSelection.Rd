@@ -16,7 +16,8 @@ keys to formulation building blocks.
 the cached \link{FormulationSelection} list so that mutations flow
 back to the export payload.}
 
-    \item{\code{name}}{The name of the protocol building block.}
+    \item{\code{name}}{The name of the protocol building block. Writable: must
+be a non-empty scalar string.}
 
     \item{\code{formulations}}{List of \link{FormulationSelection} objects.}
   }

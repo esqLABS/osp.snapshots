@@ -125,8 +125,7 @@ OriginData <- R6::R6Class(
 
     #' @field age Numeric age value of the individual (in `age_unit`).
     #'   Writable: assign an [age()] object to set the value and unit
-    #'   together, or a numeric scalar (the unit defaults to `"year(s)"`
-    #'   when not already set).
+    #'   together. A bare numeric scalar is rejected; use [age()] instead.
     age = function(value) {
       if (missing(value)) {
         return(private$.data$Age$Value)
@@ -150,8 +149,8 @@ OriginData <- R6::R6Class(
     #' @field gestational_age Numeric gestational age value (in
     #'   `gestational_age_unit`), used for preterm individuals. Writable:
     #'   assign a [gestational_age()] object to set the value and unit
-    #'   together, or a numeric scalar (the unit defaults to `"week(s)"`
-    #'   when not already set).
+    #'   together. A bare numeric scalar is rejected; use [gestational_age()]
+    #'   instead.
     gestational_age = function(value) {
       if (missing(value)) {
         return(private$.data$GestationalAge$Value)
@@ -180,8 +179,8 @@ OriginData <- R6::R6Class(
 
     #' @field weight Numeric weight value of the individual (in
     #'   `weight_unit`). Writable: assign a [weight()] object to set the
-    #'   value and unit together, or a numeric scalar (the unit defaults to
-    #'   `"kg"` when not already set).
+    #'   value and unit together. A bare numeric scalar is rejected; use
+    #'   [weight()] instead.
     weight = function(value) {
       if (missing(value)) {
         return(private$.data$Weight$Value)
@@ -204,8 +203,8 @@ OriginData <- R6::R6Class(
 
     #' @field height Numeric height value of the individual (in
     #'   `height_unit`). Writable: assign a [height()] object to set the
-    #'   value and unit together, or a numeric scalar (the unit defaults to
-    #'   `"cm"` when not already set).
+    #'   value and unit together. A bare numeric scalar is rejected; use
+    #'   [height()] instead.
     height = function(value) {
       if (missing(value)) {
         return(private$.data$Height$Value)
@@ -264,23 +263,18 @@ OriginData <- R6::R6Class(
 
     # Shared setter for the four demographic value fields (`Age`,
     # `GestationalAge`, `Weight`, `Height`). Each field's writable binding
-    # delegates here after handling its own getter path. When `value` is a
-    # value-object helper it must match the field's `subclass` and sets both
-    # `Value` and `Unit`; otherwise `value` is treated as a legacy scalar and
-    # the unit defaults to `default_unit` only when not already set.
+    # delegates here after handling its own getter path. `value` must be the
+    # matching value-object helper (e.g. `age()`), which sets both `Value`
+    # and `Unit`; a bare scalar or any other input aborts pointing at the
+    # helper, mirroring the `create_individual()` factory. `default_unit` is
+    # unused now that every helper defaults its own `unit`, but is kept in
+    # the signature (and at each call site) to minimize the diff.
     set_demographic = function(field, value, subclass, arg, default_unit) {
-      if (inherits(value, "osp_value_spec")) {
-        # Point the abort at the active-binding setter that delegated here, so
-        # the error reads the same as when the guard lived inline in it.
-        require_value_spec(value, subclass, arg, call = parent.frame())
-        private$.data[[field]]$Value <- value$value
-        private$.data[[field]]$Unit <- value$unit
-        return(invisible(NULL))
-      }
-      private$.data[[field]]$Value <- value
-      if (is.null(private$.data[[field]]$Unit)) {
-        private$.data[[field]]$Unit <- default_unit
-      }
+      # Point the abort at the active-binding setter that delegated here, so
+      # the error reads the same as when the guard lived inline in it.
+      require_value_spec(value, subclass, arg, call = parent.frame())
+      private$.data[[field]]$Value <- value$value
+      private$.data[[field]]$Unit <- value$unit
       invisible(NULL)
     }
   )

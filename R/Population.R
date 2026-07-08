@@ -1,3 +1,8 @@
+# Valid DistributionType enum values, used by
+# `AdvancedParameter$distribution_type`. No dedicated factory exists for
+# AdvancedParameter, so this setter is the sole enforcement point.
+DISTRIBUTION_TYPES <- c("Normal", "LogNormal", "Uniform", "Discrete", "Unknown")
+
 #' Population class for OSP snapshot populations
 #'
 #' @description
@@ -282,11 +287,13 @@ Population <- R6::R6Class(
       private$.data
     },
 
-    #' @field name The name of the population
+    #' @field name The name of the population. Writable: must be a
+    #'   non-empty scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 
@@ -339,14 +346,21 @@ Population <- R6::R6Class(
       private$.data$Seed <- value
     },
 
-    #' @field number_of_individuals The number of individuals in the population
+    #' @field number_of_individuals The number of individuals in the
+    #'   population. Writable: must be a single positive whole number.
     number_of_individuals = function(value) {
       if (missing(value)) {
         return(private$.data$Settings$NumberOfIndividuals)
       }
-      if (!is.numeric(value) || value < 1) {
+      if (
+        !is.numeric(value) ||
+          length(value) != 1 ||
+          is.na(value) ||
+          value < 1 ||
+          value != round(value)
+      ) {
         cli::cli_abort(
-          "Number of individuals must be a positive number"
+          "{.arg number_of_individuals} must be a positive integer"
         )
       }
       private$.data$Settings$NumberOfIndividuals <- value
@@ -365,7 +379,9 @@ Population <- R6::R6Class(
       private$.data$Settings$ProportionOfFemales <- value
     },
 
-    #' @field age_range The age range for the population
+    #' @field age_range The age range for the population. Writable: the
+    #'   `Range`'s `unit` must be a valid unit for dimension `"Age in
+    #'   years"`.
     age_range = function(value) {
       if (missing(value)) {
         return(private$.age_range)
@@ -388,6 +404,7 @@ Population <- R6::R6Class(
           cli::cli_abort("age_range must be a Range object")
         }
       }
+      validate_unit(value$unit, "Age in years")
       # Set age_range and update data
       private$.age_range <- value
       private$.data$Settings$Age <- list(
@@ -397,7 +414,8 @@ Population <- R6::R6Class(
       )
     },
 
-    #' @field weight_range The weight range for the population
+    #' @field weight_range The weight range for the population. Writable:
+    #'   the `Range`'s `unit` must be a valid unit for dimension `"Mass"`.
     weight_range = function(value) {
       if (missing(value)) {
         return(private$.weight_range)
@@ -417,6 +435,7 @@ Population <- R6::R6Class(
           cli::cli_abort("weight_range must be a Range object")
         }
       }
+      validate_unit(value$unit, "Mass")
       # Set weight_range and update data
       private$.weight_range <- value
       private$.data$Settings$Weight <- list(
@@ -426,7 +445,8 @@ Population <- R6::R6Class(
       )
     },
 
-    #' @field height_range The height range for the population
+    #' @field height_range The height range for the population. Writable:
+    #'   the `Range`'s `unit` must be a valid unit for dimension `"Length"`.
     height_range = function(value) {
       if (missing(value)) {
         return(private$.height_range)
@@ -446,6 +466,7 @@ Population <- R6::R6Class(
           cli::cli_abort("height_range must be a Range object")
         }
       }
+      validate_unit(value$unit, "Length")
       # Set height_range and update data
       private$.height_range <- value
       private$.data$Settings$Height <- list(
@@ -455,7 +476,10 @@ Population <- R6::R6Class(
       )
     },
 
-    #' @field bmi_range The BMI range for the population
+    #' @field bmi_range The BMI range for the population. Writable: when
+    #'   the `"BMI"` dimension resolves in the installed `ospsuite`, the
+    #'   `Range`'s `unit` must be a valid unit for it; otherwise the unit is
+    #'   left unvalidated (a documented, opportunistic limitation).
     bmi_range = function(value) {
       if (missing(value)) {
         return(private$.bmi_range)
@@ -475,6 +499,9 @@ Population <- R6::R6Class(
           cli::cli_abort("bmi_range must be a Range object")
         }
       }
+      if (bmi_dimension_resolves()) {
+        validate_unit(value$unit, "BMI")
+      }
       # Set bmi_range and update data
       private$.bmi_range <- value
       private$.data$Settings$BMI <- list(
@@ -485,7 +512,8 @@ Population <- R6::R6Class(
     },
 
     #' @field gestational_age_range The gestational age range used for
-    #'   population generation
+    #'   population generation. Writable: the `Range`'s `unit` must be a
+    #'   valid unit for dimension `"Time"`.
     gestational_age_range = function(value) {
       if (missing(value)) {
         return(private$.gestational_age_range)
@@ -505,6 +533,7 @@ Population <- R6::R6Class(
           cli::cli_abort("gestational_age_range must be a Range object")
         }
       }
+      validate_unit(value$unit, "Time")
       # Set gestational_age_range and update data
       private$.gestational_age_range <- value
       private$.data$Settings$GestationalAge <- list(
@@ -696,10 +725,17 @@ AdvancedParameter <- R6::R6Class(
       private$.data$Seed <- value
     },
 
-    #' @field distribution_type The distribution type of the parameter
+    #' @field distribution_type The distribution type of the parameter.
+    #'   Writable: one of `"Normal"`, `"LogNormal"`, `"Uniform"`,
+    #'   `"Discrete"`, `"Unknown"`, or `NULL` to clear.
     distribution_type = function(value) {
       if (missing(value)) {
         return(private$.data$DistributionType)
+      }
+      if (!is.null(value) && !(value %in% DISTRIBUTION_TYPES)) {
+        cli::cli_abort(
+          "{.arg distribution_type} must be one of {.val {DISTRIBUTION_TYPES}}"
+        )
       }
       private$.data$DistributionType <- value
     },
@@ -717,6 +753,22 @@ AdvancedParameter <- R6::R6Class(
     .data = NULL
   )
 )
+
+# Internal: whether the "BMI" dimension resolves in the installed
+# `ospsuite`. Used by `Population$bmi_range` to opportunistically validate
+# the range's unit only when the dimension is resolvable, per the
+# documented limitation that this check depends on the installed
+# `ospsuite` version. Re-checked on every call rather than cached, since
+# the cost is negligible and caching would risk staleness across sessions.
+bmi_dimension_resolves <- function() {
+  tryCatch(
+    {
+      ospsuite::getUnitsForDimension("BMI")
+      TRUE
+    },
+    error = function(e) FALSE
+  )
+}
 
 # Serialize a single disease-state parameter to its `ParameterRange` shape.
 # `range_list` is the `list(Min, Max, Unit)` produced by `range_to_list()`,

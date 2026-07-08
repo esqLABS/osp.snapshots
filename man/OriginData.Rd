@@ -29,30 +29,29 @@ JSON, refreshed from the embedded \link{CalculationMethods} object
 
     \item{\code{age}}{Numeric age value of the individual (in \code{age_unit}).
 Writable: assign an \code{\link[=age]{age()}} object to set the value and unit
-together, or a numeric scalar (the unit defaults to \code{"year(s)"}
-when not already set).}
+together. A bare numeric scalar is rejected; use \code{\link[=age]{age()}} instead.}
 
     \item{\code{age_unit}}{Unit string for \code{age}.}
 
     \item{\code{gestational_age}}{Numeric gestational age value (in
 \code{gestational_age_unit}), used for preterm individuals. Writable:
 assign a \code{\link[=gestational_age]{gestational_age()}} object to set the value and unit
-together, or a numeric scalar (the unit defaults to \code{"week(s)"}
-when not already set).}
+together. A bare numeric scalar is rejected; use \code{\link[=gestational_age]{gestational_age()}}
+instead.}
 
     \item{\code{gestational_age_unit}}{Unit string for \code{gestational_age}.}
 
     \item{\code{weight}}{Numeric weight value of the individual (in
 \code{weight_unit}). Writable: assign a \code{\link[=weight]{weight()}} object to set the
-value and unit together, or a numeric scalar (the unit defaults to
-\code{"kg"} when not already set).}
+value and unit together. A bare numeric scalar is rejected; use
+\code{\link[=weight]{weight()}} instead.}
 
     \item{\code{weight_unit}}{Unit string for \code{weight}.}
 
     \item{\code{height}}{Numeric height value of the individual (in
 \code{height_unit}). Writable: assign a \code{\link[=height]{height()}} object to set the
-value and unit together, or a numeric scalar (the unit defaults to
-\code{"cm"} when not already set).}
+value and unit together. A bare numeric scalar is rejected; use
+\code{\link[=height]{height()}} instead.}
 
     \item{\code{height_unit}}{Unit string for \code{height}.}
 

@@ -142,6 +142,23 @@ test_that("create_formulation validates name and type", {
   )
 })
 
+test_that("create_formulation validates curated unit sub-parameters", {
+  expect_snapshot(
+    error = TRUE,
+    create_formulation(
+      name = "F",
+      type = "Weibull",
+      parameters = list(dissolution_time_unit = "banana")
+    )
+  )
+  form <- create_formulation(
+    name = "F",
+    type = "Weibull",
+    parameters = list(dissolution_time_unit = "min")
+  )
+  expect_equal(form$data$Parameters[[1]]$Unit, "min")
+})
+
 test_that("create_formulation curated Table shape is unchanged", {
   expect_snapshot({
     form <- create_formulation(

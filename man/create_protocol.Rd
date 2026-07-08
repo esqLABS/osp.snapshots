@@ -43,7 +43,8 @@ be \link{Schema} objects (created with \code{\link[=create_schema]{create_schema
 lists with \code{Name}, \code{Parameters}, and \code{SchemaItems}. If provided,
 the protocol is created as an Advanced Protocol.}
 
-\item{time_unit}{Character. Display time unit for the protocol.}
+\item{time_unit}{Character. Display time unit for the protocol, validated
+against dimension \code{"Time"}.}
 }
 \value{
 A \link{Protocol} object.

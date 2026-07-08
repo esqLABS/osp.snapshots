@@ -47,6 +47,17 @@ test_that("SchemaItem active bindings mutate the underlying data", {
   expect_equal(item$data$FormulationKey, "new-key")
 })
 
+test_that("SchemaItem$name requires a non-empty scalar string", {
+  item <- SchemaItem$new(list(Name = "Schema Item 1"))
+  expect_snapshot(error = TRUE, item$name <- "")
+  expect_snapshot(error = TRUE, item$name <- 5)
+})
+
+test_that("SchemaItem$application_type is validated against the enum", {
+  item <- SchemaItem$new(list(Name = "Schema Item 1"))
+  expect_snapshot(error = TRUE, item$application_type <- "nonsense")
+})
+
 test_that("SchemaItem$data refreshes Parameters from the wrapped list", {
   raw <- list(
     Name = "Schema Item 1",

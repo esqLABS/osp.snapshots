@@ -14,9 +14,11 @@ group.
   \describe{
     \item{\code{data}}{The raw data of the selection (read-only).}
 
-    \item{\code{group_name}}{The alternative group name.}
+    \item{\code{group_name}}{The alternative group name. Writable: must be a
+non-empty scalar string.}
 
-    \item{\code{alternative_name}}{The selected alternative name in the group.}
+    \item{\code{alternative_name}}{The selected alternative name in the group.
+Writable: must be a non-empty scalar string.}
   }
   \if{html}{\out{</div>}}
 }

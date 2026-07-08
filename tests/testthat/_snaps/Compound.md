@@ -421,6 +421,54 @@
       -- Physicochemical Properties --
       
 
+# is_small_molecule requires a single logical or NULL
+
+    Code
+      compound$is_small_molecule <- "yes"
+    Condition
+      Error:
+      ! `is_small_molecule` must be a single logical value
+
+# name requires a non-empty scalar string
+
+    Code
+      compound$name <- ""
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      compound$name <- NA_character_
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      compound$name <- 5
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      compound$name <- c("a", "b")
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+# plasma_protein_binding_partner is validated against the enum
+
+    Code
+      compound$plasma_protein_binding_partner <- "Casein"
+    Condition
+      Error:
+      ! `plasma_protein_binding_partner` must be one of "Unknown", "Albumin", and "Glycoprotein"
+
 # Compounds sections can be accessed and are correctly printed
 
     Code
@@ -975,6 +1023,51 @@
       Compound$induction was deprecated in osp.snapshots 0.3.0.
       i Use `compound$processes` (a flat named list of `Process` objects, filtered by `$category`) or the long-form `processes` tibble returned by `get_compounds_dfs()` instead.
 
+# bare numeric scalars are rejected for physicochemical fields
+
+    Code
+      compound$lipophilicity <- 2.5
+    Condition
+      Error in `private$set_alternative_group()`:
+      ! `lipophilicity` must be built with `lipophilicity()`.
+      i For example `lipophilicity = lipophilicity(...)`.
+
+---
+
+    Code
+      compound$fraction_unbound <- 0.2
+    Condition
+      Error in `private$set_alternative_group()`:
+      ! `fraction_unbound` must be built with `fraction_unbound()`.
+      i For example `fraction_unbound = fraction_unbound(...)`.
+
+---
+
+    Code
+      compound$solubility <- 500
+    Condition
+      Error:
+      ! `solubility` must be built with `solubility()`.
+      i For example `solubility = solubility(...)`.
+
+---
+
+    Code
+      compound$intestinal_permeability <- 2e-05
+    Condition
+      Error in `private$set_alternative_group()`:
+      ! `intestinal_permeability` must be built with `intestinal_permeability()`.
+      i For example `intestinal_permeability = intestinal_permeability(...)`.
+
+---
+
+    Code
+      compound$permeability <- 0.007
+    Condition
+      Error in `private$set_alternative_group()`:
+      ! `permeability` must be built with `permeability()`.
+      i For example `permeability = permeability(...)`.
+
 # assigning the wrong helper to a physicochemical field aborts
 
     Code
@@ -999,7 +1092,8 @@
       compound$lipophilicity <- "high"
     Condition
       Error in `private$set_alternative_group()`:
-      ! `lipophilicity` must be a numeric value, a raw alternative list, or NULL
+      ! `lipophilicity` must be built with `lipophilicity()`.
+      i For example `lipophilicity = lipophilicity(...)`.
 
 ---
 
@@ -1007,5 +1101,6 @@
       compound$permeability <- "high"
     Condition
       Error in `private$set_alternative_group()`:
-      ! `permeability` must be a numeric value, a raw alternative list, or NULL
+      ! `permeability` must be built with `permeability()`.
+      i For example `permeability = permeability(...)`.
 

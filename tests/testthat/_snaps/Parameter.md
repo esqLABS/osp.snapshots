@@ -233,3 +233,51 @@
         <chr>         <dbl> <chr> <chr>  <chr>           <int>
       1 Regular Param    42 mg    Test   <NA>               NA
 
+# Parameter$data is read-only
+
+    Code
+      param$data <- list()
+    Condition
+      Error:
+      ! data is read-only
+
+# Parameter$unit requires a single non-empty string or NULL
+
+    Code
+      param$unit <- 5
+    Condition
+      Error:
+      ! `unit` must be a single non-empty character string
+
+---
+
+    Code
+      param$unit <- character(0)
+    Condition
+      Error:
+      ! `unit` must be a single non-empty character string
+
+---
+
+    Code
+      param$unit <- NA_character_
+    Condition
+      Error:
+      ! `unit` must be a single non-empty character string
+
+---
+
+    Code
+      param$unit <- c("a", "b")
+    Condition
+      Error:
+      ! `unit` must be a single non-empty character string
+
+---
+
+    Code
+      param$unit <- ""
+    Condition
+      Error:
+      ! `unit` must be a single non-empty character string
+

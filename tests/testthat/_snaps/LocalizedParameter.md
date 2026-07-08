@@ -1,3 +1,11 @@
+# LocalizedParameter$data is read-only
+
+    Code
+      param$data <- list()
+    Condition
+      Error:
+      ! data is read-only
+
 # LocalizedParameter accepts Name as a legacy path fallback
 
     Code

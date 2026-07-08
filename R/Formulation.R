@@ -375,7 +375,8 @@ Formulation <- R6::R6Class(
       private$.data$FormulationType <- value
     },
 
-    #' @field parameters The list of parameter objects
+    #' @field parameters The list of parameter objects. Writable: must be a
+    #'   list, or `NULL` to clear.
     parameters = function(value) {
       if (missing(value)) {
         if (is.null(private$.parameters)) {
@@ -386,6 +387,10 @@ Formulation <- R6::R6Class(
           )
         }
         return(private$.parameters)
+      }
+
+      if (!is.null(value) && !is.list(value)) {
+        cli::cli_abort("Parameters must be provided as a named list")
       }
 
       if (is.null(value)) {
@@ -552,9 +557,9 @@ Formulation <- R6::R6Class(
 #'   type = "Particle",
 #'   parameters = list(
 #'     thickness = 25,
-#'     thickness_unit = "\\u00b5m",
+#'     thickness_unit = "µm",
 #'     radius = 5,
-#'     radius_unit = "\\u00b5m"
+#'     radius_unit = "µm"
 #'   )
 #' )
 #'
@@ -725,6 +730,7 @@ create_formulation <- function(name, type, parameters = NULL) {
 
     if (!is.null(parameters$dissolution_time_unit)) {
       dissolution_time_unit <- parameters$dissolution_time_unit
+      validate_unit(dissolution_time_unit, "Time")
     } else {
       cli::cli_inform(
         "No dissolution_time_unit provided, using default unit of {dissolution_time_unit}"
@@ -741,6 +747,7 @@ create_formulation <- function(name, type, parameters = NULL) {
 
     if (!is.null(parameters$lag_time_unit)) {
       lag_time_unit <- parameters$lag_time_unit
+      validate_unit(lag_time_unit, "Time")
     } else {
       cli::cli_inform(
         "No lag_time_unit provided, using default unit of {lag_time_unit}"
@@ -836,6 +843,7 @@ create_formulation <- function(name, type, parameters = NULL) {
 
     if (!is.null(parameters$thickness_unit)) {
       thickness_unit <- parameters$thickness_unit
+      validate_unit(thickness_unit, "Length")
     } else {
       cli::cli_inform(
         "No thickness_unit provided, using default unit of {thickness_unit}"
@@ -863,6 +871,7 @@ create_formulation <- function(name, type, parameters = NULL) {
 
     if (!is.null(parameters$radius_unit)) {
       radius_unit <- parameters$radius_unit
+      validate_unit(radius_unit, "Length")
     } else {
       cli::cli_inform(
         "No radius_unit provided, using default unit of {radius_unit}"
@@ -937,6 +946,7 @@ create_formulation <- function(name, type, parameters = NULL) {
 
         if (!is.null(parameters$radius_sd_unit)) {
           radius_sd_unit <- parameters$radius_sd_unit
+          validate_unit(radius_sd_unit, "Length")
         } else {
           cli::cli_inform(
             "No radius_sd_unit provided, using default unit of {radius_sd_unit}"
@@ -984,6 +994,7 @@ create_formulation <- function(name, type, parameters = NULL) {
 
       if (!is.null(parameters$radius_min_unit)) {
         radius_min_unit <- parameters$radius_min_unit
+        validate_unit(radius_min_unit, "Length")
       } else {
         cli::cli_inform(
           "No radius_min_unit provided, using default unit of {radius_min_unit}"
@@ -1000,6 +1011,7 @@ create_formulation <- function(name, type, parameters = NULL) {
 
       if (!is.null(parameters$radius_max_unit)) {
         radius_max_unit <- parameters$radius_max_unit
+        validate_unit(radius_max_unit, "Length")
       } else {
         cli::cli_inform(
           "No radius_max_unit provided, using default unit of {radius_max_unit}"
@@ -1097,6 +1109,7 @@ create_formulation <- function(name, type, parameters = NULL) {
 
     if (!is.null(parameters$end_time_unit)) {
       end_time_unit <- parameters$end_time_unit
+      validate_unit(end_time_unit, "Time")
     } else {
       cli::cli_inform(
         "No end_time_unit provided, using default unit of {end_time_unit}"
@@ -1125,6 +1138,7 @@ create_formulation <- function(name, type, parameters = NULL) {
 
     if (!is.null(parameters$thalf_unit)) {
       thalf_unit <- parameters$thalf_unit
+      validate_unit(thalf_unit, "Time")
     } else {
       cli::cli_inform(
         "No thalf_unit provided, using default unit of {thalf_unit}"

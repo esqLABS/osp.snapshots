@@ -1,3 +1,29 @@
+# SchemaItem$name requires a non-empty scalar string
+
+    Code
+      item$name <- ""
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      item$name <- 5
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+# SchemaItem$application_type is validated against the enum
+
+    Code
+      item$application_type <- "nonsense"
+    Condition
+      Error:
+      ! `application_type` must be one of the canonical PK-Sim application types.
+      x Got "nonsense".
+      i Valid values: "Oral", "IntravenousBolus", "IntravenousInfusion", "Intramuscular", "Subcutaneous", "Dermal", "Rectal", "Inhalation", and "Intraperitoneal".
+
 # SchemaItem$data is read-only
 
     Code

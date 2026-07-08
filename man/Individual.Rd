@@ -13,7 +13,8 @@ and display a summary of its information.
   \describe{
     \item{\code{data}}{The raw data of the individual (read-only)}
 
-    \item{\code{name}}{The name of the individual}
+    \item{\code{name}}{The name of the individual. Writable: must be a
+non-empty scalar string.}
 
     \item{\code{seed}}{The simulation seed for the individual}
 
@@ -26,19 +27,28 @@ gender, physiological parameters, and calculation methods.}
 
     \item{\code{gender}}{The gender of the individual}
 
-    \item{\code{age}}{The age value of the individual}
+    \item{\code{age}}{The age value of the individual. Writable: assign an
+\code{\link[=age]{age()}} object; see \link{OriginData}'s \code{age} field for the full
+contract (a bare numeric scalar is rejected).}
 
     \item{\code{age_unit}}{The age unit of the individual}
 
-    \item{\code{weight}}{The weight value of the individual}
+    \item{\code{weight}}{The weight value of the individual. Writable: assign a
+\code{\link[=weight]{weight()}} object; see \link{OriginData}'s \code{weight} field for the full
+contract (a bare numeric scalar is rejected).}
 
     \item{\code{weight_unit}}{The weight unit of the individual}
 
-    \item{\code{height}}{The height value of the individual}
+    \item{\code{height}}{The height value of the individual. Writable: assign a
+\code{\link[=height]{height()}} object; see \link{OriginData}'s \code{height} field for the full
+contract (a bare numeric scalar is rejected).}
 
     \item{\code{height_unit}}{The height unit of the individual}
 
-    \item{\code{gestational_age}}{The gestational age value of the individual}
+    \item{\code{gestational_age}}{The gestational age value of the individual.
+Writable: assign a \code{\link[=gestational_age]{gestational_age()}} object; see \link{OriginData}'s
+\code{gestational_age} field for the full contract (a bare numeric
+scalar is rejected).}
 
     \item{\code{gestational_age_unit}}{The gestational age unit of the individual}
 
@@ -46,7 +56,8 @@ gender, physiological parameters, and calculation methods.}
 
     \item{\code{disease_state_parameters}}{The disease state parameters of the individual}
 
-    \item{\code{parameters}}{The list of parameter objects with a custom print method}
+    \item{\code{parameters}}{The list of parameter objects with a custom print
+method. Writable: must be a list, or \code{NULL} to clear.}
 
     \item{\code{calculation_methods}}{The calculation methods of the individual,
 returned as a character vector for backwards compatibility. Use

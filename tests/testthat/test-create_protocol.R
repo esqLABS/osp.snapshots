@@ -223,3 +223,12 @@ test_that("create_protocol accepts a valid application_type and omits the check 
   expect_s3_class(null_type, "Protocol")
   expect_null(null_type$application_type)
 })
+
+test_that("create_protocol validates time_unit against the Time dimension", {
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", time_unit = "banana")
+  )
+  valid <- create_protocol(name = "P", time_unit = "h")
+  expect_equal(valid$time_unit, "h")
+})

@@ -20,7 +20,13 @@ equivalent direct call on the R6 generator.
 
     \item{\code{max}}{The maximum value of the range}
 
-    \item{\code{unit}}{The unit of the range}
+    \item{\code{unit}}{The unit of the range. \code{Range} is dimension-agnostic
+(it holds no dimension of its own), so \code{unit} is not validated
+here; dimension-aware unit validation happens at the \code{Population}
+range setters that consume a \code{Range} (\code{age_range}, \code{weight_range},
+\code{height_range}, \code{gestational_age_range}, \code{bmi_range}), where the
+field's dimension is known. Do not add dimension validation to
+this binding.}
   }
   \if{html}{\out{</div>}}
 }

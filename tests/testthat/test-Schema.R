@@ -115,6 +115,24 @@ test_that("Schema$data is read-only", {
   })
 })
 
+test_that("Schema$name requires a non-empty scalar string", {
+  schema <- Schema$new(list(Name = "Schema 1"))
+  schema$name <- "Renamed"
+  expect_equal(schema$name, "Renamed")
+  expect_snapshot(error = TRUE, schema$name <- "")
+  expect_snapshot(error = TRUE, schema$name <- 5)
+})
+
+test_that("Schema$parameters requires a list", {
+  schema <- Schema$new(list(Name = "Schema 1"))
+  expect_snapshot(error = TRUE, schema$parameters <- 5)
+  expect_snapshot(error = TRUE, schema$parameters <- "x")
+  schema$parameters <- list(create_parameter(name = "Start time", value = 0))
+  expect_length(schema$parameters, 1)
+  schema$parameters <- NULL
+  expect_length(schema$parameters, 0)
+})
+
 test_that("Schema prints a summary", {
   schema <- Schema$new(list(
     Name = "Schema 1",

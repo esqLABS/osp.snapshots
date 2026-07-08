@@ -20,10 +20,12 @@ inside a \code{Protocols} building block.
 JSON, refreshed from the wrapped schema items and parameters
 (read-only).}
 
-    \item{\code{name}}{The name of the schema.}
+    \item{\code{name}}{The name of the schema. Writable: must be a non-empty
+scalar string.}
 
     \item{\code{parameters}}{The schema-level \link{Parameter} objects (number of
-repetitions, time between repetitions, ...).}
+repetitions, time between repetitions, ...). Writable: must be a
+list, or \code{NULL} to clear.}
 
     \item{\code{items}}{List of \link{SchemaItem} objects in the schema, in
 declaration order.}

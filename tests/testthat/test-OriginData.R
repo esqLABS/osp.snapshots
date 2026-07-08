@@ -37,11 +37,43 @@ test_that("OriginData active bindings mutate the underlying data", {
     Age = list(Value = 30, Unit = "year(s)")
   ))
   od$species <- "Dog"
-  od$age <- 5
+  od$age <- age(5)
   expect_equal(od$species, "Dog")
   expect_equal(od$age, 5)
   expect_equal(od$data$Species, "Dog")
   expect_equal(od$data$Age$Value, 5)
+})
+
+test_that("OriginData demographic fields reject bare numeric scalars", {
+  od <- OriginData$new(list(
+    Age = list(Value = 30, Unit = "year(s)"),
+    Weight = list(Value = 70, Unit = "kg"),
+    Height = list(Value = 175, Unit = "cm"),
+    GestationalAge = list(Value = 30, Unit = "week(s)")
+  ))
+  expect_snapshot(error = TRUE, od$age <- 5)
+  expect_snapshot(error = TRUE, od$weight <- 70)
+  expect_snapshot(error = TRUE, od$height <- 175)
+  expect_snapshot(error = TRUE, od$gestational_age <- 30)
+})
+
+test_that("OriginData demographic fields accept the matching value-object helper", {
+  od <- OriginData$new()
+  od$age <- age(5)
+  expect_equal(od$age, 5)
+  expect_equal(od$age_unit, "year(s)")
+
+  od$weight <- weight(70)
+  expect_equal(od$weight, 70)
+  expect_equal(od$weight_unit, "kg")
+
+  od$height <- height(175)
+  expect_equal(od$height, 175)
+  expect_equal(od$height_unit, "cm")
+
+  od$gestational_age <- gestational_age(30)
+  expect_equal(od$gestational_age, 30)
+  expect_equal(od$gestational_age_unit, "week(s)")
 })
 
 test_that("OriginData$data refreshes CalculationMethods from the embedded object", {

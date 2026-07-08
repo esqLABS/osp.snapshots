@@ -268,11 +268,19 @@ test_that("Population validates input values", {
   # Test invalid number of individuals
   expect_error(
     population$number_of_individuals <- 0,
-    "Number of individuals must be a positive number"
+    "must be a positive integer"
   )
   expect_error(
     population$number_of_individuals <- -10,
-    "Number of individuals must be a positive number"
+    "must be a positive integer"
+  )
+  expect_error(
+    population$number_of_individuals <- 3.5,
+    "must be a positive integer"
+  )
+  expect_error(
+    population$number_of_individuals <- "many",
+    "must be a positive integer"
   )
 
   # Test invalid proportion of females
@@ -293,6 +301,42 @@ test_that("Population validates input values", {
   expect_error(
     population$weight_range <- "invalid",
     "weight_range must be a Range object"
+  )
+})
+
+test_that("Population range setters validate the unit against the field dimension", {
+  population <- Population$new(complete_population_data)
+
+  expect_snapshot(
+    error = TRUE,
+    population$age_range <- range(20, 60, "banana")
+  )
+  expect_snapshot(
+    error = TRUE,
+    population$weight_range <- range(50, 90, "banana")
+  )
+  expect_snapshot(
+    error = TRUE,
+    population$height_range <- range(150, 190, "banana")
+  )
+  expect_snapshot(
+    error = TRUE,
+    population$gestational_age_range <- range(38, 41, "banana")
+  )
+
+  skip_if_not(
+    tryCatch(
+      {
+        ospsuite::getUnitsForDimension("BMI")
+        TRUE
+      },
+      error = function(e) FALSE
+    ),
+    "BMI dimension not resolvable in this ospsuite version"
+  )
+  expect_snapshot(
+    error = TRUE,
+    population$bmi_range <- range(19, 32, "banana")
   )
 })
 
@@ -555,6 +599,7 @@ test_that("AdvancedParameter class works correctly", {
 
   advanced_param$distribution_type <- "LogNormal"
   expect_equal(advanced_param$distribution_type, "LogNormal")
+  expect_snapshot(error = TRUE, advanced_param$distribution_type <- "Weibull")
 
   # Test print method
   expect_snapshot(print(advanced_param))
