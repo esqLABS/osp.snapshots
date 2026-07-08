@@ -11,28 +11,14 @@
 #' simulations.
 #'
 #' @param name Character. Name of the observed data set (required).
-#' @param time Numeric vector. Time grid x-values (required).
-#' @param values Numeric vector. Measurement y-values, same length as
-#'   `time` (required).
-#' @param time_unit Character. Unit for `time` (for example `"h"`,
-#'   `"min"`, `"day(s)"`). Validated against
-#'   `ospsuite::ospUnits$Time`. Defaults to `"h"`.
-#' @param value_unit Character. Unit for `values` (for example
-#'   `"mg/l"`). When supplied alongside `value_dimension`, the unit is
-#'   validated against the dimension via [validate_unit()].
-#' @param value_dimension Character. Dimension for `values` (for
-#'   example `"Concentration (mass)"`). Required (no default): pass one
-#'   of the names of `ospsuite::ospDimensions`. Previously defaulted
-#'   silently to `"Concentration (mass)"`, which was wrong for
-#'   non-concentration data.
-#' @param error Numeric vector. Optional error y-values, same length as
-#'   `values`.
-#' @param error_type Character. Auxiliary type for `error`, typically
-#'   one of `"ArithmeticStdDev"`, `"GeometricStdDev"`, or
-#'   `"ArithmeticStdErr"`. Defaults to `"ArithmeticStdDev"` when `error`
-#'   is provided.
-#' @param error_unit Character. Unit for `error`. Defaults to
-#'   `value_unit`.
+#' @param time A [time()] object giving the time grid x-values and their
+#'   unit (required).
+#' @param values A [values()] object giving the measurement y-values, their
+#'   dimension, and an optional unit (required), same length as `time`. The
+#'   dimension is supplied to [values()] and is required there.
+#' @param error A [error()] object giving the optional error y-values, an
+#'   optional unit (defaulting to the values unit), and the auxiliary type.
+#'   Same length as the values series. `NULL` for no error series.
 #' @param molecular_weight Numeric. Molecular weight to attach to the
 #'   data set, in g/mol.
 #' @param lloq Numeric. Lower limit of quantification.
@@ -40,76 +26,79 @@
 #'   stored alongside the data set.
 #'
 #' @return An `ospsuite::DataSet` object.
+#' @seealso [time()], [values()], [error()] for the series value-object
+#'   helpers.
 #' @export
 #'
 #' @examples
 #' # Create a minimal observed data set
 #' obs <- create_observed_data(
 #'   name = "Subject 001",
-#'   time = c(0, 1, 2, 4, 8),
-#'   values = c(0, 12, 18, 11, 5),
-#'   value_dimension = "Concentration (mass)"
+#'   time = time(c(0, 1, 2, 4, 8)),
+#'   values = values(c(0, 12, 18, 11, 5), dimension = "Concentration (mass)")
 #' )
 #'
 #' # Create observed data with units and error
 #' obs <- create_observed_data(
 #'   name = "Subject 001",
-#'   time = c(0, 1, 2, 4, 8),
-#'   values = c(0, 12, 18, 11, 5),
-#'   time_unit = "h",
-#'   value_unit = "mg/l",
-#'   value_dimension = "Concentration (mass)",
-#'   error = c(0, 1.2, 1.5, 1.1, 0.6),
-#'   error_type = "ArithmeticStdDev"
+#'   time = time(c(0, 1, 2, 4, 8), unit = "h"),
+#'   values = values(
+#'     c(0, 12, 18, 11, 5),
+#'     unit = "mg/l",
+#'     dimension = "Concentration (mass)"
+#'   ),
+#'   error = error(c(0, 1.2, 1.5, 1.1, 0.6), type = "ArithmeticStdDev")
 #' )
 create_observed_data <- function(
   name,
   time,
   values,
-  time_unit = "h",
-  value_unit = NULL,
-  value_dimension = NULL,
   error = NULL,
-  error_type = NULL,
-  error_unit = NULL,
   molecular_weight = NULL,
   lloq = NULL,
   metadata = NULL
 ) {
   check_required_string(name, "name")
-  if (missing(time) || !is.numeric(time) || length(time) == 0) {
-    cli::cli_abort("{.arg time} must be a non-empty numeric vector")
-  }
-  if (missing(values) || !is.numeric(values) || length(values) == 0) {
-    cli::cli_abort("{.arg values} must be a non-empty numeric vector")
-  }
-  if (length(time) != length(values)) {
+  # `time` and `values` are required and must be built with their helpers;
+  # `required = TRUE` makes `require_value_spec()` reject a missing value with
+  # the same helper-pointing message. The values dimension (required) is
+  # enforced by `values()` itself, so by the time the factory runs,
+  # `values$dimension` is guaranteed present.
+  require_value_spec(
+    time,
+    "time_spec",
+    "time",
+    example = "time = time(c(0, 1, 2))",
+    required = TRUE
+  )
+  require_value_spec(
+    values,
+    "values_spec",
+    "values",
+    example = "values = values(c(0, 12), dimension = \"Concentration (mass)\")",
+    required = TRUE
+  )
+  require_value_spec(
+    error,
+    "error_spec",
+    "error",
+    example = "error = error(c(0, 1))"
+  )
+
+  if (length(time$value) != length(values$value)) {
     cli::cli_abort(
-      "{.arg time} and {.arg values} must have the same length, got {length(time)} and {length(values)}"
+      "{.arg time} and {.arg values} must have the same length, got {length(time$value)} and {length(values$value)}"
     )
   }
-  if (is.null(value_dimension)) {
-    # Sort with radix to get deterministic, locale-independent order; the
-    # native iteration order of `ospsuite::ospDimensions` differs across
-    # platforms.
-    valid_dims <- sort(names(ospsuite::ospDimensions), method = "radix")
+  if (!is.null(error) && length(error$value) != length(values$value)) {
     cli::cli_abort(
-      c(
-        "{.arg value_dimension} is required.",
-        "i" = "Pass one of: {toString(valid_dims)}."
-      )
+      "{.arg error} must be a numeric vector of the same length as {.arg values}"
     )
   }
-  validate_unit(time_unit, "Time")
-  if (!is.null(value_unit)) {
-    validate_unit(value_unit, value_dimension)
-  }
-  if (!is.null(error)) {
-    if (!is.numeric(error) || length(error) != length(values)) {
-      cli::cli_abort(
-        "{.arg error} must be a numeric vector of the same length as {.arg values}"
-      )
-    }
+  # The error dimension is the values-series dimension; validate the error
+  # unit against it when the error carries its own unit.
+  if (!is.null(error) && !is.null(error$unit)) {
+    validate_unit(error$unit, values$dimension)
   }
   if (!is.null(metadata) && (!is.list(metadata) || is.null(names(metadata)))) {
     cli::cli_abort("{.arg metadata} must be a named list")
@@ -124,11 +113,11 @@ create_observed_data <- function(
   }
 
   column <- list(
-    Values = as.list(values),
-    Dimension = value_dimension
+    Values = as.list(values$value),
+    Dimension = values$dimension
   )
-  if (!is.null(value_unit)) {
-    column$Unit <- value_unit
+  if (!is.null(values$unit)) {
+    column$Unit <- values$unit
   }
   if (length(data_info) > 0) {
     column$DataInfo <- data_info
@@ -136,16 +125,16 @@ create_observed_data <- function(
 
   if (!is.null(error)) {
     related <- list(
-      Values = as.list(error),
-      Unit = error_unit %||% value_unit,
-      DataInfo = list(AuxiliaryType = error_type %||% "ArithmeticStdDev")
+      Values = as.list(error$value),
+      Unit = error$unit %||% values$unit,
+      DataInfo = list(AuxiliaryType = error$type %||% "ArithmeticStdDev")
     )
     column$RelatedColumns <- list(related)
   }
 
   data <- list(
     Name = name,
-    BaseGrid = list(Values = as.list(time), Unit = time_unit),
+    BaseGrid = list(Values = as.list(time$value), Unit = time$unit),
     Columns = list(column)
   )
 

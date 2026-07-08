@@ -28,57 +28,20 @@
 #'   [create_parameter()]) or raw parameter lists to attach as additional
 #'   compound parameters. This does not set physicochemical properties;
 #'   use the dedicated arguments below for those.
-#' @param lipophilicity Numeric scalar. Lipophilicity value. When supplied,
-#'   one default `Lipophilicity` alternative is created.
-#' @param lipophilicity_unit Character. Unit for the lipophilicity
-#'   parameter, validated against dimension `"Log Units"`. Defaults to
-#'   `"Log Units"`.
-#' @param lipophilicity_name Character. `Name` of the created lipophilicity
-#'   alternative. Defaults to `"User defined"`.
-#' @param fraction_unbound Numeric scalar. Fraction unbound value. When
-#'   supplied, one default `FractionUnbound` alternative is created. The
-#'   fraction-unbound parameter carries no unit.
-#' @param fraction_unbound_name Character. `Name` of the created
-#'   fraction-unbound alternative. Defaults to `"User defined"`.
-#' @param solubility Numeric scalar. Solubility-at-reference-pH value. When
-#'   supplied, one scalar-based `Solubility` alternative is created.
-#'   Mutually exclusive with `solubility_table`.
-#' @param solubility_unit Character. Unit for the solubility parameter,
-#'   validated against dimension `"Concentration (mass)"`. Reused as the
-#'   table Y unit. Defaults to `"mg/l"`.
-#' @param reference_pH Numeric scalar. Reference pH added to the same
-#'   scalar `Solubility` alternative as `solubility`. Not a standalone
-#'   property: it is ignored unless `solubility` is supplied, and it does
-#'   not apply to the table path.
-#' @param solubility_gain_per_charge Numeric scalar. Optional
-#'   `Solubility gain per charge` parameter added to the same scalar
-#'   `Solubility` alternative as `solubility`. Not a standalone property:
-#'   it is ignored unless `solubility` is supplied.
-#' @param solubility_table Two-column data frame giving table-based
-#'   solubility: the first column is pH and the second is the solubility
-#'   value. When supplied, one `Solubility` alternative with a
-#'   `Solubility table` parameter carrying a `TableFormula` is created
-#'   instead of a scalar solubility. Mutually exclusive with `solubility`.
-#'   Note: on import PK-Sim runs a table-solubility preparation step that
-#'   this package does not perform; the package emits the faithful raw
-#'   `Solubility table` + `TableFormula` shape that round-trips through
-#'   load/export at the JSON level.
-#' @param solubility_name Character. `Name` of the created solubility
-#'   alternative (scalar or table). Defaults to `"User defined"`.
-#' @param intestinal_permeability Numeric scalar. Intestinal permeability
-#'   value. When supplied, one default `IntestinalPermeability` alternative
+#' @param lipophilicity A [lipophilicity()] object, or `NULL`. When
+#'   supplied, one default `Lipophilicity` alternative is created.
+#' @param fraction_unbound A [fraction_unbound()] object, or `NULL`. When
+#'   supplied, one default `FractionUnbound` alternative is created.
+#' @param solubility A [solubility()] object, or `NULL`. Expresses either
+#'   the scalar form (value at a reference pH, with optional gain per
+#'   charge) or the table form (a pH/value table). When supplied, one
+#'   `Solubility` alternative is created. See [solubility()] for the scalar
+#'   vs table forms and the mutual-exclusivity rule.
+#' @param intestinal_permeability An [intestinal_permeability()] object, or
+#'   `NULL`. When supplied, one default `IntestinalPermeability` alternative
 #'   is created.
-#' @param intestinal_permeability_unit Character. Unit for the
-#'   intestinal-permeability parameter, validated against dimension
-#'   `"Velocity"`. Defaults to `"cm/min"`.
-#' @param intestinal_permeability_name Character. `Name` of the created
-#'   intestinal-permeability alternative. Defaults to `"User defined"`.
-#' @param permeability Numeric scalar. Permeability value. When supplied,
+#' @param permeability A [permeability()] object, or `NULL`. When supplied,
 #'   one default `Permeability` alternative is created.
-#' @param permeability_unit Character. Unit for the permeability parameter,
-#'   validated against dimension `"Velocity"`. Defaults to `"cm/min"`.
-#' @param permeability_name Character. `Name` of the created permeability
-#'   alternative. Defaults to `"User defined"`.
 #' @param pKa List of typed pKa entries, each a list with a `type`
 #'   (one of `"Acid"`, `"Base"`, `"Neutral"`) and a numeric `value`, for
 #'   example `list(list(type = "Base", value = 10.02))`. Order is
@@ -90,6 +53,9 @@
 #'   [create_process()]) or raw process lists to attach to the compound.
 #'
 #' @return A [Compound] object.
+#' @seealso [lipophilicity()], [fraction_unbound()], [solubility()],
+#'   [intestinal_permeability()], [permeability()] for the physicochemical
+#'   property helpers.
 #' @export
 #'
 #' @examples
@@ -107,26 +73,26 @@
 #' # Set the single-parameter physicochemical properties
 #' compound <- create_compound(
 #'   name = "Drug X",
-#'   lipophilicity = 2.5,
-#'   fraction_unbound = 0.1,
-#'   intestinal_permeability = 1.14e-05,
-#'   permeability = 0.0069
+#'   lipophilicity = lipophilicity(2.5),
+#'   fraction_unbound = fraction_unbound(0.1),
+#'   intestinal_permeability = intestinal_permeability(1.14e-05),
+#'   permeability = permeability(0.0069)
 #' )
 #'
 #' # Solubility with reference pH and gain per charge
 #' compound <- create_compound(
 #'   name = "Drug X",
-#'   solubility = 9999,
-#'   reference_pH = 7,
-#'   solubility_gain_per_charge = 1000
+#'   solubility = solubility(9999, reference_pH = 7, gain_per_charge = 1000)
 #' )
 #'
 #' # Table-based solubility (first column pH, second column value)
 #' compound <- create_compound(
 #'   name = "Drug X",
-#'   solubility_table = data.frame(
-#'     pH = c(3, 6, 6.8),
-#'     value = c(5000, 3000, 90)
+#'   solubility = solubility(
+#'     table = data.frame(
+#'       pH = c(3, 6, 6.8),
+#'       value = c(5000, 3000, 90)
+#'     )
 #'   )
 #' )
 #'
@@ -167,22 +133,10 @@ create_compound <- function(
   calculation_methods = NULL,
   parameters = NULL,
   lipophilicity = NULL,
-  lipophilicity_unit = "Log Units",
-  lipophilicity_name = "User defined",
   fraction_unbound = NULL,
-  fraction_unbound_name = "User defined",
   solubility = NULL,
-  solubility_unit = "mg/l",
-  reference_pH = NULL,
-  solubility_gain_per_charge = NULL,
-  solubility_table = NULL,
-  solubility_name = "User defined",
   intestinal_permeability = NULL,
-  intestinal_permeability_unit = "cm/min",
-  intestinal_permeability_name = "User defined",
   permeability = NULL,
-  permeability_unit = "cm/min",
-  permeability_name = "User defined",
   pKa = NULL,
   processes = NULL
 ) {
@@ -197,57 +151,39 @@ create_compound <- function(
     validate_unit(molecular_weight_unit, "Molecular weight")
   }
 
-  # Numeric-scalar guards for the physicochemical property values.
-  for (arg in c(
+  # Each physicochemical property must be built with its helper (the value,
+  # unit, and validation now live in the helper). A bare scalar aborts with
+  # guidance to the helper.
+  require_value_spec(
+    lipophilicity,
+    "lipophilicity_spec",
     "lipophilicity",
+    example = "lipophilicity = lipophilicity(2.5)"
+  )
+  require_value_spec(
+    fraction_unbound,
+    "fraction_unbound_spec",
     "fraction_unbound",
+    example = "fraction_unbound = fraction_unbound(0.1)"
+  )
+  require_value_spec(
+    solubility,
+    "solubility_spec",
     "solubility",
-    "reference_pH",
-    "solubility_gain_per_charge",
+    example = "solubility = solubility(9999)"
+  )
+  require_value_spec(
+    intestinal_permeability,
+    "intestinal_permeability_spec",
     "intestinal_permeability",
-    "permeability"
-  )) {
-    val <- get(arg)
-    if (!is.null(val) && (!is.numeric(val) || length(val) != 1)) {
-      cli::cli_abort("{.arg {arg}} must be a numeric value")
-    }
-  }
-
-  if (!is.null(solubility) && !is.null(solubility_table)) {
-    cli::cli_abort(c(
-      "Solubility is set either by a single value or by a table, not both.",
-      "i" = "Supply {.arg solubility} or {.arg solubility_table}, not both."
-    ))
-  }
-  if (!is.null(solubility_table)) {
-    if (!is.data.frame(solubility_table) || ncol(solubility_table) != 2) {
-      cli::cli_abort(
-        "{.arg solubility_table} must be a data frame with two columns (pH, value)"
-      )
-    }
-    if (
-      nrow(solubility_table) == 0 ||
-        !is.numeric(solubility_table[[1]]) ||
-        !is.numeric(solubility_table[[2]])
-    ) {
-      cli::cli_abort(
-        "{.arg solubility_table} must have at least one row with numeric pH and value columns"
-      )
-    }
-  }
-
-  if (!is.null(lipophilicity)) {
-    validate_unit(lipophilicity_unit, "Log Units")
-  }
-  if (!is.null(solubility) || !is.null(solubility_table)) {
-    validate_unit(solubility_unit, "Concentration (mass)")
-  }
-  if (!is.null(intestinal_permeability)) {
-    validate_unit(intestinal_permeability_unit, "Velocity")
-  }
-  if (!is.null(permeability)) {
-    validate_unit(permeability_unit, "Velocity")
-  }
+    example = "intestinal_permeability = intestinal_permeability(1.14e-05)"
+  )
+  require_value_spec(
+    permeability,
+    "permeability_spec",
+    "permeability",
+    example = "permeability = permeability(0.0069)"
+  )
   if (!is.null(pKa)) {
     validate_pka(pKa)
   }
@@ -290,50 +226,30 @@ create_compound <- function(
   }
 
   if (!is.null(lipophilicity)) {
-    data$Lipophilicity <- build_single_param_alternative(
-      lipophilicity_name,
-      "Lipophilicity",
+    data$Lipophilicity <- spec_to_single_param_alternative(
       lipophilicity,
-      lipophilicity_unit
+      "Lipophilicity"
     )
   }
   if (!is.null(fraction_unbound)) {
-    data$FractionUnbound <- build_single_param_alternative(
-      fraction_unbound_name,
-      "Fraction unbound (plasma, reference value)",
+    data$FractionUnbound <- spec_to_single_param_alternative(
       fraction_unbound,
-      unit = NULL
+      "Fraction unbound (plasma, reference value)"
     )
   }
   if (!is.null(solubility)) {
-    data$Solubility <- build_solubility_alternative(
-      solubility_name,
-      solubility,
-      solubility_unit,
-      reference_pH,
-      solubility_gain_per_charge
-    )
-  } else if (!is.null(solubility_table)) {
-    data$Solubility <- build_solubility_table_alternative(
-      solubility_name,
-      solubility_table,
-      solubility_unit
-    )
+    data$Solubility <- spec_to_solubility_alternative(solubility)
   }
   if (!is.null(intestinal_permeability)) {
-    data$IntestinalPermeability <- build_single_param_alternative(
-      intestinal_permeability_name,
-      "Specific intestinal permeability (transcellular)",
+    data$IntestinalPermeability <- spec_to_single_param_alternative(
       intestinal_permeability,
-      intestinal_permeability_unit
+      "Specific intestinal permeability (transcellular)"
     )
   }
   if (!is.null(permeability)) {
-    data$Permeability <- build_single_param_alternative(
-      permeability_name,
-      "Permeability",
+    data$Permeability <- spec_to_single_param_alternative(
       permeability,
-      permeability_unit
+      "Permeability"
     )
   }
   if (!is.null(pKa) && length(pKa) > 0) {
@@ -347,6 +263,37 @@ create_compound <- function(
 }
 
 # Internal ----
+
+# Internal: unwrap a single-value physicochemical-property value-spec into its
+# alternative array via `build_single_param_alternative()`. Shared by the
+# factory and the `Compound` writable-field setter so the unwrapping lives in
+# one place. `spec$unit` is `NULL` for fraction unbound (no unit slot), which
+# the builder treats as "omit unit".
+spec_to_single_param_alternative <- function(spec, param_name) {
+  build_single_param_alternative(
+    spec$name,
+    param_name,
+    spec$value,
+    spec$unit
+  )
+}
+
+# Internal: unwrap a `solubility_spec` into its `Solubility` alternative,
+# branching on the spec's `form` (scalar vs table) onto the matching builder.
+# Shared by the factory and the `Compound$solubility` setter.
+spec_to_solubility_alternative <- function(spec) {
+  if (identical(spec$form, "table")) {
+    build_solubility_table_alternative(spec$name, spec$table, spec$unit)
+  } else {
+    build_solubility_alternative(
+      spec$name,
+      spec$value,
+      spec$unit,
+      spec$reference_pH,
+      spec$gain_per_charge
+    )
+  }
+}
 
 # Internal: build a one-element (unnamed) alternative array holding a single
 # default alternative with one parameter. Shared by the four single-parameter

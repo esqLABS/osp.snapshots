@@ -124,14 +124,14 @@ OriginData <- R6::R6Class(
     },
 
     #' @field age Numeric age value of the individual (in `age_unit`).
+    #'   Writable: assign an [age()] object to set the value and unit
+    #'   together, or a numeric scalar (the unit defaults to `"year(s)"`
+    #'   when not already set).
     age = function(value) {
       if (missing(value)) {
         return(private$.data$Age$Value)
       }
-      private$.data$Age$Value <- value
-      if (is.null(private$.data$Age$Unit)) {
-        private$.data$Age$Unit <- "year(s)"
-      }
+      private$set_demographic("Age", value, "age_spec", "age", "year(s)")
     },
 
     #' @field age_unit Unit string for `age`.
@@ -148,15 +148,21 @@ OriginData <- R6::R6Class(
     },
 
     #' @field gestational_age Numeric gestational age value (in
-    #'   `gestational_age_unit`), used for preterm individuals.
+    #'   `gestational_age_unit`), used for preterm individuals. Writable:
+    #'   assign a [gestational_age()] object to set the value and unit
+    #'   together, or a numeric scalar (the unit defaults to `"week(s)"`
+    #'   when not already set).
     gestational_age = function(value) {
       if (missing(value)) {
         return(private$.data$GestationalAge$Value)
       }
-      private$.data$GestationalAge$Value <- value
-      if (is.null(private$.data$GestationalAge$Unit)) {
-        private$.data$GestationalAge$Unit <- "week(s)"
-      }
+      private$set_demographic(
+        "GestationalAge",
+        value,
+        "gestational_age_spec",
+        "gestational_age",
+        "week(s)"
+      )
     },
 
     #' @field gestational_age_unit Unit string for `gestational_age`.
@@ -173,15 +179,14 @@ OriginData <- R6::R6Class(
     },
 
     #' @field weight Numeric weight value of the individual (in
-    #'   `weight_unit`).
+    #'   `weight_unit`). Writable: assign a [weight()] object to set the
+    #'   value and unit together, or a numeric scalar (the unit defaults to
+    #'   `"kg"` when not already set).
     weight = function(value) {
       if (missing(value)) {
         return(private$.data$Weight$Value)
       }
-      private$.data$Weight$Value <- value
-      if (is.null(private$.data$Weight$Unit)) {
-        private$.data$Weight$Unit <- "kg"
-      }
+      private$set_demographic("Weight", value, "weight_spec", "weight", "kg")
     },
 
     #' @field weight_unit Unit string for `weight`.
@@ -198,15 +203,14 @@ OriginData <- R6::R6Class(
     },
 
     #' @field height Numeric height value of the individual (in
-    #'   `height_unit`).
+    #'   `height_unit`). Writable: assign a [height()] object to set the
+    #'   value and unit together, or a numeric scalar (the unit defaults to
+    #'   `"cm"` when not already set).
     height = function(value) {
       if (missing(value)) {
         return(private$.data$Height$Value)
       }
-      private$.data$Height$Value <- value
-      if (is.null(private$.data$Height$Unit)) {
-        private$.data$Height$Unit <- "cm"
-      }
+      private$set_demographic("Height", value, "height_spec", "height", "cm")
     },
 
     #' @field height_unit Unit string for `height`.
@@ -256,6 +260,28 @@ OriginData <- R6::R6Class(
   ),
   private = list(
     .data = NULL,
-    .calculation_methods = NULL
+    .calculation_methods = NULL,
+
+    # Shared setter for the four demographic value fields (`Age`,
+    # `GestationalAge`, `Weight`, `Height`). Each field's writable binding
+    # delegates here after handling its own getter path. When `value` is a
+    # value-object helper it must match the field's `subclass` and sets both
+    # `Value` and `Unit`; otherwise `value` is treated as a legacy scalar and
+    # the unit defaults to `default_unit` only when not already set.
+    set_demographic = function(field, value, subclass, arg, default_unit) {
+      if (inherits(value, "osp_value_spec")) {
+        # Point the abort at the active-binding setter that delegated here, so
+        # the error reads the same as when the guard lived inline in it.
+        require_value_spec(value, subclass, arg, call = parent.frame())
+        private$.data[[field]]$Value <- value$value
+        private$.data[[field]]$Unit <- value$unit
+        return(invisible(NULL))
+      }
+      private$.data[[field]]$Value <- value
+      if (is.null(private$.data[[field]]$Unit)) {
+        private$.data[[field]]$Unit <- default_unit
+      }
+      invisible(NULL)
+    }
   )
 )

@@ -147,6 +147,24 @@
       * CYP3A4|Human|Healthy
       * P-gp|Human|Healthy
 
+# create_individual rejects a plain scalar or the wrong helper
+
+    Code
+      create_individual(name = "X", age = 30)
+    Condition
+      Error in `create_individual()`:
+      ! `age` must be built with `age()`.
+      i For example `age = age(30)`.
+
+---
+
+    Code
+      create_individual(name = "X", age = weight(70))
+    Condition
+      Error in `create_individual()`:
+      ! `age` was built with the wrong helper.
+      i Use `age()` for `age`, e.g. `age = age(30)`.
+
 # Individual print method displays calculation methods
 
     Code
@@ -273,6 +291,15 @@
       
       -- Individuals (0) -------------------------------------------------------------
       i No individuals found
+
+# assigning the wrong helper to a demographic field aborts
+
+    Code
+      ind$age <- weight(70)
+    Condition
+      Error:
+      ! `age` was built with the wrong helper.
+      i Use `age()` for `age`, e.g. `age = age(...)`.
 
 # get_individuals_dfs returns correct data frames
 

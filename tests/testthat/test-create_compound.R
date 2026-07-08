@@ -65,7 +65,7 @@ test_that("create_compound validates required arguments", {
 # Physicochemical property arguments -------------------------------------
 
 test_that("create_compound sets a lipophilicity alternative", {
-  compound <- create_compound(name = "X", lipophilicity = 2.5)
+  compound <- create_compound(name = "X", lipophilicity = lipophilicity(2.5))
 
   alt <- compound$data$Lipophilicity
   expect_length(alt, 1)
@@ -78,7 +78,10 @@ test_that("create_compound sets a lipophilicity alternative", {
 })
 
 test_that("create_compound sets a fraction unbound alternative without a unit", {
-  compound <- create_compound(name = "X", fraction_unbound = 1)
+  compound <- create_compound(
+    name = "X",
+    fraction_unbound = fraction_unbound(1)
+  )
 
   param <- compound$data$FractionUnbound[[1]]$Parameters[[1]]
   expect_equal(param$Name, "Fraction unbound (plasma, reference value)")
@@ -89,9 +92,7 @@ test_that("create_compound sets a fraction unbound alternative without a unit", 
 test_that("create_compound bundles reference pH and gain per charge into solubility", {
   compound <- create_compound(
     name = "X",
-    solubility = 9999,
-    reference_pH = 7,
-    solubility_gain_per_charge = 1000
+    solubility = solubility(9999, reference_pH = 7, gain_per_charge = 1000)
   )
 
   params <- compound$data$Solubility[[1]]$Parameters
@@ -106,7 +107,7 @@ test_that("create_compound bundles reference pH and gain per charge into solubil
 })
 
 test_that("create_compound omits reference pH and gain per charge when not supplied", {
-  compound <- create_compound(name = "X", solubility = 9999)
+  compound <- create_compound(name = "X", solubility = solubility(9999))
 
   params <- compound$data$Solubility[[1]]$Parameters
   expect_length(params, 1)
@@ -116,9 +117,11 @@ test_that("create_compound omits reference pH and gain per charge when not suppl
 test_that("create_compound builds a table solubility alternative", {
   compound <- create_compound(
     name = "X",
-    solubility_table = data.frame(
-      pH = c(3, 6, 6.8),
-      value = c(5000, 3000, 90)
+    solubility = solubility(
+      table = data.frame(
+        pH = c(3, 6, 6.8),
+        value = c(5000, 3000, 90)
+      )
     )
   )
 
@@ -147,28 +150,18 @@ test_that("create_compound builds a table solubility alternative", {
   )
 })
 
-test_that("create_compound rejects both scalar and table solubility", {
+test_that("solubility() rejects both scalar and table forms", {
   expect_snapshot(
     error = TRUE,
-    create_compound(
-      name = "X",
-      solubility = 1,
-      solubility_table = data.frame(pH = 3, value = 5000)
-    )
+    solubility(1, table = data.frame(pH = 3, value = 5000))
   )
-})
-
-test_that("reference pH or gain per charge alone create no solubility alternative", {
-  compound <- create_compound(
-    name = "X",
-    reference_pH = 7,
-    solubility_gain_per_charge = 1000
-  )
-  expect_null(compound$data$Solubility)
 })
 
 test_that("create_compound sets an intestinal permeability alternative", {
-  compound <- create_compound(name = "X", intestinal_permeability = 1.14e-05)
+  compound <- create_compound(
+    name = "X",
+    intestinal_permeability = intestinal_permeability(1.14e-05)
+  )
 
   param <- compound$data$IntestinalPermeability[[1]]$Parameters[[1]]
   expect_equal(param$Name, "Specific intestinal permeability (transcellular)")
@@ -177,12 +170,28 @@ test_that("create_compound sets an intestinal permeability alternative", {
 })
 
 test_that("create_compound sets a permeability alternative", {
-  compound <- create_compound(name = "X", permeability = 0.0069)
+  compound <- create_compound(name = "X", permeability = permeability(0.0069))
 
   param <- compound$data$Permeability[[1]]$Parameters[[1]]
   expect_equal(param$Name, "Permeability")
   expect_equal(param$Value, 0.0069)
   expect_equal(param$Unit, "cm/min")
+})
+
+test_that("helper-set physicochemical properties never land in Parameters", {
+  compound <- create_compound(
+    name = "X",
+    molecular_weight = 250,
+    lipophilicity = lipophilicity(2.5),
+    fraction_unbound = fraction_unbound(0.1),
+    solubility = solubility(9999),
+    intestinal_permeability = intestinal_permeability(1.14e-05),
+    permeability = permeability(0.0069)
+  )
+
+  # Only molecular weight belongs in the generic Parameters array.
+  param_names <- vapply(compound$data$Parameters, function(p) p$Name, "")
+  expect_equal(param_names, "Molecular weight")
 })
 
 test_that("create_compound sets pKa types preserving order", {
@@ -214,19 +223,17 @@ test_that("create_compound rejects invalid pKa entries", {
   )
 })
 
-test_that("*_name arguments override the alternative name", {
+test_that("helper name argument overrides the alternative name", {
   compound <- create_compound(
     name = "X",
-    lipophilicity = 2.5,
-    lipophilicity_name = "Custom lipo",
-    fraction_unbound = 1,
-    fraction_unbound_name = "Custom fu",
-    solubility = 9999,
-    solubility_name = "Custom sol",
-    intestinal_permeability = 1.14e-05,
-    intestinal_permeability_name = "Custom ip",
-    permeability = 0.0069,
-    permeability_name = "Custom perm"
+    lipophilicity = lipophilicity(2.5, name = "Custom lipo"),
+    fraction_unbound = fraction_unbound(1, name = "Custom fu"),
+    solubility = solubility(9999, name = "Custom sol"),
+    intestinal_permeability = intestinal_permeability(
+      1.14e-05,
+      name = "Custom ip"
+    ),
+    permeability = permeability(0.0069, name = "Custom perm")
   )
 
   expect_equal(compound$data$Lipophilicity[[1]]$Name, "Custom lipo")
@@ -256,26 +263,25 @@ test_that("create_compound attaches processes", {
   )
 })
 
-test_that("create_compound rejects non-numeric property values", {
+test_that("physicochemical helpers reject non-numeric values", {
+  expect_snapshot(error = TRUE, lipophilicity("a"))
+  expect_snapshot(error = TRUE, fraction_unbound("a"))
+  expect_snapshot(error = TRUE, solubility("a"))
+  expect_snapshot(error = TRUE, solubility(9999, reference_pH = "a"))
+  expect_snapshot(error = TRUE, solubility(9999, gain_per_charge = "a"))
+  expect_snapshot(error = TRUE, intestinal_permeability("a"))
+  expect_snapshot(error = TRUE, permeability("a"))
+})
+
+test_that("create_compound rejects a plain scalar or the wrong helper", {
   expect_snapshot(
     error = TRUE,
-    create_compound(name = "X", lipophilicity = "a")
+    create_compound(name = "X", lipophilicity = 2.5)
   )
   expect_snapshot(
     error = TRUE,
-    create_compound(name = "X", fraction_unbound = "a")
+    create_compound(name = "X", lipophilicity = weight(70))
   )
-  expect_snapshot(error = TRUE, create_compound(name = "X", solubility = "a"))
-  expect_snapshot(error = TRUE, create_compound(name = "X", reference_pH = "a"))
-  expect_snapshot(
-    error = TRUE,
-    create_compound(name = "X", solubility_gain_per_charge = "a")
-  )
-  expect_snapshot(
-    error = TRUE,
-    create_compound(name = "X", intestinal_permeability = "a")
-  )
-  expect_snapshot(error = TRUE, create_compound(name = "X", permeability = "a"))
 })
 
 test_that("create_compound rejects a non-list processes argument", {
@@ -285,69 +291,34 @@ test_that("create_compound rejects a non-list processes argument", {
   )
 })
 
-test_that("create_compound rejects a malformed solubility table", {
+test_that("solubility() rejects a malformed table", {
+  expect_snapshot(error = TRUE, solubility(table = c(3, 6)))
+})
+
+test_that("solubility() rejects an empty or non-numeric table", {
   expect_snapshot(
     error = TRUE,
-    create_compound(name = "X", solubility_table = c(3, 6))
+    solubility(table = data.frame(pH = numeric(0), value = numeric(0)))
+  )
+  expect_snapshot(
+    error = TRUE,
+    solubility(table = data.frame(pH = c(3, 6), value = c("a", "b")))
   )
 })
 
-test_that("create_compound rejects an empty or non-numeric solubility table", {
-  expect_snapshot(
-    error = TRUE,
-    create_compound(
-      name = "X",
-      solubility_table = data.frame(
-        pH = numeric(0),
-        value = numeric(0)
-      )
-    )
-  )
-  expect_snapshot(
-    error = TRUE,
-    create_compound(
-      name = "X",
-      solubility_table = data.frame(
-        pH = c(3, 6),
-        value = c("a", "b")
-      )
-    )
-  )
-})
-
-test_that("create_compound validates property units", {
-  expect_snapshot(
-    error = TRUE,
-    create_compound(
-      name = "X",
-      lipophilicity = 2.5,
-      lipophilicity_unit = "nope"
-    )
-  )
-  expect_snapshot(
-    error = TRUE,
-    create_compound(name = "X", solubility = 1, solubility_unit = "nope")
-  )
-  expect_snapshot(
-    error = TRUE,
-    create_compound(
-      name = "X",
-      intestinal_permeability = 1,
-      intestinal_permeability_unit = "nope"
-    )
-  )
-  expect_snapshot(
-    error = TRUE,
-    create_compound(name = "X", permeability = 1, permeability_unit = "nope")
-  )
+test_that("physicochemical helpers validate units", {
+  expect_snapshot(error = TRUE, lipophilicity(2.5, unit = "nope"))
+  expect_snapshot(error = TRUE, solubility(1, unit = "nope"))
+  expect_snapshot(error = TRUE, intestinal_permeability(1, unit = "nope"))
+  expect_snapshot(error = TRUE, permeability(1, unit = "nope"))
 })
 
 test_that("create_compound accepts the default property units", {
   expect_no_error(create_compound(
     name = "X",
-    lipophilicity = 2.5,
-    solubility = 1,
-    intestinal_permeability = 1,
-    permeability = 1
+    lipophilicity = lipophilicity(2.5),
+    solubility = solubility(1),
+    intestinal_permeability = intestinal_permeability(1),
+    permeability = permeability(1)
   ))
 })

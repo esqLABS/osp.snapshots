@@ -299,9 +299,9 @@ snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`$weight
 # Create a new individual
 demo_patient <- create_individual(
   name = "Demo Patient",
-  age = 45,
-  weight = 75,
-  height = 65,
+  age = age(45),
+  weight = weight(75),
+  height = height(65),
   gender = "FEMALE"
 )
 # Add to snapshot

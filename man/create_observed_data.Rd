@@ -8,12 +8,7 @@ create_observed_data(
   name,
   time,
   values,
-  time_unit = "h",
-  value_unit = NULL,
-  value_dimension = NULL,
   error = NULL,
-  error_type = NULL,
-  error_unit = NULL,
   molecular_weight = NULL,
   lloq = NULL,
   metadata = NULL
@@ -22,35 +17,16 @@ create_observed_data(
 \arguments{
 \item{name}{Character. Name of the observed data set (required).}
 
-\item{time}{Numeric vector. Time grid x-values (required).}
+\item{time}{A \code{\link[=time]{time()}} object giving the time grid x-values and their
+unit (required).}
 
-\item{values}{Numeric vector. Measurement y-values, same length as
-\code{time} (required).}
+\item{values}{A \code{\link[=values]{values()}} object giving the measurement y-values, their
+dimension, and an optional unit (required), same length as \code{time}. The
+dimension is supplied to \code{\link[=values]{values()}} and is required there.}
 
-\item{time_unit}{Character. Unit for \code{time} (for example \code{"h"},
-\code{"min"}, \code{"day(s)"}). Validated against
-\code{ospsuite::ospUnits$Time}. Defaults to \code{"h"}.}
-
-\item{value_unit}{Character. Unit for \code{values} (for example
-\code{"mg/l"}). When supplied alongside \code{value_dimension}, the unit is
-validated against the dimension via \code{\link[=validate_unit]{validate_unit()}}.}
-
-\item{value_dimension}{Character. Dimension for \code{values} (for
-example \code{"Concentration (mass)"}). Required (no default): pass one
-of the names of \code{ospsuite::ospDimensions}. Previously defaulted
-silently to \code{"Concentration (mass)"}, which was wrong for
-non-concentration data.}
-
-\item{error}{Numeric vector. Optional error y-values, same length as
-\code{values}.}
-
-\item{error_type}{Character. Auxiliary type for \code{error}, typically
-one of \code{"ArithmeticStdDev"}, \code{"GeometricStdDev"}, or
-\code{"ArithmeticStdErr"}. Defaults to \code{"ArithmeticStdDev"} when \code{error}
-is provided.}
-
-\item{error_unit}{Character. Unit for \code{error}. Defaults to
-\code{value_unit}.}
+\item{error}{A \code{\link[=error]{error()}} object giving the optional error y-values, an
+optional unit (defaulting to the values unit), and the auxiliary type.
+Same length as the values series. \code{NULL} for no error series.}
 
 \item{molecular_weight}{Numeric. Molecular weight to attach to the
 data set, in g/mol.}
@@ -77,20 +53,23 @@ simulations.
 # Create a minimal observed data set
 obs <- create_observed_data(
   name = "Subject 001",
-  time = c(0, 1, 2, 4, 8),
-  values = c(0, 12, 18, 11, 5),
-  value_dimension = "Concentration (mass)"
+  time = time(c(0, 1, 2, 4, 8)),
+  values = values(c(0, 12, 18, 11, 5), dimension = "Concentration (mass)")
 )
 
 # Create observed data with units and error
 obs <- create_observed_data(
   name = "Subject 001",
-  time = c(0, 1, 2, 4, 8),
-  values = c(0, 12, 18, 11, 5),
-  time_unit = "h",
-  value_unit = "mg/l",
-  value_dimension = "Concentration (mass)",
-  error = c(0, 1.2, 1.5, 1.1, 0.6),
-  error_type = "ArithmeticStdDev"
+  time = time(c(0, 1, 2, 4, 8), unit = "h"),
+  values = values(
+    c(0, 12, 18, 11, 5),
+    unit = "mg/l",
+    dimension = "Concentration (mass)"
+  ),
+  error = error(c(0, 1.2, 1.5, 1.1, 0.6), type = "ArithmeticStdDev")
 )
+}
+\seealso{
+\code{\link[=time]{time()}}, \code{\link[=values]{values()}}, \code{\link[=error]{error()}} for the series value-object
+helpers.
 }
