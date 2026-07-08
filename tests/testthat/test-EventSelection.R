@@ -42,3 +42,12 @@ test_that("EventSelection start_time setter accepts Parameter R6", {
   sel$start_time <- Parameter$new(list(Value = 7, Unit = "h"))
   expect_equal(sel$data$StartTime$Value, 7)
 })
+
+test_that("EventSelection$name requires a non-empty scalar string", {
+  sel <- EventSelection$new(list(
+    Name = "A",
+    StartTime = list(Value = 1, Unit = "h")
+  ))
+  expect_snapshot(error = TRUE, sel$name <- "")
+  expect_snapshot(error = TRUE, sel$name <- 5)
+})

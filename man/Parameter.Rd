@@ -8,23 +8,22 @@ An R6 class that represents a parameter in an OSP snapshot.
 This class provides methods to access different properties of a parameter
 and display a summary of its information.
 }
-\section{Public fields}{
-  \if{html}{\out{<div class="r6-fields">}}
-  \describe{
-    \item{\code{data}}{The raw data of the parameter}
-  }
-  \if{html}{\out{</div>}}
-}
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
+    \item{\code{data}}{The raw data of the parameter (read-only).}
+
     \item{\code{path}}{The path of the parameter}
 
     \item{\code{name}}{The name of the parameter (same as path)}
 
     \item{\code{value}}{The value of the parameter}
 
-    \item{\code{unit}}{The unit of the parameter (if any)}
+    \item{\code{unit}}{The unit of the parameter (if any). Writable: a
+non-\code{NULL} value must be a single non-empty character string, or
+\code{NULL} to clear. A bare \code{Parameter} carries no dimension, so a
+dimension-aware \code{\link[=validate_unit]{validate_unit()}} check is not universally
+applicable here; only the shape is enforced.}
 
     \item{\code{value_origin}}{The origin information for the parameter value}
 

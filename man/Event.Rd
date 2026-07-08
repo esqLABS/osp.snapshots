@@ -13,11 +13,14 @@ and display a summary of its information.
   \describe{
     \item{\code{data}}{The raw data of the event (read-only)}
 
-    \item{\code{name}}{The name of the event}
+    \item{\code{name}}{The name of the event. Writable: must be a non-empty
+scalar string.}
 
-    \item{\code{template}}{The template of the event}
+    \item{\code{template}}{The template of the event. Writable: must be a
+non-empty scalar string.}
 
-    \item{\code{parameters}}{The list of parameter objects}
+    \item{\code{parameters}}{The list of parameter objects. Writable: must be a
+list, or \code{NULL} to clear.}
   }
   \if{html}{\out{</div>}}
 }

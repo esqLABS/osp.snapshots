@@ -12,6 +12,13 @@ test_that("LocalizedParameter inherits from Parameter and exposes path", {
   expect_equal(param$unit, "L")
 })
 
+test_that("LocalizedParameter$data is read-only", {
+  raw <- list(Path = "Organism|Liver|Volume", Value = 1.5, Unit = "L")
+  param <- LocalizedParameter$new(raw)
+  expect_snapshot(error = TRUE, param$data <- list())
+  expect_equal(param$data, raw)
+})
+
 test_that("LocalizedParameter accepts Name as a legacy path fallback", {
   expect_snapshot(
     param <- LocalizedParameter$new(list(

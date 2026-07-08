@@ -1,3 +1,51 @@
+# Event$name and $template require non-empty scalar strings
+
+    Code
+      event$name <- ""
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      event$name <- 5
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      event$template <- ""
+    Condition
+      Error:
+      ! `template` must be a non-empty string
+
+---
+
+    Code
+      event$template <- 5
+    Condition
+      Error:
+      ! `template` must be a non-empty string
+
+# Event$parameters requires a list
+
+    Code
+      event$parameters <- 5
+    Condition
+      Error:
+      ! `parameters` must be a list
+
+---
+
+    Code
+      event$parameters <- "x"
+    Condition
+      Error:
+      ! `parameters` must be a list
+
 # print.event_collection works
 
     Code

@@ -12,15 +12,12 @@
 Parameter <- R6::R6Class(
   classname = "Parameter",
   public = list(
-    #' @field data The raw data of the parameter
-    data = NULL,
-
     #' @description
     #' Create a new Parameter object
     #' @param data Raw parameter data from a snapshot
     #' @return A new Parameter object
     initialize = function(data) {
-      self$data <- data
+      private$.data <- data
     },
 
     #' @description
@@ -156,73 +153,97 @@ Parameter <- R6::R6Class(
     }
   ),
   active = list(
+    #' @field data The raw data of the parameter (read-only).
+    data = function(value) {
+      if (!missing(value)) {
+        cli::cli_abort("data is read-only")
+      }
+      private$.data
+    },
+
     #' @field path The path of the parameter
     path = function(value) {
       if (missing(value)) {
-        return(self$data$Path %||% self$data$Name)
+        return(private$.data$Path %||% private$.data$Name)
       }
-      self$data$Path <- value
+      private$.data$Path <- value
     },
 
     #' @field name The name of the parameter (same as path)
     name = function(value) {
       if (missing(value)) {
-        return(self$data$Name %||% self$data$Path)
+        return(private$.data$Name %||% private$.data$Path)
       }
-      self$data$Name <- value
+      private$.data$Name <- value
     },
 
     #' @field value The value of the parameter
     value = function(value) {
       if (missing(value)) {
-        return(self$data$Value)
+        return(private$.data$Value)
       }
-      self$data$Value <- value
+      private$.data$Value <- value
     },
 
-    #' @field unit The unit of the parameter (if any)
+    #' @field unit The unit of the parameter (if any). Writable: a
+    #'   non-`NULL` value must be a single non-empty character string, or
+    #'   `NULL` to clear. A bare `Parameter` carries no dimension, so a
+    #'   dimension-aware [validate_unit()] check is not universally
+    #'   applicable here; only the shape is enforced.
     unit = function(value) {
       if (missing(value)) {
-        return(self$data$Unit)
+        return(private$.data$Unit)
       }
-      if (!is.null(value)) {
-        # TODO: Add unit validation when we know the dimension
-        self$data$Unit <- value
-      } else {
-        self$data$Unit <- NULL
+      if (is.null(value)) {
+        private$.data$Unit <- NULL
+        return(invisible(NULL))
       }
+      if (
+        !is.character(value) ||
+          length(value) != 1 ||
+          is.na(value) ||
+          !nzchar(value)
+      ) {
+        cli::cli_abort(
+          "{.arg unit} must be a single non-empty character string"
+        )
+      }
+      private$.data$Unit <- value
     },
 
     #' @field value_origin The origin information for the parameter value
     value_origin = function(value) {
       if (missing(value)) {
-        return(self$data$ValueOrigin)
+        return(private$.data$ValueOrigin)
       }
       if (!is.null(value)) {
-        if (is.null(self$data$ValueOrigin)) {
-          self$data$ValueOrigin <- value
+        if (is.null(private$.data$ValueOrigin)) {
+          private$.data$ValueOrigin <- value
         } else {
-          self$data$ValueOrigin <- utils::modifyList(
-            self$data$ValueOrigin,
+          private$.data$ValueOrigin <- utils::modifyList(
+            private$.data$ValueOrigin,
             value
           )
         }
       } else {
-        self$data$ValueOrigin <- NULL
+        private$.data$ValueOrigin <- NULL
       }
     },
 
     #' @field table_formula The table formula data for table parameters
     table_formula = function(value) {
       if (missing(value)) {
-        return(self$data$TableFormula)
+        return(private$.data$TableFormula)
       }
       if (!is.null(value)) {
-        self$data$TableFormula <- value
+        private$.data$TableFormula <- value
       } else {
-        self$data$TableFormula <- NULL
+        private$.data$TableFormula <- NULL
       }
     }
+  ),
+  private = list(
+    .data = NULL
   )
 )
 

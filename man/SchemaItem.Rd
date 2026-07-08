@@ -19,10 +19,14 @@ In an OSP snapshot, each schema item is one entry of the
     \item{\code{data}}{The raw \code{SchemaItem} list as it appears in the snapshot
 JSON, refreshed from the wrapped parameters (read-only).}
 
-    \item{\code{name}}{The name of the schema item.}
+    \item{\code{name}}{The name of the schema item. Writable: must be a
+non-empty scalar string.}
 
     \item{\code{application_type}}{The application type of the schema item
-(for example \code{"Oral"}, \code{"IntravenousBolus"}).}
+(for example \code{"Oral"}, \code{"IntravenousBolus"}). Writable: must be one
+of the canonical PK-Sim application types (see
+\code{\link[=create_schema_item]{create_schema_item()}}'s \code{application_type} argument), or \code{NULL}
+to clear.}
 
     \item{\code{formulation_key}}{The formulation key, linking the schema item
 to a formulation selection in the owning simulation.}
@@ -33,7 +37,8 @@ to a formulation selection in the owning simulation.}
 application.}
 
     \item{\code{parameters}}{The schema item's application-level \link{Parameter}
-objects (dose, start time, ...).}
+objects (dose, start time, ...). Writable: must be a list, or
+\code{NULL} to clear.}
   }
   \if{html}{\out{</div>}}
 }

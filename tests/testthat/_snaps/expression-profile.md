@@ -335,3 +335,11 @@
       |GABRG2_Human_Korean (Yu 2004 study)  |GABRG2&#124;t1/2 (liver)                                                                                               | 36.0000000|h      |Other                   |PK-Sim default value                                               |
       |GABRG2_Human_Korean (Yu 2004 study)  |Organism&#124;Brain&#124;Intracellular&#124;GABRG2&#124;Relative expression                                            |  1.0000000|NA     |NA                      |NA                                                                 |
 
+# ExpressionProfile$data is read-only
+
+    Code
+      profile$data <- list()
+    Condition
+      Error:
+      ! data is read-only
+

@@ -91,23 +91,28 @@ Event <- R6::R6Class(
       cli::cli_abort("data is read-only")
     },
 
-    #' @field name The name of the event
+    #' @field name The name of the event. Writable: must be a non-empty
+    #'   scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 
-    #' @field template The template of the event
+    #' @field template The template of the event. Writable: must be a
+    #'   non-empty scalar string.
     template = function(value) {
       if (missing(value)) {
         return(private$.data$Template)
       }
+      check_required_string(value, "template")
       private$.data$Template <- value
     },
 
-    #' @field parameters The list of parameter objects
+    #' @field parameters The list of parameter objects. Writable: must be a
+    #'   list, or `NULL` to clear.
     parameters = function(value) {
       if (missing(value)) {
         if (is.null(private$.parameters)) {
@@ -117,14 +122,18 @@ Event <- R6::R6Class(
         return(private$.parameters)
       }
 
+      if (!is.null(value) && !is.list(value)) {
+        cli::cli_abort("{.arg parameters} must be a list")
+      }
+
       if (is.null(value)) {
         private$.parameters <- list()
       } else {
         # Ensure all parameters have Path set to Name for compatibility
         for (i in seq_along(value)) {
           param <- value[[i]]
-          if (!is.null(param$data$Name) && is.null(param$data$Path)) {
-            param$data$Path <- param$data$Name
+          if (!is.null(param$name) && is.null(param$data$Path)) {
+            param$path <- param$name
           }
         }
 

@@ -70,6 +70,12 @@ test_that("ObserverSet data is read-only", {
   expect_snapshot(os$data <- list(), error = TRUE)
 })
 
+test_that("ObserverSet$name requires a non-empty scalar string", {
+  os <- ObserverSet$new(list(Name = "X"))
+  expect_snapshot(error = TRUE, os$name <- "")
+  expect_snapshot(error = TRUE, os$name <- 5)
+})
+
 # ---- Snapshot wiring ----
 test_that("snapshot$observer_sets loads from JSON", {
   snapshot <- test_snapshot$clone()

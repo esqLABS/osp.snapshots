@@ -14,6 +14,38 @@
       Error:
       ! data is read-only
 
+# Schema$name requires a non-empty scalar string
+
+    Code
+      schema$name <- ""
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      schema$name <- 5
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+# Schema$parameters requires a list
+
+    Code
+      schema$parameters <- 5
+    Condition
+      Error:
+      ! `parameters` must be a list
+
+---
+
+    Code
+      schema$parameters <- "x"
+    Condition
+      Error:
+      ! `parameters` must be a list
+
 # Schema prints a summary
 
     Code

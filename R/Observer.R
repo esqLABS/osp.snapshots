@@ -110,11 +110,13 @@ Observer <- R6::R6Class(
       private$.data
     },
 
-    #' @field name The name of the observer.
+    #' @field name The name of the observer. Writable: must be a non-empty
+    #'   scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 
@@ -135,10 +137,16 @@ Observer <- R6::R6Class(
     },
 
     #' @field dimension The dimension of the observed quantity, resolved
-    #'   in PK-Sim via `IDimensionRepository.DimensionByName()`.
+    #'   in PK-Sim via `IDimensionRepository.DimensionByName()`. Writable:
+    #'   must be a non-empty scalar string, or `NULL` to clear. There is no
+    #'   closed set of dimension names to validate against, so a required
+    #'   string is the strongest check available.
     dimension = function(value) {
       if (missing(value)) {
         return(private$.data$Dimension)
+      }
+      if (!is.null(value)) {
+        check_required_string(value, "dimension")
       }
       private$.data$Dimension <- value
     },

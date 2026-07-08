@@ -46,11 +46,13 @@ ProtocolSelection <- R6::R6Class(
       cli::cli_abort("data is read-only")
     },
 
-    #' @field name The name of the protocol building block.
+    #' @field name The name of the protocol building block. Writable: must
+    #'   be a non-empty scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 

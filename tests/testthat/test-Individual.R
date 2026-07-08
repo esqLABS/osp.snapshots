@@ -80,20 +80,20 @@ test_that("Individual fields can be modified through active bindings", {
   expect_equal(test_individual$gender, ospsuite::Gender[1])
 
   # Test modifying measurements (age, weight, height)
-  test_individual$age <- 25
+  test_individual$age <- age(25)
   expect_equal(test_individual$age, 25)
   expect_equal(test_individual$age_unit, "year(s)") # Default unit preserved
 
-  test_individual$weight <- 80
+  test_individual$weight <- weight(80)
   expect_equal(test_individual$weight, 80)
   expect_equal(test_individual$weight_unit, "kg") # Default unit preserved
 
-  test_individual$height <- 180
+  test_individual$height <- height(180)
   expect_equal(test_individual$height, 180)
   expect_equal(test_individual$height_unit, "cm") # Default unit preserved
 
   # Test modifying gestational age
-  test_individual$gestational_age <- 28
+  test_individual$gestational_age <- gestational_age(28)
   expect_equal(test_individual$gestational_age, 28)
   expect_equal(test_individual$gestational_age_unit, "week(s)") # Default unit preserved
 
@@ -161,7 +161,7 @@ test_that("Individual measurement units can be modified", {
   expect_equal(test_individual$height, 175) # Value preserved
 
   # Test modifying gestational age unit
-  test_individual$gestational_age <- 30 # First set a value
+  test_individual$gestational_age <- gestational_age(30) # First set a value
   test_individual$gestational_age_unit <- "day(s)"
   expect_equal(test_individual$gestational_age_unit, "day(s)")
   expect_equal(test_individual$gestational_age, 30) # Value preserved
@@ -488,15 +488,15 @@ test_that("Individual creation with null values works", {
   null_individual$species <- "Human"
   expect_equal(null_individual$species, "Human")
 
-  null_individual$age <- 45
+  null_individual$age <- age(45)
   expect_equal(null_individual$age, 45)
   expect_equal(null_individual$age_unit, "year(s)")
 
-  null_individual$weight <- 80
+  null_individual$weight <- weight(80)
   expect_equal(null_individual$weight, 80)
   expect_equal(null_individual$weight_unit, "kg")
 
-  null_individual$height <- 180
+  null_individual$height <- height(180)
   expect_equal(null_individual$height, 180)
   expect_equal(null_individual$height_unit, "cm")
 })
@@ -532,6 +532,12 @@ test_that("Individual parameters can be modified", {
   expect_equal(test_individual$parameters, new_params)
   expect_equal(test_individual$data$Parameters[[1]]$Path, "Test|Path")
   expect_equal(test_individual$data$Parameters[[1]]$Value, 123)
+})
+
+test_that("Individual$parameters requires a list", {
+  test_individual <- Individual$new(complete_individual_data)
+  expect_snapshot(error = TRUE, test_individual$parameters <- 5)
+  expect_snapshot(error = TRUE, test_individual$parameters <- "x")
 })
 
 test_that("Individual expression_profiles reads the raw value", {
@@ -818,7 +824,7 @@ test_that("Individual handles gestational age correctly", {
   expect_equal(preterm_individual$gestational_age_unit, "week(s)")
 
   # Test gestational age can be modified
-  preterm_individual$gestational_age <- 32.0
+  preterm_individual$gestational_age <- gestational_age(32.0)
   expect_equal(preterm_individual$gestational_age, 32.0)
 
   # Test gestational age unit can be modified
@@ -902,38 +908,18 @@ test_that("Calculation methods edge cases", {
 
 test_that("Gestational age can be set to NULL after being set", {
   ind <- Individual$new(complete_individual_data)
-  ind$gestational_age <- 30
+  ind$gestational_age <- gestational_age(30)
   expect_equal(ind$gestational_age, 30)
   ind$gestational_age <- NULL
   expect_null(ind$gestational_age)
 })
 
-test_that("demographic fields accept helper objects identically to scalars", {
-  helper <- create_individual(name = "H")
-  scalar <- create_individual(name = "S")
-
-  helper$age <- age(25, unit = "year(s)")
-  scalar$age <- 25
-  scalar$age_unit <- "year(s)"
-  expect_equal(helper$data$OriginData$Age, scalar$data$OriginData$Age)
-
-  helper$weight <- weight(80)
-  scalar$weight <- 80
-  scalar$weight_unit <- "kg"
-  expect_equal(helper$data$OriginData$Weight, scalar$data$OriginData$Weight)
-
-  helper$height <- height(180)
-  scalar$height <- 180
-  scalar$height_unit <- "cm"
-  expect_equal(helper$data$OriginData$Height, scalar$data$OriginData$Height)
-
-  helper$gestational_age <- gestational_age(32)
-  scalar$gestational_age <- 32
-  scalar$gestational_age_unit <- "week(s)"
-  expect_equal(
-    helper$data$OriginData$GestationalAge,
-    scalar$data$OriginData$GestationalAge
-  )
+test_that("bare numeric scalars are rejected for demographic fields", {
+  ind <- create_individual(name = "X")
+  expect_snapshot(error = TRUE, ind$age <- 25)
+  expect_snapshot(error = TRUE, ind$weight <- 80)
+  expect_snapshot(error = TRUE, ind$height <- 180)
+  expect_snapshot(error = TRUE, ind$gestational_age <- 32)
 })
 
 test_that("assigning the wrong helper to a demographic field aborts", {

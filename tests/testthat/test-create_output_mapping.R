@@ -27,3 +27,9 @@ test_that("create_output_mapping validates argument types", {
   expect_snapshot(error = TRUE, create_output_mapping(weight = "x"))
   expect_snapshot(error = TRUE, create_output_mapping(weights = "x"))
 })
+
+test_that("create_output_mapping validates scaling against the enum", {
+  expect_snapshot(error = TRUE, create_output_mapping(scaling = "Sqrt"))
+  mapping <- create_output_mapping(scaling = "Log")
+  expect_equal(mapping$scaling, "Log")
+})

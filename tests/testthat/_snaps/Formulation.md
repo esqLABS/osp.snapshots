@@ -87,6 +87,22 @@
       
       * New Parameter: 100 mg
 
+# Formulation$parameters requires a named list
+
+    Code
+      test_formulation$parameters <- 5
+    Condition
+      Error:
+      ! Parameters must be provided as a named list
+
+---
+
+    Code
+      test_formulation$parameters <- "x"
+    Condition
+      Error:
+      ! Parameters must be provided as a named list
+
 # Formulation validates formulation type
 
     Code

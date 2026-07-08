@@ -13,7 +13,8 @@ and display a summary of its information.
   \describe{
     \item{\code{data}}{The raw data of the population (read-only)}
 
-    \item{\code{name}}{The name of the population}
+    \item{\code{name}}{The name of the population. Writable: must be a
+non-empty scalar string.}
 
     \item{\code{description}}{A free-text description of the population}
 
@@ -29,20 +30,28 @@ argument of \code{\link[=create_population]{create_population()}}.}
 
     \item{\code{seed}}{The seed used for population generation}
 
-    \item{\code{number_of_individuals}}{The number of individuals in the population}
+    \item{\code{number_of_individuals}}{The number of individuals in the
+population. Writable: must be a single positive whole number.}
 
     \item{\code{proportion_of_females}}{The percentage of females in the population}
 
-    \item{\code{age_range}}{The age range for the population}
+    \item{\code{age_range}}{The age range for the population. Writable: the
+\code{Range}'s \code{unit} must be a valid unit for dimension \code{"Age in years"}.}
 
-    \item{\code{weight_range}}{The weight range for the population}
+    \item{\code{weight_range}}{The weight range for the population. Writable:
+the \code{Range}'s \code{unit} must be a valid unit for dimension \code{"Mass"}.}
 
-    \item{\code{height_range}}{The height range for the population}
+    \item{\code{height_range}}{The height range for the population. Writable:
+the \code{Range}'s \code{unit} must be a valid unit for dimension \code{"Length"}.}
 
-    \item{\code{bmi_range}}{The BMI range for the population}
+    \item{\code{bmi_range}}{The BMI range for the population. Writable: when
+the \code{"BMI"} dimension resolves in the installed \code{ospsuite}, the
+\code{Range}'s \code{unit} must be a valid unit for it; otherwise the unit is
+left unvalidated (a documented, opportunistic limitation).}
 
     \item{\code{gestational_age_range}}{The gestational age range used for
-population generation}
+population generation. Writable: the \code{Range}'s \code{unit} must be a
+valid unit for dimension \code{"Time"}.}
 
     \item{\code{egfr_range}}{The eGFR range for the population (if available).
 Convenience over the case-insensitive \code{"egfr"} entry of

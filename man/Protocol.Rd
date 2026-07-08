@@ -21,17 +21,23 @@ Protocols expose their single application directly through the
 wrapped \link{Schema} objects so mutations through the R6 surface
 flow back into the snapshot payload (read-only).}
 
-    \item{\code{name}}{The name of the protocol}
+    \item{\code{name}}{The name of the protocol. Writable: must be a non-empty
+scalar string.}
 
     \item{\code{is_advanced}}{Whether the protocol is advanced (schema-based)}
 
-    \item{\code{application_type}}{The application type (for simple protocols)}
+    \item{\code{application_type}}{The application type (for simple protocols).
+Writable: must be one of the canonical PK-Sim application types
+(see \code{\link[=create_protocol]{create_protocol()}}'s \code{application_type} argument), or \code{NULL}
+to clear.}
 
     \item{\code{dosing_interval}}{The dosing interval (for simple protocols)}
 
-    \item{\code{time_unit}}{The time unit for the protocol}
+    \item{\code{time_unit}}{The time unit for the protocol. Writable: must be a
+valid unit for dimension \code{"Time"}, or \code{NULL} to clear.}
 
-    \item{\code{parameters}}{The parameters of the protocol (for simple protocols)}
+    \item{\code{parameters}}{The parameters of the protocol (for simple
+protocols). Writable: must be a list, or \code{NULL} to clear.}
 
     \item{\code{schemas}}{A named list of \link{Schema} objects for advanced
 protocols. Names are taken from each schema's \code{name} field

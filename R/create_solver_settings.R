@@ -32,53 +32,31 @@ create_solver_settings <- function(
 ) {
   data <- list()
   if (!is.null(abs_tol)) {
-    if (!is.numeric(abs_tol) || length(abs_tol) != 1) {
-      cli::cli_abort("{.arg abs_tol} must be a single numeric value")
-    }
+    check_single_numeric(abs_tol, "abs_tol")
     data$AbsTol <- abs_tol
   }
   if (!is.null(rel_tol)) {
-    if (!is.numeric(rel_tol) || length(rel_tol) != 1) {
-      cli::cli_abort("{.arg rel_tol} must be a single numeric value")
-    }
+    check_single_numeric(rel_tol, "rel_tol")
     data$RelTol <- rel_tol
   }
   if (!is.null(use_jacobian)) {
-    if (!is.logical(use_jacobian) || length(use_jacobian) != 1) {
-      cli::cli_abort("{.arg use_jacobian} must be a single logical value")
-    }
+    check_single_logical(use_jacobian, "use_jacobian")
     data$UseJacobian <- use_jacobian
   }
   if (!is.null(h0)) {
-    if (!is.numeric(h0) || length(h0) != 1) {
-      cli::cli_abort("{.arg h0} must be a single numeric value")
-    }
+    check_single_numeric(h0, "h0")
     data$H0 <- h0
   }
   if (!is.null(h_min)) {
-    if (!is.numeric(h_min) || length(h_min) != 1) {
-      cli::cli_abort("{.arg h_min} must be a single numeric value")
-    }
+    check_single_numeric(h_min, "h_min")
     data$HMin <- h_min
   }
   if (!is.null(h_max)) {
-    if (!is.numeric(h_max) || length(h_max) != 1) {
-      cli::cli_abort("{.arg h_max} must be a single numeric value")
-    }
+    check_single_numeric(h_max, "h_max")
     data$HMax <- h_max
   }
   if (!is.null(mx_step)) {
-    if (
-      !is.numeric(mx_step) ||
-        length(mx_step) != 1 ||
-        !is.finite(mx_step) ||
-        mx_step != as.integer(mx_step) ||
-        mx_step < 1
-    ) {
-      cli::cli_abort(
-        "{.arg mx_step} must be a single positive whole number"
-      )
-    }
+    check_positive_whole_number(mx_step, "mx_step")
     data$MxStep <- as.integer(mx_step)
   }
   SolverSettings$new(data)

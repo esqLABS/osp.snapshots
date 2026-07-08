@@ -64,43 +64,63 @@ Process <- R6::R6Class(
       private$.data
     },
 
-    #' @field internal_name The PK-Sim `InternalName` (process template key).
+    #' @field internal_name The PK-Sim `InternalName` (process template
+    #'   key). Writable: must be a non-empty scalar string.
     internal_name = function(value) {
       if (missing(value)) {
         return(private$.data$InternalName)
       }
+      check_required_string(value, "internal_name")
       private$.data$InternalName <- value
     },
 
     #' @field data_source The `DataSource` string identifying the process.
+    #'   Writable: must be a non-empty scalar string.
     data_source = function(value) {
       if (missing(value)) {
         return(private$.data$DataSource)
       }
+      check_required_string(value, "data_source")
       private$.data$DataSource <- value
     },
 
     #' @field molecule Optional `Molecule` field (for partial processes).
+    #'   Writable: a non-empty scalar string when supplied, or `NULL` to
+    #'   clear.
     molecule = function(value) {
       if (missing(value)) {
         return(private$.data$Molecule)
       }
+      if (!is.null(value)) {
+        check_required_string(value, "molecule")
+      }
       private$.data$Molecule <- value
     },
 
-    #' @field metabolite Optional `Metabolite` field (for enzymatic processes).
+    #' @field metabolite Optional `Metabolite` field (for enzymatic
+    #'   processes). Writable: a non-empty scalar string when supplied, or
+    #'   `NULL` to clear.
     metabolite = function(value) {
       if (missing(value)) {
         return(private$.data$Metabolite)
+      }
+      if (!is.null(value)) {
+        check_required_string(value, "metabolite")
       }
       private$.data$Metabolite <- value
     },
 
     #' @field species Optional `Species` field (for species-dependent
-    #'   processes).
+    #'   processes). Writable: a non-empty scalar string when supplied, or
+    #'   `NULL` to clear. This is a free molecule/species string (not the
+    #'   `Individual`/`OriginData` species enum), so `validate_species()`
+    #'   does not apply here.
     species = function(value) {
       if (missing(value)) {
         return(private$.data$Species)
+      }
+      if (!is.null(value)) {
+        check_required_string(value, "species")
       }
       private$.data$Species <- value
     },

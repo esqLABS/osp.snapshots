@@ -15,7 +15,8 @@ that simulations can reference by name.
 wrapped \link{Observer} objects so mutations through the R6 surface
 flow back into the snapshot payload (read-only).}
 
-    \item{\code{name}}{The name of the observer set}
+    \item{\code{name}}{The name of the observer set. Writable: must be a
+non-empty scalar string.}
 
     \item{\code{observers}}{A named list of \link{Observer} objects keyed by
 each observer's \verb{$name}. Duplicate names are disambiguated with

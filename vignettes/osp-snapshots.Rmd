@@ -140,8 +140,8 @@ Assigning to a field on an existing object writes the change straight back into 
 
 ```{r}
 ind <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
-ind$age <- 45
-ind$weight <- 78
+ind$age <- age(45)
+ind$weight <- weight(78)
 ind
 ```
 

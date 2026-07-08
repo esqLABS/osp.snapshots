@@ -74,6 +74,41 @@
       * Type: Simple
       * Dosing Interval: Once
 
+# Protocol$time_unit is validated against the Time dimension
+
+    Code
+      protocol$time_unit <- "banana"
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: banana
+      i Valid units for Time are: s, min, h, day(s), week(s), month(s), year(s), ks
+
+# Protocol$application_type is validated against the enum
+
+    Code
+      protocol$application_type <- "Sublingual"
+    Condition
+      Error:
+      ! `application_type` must be one of the canonical PK-Sim application types.
+      x Got "Sublingual".
+      i Valid values: "Oral", "IntravenousBolus", "IntravenousInfusion", "Intramuscular", "Subcutaneous", "Dermal", "Rectal", "Inhalation", and "Intraperitoneal".
+
+# Protocol$name requires a non-empty scalar string
+
+    Code
+      protocol$name <- ""
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      protocol$name <- 5
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
 # Protocol with real test data works
 
     Code

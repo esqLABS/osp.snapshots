@@ -6,6 +6,22 @@
       Error:
       ! data is read-only
 
+# ObserverSet$name requires a non-empty scalar string
+
+    Code
+      os$name <- ""
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
+---
+
+    Code
+      os$name <- 5
+    Condition
+      Error:
+      ! `name` must be a non-empty string
+
 # add_observer_set() rejects non-ObserverSet inputs
 
     Code

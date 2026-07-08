@@ -17,19 +17,27 @@ empty solver is always returned as a named-empty list so the JSON
 serialiser writes it as \code{{}} (an object), not \verb{[]} (an array).
 PK-Sim's snapshot mapper requires the object shape.}
 
-    \item{\code{abs_tol}}{Absolute solver tolerance.}
+    \item{\code{abs_tol}}{Absolute solver tolerance. Writable: a single numeric
+value, or \code{NULL} to clear.}
 
-    \item{\code{rel_tol}}{Relative solver tolerance.}
+    \item{\code{rel_tol}}{Relative solver tolerance. Writable: a single numeric
+value, or \code{NULL} to clear.}
 
-    \item{\code{use_jacobian}}{Whether to use the Jacobian during integration.}
+    \item{\code{use_jacobian}}{Whether to use the Jacobian during integration.
+Writable: a single logical value, or \code{NULL} to clear.}
 
-    \item{\code{h0}}{Initial step size.}
+    \item{\code{h0}}{Initial step size. Writable: a single numeric value, or
+\code{NULL} to clear.}
 
-    \item{\code{h_min}}{Minimum step size.}
+    \item{\code{h_min}}{Minimum step size. Writable: a single numeric value, or
+\code{NULL} to clear.}
 
-    \item{\code{h_max}}{Maximum step size.}
+    \item{\code{h_max}}{Maximum step size. Writable: a single numeric value, or
+\code{NULL} to clear.}
 
-    \item{\code{mx_step}}{Maximum number of internal solver steps.}
+    \item{\code{mx_step}}{Maximum number of internal solver steps. Writable: a
+single positive whole number (stored as an integer), or \code{NULL} to
+clear.}
   }
   \if{html}{\out{</div>}}
 }

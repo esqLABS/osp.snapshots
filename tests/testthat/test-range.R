@@ -27,6 +27,16 @@ test_that("Range class correctly handles numeric values", {
   expect_no_error(Range$new(" 10 ", " 20 ", "years")) # With spaces
 })
 
+test_that("Range$unit accepts any string (dimension-agnostic by design)", {
+  # Range has no dimension of its own, so `unit` is intentionally not
+  # validated here; dimension-aware validation happens at the Population
+  # range setters that consume a Range. This is a regression guard against
+  # a future "fix" that adds dimension validation to Range$unit itself.
+  range_obj <- Range$new(10, 20, "years")
+  range_obj$unit <- "not-a-real-unit"
+  expect_equal(range_obj$unit, "not-a-real-unit")
+})
+
 # Test for snapshot export and import with different types of range values
 test_that("Snapshot handles different types of range values in populations", {
   # Create a minimal snapshot with a population

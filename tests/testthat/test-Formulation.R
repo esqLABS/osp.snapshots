@@ -173,6 +173,12 @@ test_that("Formulation fields can be modified through active bindings", {
   expect_snapshot(print(test_formulation))
 })
 
+test_that("Formulation$parameters requires a named list", {
+  test_formulation <- test_snapshot$formulations[[1]]$clone(deep = TRUE)
+  expect_snapshot(error = TRUE, test_formulation$parameters <- 5)
+  expect_snapshot(error = TRUE, test_formulation$parameters <- "x")
+})
+
 test_that("Formulation validates formulation type", {
   # Clone test_snapshot to avoid modifying the original
   snapshot_clone <- test_snapshot$clone()

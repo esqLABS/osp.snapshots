@@ -35,6 +35,20 @@ test_that("Event getters and setters work", {
   expect_error(event$data <- list(), "data is read-only")
 })
 
+test_that("Event$name and $template require non-empty scalar strings", {
+  event <- Event$new(test_event_data)
+  expect_snapshot(error = TRUE, event$name <- "")
+  expect_snapshot(error = TRUE, event$name <- 5)
+  expect_snapshot(error = TRUE, event$template <- "")
+  expect_snapshot(error = TRUE, event$template <- 5)
+})
+
+test_that("Event$parameters requires a list", {
+  event <- Event$new(test_event_data)
+  expect_snapshot(error = TRUE, event$parameters <- 5)
+  expect_snapshot(error = TRUE, event$parameters <- "x")
+})
+
 test_that("Event parameters work correctly", {
   event <- Event$new(test_event_data)
 

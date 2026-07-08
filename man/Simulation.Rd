@@ -37,7 +37,8 @@ byte-equivalent.}
     \item{\code{model}}{The PK-Sim model used to build the simulation
 (e.g. \code{"4Comp"}).}
 
-    \item{\code{allow_aging}}{Whether the simulation allows aging.}
+    \item{\code{allow_aging}}{Whether the simulation allows aging. Writable: a
+single logical value, or \code{NULL} to clear.}
 
     \item{\code{individual}}{Name of the individual building block (or
 \code{NULL} for a population simulation).}

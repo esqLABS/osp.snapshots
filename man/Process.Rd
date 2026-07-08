@@ -20,16 +20,25 @@ subtype; subtypes are inferred from \code{internal_name}. The derived
   \describe{
     \item{\code{data}}{The raw underlying data list (read-only).}
 
-    \item{\code{internal_name}}{The PK-Sim \code{InternalName} (process template key).}
+    \item{\code{internal_name}}{The PK-Sim \code{InternalName} (process template
+key). Writable: must be a non-empty scalar string.}
 
-    \item{\code{data_source}}{The \code{DataSource} string identifying the process.}
+    \item{\code{data_source}}{The \code{DataSource} string identifying the process.
+Writable: must be a non-empty scalar string.}
 
-    \item{\code{molecule}}{Optional \code{Molecule} field (for partial processes).}
+    \item{\code{molecule}}{Optional \code{Molecule} field (for partial processes).
+Writable: a non-empty scalar string when supplied, or \code{NULL} to
+clear.}
 
-    \item{\code{metabolite}}{Optional \code{Metabolite} field (for enzymatic processes).}
+    \item{\code{metabolite}}{Optional \code{Metabolite} field (for enzymatic
+processes). Writable: a non-empty scalar string when supplied, or
+\code{NULL} to clear.}
 
     \item{\code{species}}{Optional \code{Species} field (for species-dependent
-processes).}
+processes). Writable: a non-empty scalar string when supplied, or
+\code{NULL} to clear. This is a free molecule/species string (not the
+\code{Individual}/\code{OriginData} species enum), so \code{validate_species()}
+does not apply here.}
 
     \item{\code{parameters}}{A named list of \link{Parameter} objects (one entry per
 \code{Parameter} in the snapshot JSON), keyed by parameter name. Assigning

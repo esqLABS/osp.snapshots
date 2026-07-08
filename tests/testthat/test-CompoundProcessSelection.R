@@ -29,3 +29,21 @@ test_that("CompoundProcessSelection setters mutate raw data", {
   sel$molecule_name <- "M"
   expect_equal(sel$data$MoleculeName, "M")
 })
+
+test_that("CompoundProcessSelection optional string fields accept NULL or a non-empty string", {
+  sel <- CompoundProcessSelection$new(list(Name = "A"))
+  for (field in c(
+    "name",
+    "molecule_name",
+    "metabolite_name",
+    "compound_name",
+    "systemic_process_type"
+  )) {
+    expect_snapshot(error = TRUE, sel[[field]] <- "")
+    expect_snapshot(error = TRUE, sel[[field]] <- 5)
+    sel[[field]] <- "valid"
+    expect_equal(sel[[field]], "valid")
+    sel[[field]] <- NULL
+    expect_null(sel[[field]])
+  }
+})

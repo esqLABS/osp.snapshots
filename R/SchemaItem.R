@@ -84,19 +84,31 @@ SchemaItem <- R6::R6Class(
       result
     },
 
-    #' @field name The name of the schema item.
+    #' @field name The name of the schema item. Writable: must be a
+    #'   non-empty scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 
     #' @field application_type The application type of the schema item
-    #'   (for example `"Oral"`, `"IntravenousBolus"`).
+    #'   (for example `"Oral"`, `"IntravenousBolus"`). Writable: must be one
+    #'   of the canonical PK-Sim application types (see
+    #'   [create_schema_item()]'s `application_type` argument), or `NULL`
+    #'   to clear.
     application_type = function(value) {
       if (missing(value)) {
         return(private$.data$ApplicationType)
+      }
+      if (!is.null(value) && !(value %in% schema_item_application_types())) {
+        cli::cli_abort(c(
+          "{.arg application_type} must be one of the canonical PK-Sim application types.",
+          "x" = "Got {.val {value}}.",
+          "i" = "Valid values: {.val {schema_item_application_types()}}."
+        ))
       }
       private$.data$ApplicationType <- value
     },
@@ -128,7 +140,8 @@ SchemaItem <- R6::R6Class(
     },
 
     #' @field parameters The schema item's application-level [Parameter]
-    #'   objects (dose, start time, ...).
+    #'   objects (dose, start time, ...). Writable: must be a list, or
+    #'   `NULL` to clear.
     parameters = function(value) {
       if (missing(value)) {
         if (is.null(private$.parameters)) {
@@ -140,6 +153,9 @@ SchemaItem <- R6::R6Class(
       if (is.null(value)) {
         private$.parameters <- list()
       } else {
+        if (!is.list(value)) {
+          cli::cli_abort("{.arg parameters} must be a list")
+        }
         private$.parameters <- value
       }
       if (!inherits(private$.parameters, "parameter_collection")) {

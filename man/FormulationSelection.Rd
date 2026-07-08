@@ -13,9 +13,11 @@ to a formulation key used by an application within the protocol.
   \describe{
     \item{\code{data}}{The raw data of the selection (read-only).}
 
-    \item{\code{name}}{The name of the formulation building block.}
+    \item{\code{name}}{The name of the formulation building block. Writable:
+must be a non-empty scalar string.}
 
-    \item{\code{key}}{The formulation key (application slot) inside the protocol.}
+    \item{\code{key}}{The formulation key (application slot) inside the
+protocol. Writable: must be a non-empty scalar string.}
   }
   \if{html}{\out{</div>}}
 }

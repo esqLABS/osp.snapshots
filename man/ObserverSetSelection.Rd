@@ -12,7 +12,8 @@ array. Resolves to an \link{ObserverSet} building block by name.
   \describe{
     \item{\code{data}}{The raw data of the selection (read-only).}
 
-    \item{\code{name}}{The name of the observer-set building block.}
+    \item{\code{name}}{The name of the observer-set building block. Writable:
+must be a non-empty scalar string.}
   }
   \if{html}{\out{</div>}}
 }

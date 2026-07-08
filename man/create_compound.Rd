@@ -31,7 +31,8 @@ create_compound(
 molecule. Defaults to \code{TRUE} in PK-Sim when omitted.}
 
 \item{plasma_protein_binding_partner}{Character. Name of the plasma
-protein binding partner (for example \code{"Albumin"}).}
+protein binding partner: one of \code{"Unknown"}, \code{"Albumin"},
+\code{"Glycoprotein"}.}
 
 \item{molecular_weight}{Numeric. Molecular weight value.}
 

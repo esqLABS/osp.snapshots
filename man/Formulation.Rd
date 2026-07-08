@@ -17,7 +17,8 @@ and display a summary of its information.
 
     \item{\code{formulation_type}}{The formulation type identifier}
 
-    \item{\code{parameters}}{The list of parameter objects}
+    \item{\code{parameters}}{The list of parameter objects. Writable: must be a
+list, or \code{NULL} to clear.}
   }
   \if{html}{\out{</div>}}
 }

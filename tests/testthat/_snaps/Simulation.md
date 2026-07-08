@@ -1,3 +1,19 @@
+# Simulation$allow_aging requires a single logical or NULL
+
+    Code
+      sim$allow_aging <- "yes"
+    Condition
+      Error:
+      ! `allow_aging` must be a single logical value
+
+---
+
+    Code
+      sim$allow_aging <- c(TRUE, FALSE)
+    Condition
+      Error:
+      ! `allow_aging` must be a single logical value
+
 # Simulation aborts when both Individual and Population are set
 
     Code

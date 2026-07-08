@@ -53,3 +53,12 @@
       x Got "NotARealType".
       i Valid values: "Oral", "IntravenousBolus", "IntravenousInfusion", "Intramuscular", "Subcutaneous", "Dermal", "Rectal", "Inhalation", and "Intraperitoneal".
 
+# create_protocol validates time_unit against the Time dimension
+
+    Code
+      create_protocol(name = "P", time_unit = "banana")
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: banana
+      i Valid units for Time are: s, min, h, day(s), week(s), month(s), year(s), ks
+

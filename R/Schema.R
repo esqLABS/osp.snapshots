@@ -91,16 +91,19 @@ Schema <- R6::R6Class(
       result
     },
 
-    #' @field name The name of the schema.
+    #' @field name The name of the schema. Writable: must be a non-empty
+    #'   scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 
     #' @field parameters The schema-level [Parameter] objects (number of
-    #'   repetitions, time between repetitions, ...).
+    #'   repetitions, time between repetitions, ...). Writable: must be a
+    #'   list, or `NULL` to clear.
     parameters = function(value) {
       if (missing(value)) {
         if (is.null(private$.parameters)) {
@@ -108,6 +111,9 @@ Schema <- R6::R6Class(
           class(private$.parameters) <- c("parameter_collection", "list")
         }
         return(private$.parameters)
+      }
+      if (!is.null(value) && !is.list(value)) {
+        cli::cli_abort("{.arg parameters} must be a list")
       }
       if (is.null(value)) {
         private$.parameters <- list()

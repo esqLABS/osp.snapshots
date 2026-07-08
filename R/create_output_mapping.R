@@ -9,8 +9,8 @@
 #'
 #' @param path Character. Simulation output quantity path.
 #' @param observed_data Character. Observed-data repository name.
-#' @param scaling Character. Scaling used for the mapping (e.g.
-#'   `"Linear"`, `"Log"`).
+#' @param scaling Character. Scaling used for the mapping: one of
+#'   `"Linear"`, `"Log"`.
 #' @param weight Numeric. Single weight applied to all points.
 #' @param weights Numeric vector. Per-point weights.
 #'
@@ -41,7 +41,11 @@ create_output_mapping <- function(
     data$ObservedData <- observed_data
   }
   if (!is.null(scaling)) {
-    check_required_string(scaling, "scaling")
+    if (!(scaling %in% OUTPUT_MAPPING_SCALINGS)) {
+      cli::cli_abort(
+        "{.arg scaling} must be one of {.val {OUTPUT_MAPPING_SCALINGS}}"
+      )
+    }
     data$Scaling <- scaling
   }
   if (!is.null(weight)) {

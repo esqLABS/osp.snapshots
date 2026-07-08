@@ -461,3 +461,15 @@ test_that("create_compound accepts the default property units", {
     permeability = permeability(1)
   ))
 })
+
+test_that("create_compound validates plasma_protein_binding_partner against the enum", {
+  expect_snapshot(
+    error = TRUE,
+    create_compound(name = "X", plasma_protein_binding_partner = "Casein")
+  )
+  compound <- create_compound(
+    name = "X",
+    plasma_protein_binding_partner = "Albumin"
+  )
+  expect_equal(compound$plasma_protein_binding_partner, "Albumin")
+})

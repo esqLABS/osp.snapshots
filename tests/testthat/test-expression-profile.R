@@ -320,3 +320,9 @@ test_that("expression_profile transportType is correctly extracted from snapshot
   expect_snapshot(knitr::kable(dfs$expression_profiles))
   expect_snapshot(knitr::kable(dfs$expression_profiles_parameters))
 })
+
+test_that("ExpressionProfile$data is read-only", {
+  profile <- ExpressionProfile$new(complete_expression_profile_data)
+  expect_snapshot(error = TRUE, profile$data <- list())
+  expect_equal(profile$data, complete_expression_profile_data)
+})

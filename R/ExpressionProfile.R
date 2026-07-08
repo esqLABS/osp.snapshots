@@ -11,14 +11,12 @@
 ExpressionProfile <- R6::R6Class(
   classname = "ExpressionProfile",
   public = list(
-    #' @field data The raw data of the expression profile
-    data = NULL,
     #' @description
     #' Create a new ExpressionProfile object
     #' @param data Raw expression profile data from a snapshot
     #' @return A new ExpressionProfile object
     initialize = function(data) {
-      self$data <- data
+      private$.data <- data
     },
     #' @description
     #' Print a summary of the expression profile
@@ -33,19 +31,23 @@ ExpressionProfile <- R6::R6Class(
         cli::cli_li("Category: {self$category}")
 
         if (
-          !is.null(self$data$Localization) && !is.na(self$data$Localization)
+          !is.null(private$.data$Localization) &&
+            !is.na(private$.data$Localization)
         ) {
-          cli::cli_li("Localization: {self$data$Localization}")
+          cli::cli_li("Localization: {private$.data$Localization}")
         }
 
         if (
-          !is.null(self$data$TransportType) && !is.na(self$data$TransportType)
+          !is.null(private$.data$TransportType) &&
+            !is.na(private$.data$TransportType)
         ) {
           cli::cli_li("Transport Type: {self$transportType}")
         }
 
-        if (!is.null(self$data$Ontogeny) && length(self$data$Ontogeny) > 0) {
-          cli::cli_li("Ontogeny: {self$data$Ontogeny$Name}")
+        if (
+          !is.null(private$.data$Ontogeny) && length(private$.data$Ontogeny) > 0
+        ) {
+          cli::cli_li("Ontogeny: {private$.data$Ontogeny$Name}")
         }
 
         # Display parameter count
@@ -128,44 +130,52 @@ ExpressionProfile <- R6::R6Class(
     }
   ),
   active = list(
+    #' @field data The raw data of the expression profile (read-only).
+    data = function(value) {
+      if (!missing(value)) {
+        cli::cli_abort("data is read-only")
+      }
+      private$.data
+    },
+
     #' @field type The type of the expression profile
     type = function() {
-      self$data$Type
+      private$.data$Type
     },
 
     #' @field species The species of the expression profile
     species = function() {
-      self$data$Species
+      private$.data$Species
     },
 
     #' @field molecule The molecule name of the expression profile
     molecule = function() {
-      self$data$Molecule
+      private$.data$Molecule
     },
 
     #' @field category The category of the expression profile
     category = function() {
-      self$data$Category
+      private$.data$Category
     },
 
     #' @field localization The localization of the expression profile
     localization = function() {
-      self$data$Localization
+      private$.data$Localization
     },
 
     #' @field transportType The transport type of the expression profile
     transportType = function() {
-      self$data$TransportType
+      private$.data$TransportType
     },
 
     #' @field ontogeny The ontogeny information of the expression profile
     ontogeny = function() {
-      self$data$Ontogeny
+      private$.data$Ontogeny
     },
 
     #' @field parameters The parameters of the expression profile
     parameters = function() {
-      self$data$Parameters
+      private$.data$Parameters
     },
 
     #' @field expression The per-organ relative expression of the profile.
@@ -175,9 +185,9 @@ ExpressionProfile <- R6::R6Class(
     #'   frame of container rows, a raw list, or `NULL`/empty to clear it).
     expression = function(value) {
       if (missing(value)) {
-        return(self$data$Expression)
+        return(private$.data$Expression)
       }
-      self$data$Expression <- build_expression_containers(value)
+      private$.data$Expression <- build_expression_containers(value)
     },
 
     #' @field disease The disease state of the profile. Reading returns the
@@ -187,9 +197,9 @@ ExpressionProfile <- R6::R6Class(
     #'   optional `parameters`, or `NULL` to clear it).
     disease = function(value) {
       if (missing(value)) {
-        return(self$data$Disease)
+        return(private$.data$Disease)
       }
-      self$data$Disease <- build_disease_state(value)
+      private$.data$Disease <- build_disease_state(value)
     },
 
     #' @field id The unique identifier of the expression profile
@@ -197,5 +207,8 @@ ExpressionProfile <- R6::R6Class(
       category_value <- if (is.null(self$category)) "NA" else self$category
       paste(self$molecule, self$species, category_value, sep = "_")
     }
+  ),
+  private = list(
+    .data = NULL
   )
 )

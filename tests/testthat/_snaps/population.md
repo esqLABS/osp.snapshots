@@ -47,6 +47,51 @@
       Gestational age range: 37 - 42 week(s)
       eGFR range: 60 - 120 ml/min/1.73m²
 
+# Population range setters validate the unit against the field dimension
+
+    Code
+      population$age_range <- range(20, 60, "banana")
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: banana
+      i Valid units for Age in years are: year(s), month(s), week(s), day(s)
+
+---
+
+    Code
+      population$weight_range <- range(50, 90, "banana")
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: banana
+      i Valid units for Mass are: kg, g, mg, µg, ng, pg
+
+---
+
+    Code
+      population$height_range <- range(150, 190, "banana")
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: banana
+      i Valid units for Length are: m, dm, cm, mm, µm, nm, pm
+
+---
+
+    Code
+      population$gestational_age_range <- range(38, 41, "banana")
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: banana
+      i Valid units for Time are: s, min, h, day(s), week(s), month(s), year(s), ks
+
+---
+
+    Code
+      population$bmi_range <- range(19, 32, "banana")
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: banana
+      i Valid units for BMI are: kg/m², kg/dm²
+
 # Population disease_state_parameters rejects non-Range values
 
     Code
@@ -57,6 +102,38 @@
       i Use `range()` to create one.
 
 # AdvancedParameter class works correctly
+
+    Code
+      advanced_param$distribution_type <- "Weibull"
+    Condition
+      Error:
+      ! `distribution_type` must be one of "Normal", "LogNormal", "Uniform", "Discrete", and "Unknown"
+
+---
+
+    Code
+      advanced_param$distribution_type <- character(0)
+    Condition
+      Error:
+      ! `distribution_type` must be a non-empty string
+
+---
+
+    Code
+      advanced_param$distribution_type <- NA
+    Condition
+      Error:
+      ! `distribution_type` must be a non-empty string
+
+---
+
+    Code
+      advanced_param$distribution_type <- c("Normal", "Uniform")
+    Condition
+      Error:
+      ! `distribution_type` must be a non-empty string
+
+---
 
     Code
       print(advanced_param)

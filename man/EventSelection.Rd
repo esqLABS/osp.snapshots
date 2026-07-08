@@ -15,7 +15,8 @@ simulation-local \code{StartTime} \link{Parameter} used by the event.
 the cached \link{Parameter} so that mutations on \verb{$start_time} flow back
 to the export payload.}
 
-    \item{\code{name}}{The name of the event building block.}
+    \item{\code{name}}{The name of the event building block. Writable: must be
+a non-empty scalar string.}
 
     \item{\code{start_time}}{The \link{Parameter} used as start time for the event.}
   }

@@ -14,15 +14,20 @@ weight(s) used when comparing the two.
   \describe{
     \item{\code{data}}{The raw data of the mapping (read-only).}
 
-    \item{\code{path}}{The simulation output quantity path.}
+    \item{\code{path}}{The simulation output quantity path. Writable: must be a
+non-empty scalar string, or \code{NULL} to clear.}
 
-    \item{\code{observed_data}}{The observed-data repository name.}
+    \item{\code{observed_data}}{The observed-data repository name. Writable:
+must be a non-empty scalar string, or \code{NULL} to clear.}
 
-    \item{\code{scaling}}{The scaling used for the mapping.}
+    \item{\code{scaling}}{The scaling used for the mapping. Writable: one of
+\code{"Linear"}, \code{"Log"}, or \code{NULL} to clear.}
 
-    \item{\code{weight}}{A single weight applied to all points of the mapping.}
+    \item{\code{weight}}{A single weight applied to all points of the mapping.
+Writable: a single numeric value, or \code{NULL} to clear.}
 
-    \item{\code{weights}}{A per-point weight vector.}
+    \item{\code{weights}}{A per-point weight vector. Writable: a numeric vector,
+or \code{NULL} to clear.}
   }
   \if{html}{\out{</div>}}
 }

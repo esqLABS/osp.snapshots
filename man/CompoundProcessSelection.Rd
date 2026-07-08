@@ -15,16 +15,25 @@ fields is supplied.
   \describe{
     \item{\code{data}}{The raw data of the selection (read-only).}
 
-    \item{\code{name}}{The process name.}
+    \item{\code{name}}{The process name. Writable: a non-empty scalar string
+when supplied, or \code{NULL} to clear.}
 
-    \item{\code{molecule_name}}{The molecule involved in the process.}
+    \item{\code{molecule_name}}{The molecule involved in the process. Writable:
+a non-empty scalar string when supplied, or \code{NULL} to clear.}
 
-    \item{\code{metabolite_name}}{The metabolite produced by the process.}
+    \item{\code{metabolite_name}}{The metabolite produced by the process.
+Writable: a non-empty scalar string when supplied, or \code{NULL} to
+clear.}
 
-    \item{\code{compound_name}}{The other compound involved in the process.}
+    \item{\code{compound_name}}{The other compound involved in the process.
+Writable: a non-empty scalar string when supplied, or \code{NULL} to
+clear.}
 
     \item{\code{systemic_process_type}}{The systemic process type (e.g.
-\code{"Hepatic"}, \code{"Renal"}, \code{"Biliary"}).}
+\code{"Hepatic"}, \code{"Renal"}, \code{"Biliary"}). Writable: a non-empty scalar
+string when supplied, or \code{NULL} to clear. The closed set is not
+confirmable from the snapshot schema (only examples are given), so
+a required string is the strongest check available.}
   }
   \if{html}{\out{</div>}}
 }

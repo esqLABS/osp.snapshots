@@ -18,7 +18,8 @@
 #' @param is_small_molecule Logical. Whether the compound is a small
 #'   molecule. Defaults to `TRUE` in PK-Sim when omitted.
 #' @param plasma_protein_binding_partner Character. Name of the plasma
-#'   protein binding partner (for example `"Albumin"`).
+#'   protein binding partner: one of `"Unknown"`, `"Albumin"`,
+#'   `"Glycoprotein"`.
 #' @param molecular_weight Numeric. Molecular weight value.
 #' @param molecular_weight_unit Character. Unit for molecular weight.
 #'   Defaults to `"g/mol"`.
@@ -161,6 +162,14 @@ create_compound <- function(
   check_required_string(name, "name")
   if (!is.null(is_small_molecule) && !is.logical(is_small_molecule)) {
     cli::cli_abort("{.arg is_small_molecule} must be a logical value")
+  }
+  if (
+    !is.null(plasma_protein_binding_partner) &&
+      !(plasma_protein_binding_partner %in% PLASMA_PROTEIN_BINDING_PARTNERS)
+  ) {
+    cli::cli_abort(
+      "{.arg plasma_protein_binding_partner} must be one of {.val {PLASMA_PROTEIN_BINDING_PARTNERS}}"
+    )
   }
   if (!is.null(molecular_weight) && !is.numeric(molecular_weight)) {
     cli::cli_abort("{.arg molecular_weight} must be a numeric value")

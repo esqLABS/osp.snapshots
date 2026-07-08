@@ -282,6 +282,30 @@ test_that("Protocol handles empty data gracefully", {
   expect_snapshot(print(minimal_protocol))
 })
 
+test_that("Protocol$time_unit is validated against the Time dimension", {
+  protocol <- Protocol$new(list(Name = "P", DosingInterval = "Single"))
+  protocol$time_unit <- "h"
+  expect_equal(protocol$time_unit, "h")
+  expect_snapshot(error = TRUE, protocol$time_unit <- "banana")
+  protocol$time_unit <- NULL
+  expect_null(protocol$time_unit)
+})
+
+test_that("Protocol$application_type is validated against the enum", {
+  protocol <- Protocol$new(list(Name = "P", DosingInterval = "Single"))
+  protocol$application_type <- "Oral"
+  expect_equal(protocol$application_type, "Oral")
+  expect_snapshot(error = TRUE, protocol$application_type <- "Sublingual")
+})
+
+test_that("Protocol$name requires a non-empty scalar string", {
+  protocol <- Protocol$new(list(Name = "P", DosingInterval = "Single"))
+  protocol$name <- "Renamed"
+  expect_equal(protocol$name, "Renamed")
+  expect_snapshot(error = TRUE, protocol$name <- "")
+  expect_snapshot(error = TRUE, protocol$name <- 5)
+})
+
 test_that("Protocol with real test data works", {
   # Load protocols from test snapshot
   protocols_data <- load_test_protocols()

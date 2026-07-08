@@ -152,6 +152,16 @@
       Error in `create_formulation()`:
       ! Parameters must be provided as a named list
 
+# create_formulation validates curated unit sub-parameters
+
+    Code
+      create_formulation(name = "F", type = "Weibull", parameters = list(
+        dissolution_time_unit = "banana"))
+    Condition
+      Error in `validate_unit()`:
+      ! Invalid unit: banana
+      i Valid units for Time are: s, min, h, day(s), week(s), month(s), year(s), ks
+
 # create_formulation curated Table shape is unchanged
 
     Code

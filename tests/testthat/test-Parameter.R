@@ -367,3 +367,30 @@ test_that("Parameter to_df handles missing ValueOrigin fields correctly", {
   expect_equal(df$description, NA_character_)
   expect_equal(df$source_id, NA_integer_)
 })
+
+test_that("Parameter$data is read-only", {
+  param_data <- list(Path = "Organism|Liver|Volume", Value = 1.5, Unit = "L")
+  param <- Parameter$new(param_data)
+  expect_snapshot(error = TRUE, param$data <- list())
+  expect_equal(param$data, param_data)
+
+  # Confirm the accessors, to_df(), and print() still work unchanged.
+  expect_equal(param$path, "Organism|Liver|Volume")
+  expect_equal(param$value, 1.5)
+  expect_equal(param$unit, "L")
+  expect_no_error(param$to_df())
+  expect_no_error(print(param))
+})
+
+test_that("Parameter$unit requires a single non-empty string or NULL", {
+  param <- create_parameter(name = "Organism|Liver|Volume", value = 1.5)
+  param$unit <- "L"
+  expect_equal(param$unit, "L")
+  param$unit <- NULL
+  expect_null(param$unit)
+  expect_snapshot(error = TRUE, param$unit <- 5)
+  expect_snapshot(error = TRUE, param$unit <- character(0))
+  expect_snapshot(error = TRUE, param$unit <- NA_character_)
+  expect_snapshot(error = TRUE, param$unit <- c("a", "b"))
+  expect_snapshot(error = TRUE, param$unit <- "")
+})

@@ -8,16 +8,11 @@ An R6 class that represents an expression profile in an OSP snapshot.
 This class provides methods to access different properties of an expression profile
 and display a summary of its information.
 }
-\section{Public fields}{
-  \if{html}{\out{<div class="r6-fields">}}
-  \describe{
-    \item{\code{data}}{The raw data of the expression profile}
-  }
-  \if{html}{\out{</div>}}
-}
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{
+    \item{\code{data}}{The raw data of the expression profile (read-only).}
+
     \item{\code{type}}{The type of the expression profile}
 
     \item{\code{species}}{The species of the expression profile}

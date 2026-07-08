@@ -15,7 +15,9 @@ An R6 class that represents an advanced parameter in a population.
 
     \item{\code{seed}}{The seed used for parameter generation}
 
-    \item{\code{distribution_type}}{The distribution type of the parameter}
+    \item{\code{distribution_type}}{The distribution type of the parameter.
+Writable: one of \code{"Normal"}, \code{"LogNormal"}, \code{"Uniform"},
+\code{"Discrete"}, \code{"Unknown"}, or \code{NULL} to clear.}
 
     \item{\code{parameters}}{The parameters of the distribution}
   }

@@ -17,3 +17,9 @@ test_that("ObserverSetSelection$data is read-only", {
   sel <- ObserverSetSelection$new(list(Name = "A"))
   expect_snapshot(error = TRUE, sel$data <- list())
 })
+
+test_that("ObserverSetSelection$name requires a non-empty scalar string", {
+  sel <- ObserverSetSelection$new(list(Name = "A"))
+  expect_snapshot(error = TRUE, sel$name <- "")
+  expect_snapshot(error = TRUE, sel$name <- 5)
+})

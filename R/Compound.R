@@ -1,3 +1,7 @@
+# Valid PlasmaProteinBindingPartner enum values, shared by the
+# `plasma_protein_binding_partner` active binding and `create_compound()`.
+PLASMA_PROTEIN_BINDING_PARTNERS <- c("Unknown", "Albumin", "Glycoprotein")
+
 #' Compound class for OSP snapshot compounds
 #'
 #' @description
@@ -189,42 +193,27 @@ Compound <- R6::R6Class(
     # matching value-object helper (e.g. `lipophilicity()`) builds the
     # alternative from its own value/unit/name; a list of matching helper
     # objects builds one alternative per element (first element default,
-    # FR-5); a numeric scalar builds a single default alternative; a raw
-    # list is stored verbatim as the raw alternative array; NULL clears the
-    # key; anything else aborts naming the field. `unit = NULL` omits the
-    # parameter unit (fraction unbound). Returns the value to assign into
-    # private$.data.
+    # FR-5); a raw alternative list is stored verbatim (a deliberate escape
+    # hatch); NULL clears the key; a bare numeric scalar (or anything else)
+    # is rejected via `require_value_spec()`, which names the required
+    # helper and also validates a list of helper objects. `unit = NULL`
+    # omits the parameter unit (fraction unbound). Returns the value to
+    # assign into private$.data.
     set_alternative_group = function(value, param_name, unit, field) {
       if (is.null(value)) {
         return(NULL)
-      }
-      if (inherits(value, "osp_value_spec")) {
-        require_value_spec(value, paste0(field, "_spec"), field)
-        # Unwrapping (including `value$unit` being NULL for fraction unbound,
-        # which the builder treats as "omit unit") lives in the shared helper.
-        return(spec_to_single_param_alternative(value, param_name))
       }
       if (is_value_spec_list(value)) {
         require_value_spec_list(value, paste0(field, "_spec"), field)
         return(specs_to_single_param_alternatives(value, param_name, field))
       }
-      if (is.numeric(value)) {
-        if (length(value) != 1) {
-          cli::cli_abort("{.arg {field}} must be a numeric value")
-        }
-        return(build_single_param_alternative(
-          "User defined",
-          param_name,
-          value,
-          unit
-        ))
-      }
-      if (is.list(value)) {
+      if (is.list(value) && !inherits(value, "osp_value_spec")) {
         return(unname(value))
       }
-      cli::cli_abort(
-        "{.arg {field}} must be a numeric value, a raw alternative list, or NULL"
-      )
+      require_value_spec(value, paste0(field, "_spec"), field)
+      # Unwrapping (including `value$unit` being NULL for fraction unbound,
+      # which the builder treats as "omit unit") lives in the shared helper.
+      spec_to_single_param_alternative(value, param_name)
     },
 
     .format_value = function(x) {
@@ -515,15 +504,19 @@ Compound <- R6::R6Class(
       result
     },
 
-    #' @field name The name of the compound
+    #' @field name The name of the compound. Writable: must be a non-empty
+    #'   scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 
-    #' @field is_small_molecule Whether the compound is a small molecule
+    #' @field is_small_molecule Whether the compound is a small molecule.
+    #'   Writable: a single logical value, or `NULL` to leave it unset
+    #'   (PK-Sim then defaults to `TRUE`).
     is_small_molecule = function(value) {
       if (missing(value)) {
         if (!is.null(private$.data$IsSmallMolecule)) {
@@ -531,13 +524,30 @@ Compound <- R6::R6Class(
         }
         return(NA)
       }
+      if (!is.null(value) && (!is.logical(value) || length(value) != 1)) {
+        cli::cli_abort(
+          "{.arg is_small_molecule} must be a single logical value"
+        )
+      }
       private$.data$IsSmallMolecule <- value
     },
 
-    #' @field plasma_protein_binding_partner The plasma protein binding partner of the compound
+    #' @field plasma_protein_binding_partner The plasma protein binding
+    #'   partner of the compound. Writable: one of `"Unknown"`, `"Albumin"`,
+    #'   `"Glycoprotein"`, or `NULL` to clear.
     plasma_protein_binding_partner = function(value) {
       if (missing(value)) {
         return(private$.data$PlasmaProteinBindingPartner)
+      }
+      if (
+        !is.null(value) &&
+          (!is.character(value) ||
+            length(value) != 1 ||
+            !(value %in% PLASMA_PROTEIN_BINDING_PARTNERS))
+      ) {
+        cli::cli_abort(
+          "{.arg plasma_protein_binding_partner} must be one of {.val {PLASMA_PROTEIN_BINDING_PARTNERS}}"
+        )
       }
       private$.data$PlasmaProteinBindingPartner <- value
     },
@@ -569,11 +579,10 @@ Compound <- R6::R6Class(
     #' @field lipophilicity The lipophilicity data of the compound. Writable:
     #'   assign a [lipophilicity()] object, a list of such objects to
     #'   define several named alternatives (the first element is the
-    #'   default), a numeric scalar to create a single default
-    #'   `Lipophilicity` alternative (parameter `"Lipophilicity"`, unit
-    #'   `"Log Units"`), a raw alternative list to set the array verbatim
-    #'   (the escape hatch for species-specific alternatives), or `NULL` to
-    #'   clear the property.
+    #'   default), a raw alternative list to set the array verbatim (the
+    #'   escape hatch for species-specific alternatives), or `NULL` to
+    #'   clear the property. A bare numeric scalar is rejected; use
+    #'   [lipophilicity()] instead.
     lipophilicity = function(value) {
       if (missing(value)) {
         result <- private$.data$Lipophilicity
@@ -594,11 +603,9 @@ Compound <- R6::R6Class(
     #' @field fraction_unbound The fraction unbound data of the compound.
     #'   Writable: assign a [fraction_unbound()] object, a list of such
     #'   objects to define several named alternatives (the first element is
-    #'   the default), a numeric scalar to create a single default
-    #'   `FractionUnbound` alternative (parameter
-    #'   `"Fraction unbound (plasma, reference value)"`, no unit), a raw
-    #'   alternative list to set the array verbatim, or `NULL` to clear the
-    #'   property.
+    #'   the default), a raw alternative list to set the array verbatim, or
+    #'   `NULL` to clear the property. A bare numeric scalar is rejected;
+    #'   use [fraction_unbound()] instead.
     fraction_unbound = function(value) {
       if (missing(value)) {
         result <- private$.data$FractionUnbound
@@ -620,12 +627,9 @@ Compound <- R6::R6Class(
     #'   assign a [solubility()] object to express reference pH, gain per
     #'   charge, or a pH/value table, a list of such objects to define
     #'   several named alternatives (the first element is the default), a
-    #'   numeric scalar to create a single default `Solubility` alternative
-    #'   (parameter `"Solubility at reference pH"`, unit `"mg/l"`), a raw
-    #'   alternative list to set the array verbatim, or `NULL` to clear the
-    #'   property. The numeric-scalar form cannot express reference pH,
-    #'   gain per charge, or table solubility; use a [solubility()] object
-    #'   or a raw alternative list for those.
+    #'   raw alternative list to set the array verbatim, or `NULL` to clear
+    #'   the property. A bare numeric scalar is rejected; use [solubility()]
+    #'   instead.
     solubility = function(value) {
       if (missing(value)) {
         result <- private$.data$Solubility
@@ -637,41 +641,26 @@ Compound <- R6::R6Class(
       }
       if (is.null(value)) {
         private$.data$Solubility <- NULL
-      } else if (inherits(value, "osp_value_spec")) {
-        require_value_spec(value, "solubility_spec", "solubility")
-        private$.data$Solubility <- spec_to_solubility_alternative(value)
       } else if (is_value_spec_list(value)) {
         require_value_spec_list(value, "solubility_spec", "solubility")
         private$.data$Solubility <- specs_to_solubility_alternatives(
           value,
           "solubility"
         )
-      } else if (is.numeric(value)) {
-        if (length(value) != 1) {
-          cli::cli_abort("{.arg solubility} must be a numeric value")
-        }
-        private$.data$Solubility <- build_solubility_alternative(
-          "User defined",
-          value,
-          "mg/l"
-        )
-      } else if (is.list(value)) {
+      } else if (is.list(value) && !inherits(value, "osp_value_spec")) {
         private$.data$Solubility <- unname(value)
       } else {
-        cli::cli_abort(
-          "{.arg solubility} must be a numeric value, a raw alternative list, or NULL"
-        )
+        require_value_spec(value, "solubility_spec", "solubility")
+        private$.data$Solubility <- spec_to_solubility_alternative(value)
       }
     },
 
     #' @field intestinal_permeability The intestinal permeability data of the
     #'   compound. Writable: assign an [intestinal_permeability()] object, a
     #'   list of such objects to define several named alternatives (the
-    #'   first element is the default), a numeric scalar to create a single
-    #'   default `IntestinalPermeability` alternative (parameter
-    #'   `"Specific intestinal permeability (transcellular)"`, unit
-    #'   `"cm/min"`), a raw alternative list to set the array verbatim, or
-    #'   `NULL` to clear the property.
+    #'   first element is the default), a raw alternative list to set the
+    #'   array verbatim, or `NULL` to clear the property. A bare numeric
+    #'   scalar is rejected; use [intestinal_permeability()] instead.
     intestinal_permeability = function(value) {
       if (missing(value)) {
         result <- private$.data$IntestinalPermeability
@@ -692,10 +681,9 @@ Compound <- R6::R6Class(
     #' @field permeability The permeability data of the compound. Writable:
     #'   assign a [permeability()] object, a list of such objects to define
     #'   several named alternatives (the first element is the default), a
-    #'   numeric scalar to create a single default `Permeability`
-    #'   alternative (parameter `"Permeability"`, unit `"cm/min"`), a raw
-    #'   alternative list to set the array verbatim, or `NULL` to clear the
-    #'   property.
+    #'   raw alternative list to set the array verbatim, or `NULL` to clear
+    #'   the property. A bare numeric scalar is rejected; use
+    #'   [permeability()] instead.
     permeability = function(value) {
       if (missing(value)) {
         result <- private$.data$Permeability

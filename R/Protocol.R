@@ -337,11 +337,13 @@ Protocol <- R6::R6Class(
       result
     },
 
-    #' @field name The name of the protocol
+    #' @field name The name of the protocol. Writable: must be a non-empty
+    #'   scalar string.
     name = function(value) {
       if (missing(value)) {
         return(private$.data$Name)
       }
+      check_required_string(value, "name")
       private$.data$Name <- value
     },
 
@@ -354,10 +356,20 @@ Protocol <- R6::R6Class(
       cli::cli_abort("is_advanced is a read-only field")
     },
 
-    #' @field application_type The application type (for simple protocols)
+    #' @field application_type The application type (for simple protocols).
+    #'   Writable: must be one of the canonical PK-Sim application types
+    #'   (see [create_protocol()]'s `application_type` argument), or `NULL`
+    #'   to clear.
     application_type = function(value) {
       if (missing(value)) {
         return(private$.data$ApplicationType)
+      }
+      if (!is.null(value) && !(value %in% schema_item_application_types())) {
+        cli::cli_abort(c(
+          "{.arg application_type} must be one of the canonical PK-Sim application types.",
+          "x" = "Got {.val {value}}.",
+          "i" = "Valid values: {.val {schema_item_application_types()}}."
+        ))
       }
       private$.data$ApplicationType <- value
     },
@@ -370,18 +382,26 @@ Protocol <- R6::R6Class(
       private$.data$DosingInterval <- value
     },
 
-    #' @field time_unit The time unit for the protocol
+    #' @field time_unit The time unit for the protocol. Writable: must be a
+    #'   valid unit for dimension `"Time"`, or `NULL` to clear.
     time_unit = function(value) {
       if (missing(value)) {
         return(private$.data$TimeUnit)
       }
+      if (!is.null(value)) {
+        validate_unit(value, "Time")
+      }
       private$.data$TimeUnit <- value
     },
 
-    #' @field parameters The parameters of the protocol (for simple protocols)
+    #' @field parameters The parameters of the protocol (for simple
+    #'   protocols). Writable: must be a list, or `NULL` to clear.
     parameters = function(value) {
       if (missing(value)) {
         return(private$.parameters)
+      }
+      if (!is.null(value) && !is.list(value)) {
+        cli::cli_abort("{.arg parameters} must be a list")
       }
       private$.parameters <- value
     },

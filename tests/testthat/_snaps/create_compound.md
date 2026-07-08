@@ -253,3 +253,11 @@
       ! Invalid unit: nope
       i Valid units for Velocity are: cm/min, cm/s, dm/min
 
+# create_compound validates plasma_protein_binding_partner against the enum
+
+    Code
+      create_compound(name = "X", plasma_protein_binding_partner = "Casein")
+    Condition
+      Error in `create_compound()`:
+      ! `plasma_protein_binding_partner` must be one of "Unknown", "Albumin", and "Glycoprotein"
+

@@ -23,6 +23,49 @@ test_that("Compound prints when is_small_molecule is unset", {
   expect_snapshot(print(compound))
 })
 
+test_that("is_small_molecule requires a single logical or NULL", {
+  compound <- create_compound(name = "X")
+  compound$is_small_molecule <- TRUE
+  expect_true(compound$is_small_molecule)
+  expect_snapshot(error = TRUE, compound$is_small_molecule <- "yes")
+  compound$is_small_molecule <- NULL
+  expect_equal(compound$is_small_molecule, NA)
+})
+
+test_that("name requires a non-empty scalar string", {
+  compound <- create_compound(name = "X")
+  compound$name <- "Renamed"
+  expect_equal(compound$name, "Renamed")
+  expect_snapshot(error = TRUE, compound$name <- "")
+  expect_snapshot(error = TRUE, compound$name <- NA_character_)
+  expect_snapshot(error = TRUE, compound$name <- 5)
+  expect_snapshot(error = TRUE, compound$name <- c("a", "b"))
+})
+
+test_that("plasma_protein_binding_partner is validated against the enum", {
+  compound <- create_compound(name = "X")
+  compound$plasma_protein_binding_partner <- "Albumin"
+  expect_equal(compound$plasma_protein_binding_partner, "Albumin")
+  expect_snapshot(
+    error = TRUE,
+    compound$plasma_protein_binding_partner <- "Casein"
+  )
+  compound$plasma_protein_binding_partner <- NULL
+  expect_null(compound$plasma_protein_binding_partner)
+})
+
+test_that("plasma_protein_binding_partner rejects non-scalar-character input", {
+  compound <- create_compound(name = "X")
+  expect_snapshot(
+    error = TRUE,
+    compound$plasma_protein_binding_partner <- character(0)
+  )
+  expect_snapshot(
+    error = TRUE,
+    compound$plasma_protein_binding_partner <- c("Albumin", "Unknown")
+  )
+})
+
 test_that("Compounds sections can be accessed and are correctly printed", {
   expect_no_error({
     snapshot$compounds[[1]]$name
@@ -163,28 +206,28 @@ test_that("Deprecated category accessors warn", {
 
 # Writable physicochemical fields ----------------------------------------
 
-test_that("single-parameter physicochemical fields are writable by scalar", {
+test_that("single-parameter physicochemical fields are writable by helper", {
   compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
 
-  compound$lipophilicity <- 3.3
+  compound$lipophilicity <- lipophilicity(3.3)
   expect_equal(
     compound$data$Lipophilicity[[1]]$Parameters[[1]]$Value,
     3.3
   )
   expect_equal(compound$data$Lipophilicity[[1]]$Name, "User defined")
 
-  compound$fraction_unbound <- 0.2
+  compound$fraction_unbound <- fraction_unbound(0.2)
   fu <- compound$data$FractionUnbound[[1]]$Parameters[[1]]
   expect_equal(fu$Value, 0.2)
   expect_null(fu$Unit)
 
-  compound$solubility <- 500
+  compound$solubility <- solubility(500)
   sol <- compound$data$Solubility[[1]]$Parameters[[1]]
   expect_equal(sol$Name, "Solubility at reference pH")
   expect_equal(sol$Value, 500)
   expect_equal(sol$Unit, "mg/l")
 
-  compound$intestinal_permeability <- 2e-05
+  compound$intestinal_permeability <- intestinal_permeability(2e-05)
   ip <- compound$data$IntestinalPermeability[[1]]$Parameters[[1]]
   expect_equal(ip$Value, 2e-05)
   expect_equal(ip$Unit, "cm/min")
@@ -195,7 +238,7 @@ test_that("permeability field reads and writes on a compound without the key", {
 
   expect_null(compound$permeability)
 
-  compound$permeability <- 0.007
+  compound$permeability <- permeability(0.007)
   expect_s3_class(compound$permeability, "physicochemical_property")
   param <- compound$data$Permeability[[1]]$Parameters[[1]]
   expect_equal(param$Name, "Permeability")
@@ -203,24 +246,13 @@ test_that("permeability field reads and writes on a compound without the key", {
   expect_equal(param$Unit, "cm/min")
 })
 
-test_that("physicochemical fields accept helper objects identically to scalars", {
-  helper <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
-  scalar <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
-
-  helper$lipophilicity <- lipophilicity(2.5)
-  scalar$lipophilicity <- 2.5
-  expect_equal(helper$data$Lipophilicity, scalar$data$Lipophilicity)
-
-  helper$fraction_unbound <- fraction_unbound(0.2)
-  scalar$fraction_unbound <- 0.2
-  expect_equal(helper$data$FractionUnbound, scalar$data$FractionUnbound)
-
-  helper$intestinal_permeability <- intestinal_permeability(2e-05)
-  scalar$intestinal_permeability <- 2e-05
-  expect_equal(
-    helper$data$IntestinalPermeability,
-    scalar$data$IntestinalPermeability
-  )
+test_that("bare numeric scalars are rejected for physicochemical fields", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+  expect_snapshot(error = TRUE, compound$lipophilicity <- 2.5)
+  expect_snapshot(error = TRUE, compound$fraction_unbound <- 0.2)
+  expect_snapshot(error = TRUE, compound$solubility <- 500)
+  expect_snapshot(error = TRUE, compound$intestinal_permeability <- 2e-05)
+  expect_snapshot(error = TRUE, compound$permeability <- 0.007)
 })
 
 test_that("solubility field accepts a helper matching the factory raw shape", {
@@ -338,7 +370,7 @@ test_that("assigning NULL clears the single-parameter physicochemical keys", {
   compound$fraction_unbound <- NULL
   compound$solubility <- NULL
   compound$intestinal_permeability <- NULL
-  compound$permeability <- 0.007
+  compound$permeability <- permeability(0.007)
   compound$permeability <- NULL
 
   expect_null(compound$data$Lipophilicity)
@@ -423,7 +455,7 @@ test_that("mutating a loaded compound leaves unreassigned sections intact", {
   snap <- load_snapshot(testthat::test_path("data", "test_snapshot.json"))
   compound <- snap$compounds[[1]]
 
-  compound$lipophilicity <- 4.2
+  compound$lipophilicity <- lipophilicity(4.2)
   compound$pka_types <- list(list(type = "Base", value = 5.5))
 
   path <- withr::local_tempfile(fileext = ".json")
