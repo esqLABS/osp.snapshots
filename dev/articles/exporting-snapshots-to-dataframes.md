@@ -4,13 +4,25 @@
 
 library(osp.snapshots)
 library(dplyr)
+library(gt)
 ```
 
-## Overview
+## Reporting the inputs that drive a simulation
 
-osp.snapshots can flatten the nested PK-Sim snapshot tree into tibbles
-ready for downstream analysis with `dplyr`. This vignette covers the
-entry point, the per-kind shapes, and a few common analysis patterns.
+A PK-Sim snapshot is mostly *configuration*: the compounds, individuals,
+formulations, protocols, and other building blocks that define how a
+simulation is set up. Observed data and simulation results are already
+easy to report with the wider R ecosystem; what has been awkward is
+reporting the **inputs**, because they live deep inside a nested JSON
+tree.
+
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+flattens those building blocks into tidy tibbles, one concept per table,
+so you can filter them with `dplyr` and render them as
+publication-quality tables. This vignette pairs
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+with [`gt`](https://gt.rstudio.com/) to turn the configuration of a
+model into report-ready HTML tables.
 
 ``` r
 
@@ -50,7 +62,14 @@ names(compound_dfs)
 The tibble layer is read-only: mutating a returned tibble does not feed
 changes back into the snapshot.
 
-## Compounds: `$properties` and `$processes`
+The sections below feature four kinds chosen because each has a
+different *shape*: a single flat table (protocols), a header split from
+a long-form parameter table (compounds, formulations), and several
+related tables keyed by an id (individuals). Every other kind follows
+one of these same shapes, so the same reporting recipe applies to all of
+them.
+
+## Compounds: a flat table and a long-form table
 
 `as_tibbles(snapshot, "compounds")` returns a list of two tibbles:
 
@@ -60,42 +79,69 @@ changes back into the snapshot.
   parameter) triple across every biological *Process* (metabolism,
   transport, clearance, binding, …).
 
+The physicochemical properties render directly as a report table:
+
 ``` r
 
-head(compound_dfs$properties)
-#> # A tibble: 6 × 8
-#>   compound  category              type  parameter value unit  data_source source
-#>   <chr>     <chr>                 <chr> <chr>     <chr> <chr> <chr>       <chr> 
-#> 1 Midazolam physicochemical_prop… lipo… Optimized 2.89… Log … NA          Param…
-#> 2 Midazolam physicochemical_prop… frac… Gertz et… 0.031 NA    NA          Param…
-#> 3 Midazolam physicochemical_prop… mole… NA        325.… g/mol NA          NA    
-#> 4 Midazolam physicochemical_prop… halo… Cl        1     NA    NA          NA    
-#> 5 Midazolam physicochemical_prop… halo… F         1     NA    NA          NA    
-#> 6 Midazolam physicochemical_prop… pKa   base      6.2   NA    NA          NA
-head(compound_dfs$processes)
-#> # A tibble: 6 × 11
-#>   compound  category       process_name parameter value unit  data_source source
-#>   <chr>     <chr>          <chr>        <chr>     <chr> <chr> <chr>       <chr> 
-#> 1 Midazolam protein_bindi… SpecificBin… koff      1     1/min Buhr 1997   Param…
-#> 2 Midazolam protein_bindi… SpecificBin… Kd        1.8   nmol… Buhr 1997   NA    
-#> 3 Midazolam renal_clearan… GlomerularF… GFR frac… 0.64… NA    Optimized   Param…
-#> 4 Midazolam metabolizing_… Metabolizat… In vitro… 850   pmol… Optimized   NA    
-#> 5 Midazolam metabolizing_… Metabolizat… Km        4     µmol… Optimized   aggre…
-#> 6 Midazolam metabolizing_… Metabolizat… kcat      8.76… 1/min Optimized   Param…
-#> # ℹ 3 more variables: molecule <chr>, metabolite <chr>, species <chr>
+compound_dfs$properties |>
+  gt() |>
+  tab_header(title = "Compound physicochemical properties")
 ```
 
+| Compound physicochemical properties |  |  |  |  |  |  |  |
+|----|----|----|----|----|----|----|----|
+| compound | category | type | parameter | value | unit | data_source | source |
+| Midazolam | physicochemical_property | lipophilicity | Optimized | 2.8972038771 | Log Units | NA | Parameter optimization |
+| Midazolam | physicochemical_property | fraction_unbound | Gertz et al. 2010 | 0.031 | NA | NA | Parameter optimization |
+| Midazolam | physicochemical_property | molecular_weight | NA | 325.78 | g/mol | NA | NA |
+| Midazolam | physicochemical_property | halogens | Cl | 1 | NA | NA | NA |
+| Midazolam | physicochemical_property | halogens | F | 1 | NA | NA | NA |
+| Midazolam | physicochemical_property | pKa | base | 6.2 | NA | NA | NA |
+| Midazolam | physicochemical_property | pKa | acid | 10.95 | NA | NA | NA |
+| Midazolam | physicochemical_property | solubility | Aqueous solubility, pH 5 | 0.13 | mg/ml | NA | Heikkinen 2012 |
+| Midazolam | physicochemical_property | solubility | FaSSIF, pH 6.5 | 0.049 | mg/ml | NA | Heikkinen 2012 |
+| Midazolam | physicochemical_property | solubility | FeSSIF, pH 5 | 0.09 | mg/ml | NA | Heikkinen 2012 |
+| Midazolam | physicochemical_property | intestinal_permeability | Optimized | 0.00015549970673 | cm/min | NA | Parameter optimization |
+| Midazolam | protein_binding_partners | SpecificBinding | koff, GABRG2 | 1 | 1/min | Buhr 1997 | Parameter optimization |
+| Midazolam | protein_binding_partners | SpecificBinding | Kd, GABRG2 | 1.8 | nmol/l | Buhr 1997 | NA |
+| Midazolam | metabolizing_enzymes | MetabolizationLiverMicrosomes_MM | In vitro Vmax for liver microsomes, CYP3A4 | 850 | pmol/min/mg mic. protein | Optimized | NA |
+| Midazolam | metabolizing_enzymes | MetabolizationLiverMicrosomes_MM | Km, CYP3A4 | 4 | µmol/l | Optimized | aggregated from literature |
+| Midazolam | metabolizing_enzymes | MetabolizationLiverMicrosomes_MM | kcat, CYP3A4 | 8.7607941215 | 1/min | Optimized | Parameter optimization |
+| Midazolam | metabolizing_enzymes | MetabolizationLiverMicrosomes_MM | In vitro Vmax for liver microsomes, UGT1A4 | 276 | pmol/min/mg mic. protein | Optimized | Klieber 2008 |
+| Midazolam | metabolizing_enzymes | MetabolizationLiverMicrosomes_MM | Content of CYP proteins in liver microsomes, UGT1A4 | 58 | pmol/mg mic. protein | Optimized | Achour 2014 |
+| Midazolam | metabolizing_enzymes | MetabolizationLiverMicrosomes_MM | Km, UGT1A4 | 37.8 | µmol/l | Optimized | Klieber 2008 |
+| Midazolam | metabolizing_enzymes | MetabolizationLiverMicrosomes_MM | kcat, UGT1A4 | 3.5911771641 | 1/min | Optimized | Parameter optimization |
+| Midazolam | renal_clearance | GlomerularFiltration | GFR fraction | 0.6401025724 | NA | Optimized | Parameter optimization |
+
+### Filtering before you render
+
 The `$processes` tibble carries a `category` column that mirrors
-`process$category` on the R6 side. Filtering by category gives the same
-view as the per-category groups on a compound:
+`process$category` on the R6 side. Filtering by category with
+[`dplyr::filter()`](https://dplyr.tidyverse.org/reference/filter.html)
+gives the same view as the per-category groups on a compound, and the
+filtered result flows straight into `gt`:
 
 ``` r
 
 compound_dfs$processes |>
-  filter(category == "metabolizing_enzymes")
+  filter(category == "metabolizing_enzymes") |>
+  select(process_name, molecule, parameter, value, unit) |>
+  gt() |>
+  tab_header(title = "Metabolizing enzymes")
 ```
 
-## Individuals: three related tibbles
+| Metabolizing enzymes |  |  |  |  |
+|----|----|----|----|----|
+| process_name | molecule | parameter | value | unit |
+| MetabolizationLiverMicrosomes_MM | CYP3A4 | In vitro Vmax for liver microsomes | 850 | pmol/min/mg mic. protein |
+| MetabolizationLiverMicrosomes_MM | CYP3A4 | Km | 4 | µmol/l |
+| MetabolizationLiverMicrosomes_MM | CYP3A4 | kcat | 8.7607941215 | 1/min |
+| MetabolizationLiverMicrosomes_MM | UGT1A4 | In vitro Vmax for liver microsomes | 276 | pmol/min/mg mic. protein |
+| MetabolizationLiverMicrosomes_MM | UGT1A4 | Content of CYP proteins in liver microsomes | 58 | pmol/mg mic. protein |
+| MetabolizationLiverMicrosomes_MM | UGT1A4 | Km | 37.8 | µmol/l |
+| MetabolizationLiverMicrosomes_MM | UGT1A4 | kcat | 3.5911771641 | 1/min |
+
+## Individuals: several related tables
 
 `as_tibbles(snapshot, "individuals")` returns three tibbles joinable on
 `individual_id`:
@@ -109,6 +155,9 @@ compound_dfs$processes |>
 - `$individuals_expressions` lists the expression profiles attached to
   each individual: one row per (individual, profile) pair.
 
+A focused selection of the demographic columns makes a compact subject
+table:
+
 ``` r
 
 individual_dfs <- as_tibbles(snapshot, "individuals")
@@ -116,35 +165,19 @@ names(individual_dfs)
 #> [1] "individuals"             "individuals_parameters" 
 #> [3] "individuals_expressions"
 
-head(individual_dfs$individuals)
-#> # A tibble: 2 × 18
-#>   individual_id         name  description   seed species population gender   age
-#>   <chr>                 <chr> <chr>        <int> <chr>   <chr>      <chr>  <dbl>
-#> 1 European (P-gp modif… Euro… NA          1.72e7 Human   European_… MALE    30  
-#> 2 Korean (Yu 2004 stud… Kore… NA          5.30e7 Human   Asian_Tan… MALE    23.3
-#> # ℹ 10 more variables: age_unit <chr>, gestational_age <dbl>,
-#> #   gestational_age_unit <chr>, weight <dbl>, weight_unit <chr>, height <dbl>,
-#> #   height_unit <chr>, disease_state <chr>, calculation_methods <glue>,
-#> #   disease_state_parameters <chr>
-head(individual_dfs$individuals_parameters)
-#> # A tibble: 2 × 7
-#>   individual_id                   path  value unit  source description source_id
-#>   <chr>                           <chr> <dbl> <chr> <chr>  <chr>           <int>
-#> 1 European (P-gp modified, CYP3A… Orga…     1 NA    Unkno… NA                 NA
-#> 2 Korean (Yu 2004 study)          Orga…     1 NA    Unkno… NA                 NA
-head(individual_dfs$individuals_expressions)
-#> # A tibble: 6 × 2
-#>   individual_id                         profile                                 
-#>   <chr>                                 <chr>                                   
-#> 1 European (P-gp modified, CYP3A4 36 h) CYP3A4|Human|European (P-gp modified, C…
-#> 2 European (P-gp modified, CYP3A4 36 h) AADAC|Human|European (P-gp modified, CY…
-#> 3 European (P-gp modified, CYP3A4 36 h) P-gp|Human|European (P-gp modified, CYP…
-#> 4 European (P-gp modified, CYP3A4 36 h) OATP1B1|Human|European (P-gp modified, …
-#> 5 European (P-gp modified, CYP3A4 36 h) ATP1A2|Human|European (P-gp modified, C…
-#> 6 European (P-gp modified, CYP3A4 36 h) UGT1A4|Human|European (P-gp modified, C…
+individual_dfs$individuals |>
+  select(name, species, population, gender, age, age_unit, weight, weight_unit) |>
+  gt() |>
+  tab_header(title = "Individuals")
 ```
 
-## Formulations: `$formulations` and `$formulations_parameters`
+| Individuals |  |  |  |  |  |  |  |
+|----|----|----|----|----|----|----|----|
+| name | species | population | gender | age | age_unit | weight | weight_unit |
+| European (P-gp modified, CYP3A4 36 h) | Human | European_ICRP_2002 | MALE | 30.0 | year(s) | NA | NA |
+| Korean (Yu 2004 study) | Human | Asian_Tanaka_1996 | MALE | 23.3 | year(s) | 66.9 | kg |
+
+## Formulations: a header split from its parameters
 
 `as_tibbles(snapshot, "formulations")` returns two tibbles joinable on
 `formulation_id`:
@@ -160,123 +193,118 @@ head(individual_dfs$individuals_expressions)
 formulation_dfs <- as_tibbles(snapshot, "formulations")
 names(formulation_dfs)
 #> [1] "formulations"            "formulations_parameters"
-head(formulation_dfs$formulations)
-#> # A tibble: 2 × 4
-#>   formulation_id    name              formulation               formulation_type
-#>   <chr>             <chr>             <chr>                     <chr>           
-#> 1 Oral solution     Oral solution     Formulation_Dissolved     Dissolved       
-#> 2 Tablet (Dormicum) Tablet (Dormicum) Formulation_Tablet_Weibu… Weibull
-head(formulation_dfs$formulations_parameters)
-#> # A tibble: 4 × 11
-#>   formulation_id    name   value unit  is_table_point x_value y_value table_name
-#>   <chr>             <chr>  <dbl> <chr> <lgl>            <dbl>   <dbl> <chr>     
-#> 1 Tablet (Dormicum) Diss… 0.0107 min   FALSE               NA      NA NA        
-#> 2 Tablet (Dormicum) Lag … 0      min   FALSE               NA      NA NA        
-#> 3 Tablet (Dormicum) Diss… 4.38   NA    FALSE               NA      NA NA        
-#> 4 Tablet (Dormicum) Use … 1      NA    FALSE               NA      NA NA        
-#> # ℹ 3 more variables: source <chr>, description <chr>, source_id <int>
+
+formulation_dfs$formulations |>
+  gt() |>
+  tab_header(title = "Formulations")
 ```
 
-## Populations: `$populations` and `$populations_parameters`
-
-`as_tibbles(snapshot, "populations")` returns two tibbles joinable on
-`population_id`:
-
-- `$populations` has one row per *Population* with the sampling-recipe
-  header: source population, individual name, sample size, proportion of
-  females, seed, and the age, weight, height, BMI, and eGFR bound
-  columns.
-- `$populations_parameters` is the long-form view of the sampling
-  distributions PK-Sim will draw from: one row per (population,
-  parameter) pair, with `distribution_type`, `statistic`, value, and
-  unit.
+| Formulations |  |  |  |
+|----|----|----|----|
+| formulation_id | name | formulation | formulation_type |
+| Oral solution | Oral solution | Formulation_Dissolved | Dissolved |
+| Tablet (Dormicum) | Tablet (Dormicum) | Formulation_Tablet_Weibull | Weibull |
 
 ``` r
 
-population_dfs <- as_tibbles(snapshot, "populations")
-names(population_dfs)
-#> [1] "populations"            "populations_parameters"
-head(population_dfs$populations)
-#> # A tibble: 0 × 22
-#> # ℹ 22 variables: population_id <chr>, name <chr>, seed <int>,
-#> #   number_of_individuals <int>, proportion_of_females <dbl>,
-#> #   source_population <chr>, individual_name <chr>, age_min <dbl>,
-#> #   age_max <dbl>, age_unit <chr>, weight_min <dbl>, weight_max <dbl>,
-#> #   weight_unit <chr>, height_min <dbl>, height_max <dbl>, height_unit <chr>,
-#> #   bmi_min <dbl>, bmi_max <dbl>, bmi_unit <chr>, egfr_min <dbl>,
-#> #   egfr_max <dbl>, egfr_unit <chr>
+
+formulation_dfs$formulations_parameters |>
+  select(name, value, unit) |>
+  gt() |>
+  tab_header(title = "Formulation release parameters")
 ```
 
-## Protocols: `Schema` and `SchemaItem` rows
+| Formulation release parameters   |            |      |
+|----------------------------------|------------|------|
+| name                             | value      | unit |
+| Dissolution time (50% dissolved) | 0.01074815 | min  |
+| Lag time                         | 0.00000000 | min  |
+| Dissolution shape                | 4.38029432 | NA   |
+| Use as suspension                | 1.00000000 | NA   |
 
-`as_tibbles(snapshot, "protocols")` returns a single 13-column tibble
-whether the snapshot has any protocols or not. *Advanced Protocols*
-contribute one row per *Schema* item, with the protocol-level,
-schema-level, and item-level parameters joined by name.
+## Protocols: a single flat table
+
+`as_tibbles(snapshot, "protocols")` returns a single tibble whether the
+snapshot has any protocols or not. *Advanced Protocols* contribute one
+row per *Schema* item, with the protocol-level, schema-level, and
+item-level parameters joined by name. This is the simplest shape: one
+kind, one table, ready to render.
 
 ``` r
 
-protocols_df <- as_tibbles(snapshot, "protocols")
-head(protocols_df)
-#> # A tibble: 6 × 13
-#>   protocol_name   schema_name schema_item_name type  formulation dosing_interval
-#>   <chr>           <chr>       <chr>            <chr> <chr>       <chr>          
-#> 1 iv 0.075 mg/kg… NA          NA               Intr… NA          Once           
-#> 2 iv 0.05 mg/kg … NA          NA               Intr… NA          Once           
-#> 3 iv 1 mg (5 min) NA          NA               Intr… NA          Once           
-#> 4 iv 0.001 mg (5… NA          NA               Intr… NA          Once           
-#> 5 iv 1 mg (bolus) NA          NA               Intr… NA          Once           
-#> 6 iv 2 mg (2 min) NA          NA               Intr… NA          Once           
-#> # ℹ 7 more variables: start_time <dbl>, start_time_unit <chr>, dose <dbl>,
-#> #   dose_unit <chr>, rep_number <dbl>, rep_time <chr>, rep_time_unit <chr>
+as_tibbles(snapshot, "protocols") |>
+  select(protocol_name, dose, dose_unit, start_time, start_time_unit, dosing_interval) |>
+  gt() |>
+  tab_header(title = "Dosing protocols")
 ```
 
-## Observer sets: `$observer_sets` and `$observers`
+| Dosing protocols |  |  |  |  |  |
+|----|----|----|----|----|----|
+| protocol_name | dose | dose_unit | start_time | start_time_unit | dosing_interval |
+| iv 0.075 mg/kg (1 min) | 0.075 | mg/kg | 0 | h | Once |
+| iv 0.05 mg/kg (30 min) | 0.050 | mg/kg | 0 | h | Once |
+| iv 1 mg (5 min) | 1.000 | mg | 0 | h | Once |
+| iv 0.001 mg (5 min) | 0.001 | mg | 0 | h | Once |
+| iv 1 mg (bolus) | 1.000 | mg | 0 | h | Once |
+| iv 2 mg (2 min) | 2.000 | mg | 0 | h | Once |
+| iv 2 mg (bolus) | 2.000 | mg | 0 | h | Once |
+| iv 0.05 mg/kg (2 min) | 0.050 | mg/kg | 0 | h | Once |
+| iv 5 mg (30 sec) | 5.000 | mg | 0 | h | Once |
+| iv 5 mg (bolus) | 5.000 | mg | 0 | h | Once |
+| iv 0.05 mg/kg (bolus) | 0.050 | mg/kg | 0 | h | Once |
+| iv 0.15 mg/kg (bolus) | 0.150 | mg/kg | 0 | h | Once |
+| po 1 mg | 1.000 | mg | 0 | h | Once |
+| po 5 mg | 5.000 | mg | 0 | h | Once |
+| po 7.5 mg | 7.500 | mg | 0 | h | Once |
+| po 0.075 mg | 0.075 | mg | 0 | h | Once |
+| po 3 mg | 3.000 | mg | 0 | h | Once |
+| po 4 mg | 4.000 | mg | 0 | h | Once |
+| po 6 mg | 6.000 | mg | 0 | h | Once |
+| po 8 mg | 8.000 | mg | 0 | h | Once |
+| po 15 mg | 15.000 | mg | 0 | h | Once |
+| po 2 mg | 2.000 | mg | 0 | h | Once |
+| po 0.075 mg/kg | 0.075 | mg/kg | 0 | h | Once |
+| po 10 mg | 10.000 | mg | 0 | h | Once |
+| po 20 mg | 20.000 | mg | 0 | h | Once |
+| po 40 mg | 40.000 | mg | 0 | h | Once |
+| po 0.003 mg | 0.003 | mg | 0 | h | Once |
+| po 15 mg (1 h delayed) | 15.000 | mg | 1 | h | Once |
+| po 2.5 mg | 2.500 | mg | 0 | h | Once |
+| po 0.01 mg | 0.010 | mg | 0 | h | Once |
+| po 3.5 mg | 3.500 | mg | 0 | h | Once |
+| Mikus 2017 | 2.000 | mg | 6 | h | Once |
+| Mikus 2017 | 4.000 | mg | 0 | h | Once |
+| iv 1 mg (2 min) | 1.000 | mg | 0 | h | Once |
 
-`as_tibbles(snapshot, "observer_sets")` returns a list of two tibbles
-joinable on `observer_set_id` (or `observer_set_name`):
+## Every building block exports the same way
 
-- `$observer_sets` has one row per *ObserverSet* with its name and the
-  count of observers it contains.
-- `$observers` has one row per *Observer* with its name, type,
-  dimension, `formula_expression`, `formula_dimension`,
-  `formula_references` (the underlying `ExplicitFormula` references
-  collapsed to `"alias=path"` pairs joined with `|`), and
-  `container_tags` (the `|`-joined `Tag` values from the underlying
-  `ContainerCriteria`).
+The four kinds above cover every shape
+[`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+produces. The same call works for `"events"`, `"expression_profiles"`,
+`"populations"`, and `"observer_sets"`: each returns either a single
+flat tibble or a header split from a long-form parameter table, ready
+for the same
+[`filter()`](https://dplyr.tidyverse.org/reference/filter.html) +
+[`gt()`](https://gt.rstudio.com/reference/gt.html) recipe. Kinds a
+snapshot does not define come back as empty (0-row) tibbles with the
+same columns, so reporting code never has to special-case a missing
+building block.
+
+Passing no `kind` converts everything at once, keyed by kind name, which
+is handy when assembling a multi-table report:
 
 ``` r
 
-observer_dfs <- as_tibbles(snapshot, "observer_sets")
-names(observer_dfs)
-head(observer_dfs$observers)
+all_kinds <- as_tibbles(snapshot)
+names(all_kinds)
+#> [1] "compounds"           "individuals"         "formulations"       
+#> [4] "populations"         "events"              "expression_profiles"
+#> [7] "protocols"           "observer_sets"       "observed_data"
 ```
 
-## Observed data
-
-`as_tibbles(snapshot, "observed_data")` flattens every observed-data
-series into a long-form tibble ready for plotting.
-
-``` r
-
-obs_data_df <- as_tibbles(snapshot, "observed_data")
-head(obs_data_df)
-#> # A tibble: 6 × 30
-#>   name            xValues yValues yErrorValues xDimension xUnit yDimension yUnit
-#>   <chr>             <dbl>   <dbl>        <dbl> <chr>      <chr> <chr>      <chr>
-#> 1 Ahonen 1995 - …     0.5 0.0156        0.0231 Time       h     Concentra… mg/l 
-#> 2 Ahonen 1995 - …     1   0.0280        0.0160 Time       h     Concentra… mg/l 
-#> 3 Ahonen 1995 - …     1.5 0.0235        0.0108 Time       h     Concentra… mg/l 
-#> 4 Ahonen 1995 - …     2   0.0185      NaN      Time       h     Concentra… mg/l 
-#> 5 Ahonen 1995 - …     3   0.0118      NaN      Time       h     Concentra… mg/l 
-#> 6 Ahonen 1995 - …     4   0.00848     NaN      Time       h     Concentra… mg/l 
-#> # ℹ 22 more variables: yErrorType <chr>, yErrorUnit <chr>, molWeight <dbl>,
-#> #   lloq <dbl>, `DB Version` <chr>, ID <chr>, `Study Id` <chr>,
-#> #   Reference <chr>, Source <chr>, Grouping <chr>, `Data type` <chr>, N <chr>,
-#> #   Molecule <chr>, Species <chr>, Organ <chr>, Compartment <chr>, Route <chr>,
-#> #   Dose <chr>, `Times of Administration [h]` <chr>, Formulation <chr>,
-#> #   `Food state` <chr>, Comment <chr>
-```
+`"observed_data"` is also available and flattens every observed-data
+series into a long-form tibble, though it is measurement data rather
+than a configuration input.
 
 ## Next steps
 
