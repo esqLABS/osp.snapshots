@@ -11,7 +11,7 @@ and display a summary of its information."><meta name="robots" content="noindex"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,8 @@ and display a summary of its information.</p>
 
 
     <dt><code>name</code></dt>
-<dd><p>The name of the individual</p></dd>
+<dd><p>The name of the individual. Writable: must be a
+non-empty scalar string.</p></dd>
 
 
     <dt><code>seed</code></dt>
@@ -82,7 +83,9 @@ gender, physiological parameters, and calculation methods.</p></dd>
 
 
     <dt><code>age</code></dt>
-<dd><p>The age value of the individual</p></dd>
+<dd><p>The age value of the individual. Writable: assign an
+<code><a href="age.html">age()</a></code> object; see <a href="OriginData.html">OriginData</a>'s <code>age</code> field for the full
+contract (a bare numeric scalar is rejected).</p></dd>
 
 
     <dt><code>age_unit</code></dt>
@@ -90,7 +93,9 @@ gender, physiological parameters, and calculation methods.</p></dd>
 
 
     <dt><code>weight</code></dt>
-<dd><p>The weight value of the individual</p></dd>
+<dd><p>The weight value of the individual. Writable: assign a
+<code><a href="weight.html">weight()</a></code> object; see <a href="OriginData.html">OriginData</a>'s <code>weight</code> field for the full
+contract (a bare numeric scalar is rejected).</p></dd>
 
 
     <dt><code>weight_unit</code></dt>
@@ -98,7 +103,9 @@ gender, physiological parameters, and calculation methods.</p></dd>
 
 
     <dt><code>height</code></dt>
-<dd><p>The height value of the individual</p></dd>
+<dd><p>The height value of the individual. Writable: assign a
+<code><a href="height.html">height()</a></code> object; see <a href="OriginData.html">OriginData</a>'s <code>height</code> field for the full
+contract (a bare numeric scalar is rejected).</p></dd>
 
 
     <dt><code>height_unit</code></dt>
@@ -106,7 +113,10 @@ gender, physiological parameters, and calculation methods.</p></dd>
 
 
     <dt><code>gestational_age</code></dt>
-<dd><p>The gestational age value of the individual</p></dd>
+<dd><p>The gestational age value of the individual.
+Writable: assign a <code><a href="gestational_age.html">gestational_age()</a></code> object; see <a href="OriginData.html">OriginData</a>'s
+<code>gestational_age</code> field for the full contract (a bare numeric
+scalar is rejected).</p></dd>
 
 
     <dt><code>gestational_age_unit</code></dt>
@@ -122,7 +132,8 @@ gender, physiological parameters, and calculation methods.</p></dd>
 
 
     <dt><code>parameters</code></dt>
-<dd><p>The list of parameter objects with a custom print method</p></dd>
+<dd><p>The list of parameter objects with a custom print
+method. Writable: must be a list, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>calculation_methods</code></dt>

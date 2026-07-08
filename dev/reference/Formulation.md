@@ -20,7 +20,8 @@ display a summary of its information.
 
 - `parameters`:
 
-  The list of parameter objects
+  The list of parameter objects. Writable: must be a list, or `NULL` to
+  clear.
 
 ## Methods
 

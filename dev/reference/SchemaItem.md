@@ -20,12 +20,16 @@ array nested inside a `Schemas` entry of a `Protocols` building block.
 
 - `name`:
 
-  The name of the schema item.
+  The name of the schema item. Writable: must be a non-empty scalar
+  string.
 
 - `application_type`:
 
   The application type of the schema item (for example `"Oral"`,
-  `"IntravenousBolus"`).
+  `"IntravenousBolus"`). Writable: must be one of the canonical PK-Sim
+  application types (see
+  [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)'s
+  `application_type` argument), or `NULL` to clear.
 
 - `formulation_key`:
 
@@ -44,7 +48,8 @@ array nested inside a `Schemas` entry of a `Protocols` building block.
 
   The schema item's application-level
   [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
-  objects (dose, start time, ...).
+  objects (dose, start time, ...). Writable: must be a list, or `NULL`
+  to clear.
 
 ## Methods
 

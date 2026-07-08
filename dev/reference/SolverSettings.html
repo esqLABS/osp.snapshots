@@ -13,7 +13,7 @@ absent on export."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,31 +63,39 @@ PK-Sim's snapshot mapper requires the object shape.</p></dd>
 
 
     <dt><code>abs_tol</code></dt>
-<dd><p>Absolute solver tolerance.</p></dd>
+<dd><p>Absolute solver tolerance. Writable: a single numeric
+value, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>rel_tol</code></dt>
-<dd><p>Relative solver tolerance.</p></dd>
+<dd><p>Relative solver tolerance. Writable: a single numeric
+value, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>use_jacobian</code></dt>
-<dd><p>Whether to use the Jacobian during integration.</p></dd>
+<dd><p>Whether to use the Jacobian during integration.
+Writable: a single logical value, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>h0</code></dt>
-<dd><p>Initial step size.</p></dd>
+<dd><p>Initial step size. Writable: a single numeric value, or
+<code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>h_min</code></dt>
-<dd><p>Minimum step size.</p></dd>
+<dd><p>Minimum step size. Writable: a single numeric value, or
+<code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>h_max</code></dt>
-<dd><p>Maximum step size.</p></dd>
+<dd><p>Maximum step size. Writable: a single numeric value, or
+<code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>mx_step</code></dt>
-<dd><p>Maximum number of internal solver steps.</p></dd>
+<dd><p>Maximum number of internal solver steps. Writable: a
+single positive whole number (stored as an integer), or <code>NULL</code> to
+clear.</p></dd>
 
 
 </dl><p></p></div>

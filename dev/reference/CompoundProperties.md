@@ -21,12 +21,14 @@ compound for a simulation; this class is not part of the public API.
 
 - `name`:
 
-  The name of the compound building block.
+  The name of the compound building block. Writable: must be a non-empty
+  scalar string.
 
 - `calculation_methods`:
 
   Character vector of calculation method names that override the
-  compound's defaults in this simulation.
+  compound's defaults in this simulation. Writable: must be a character
+  vector, or `NULL` to clear.
 
 - `alternatives`:
 

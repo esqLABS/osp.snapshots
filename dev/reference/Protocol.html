@@ -21,7 +21,7 @@ application_type, dosing_interval, and parameters fields."><meta name="robots" c
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,8 @@ flow back into the snapshot payload (read-only).</p></dd>
 
 
     <dt><code>name</code></dt>
-<dd><p>The name of the protocol</p></dd>
+<dd><p>The name of the protocol. Writable: must be a non-empty
+scalar string.</p></dd>
 
 
     <dt><code>is_advanced</code></dt>
@@ -82,7 +83,10 @@ flow back into the snapshot payload (read-only).</p></dd>
 
 
     <dt><code>application_type</code></dt>
-<dd><p>The application type (for simple protocols)</p></dd>
+<dd><p>The application type (for simple protocols).
+Writable: must be one of the canonical PK-Sim application types
+(see <code><a href="create_protocol.html">create_protocol()</a></code>'s <code>application_type</code> argument), or <code>NULL</code>
+to clear.</p></dd>
 
 
     <dt><code>dosing_interval</code></dt>
@@ -90,11 +94,13 @@ flow back into the snapshot payload (read-only).</p></dd>
 
 
     <dt><code>time_unit</code></dt>
-<dd><p>The time unit for the protocol</p></dd>
+<dd><p>The time unit for the protocol. Writable: must be a
+valid unit for dimension <code>"Time"</code>, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>parameters</code></dt>
-<dd><p>The parameters of the protocol (for simple protocols)</p></dd>
+<dd><p>The parameters of the protocol (for simple
+protocols). Writable: must be a list, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>schemas</code></dt>

@@ -13,7 +13,7 @@ weight(s) used when comparing the two."><meta name="robots" content="noindex"></
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,23 +60,28 @@ weight(s) used when comparing the two.</p>
 
 
     <dt><code>path</code></dt>
-<dd><p>The simulation output quantity path.</p></dd>
+<dd><p>The simulation output quantity path. Writable: must be a
+non-empty scalar string, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>observed_data</code></dt>
-<dd><p>The observed-data repository name.</p></dd>
+<dd><p>The observed-data repository name. Writable:
+must be a non-empty scalar string, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>scaling</code></dt>
-<dd><p>The scaling used for the mapping.</p></dd>
+<dd><p>The scaling used for the mapping. Writable: one of
+<code>"Linear"</code>, <code>"Log"</code>, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>weight</code></dt>
-<dd><p>A single weight applied to all points of the mapping.</p></dd>
+<dd><p>A single weight applied to all points of the mapping.
+Writable: a single numeric value, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>weights</code></dt>
-<dd><p>A per-point weight vector.</p></dd>
+<dd><p>A per-point weight vector. Writable: a numeric vector,
+or <code>NULL</code> to clear.</p></dd>
 
 
 </dl><p></p></div>

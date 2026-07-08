@@ -4,13 +4,11 @@ An R6 class that represents a parameter in an OSP snapshot. This class
 provides methods to access different properties of a parameter and
 display a summary of its information.
 
-## Public fields
+## Active bindings
 
 - `data`:
 
-  The raw data of the parameter
-
-## Active bindings
+  The raw data of the parameter (read-only).
 
 - `path`:
 
@@ -26,7 +24,11 @@ display a summary of its information.
 
 - `unit`:
 
-  The unit of the parameter (if any)
+  The unit of the parameter (if any). Writable: a non-`NULL` value must
+  be a single non-empty character string, or `NULL` to clear. A bare
+  `Parameter` carries no dimension, so a dimension-aware
+  [`validate_unit()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_unit.md)
+  check is not universally applicable here; only the shape is enforced.
 
 - `value_origin`:
 

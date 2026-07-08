@@ -55,8 +55,8 @@ create_compound(
 
 - plasma_protein_binding_partner:
 
-  Character. Name of the plasma protein binding partner (for example
-  `"Albumin"`).
+  Character. Name of the plasma protein binding partner: one of
+  `"Unknown"`, `"Albumin"`, `"Glycoprotein"`.
 
 - molecular_weight:
 

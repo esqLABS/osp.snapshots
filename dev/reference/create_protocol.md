@@ -73,7 +73,8 @@ create_protocol(
 
 - time_unit:
 
-  Character. Display time unit for the protocol.
+  Character. Display time unit for the protocol, validated against
+  dimension `"Time"`.
 
 ## Value
 

@@ -18,7 +18,8 @@ used by the event.
 
 - `name`:
 
-  The name of the event building block.
+  The name of the event building block. Writable: must be a non-empty
+  scalar string.
 
 - `start_time`:
 

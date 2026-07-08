@@ -12,15 +12,17 @@ a summary of its information.
 
 - `name`:
 
-  The name of the event
+  The name of the event. Writable: must be a non-empty scalar string.
 
 - `template`:
 
-  The template of the event
+  The template of the event. Writable: must be a non-empty scalar
+  string.
 
 - `parameters`:
 
-  The list of parameter objects
+  The list of parameter objects. Writable: must be a list, or `NULL` to
+  clear.
 
 ## Methods
 

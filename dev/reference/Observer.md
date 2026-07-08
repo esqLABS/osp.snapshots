@@ -20,7 +20,7 @@ itself a building block; it lives inside an `ObserverSet`.
 
 - `name`:
 
-  The name of the observer.
+  The name of the observer. Writable: must be a non-empty scalar string.
 
 - `type`:
 
@@ -32,7 +32,10 @@ itself a building block; it lives inside an `ObserverSet`.
 - `dimension`:
 
   The dimension of the observed quantity, resolved in PK-Sim via
-  `IDimensionRepository.DimensionByName()`.
+  `IDimensionRepository.DimensionByName()`. Writable: must be a
+  non-empty scalar string, or `NULL` to clear. There is no closed set of
+  dimension names to validate against, so a required string is the
+  strongest check available.
 
 - `formula`:
 

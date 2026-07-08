@@ -4,15 +4,26 @@
 
 ### Breaking changes
 
+- `AdvancedParameter$distribution_type` is now validated against the
+  distribution-type enum (`Normal`, `LogNormal`, `Uniform`, `Discrete`,
+  `Unknown`).
 - `compound$calculation_methods` returns a `CalculationMethods` R6
   object instead of a plain list with class
   `compound_calculation_methods`. Read the names with
   `compound$calculation_methods$names` and mutate with `$add(name)`,
   `$remove(name)`; `$length` reports the count (#30).
+- `Compound$is_small_molecule` now requires a single logical value (or
+  `NULL`).
+- `Compound$plasma_protein_binding_partner` and
+  [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)’s
+  `plasma_protein_binding_partner` argument are now validated against
+  the binding-partner enum (`Unknown`, `Albumin`, `Glycoprotein`).
 - `compound$processes` returns a flat named list of `Process` R6 objects
   (duplicate names disambiguated with `_{n}`). Filter by
   `process$category` to recover the equivalent of the deprecated
   per-category accessors (#40).
+- `CompoundProperties$calculation_methods` now requires a character
+  vector (or `NULL`).
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md),
   [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md),
   and
@@ -32,8 +43,10 @@
   [`error()`](https://esqlabs.github.io/osp.snapshots/dev/reference/error.md))
   for their value/unit/name fields instead of the per-field
   `_value`/`_unit`/`_name` scalar arguments; for example
-  `create_compound(name = "X", lipophilicity = lipophilicity(2.5))`
-  (#133).
+  `create_compound(name = "X", lipophilicity = lipophilicity(2.5))`. The
+  matching `Compound`/`Individual`/`OriginData` fields now require the
+  helper as well; a bare scalar (for example `individual$age <- 30` or
+  `compound$lipophilicity <- 2.5`) is rejected (#133, \#140).
 - [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   writes the identifier to `data$Name` for plain parameters (no `path`
   argument) and to `data$Path` for path-bearing parameters (with `path`
@@ -46,9 +59,53 @@
   `df <- get_compounds_dfs(snap)` to
   `dfs <- get_compounds_dfs(snap); df <- dfs$properties`, or switch to
   the new long-form `dfs$processes` (#40).
+- The identity-name setters across building blocks and selections
+  (`Compound$name`, `Population$name`, `Protocol$name`, `Schema$name`,
+  `SchemaItem$name`, `Event$name`/`$template`, `Observer$name`,
+  `ObserverSet$name`,
+  `Process$internal_name`/`$data_source`/`$molecule`/`$metabolite`/`$species`,
+  `CompoundProperties$name`,
+  `CompoundGroupSelection$group_name`/`$alternative_name`,
+  `CompoundProcessSelection$name`/`$molecule_name`/`$metabolite_name`/`$compound_name`/`$systemic_process_type`,
+  `FormulationSelection$name`/`$key`, `ObserverSetSelection$name`,
+  `ProtocolSelection$name`, `EventSelection$name`, `Individual$name`)
+  now reject empty, `NA`, or non-scalar strings.
 - [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
   now requires PK-Sim v11.2 snapshots or newer (`Version >= 79`).
   Re-export older projects from PK-Sim v11.2+ before loading (#52).
+- `Observer$dimension` now requires a non-empty string (or `NULL`).
+- `OutputMapping$path`, `$observed_data`, `$scaling`, `$weight`,
+  `$weights`, and the matching
+  [`create_output_mapping()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_mapping.md)
+  arguments, are now validated (`$scaling`/`scaling` against the
+  `Linear`/`Log` enum on both the setter and the factory).
+- The parameters setters (`Protocol$parameters`,
+  `Individual$parameters`, `Schema$parameters`, `SchemaItem$parameters`,
+  `Formulation$parameters`, `Event$parameters`) now require a list (or
+  `NULL`).
+- `Parameter$data` and `ExpressionProfile$data` are now read-only;
+  mutate the parameter/profile through its typed fields instead.
+- `Parameter$unit` now requires a single non-empty string (or `NULL`).
+- `Population$age_range`, `$weight_range`, `$height_range`,
+  `$gestational_age_range`, and `$bmi_range` now validate the range’s
+  unit against the field’s dimension.
+- `Population$number_of_individuals` now requires a positive whole
+  number (previously any positive number).
+- `Protocol$application_type` and `SchemaItem$application_type` now
+  match the canonical PK-Sim application types that
+  [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
+  and
+  [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
+  already validated against.
+- `Protocol$time_unit` and
+  [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)’s
+  `time_unit` argument are now validated against the `Time` dimension.
+- `Simulation$allow_aging` now requires a single logical value (or
+  `NULL`).
+- `SolverSettings` fields (`abs_tol`, `rel_tol`, `use_jacobian`, `h0`,
+  `h_min`, `h_max`, `mx_step`) are now validated per
+  [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_solver_settings.md)’s
+  existing rules.
 
 ### New features
 
@@ -128,15 +185,20 @@
   plus `pKa` and `processes`; each property argument also accepts a list
   of these objects to define several named alternatives, with the first
   element as the default; the matching `Compound` fields
-  (`$lipophilicity`, `$fraction_unbound`, `$solubility`,
-  `$intestinal_permeability`, `$permeability`, `$pka_types`,
-  `$processes`) are writable and also accept the helper objects (single
-  or list) so a loaded compound can be mutated. Attach with
+  `$lipophilicity`, `$fraction_unbound`, `$solubility`,
+  `$intestinal_permeability`, and `$permeability` are writable and
+  require the same helper objects (single or a list for named
+  alternatives) so a loaded compound can be mutated. `$pka_types` is
+  writable with a list of `list(type =, value =)` entries (or a raw
+  `PkaType` list), and `$processes` is writable with a list of `Process`
+  objects (or raw process lists). Attach with
   [`add_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_compound.md),
   remove by name with
   [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
-  (#39, \#115, \#133, \#144).
-- [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md),
+  (#39, \#115, \#133, \#140, \#144).
+- [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_group_selection.md),
+  [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md),
+  [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md),
   [`create_event_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event_selection.md),
   [`create_formulation_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_formulation_selection.md),
   [`create_observer_set_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observer_set_selection.md),
@@ -147,10 +209,9 @@
   and
   [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_solver_settings.md)
   build a `Simulation`’s supporting structures from named arguments, for
-  use as escape hatches for hand-built `Simulation` objects passed
-  through
-  [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)’s
-  `simulation` argument (#94).
+  use as the escape hatch to
+  [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
+  and for hand-built configurations (#94).
 - [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_descriptor_condition.md)
   builds a container criterion (`Tag`, and an open-string `Type` such as
   `"InContainer"` or `"MatchTag"`) for an observer’s container criteria
@@ -192,8 +253,8 @@
   localized parameter overrides at creation time; the
   `Individual$expression_profiles` binding is now writable and a new
   read/write `Individual$description` binding is available. The
-  demographic `Individual` fields also accept the helper objects (#117,
-  \#133).
+  demographic `Individual` fields require the same helper objects (#117,
+  \#133, \#140).
 - [`create_molecule_list()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_molecule_list.md)
   builds an observer’s molecule list from `for_all`, `include`, and
   `exclude` (#119).
@@ -352,6 +413,16 @@
   silently reverted to `"h"`, misplacing time points (for example a 24x
   error for `day(s)`); this also affected
   `create_observed_data(time_unit = ...)` (#104).
+- `Parameter$unit` validates only shape (a single non-empty string);
+  dimension-aware unit validation is opportunistic since a bare
+  `Parameter` carries no dimension. `Range$unit` remains unvalidated on
+  the class itself; unit validation happens at the `Population` range
+  setters that consume a `Range`. `Population$bmi_range`’s unit,
+  `Compound$plasma_protein_binding_partner`,
+  `AdvancedParameter$distribution_type`, the `Formulation` curated unit
+  sub-parameters, and `CompoundProcessSelection$systemic_process_type`
+  are validated at the strongest constraint confirmable in code; each
+  documents its own fallback (#140).
 - `Population$egfr_range` now persists into the population settings, so
   an eGFR range set on a population survives export (#118).
 - [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md),

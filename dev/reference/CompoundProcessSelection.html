@@ -15,7 +15,7 @@ fields is supplied."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,24 +63,33 @@ fields is supplied.</p>
 
 
     <dt><code>name</code></dt>
-<dd><p>The process name.</p></dd>
+<dd><p>The process name. Writable: a non-empty scalar string
+when supplied, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>molecule_name</code></dt>
-<dd><p>The molecule involved in the process.</p></dd>
+<dd><p>The molecule involved in the process. Writable:
+a non-empty scalar string when supplied, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>metabolite_name</code></dt>
-<dd><p>The metabolite produced by the process.</p></dd>
+<dd><p>The metabolite produced by the process.
+Writable: a non-empty scalar string when supplied, or <code>NULL</code> to
+clear.</p></dd>
 
 
     <dt><code>compound_name</code></dt>
-<dd><p>The other compound involved in the process.</p></dd>
+<dd><p>The other compound involved in the process.
+Writable: a non-empty scalar string when supplied, or <code>NULL</code> to
+clear.</p></dd>
 
 
     <dt><code>systemic_process_type</code></dt>
 <dd><p>The systemic process type (e.g.
-<code>"Hepatic"</code>, <code>"Renal"</code>, <code>"Biliary"</code>).</p></dd>
+<code>"Hepatic"</code>, <code>"Renal"</code>, <code>"Biliary"</code>). Writable: a non-empty scalar
+string when supplied, or <code>NULL</code> to clear. The closed set is not
+confirmable from the snapshot schema (only examples are given), so
+a required string is the strongest check available.</p></dd>
 
 
 </dl><p></p></div>

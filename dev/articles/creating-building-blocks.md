@@ -741,8 +741,8 @@ patient
 
 ``` r
 
-patient$age <- 30
-patient$weight <- 75
+patient$age <- age(30)
+patient$weight <- weight(75)
 patient$gender <- "FEMALE"
 patient
 #> 

@@ -18,11 +18,13 @@ user-facing way to select an alternative; this class and the
 
 - `group_name`:
 
-  The alternative group name.
+  The alternative group name. Writable: must be a non-empty scalar
+  string.
 
 - `alternative_name`:
 
-  The selected alternative name in the group.
+  The selected alternative name in the group. Writable: must be a
+  non-empty scalar string.
 
 ## Methods
 

@@ -20,23 +20,32 @@ subtype; subtypes are inferred from `internal_name`. The derived
 
 - `internal_name`:
 
-  The PK-Sim `InternalName` (process template key).
+  The PK-Sim `InternalName` (process template key). Writable: must be a
+  non-empty scalar string.
 
 - `data_source`:
 
-  The `DataSource` string identifying the process.
+  The `DataSource` string identifying the process. Writable: must be a
+  non-empty scalar string.
 
 - `molecule`:
 
-  Optional `Molecule` field (for partial processes).
+  Optional `Molecule` field (for partial processes). Writable: a
+  non-empty scalar string when supplied, or `NULL` to clear.
 
 - `metabolite`:
 
-  Optional `Metabolite` field (for enzymatic processes).
+  Optional `Metabolite` field (for enzymatic processes). Writable: a
+  non-empty scalar string when supplied, or `NULL` to clear.
 
 - `species`:
 
-  Optional `Species` field (for species-dependent processes).
+  Optional `Species` field (for species-dependent processes). Writable:
+  a non-empty scalar string when supplied, or `NULL` to clear. This is a
+  free molecule/species string (not the `Individual`/`OriginData`
+  species enum), so
+  [`validate_species()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_species.md)
+  does not apply here.
 
 - `parameters`:
 

@@ -17,31 +17,38 @@ remain absent on export.
 
 - `abs_tol`:
 
-  Absolute solver tolerance.
+  Absolute solver tolerance. Writable: a single numeric value, or `NULL`
+  to clear.
 
 - `rel_tol`:
 
-  Relative solver tolerance.
+  Relative solver tolerance. Writable: a single numeric value, or `NULL`
+  to clear.
 
 - `use_jacobian`:
 
-  Whether to use the Jacobian during integration.
+  Whether to use the Jacobian during integration. Writable: a single
+  logical value, or `NULL` to clear.
 
 - `h0`:
 
-  Initial step size.
+  Initial step size. Writable: a single numeric value, or `NULL` to
+  clear.
 
 - `h_min`:
 
-  Minimum step size.
+  Minimum step size. Writable: a single numeric value, or `NULL` to
+  clear.
 
 - `h_max`:
 
-  Maximum step size.
+  Maximum step size. Writable: a single numeric value, or `NULL` to
+  clear.
 
 - `mx_step`:
 
-  Maximum number of internal solver steps.
+  Maximum number of internal solver steps. Writable: a single positive
+  whole number (stored as an integer), or `NULL` to clear.
 
 ## Methods
 

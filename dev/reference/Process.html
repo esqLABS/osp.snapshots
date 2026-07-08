@@ -23,7 +23,7 @@ internal_name does not match any known pattern."><meta name="robots" content="no
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,24 +75,33 @@ subtype; subtypes are inferred from <code>internal_name</code>. The derived
 
 
     <dt><code>internal_name</code></dt>
-<dd><p>The PK-Sim <code>InternalName</code> (process template key).</p></dd>
+<dd><p>The PK-Sim <code>InternalName</code> (process template
+key). Writable: must be a non-empty scalar string.</p></dd>
 
 
     <dt><code>data_source</code></dt>
-<dd><p>The <code>DataSource</code> string identifying the process.</p></dd>
+<dd><p>The <code>DataSource</code> string identifying the process.
+Writable: must be a non-empty scalar string.</p></dd>
 
 
     <dt><code>molecule</code></dt>
-<dd><p>Optional <code>Molecule</code> field (for partial processes).</p></dd>
+<dd><p>Optional <code>Molecule</code> field (for partial processes).
+Writable: a non-empty scalar string when supplied, or <code>NULL</code> to
+clear.</p></dd>
 
 
     <dt><code>metabolite</code></dt>
-<dd><p>Optional <code>Metabolite</code> field (for enzymatic processes).</p></dd>
+<dd><p>Optional <code>Metabolite</code> field (for enzymatic
+processes). Writable: a non-empty scalar string when supplied, or
+<code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>species</code></dt>
 <dd><p>Optional <code>Species</code> field (for species-dependent
-processes).</p></dd>
+processes). Writable: a non-empty scalar string when supplied, or
+<code>NULL</code> to clear. This is a free molecule/species string (not the
+<code>Individual</code>/<code>OriginData</code> species enum), so <code><a href="validate_species.html">validate_species()</a></code>
+does not apply here.</p></dd>
 
 
     <dt><code>parameters</code></dt>

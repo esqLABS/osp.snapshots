@@ -17,7 +17,7 @@ equivalent direct call on the R6 generator."><meta name="robots" content="noinde
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,13 @@ equivalent direct call on the R6 generator.</p>
 
 
     <dt><code>unit</code></dt>
-<dd><p>The unit of the range</p></dd>
+<dd><p>The unit of the range. <code>Range</code> is dimension-agnostic
+(it holds no dimension of its own), so <code>unit</code> is not validated
+here; dimension-aware unit validation happens at the <code>Population</code>
+range setters that consume a <code>Range</code> (<code>age_range</code>, <code>weight_range</code>,
+<code>height_range</code>, <code>gestational_age_range</code>, <code>bmi_range</code>), where the
+field's dimension is known. Do not add dimension validation to
+this binding.</p></dd>
 
 
 </dl><p></p></div>

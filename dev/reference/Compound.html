@@ -25,7 +25,7 @@ long-form processes tibble returned by get_compounds_dfs()."><meta name="robots"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,15 +80,20 @@ objects so that mutations flow back to the export payload.</p></dd>
 
 
     <dt><code>name</code></dt>
-<dd><p>The name of the compound</p></dd>
+<dd><p>The name of the compound. Writable: must be a non-empty
+scalar string.</p></dd>
 
 
     <dt><code>is_small_molecule</code></dt>
-<dd><p>Whether the compound is a small molecule</p></dd>
+<dd><p>Whether the compound is a small molecule.
+Writable: a single logical value, or <code>NULL</code> to leave it unset
+(PK-Sim then defaults to <code>TRUE</code>).</p></dd>
 
 
     <dt><code>plasma_protein_binding_partner</code></dt>
-<dd><p>The plasma protein binding partner of the compound</p></dd>
+<dd><p>The plasma protein binding
+partner of the compound. Writable: one of <code>"Unknown"</code>, <code>"Albumin"</code>,
+<code>"Glycoprotein"</code>, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>molecular_weight</code></dt>
@@ -103,22 +108,19 @@ objects so that mutations flow back to the export payload.</p></dd>
 <dd><p>The lipophilicity data of the compound. Writable:
 assign a <code><a href="lipophilicity.html">lipophilicity()</a></code> object, a list of such objects to
 define several named alternatives (the first element is the
-default), a numeric scalar to create a single default
-<code>Lipophilicity</code> alternative (parameter <code>"Lipophilicity"</code>, unit
-<code>"Log Units"</code>), a raw alternative list to set the array verbatim
-(the escape hatch for species-specific alternatives), or <code>NULL</code> to
-clear the property.</p></dd>
+default), a raw alternative list to set the array verbatim (the
+escape hatch for species-specific alternatives), or <code>NULL</code> to
+clear the property. A bare numeric scalar is rejected; use
+<code><a href="lipophilicity.html">lipophilicity()</a></code> instead.</p></dd>
 
 
     <dt><code>fraction_unbound</code></dt>
 <dd><p>The fraction unbound data of the compound.
 Writable: assign a <code><a href="fraction_unbound.html">fraction_unbound()</a></code> object, a list of such
 objects to define several named alternatives (the first element is
-the default), a numeric scalar to create a single default
-<code>FractionUnbound</code> alternative (parameter
-<code>"Fraction unbound (plasma, reference value)"</code>, no unit), a raw
-alternative list to set the array verbatim, or <code>NULL</code> to clear the
-property.</p></dd>
+the default), a raw alternative list to set the array verbatim, or
+<code>NULL</code> to clear the property. A bare numeric scalar is rejected;
+use <code><a href="fraction_unbound.html">fraction_unbound()</a></code> instead.</p></dd>
 
 
     <dt><code>solubility</code></dt>
@@ -126,33 +128,27 @@ property.</p></dd>
 assign a <code><a href="solubility.html">solubility()</a></code> object to express reference pH, gain per
 charge, or a pH/value table, a list of such objects to define
 several named alternatives (the first element is the default), a
-numeric scalar to create a single default <code>Solubility</code> alternative
-(parameter <code>"Solubility at reference pH"</code>, unit <code>"mg/l"</code>), a raw
-alternative list to set the array verbatim, or <code>NULL</code> to clear the
-property. The numeric-scalar form cannot express reference pH,
-gain per charge, or table solubility; use a <code><a href="solubility.html">solubility()</a></code> object
-or a raw alternative list for those.</p></dd>
+raw alternative list to set the array verbatim, or <code>NULL</code> to clear
+the property. A bare numeric scalar is rejected; use <code><a href="solubility.html">solubility()</a></code>
+instead.</p></dd>
 
 
     <dt><code>intestinal_permeability</code></dt>
 <dd><p>The intestinal permeability data of the
 compound. Writable: assign an <code><a href="intestinal_permeability.html">intestinal_permeability()</a></code> object, a
 list of such objects to define several named alternatives (the
-first element is the default), a numeric scalar to create a single
-default <code>IntestinalPermeability</code> alternative (parameter
-<code>"Specific intestinal permeability (transcellular)"</code>, unit
-<code>"cm/min"</code>), a raw alternative list to set the array verbatim, or
-<code>NULL</code> to clear the property.</p></dd>
+first element is the default), a raw alternative list to set the
+array verbatim, or <code>NULL</code> to clear the property. A bare numeric
+scalar is rejected; use <code><a href="intestinal_permeability.html">intestinal_permeability()</a></code> instead.</p></dd>
 
 
     <dt><code>permeability</code></dt>
 <dd><p>The permeability data of the compound. Writable:
 assign a <code><a href="permeability.html">permeability()</a></code> object, a list of such objects to define
 several named alternatives (the first element is the default), a
-numeric scalar to create a single default <code>Permeability</code>
-alternative (parameter <code>"Permeability"</code>, unit <code>"cm/min"</code>), a raw
-alternative list to set the array verbatim, or <code>NULL</code> to clear the
-property.</p></dd>
+raw alternative list to set the array verbatim, or <code>NULL</code> to clear
+the property. A bare numeric scalar is rejected; use
+<code><a href="permeability.html">permeability()</a></code> instead.</p></dd>
 
 
     <dt><code>pka_types</code></dt>

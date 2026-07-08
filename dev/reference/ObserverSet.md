@@ -16,7 +16,8 @@ objects that simulations can reference by name.
 
 - `name`:
 
-  The name of the observer set
+  The name of the observer set. Writable: must be a non-empty scalar
+  string.
 
 - `observers`:
 

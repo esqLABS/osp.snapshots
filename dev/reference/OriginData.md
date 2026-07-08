@@ -39,8 +39,10 @@ under each entry of the `Individuals` array.
   Numeric age value of the individual (in `age_unit`). Writable: assign
   an
   [`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md)
-  object to set the value and unit together, or a numeric scalar (the
-  unit defaults to `"year(s)"` when not already set).
+  object to set the value and unit together. A bare numeric scalar is
+  rejected; use
+  [`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md)
+  instead.
 
 - `age_unit`:
 
@@ -51,8 +53,10 @@ under each entry of the `Individuals` array.
   Numeric gestational age value (in `gestational_age_unit`), used for
   preterm individuals. Writable: assign a
   [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/gestational_age.md)
-  object to set the value and unit together, or a numeric scalar (the
-  unit defaults to `"week(s)"` when not already set).
+  object to set the value and unit together. A bare numeric scalar is
+  rejected; use
+  [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/gestational_age.md)
+  instead.
 
 - `gestational_age_unit`:
 
@@ -63,8 +67,10 @@ under each entry of the `Individuals` array.
   Numeric weight value of the individual (in `weight_unit`). Writable:
   assign a
   [`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md)
-  object to set the value and unit together, or a numeric scalar (the
-  unit defaults to `"kg"` when not already set).
+  object to set the value and unit together. A bare numeric scalar is
+  rejected; use
+  [`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md)
+  instead.
 
 - `weight_unit`:
 
@@ -75,8 +81,10 @@ under each entry of the `Individuals` array.
   Numeric height value of the individual (in `height_unit`). Writable:
   assign a
   [`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md)
-  object to set the value and unit together, or a numeric scalar (the
-  unit defaults to `"cm"` when not already set).
+  object to set the value and unit together. A bare numeric scalar is
+  rejected; use
+  [`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md)
+  instead.
 
 - `height_unit`:
 

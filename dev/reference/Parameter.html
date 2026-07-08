@@ -11,7 +11,7 @@ and display a summary of its information."><meta name="robots" content="noindex"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9907</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,16 +51,12 @@ and display a summary of its information.</p>
 
 
     <div class="section level2">
-    <h2 id="public-fields">Public fields<a class="anchor" aria-label="anchor" href="#public-fields"></a></h2>
-    <p></p><div class="r6-fields"><dl><dt><code>data</code></dt>
-<dd><p>The raw data of the parameter</p></dd>
-
-
-</dl><p></p></div>
-    </div>
-    <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
-    <p></p><div class="r6-active-bindings"><dl><dt><code>path</code></dt>
+    <p></p><div class="r6-active-bindings"><dl><dt><code>data</code></dt>
+<dd><p>The raw data of the parameter (read-only).</p></dd>
+
+
+    <dt><code>path</code></dt>
 <dd><p>The path of the parameter</p></dd>
 
 
@@ -73,7 +69,11 @@ and display a summary of its information.</p>
 
 
     <dt><code>unit</code></dt>
-<dd><p>The unit of the parameter (if any)</p></dd>
+<dd><p>The unit of the parameter (if any). Writable: a
+non-<code>NULL</code> value must be a single non-empty character string, or
+<code>NULL</code> to clear. A bare <code>Parameter</code> carries no dimension, so a
+dimension-aware <code><a href="validate_unit.html">validate_unit()</a></code> check is not universally
+applicable here; only the shape is enforced.</p></dd>
 
 
     <dt><code>value_origin</code></dt>
