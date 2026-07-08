@@ -736,7 +736,9 @@ test_that("individual with new fields survives a full snapshot round-trip", {
       )
     )
   )
-  snapshot$add_individual(ind)
+  # The referenced expression profile is not in this empty snapshot, so the
+  # add warns and proceeds; this test only asserts the round-trip.
+  suppressWarnings(suppressMessages(snapshot$add_individual(ind)))
 
   temp_file <- withr::local_tempfile(fileext = ".json")
   snapshot$export(temp_file)
@@ -1177,4 +1179,48 @@ test_that("Individual$clone(deep = TRUE) isolates origin_data from the source", 
     cloned$origin_data$calculation_methods$names,
     c("Mosteller", "DuBois")
   )
+})
+
+test_that("add_individual warns on unresolved expression profiles", {
+  snapshot <- create_snapshot()
+  ind <- create_individual(
+    name = "Subject 1",
+    species = "Human",
+    expression_profiles = c("NoSuch|Human|Healthy")
+  )
+
+  expect_snapshot(snapshot$add_individual(ind))
+})
+
+test_that("add_individual does not warn when expression profiles resolve", {
+  snapshot <- create_snapshot()
+  profile <- create_expression_profile(
+    molecule = "CYP3A4",
+    species = "Human",
+    category = "Healthy",
+    type = "Enzyme"
+  )
+  suppressMessages(snapshot$add_expression_profile(profile))
+
+  ind <- create_individual(
+    name = "Subject 1",
+    species = "Human",
+    expression_profiles = c("CYP3A4|Human|Healthy")
+  )
+
+  expect_no_warning(suppressMessages(snapshot$add_individual(ind)))
+})
+
+test_that("add_individual attaches before the referenced profile exists", {
+  # Warn-and-proceed is order-independent: an individual can be added
+  # before the expression profile it references.
+  snapshot <- create_snapshot()
+  ind <- create_individual(
+    name = "Subject 1",
+    species = "Human",
+    expression_profiles = c("CYP3A4|Human|Healthy")
+  )
+
+  suppressWarnings(suppressMessages(snapshot$add_individual(ind)))
+  expect_length(snapshot$individuals, 1)
 })

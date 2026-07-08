@@ -248,7 +248,9 @@ versions abort.}
 \if{html}{\out{<a id="method-Snapshot-add_individual"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_individual}{}}}
 \subsection{\code{Snapshot$add_individual()}}{
-  Add one or more Individual objects to the snapshot.
+  Add one or more Individual objects to the snapshot. References to
+expression profiles not yet in the snapshot trigger one
+informational warning per individual; the add proceeds either way.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Snapshot$add_individual(individual)}
@@ -631,17 +633,73 @@ data, or a list of such objects.}
 \if{html}{\out{<a id="method-Snapshot-add_simulation"></a>}}
 \if{latex}{\out{\hypertarget{method-Snapshot-add_simulation}{}}}
 \subsection{\code{Snapshot$add_simulation()}}{
-  Add one or more Simulation objects to the snapshot.
+  Build a simulation from named arguments and attach it, or attach a
+pre-built simulation.
+
+The build mode is the entry point: with the snapshot in hand it
+resolves compound references and derives defaults (calculation
+methods, formulation key, alternatives) before attaching. Supply
+\code{name} plus exactly one of \code{individual} / \code{population} to build; each
+inline \code{compounds} entry is either a config list
+(\code{list(name =, protocol =, formulation =, processes =, ...)}) or a
+\link{CompoundProperties} escape-hatch object. Alternatively supply a
+pre-built \link{Simulation} (or a list of them) through \code{simulation}.
+References to building blocks not yet in the snapshot trigger one
+informational warning per simulation; the add proceeds either way.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{Snapshot$add_simulation(simulation)}
+    \preformatted{Snapshot$add_simulation(
+  simulation = NULL,
+  name = NULL,
+  model = "4Comp",
+  individual = NULL,
+  population = NULL,
+  compounds = NULL,
+  events = NULL,
+  observer_sets = NULL,
+  observed_data_names = NULL,
+  solver = NULL,
+  output_schema = NULL,
+  output_selections = NULL,
+  output_mappings = NULL,
+  parameters = NULL,
+  advanced_parameters = NULL,
+  description = NULL,
+  allow_aging = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{simulation}}{A Simulation object created with
-create_simulation(), or a list of such objects.}
+      \item{\code{simulation}}{A pre-built \link{Simulation} object, or a list of such
+objects. Leave \code{NULL} to build a simulation from the named
+arguments instead.}
+      \item{\code{name}}{Character. Simulation name (required in build mode).}
+      \item{\code{model}}{Character. PK-Sim model name (defaults to \code{"4Comp"}).}
+      \item{\code{individual}}{Character. Name of the individual building block.
+Mutually exclusive with \code{population}.}
+      \item{\code{population}}{Character. Name of the population building block.
+Mutually exclusive with \code{individual}.}
+      \item{\code{compounds}}{List of inline compound-config lists
+(\code{list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)}) and/or \link{CompoundProperties}
+objects (the escape hatch).}
+      \item{\code{events}}{List of \link{EventSelection} objects or raw lists.}
+      \item{\code{observer_sets}}{List of \link{ObserverSetSelection} objects or raw
+lists.}
+      \item{\code{observed_data_names}}{Character vector of observed-data names.}
+      \item{\code{solver}}{A \link{SolverSettings} object or raw list. Defaults to
+PK-Sim defaults.}
+      \item{\code{output_schema}}{An \link{OutputSchema} object or raw list. Defaults
+to an empty schema.}
+      \item{\code{output_selections}}{Character vector of output quantity paths.}
+      \item{\code{output_mappings}}{List of \link{OutputMapping} objects or raw lists.}
+      \item{\code{parameters}}{List of \link{LocalizedParameter} objects (created with
+\code{create_parameter(path = ..., ...)}) or raw parameter lists.}
+      \item{\code{advanced_parameters}}{List of \link{AdvancedParameter} objects or raw
+lists (population simulations only).}
+      \item{\code{description}}{Character. Free-text description of the simulation.}
+      \item{\code{allow_aging}}{Logical. Whether the simulation allows aging.}
     }
     \if{html}{\out{</div>}}
   }

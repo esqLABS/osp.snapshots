@@ -395,3 +395,15 @@
       1 CharExpr Individual CYP2D6|Human|Healthy 
       2 CharExpr Individual OATP1B1|Human|Healthy
 
+# add_individual warns on unresolved expression profiles
+
+    Code
+      snapshot$add_individual(ind)
+    Condition
+      Warning:
+      Individual "Subject 1" references expression profiles that are not in the snapshot:
+      * ExpressionProfiles: NoSuch|Human|Healthy
+      i PK-Sim will fail to resolve these at load time.
+    Message
+      v Added 1 individual(s)
+

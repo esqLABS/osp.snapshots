@@ -2,29 +2,110 @@
 % Please edit documentation in R/Snapshot.R
 \name{add_simulation}
 \alias{add_simulation}
-\title{Add one or more simulations to a snapshot}
+\title{Build a simulation from a snapshot and attach it}
 \usage{
-add_simulation(snapshot, simulation)
+add_simulation(
+  snapshot,
+  simulation = NULL,
+  name = NULL,
+  model = "4Comp",
+  individual = NULL,
+  population = NULL,
+  compounds = NULL,
+  events = NULL,
+  observer_sets = NULL,
+  observed_data_names = NULL,
+  solver = NULL,
+  output_schema = NULL,
+  output_selections = NULL,
+  output_mappings = NULL,
+  parameters = NULL,
+  advanced_parameters = NULL,
+  description = NULL,
+  allow_aging = NULL
+)
 }
 \arguments{
 \item{snapshot}{A \link{Snapshot} object.}
 
-\item{simulation}{A \link{Simulation} object created with
-\code{\link[=create_simulation]{create_simulation()}}, or a list of such objects.}
+\item{simulation}{A pre-built \link{Simulation} object, or a list of such
+objects. Leave \code{NULL} to build a simulation from the named arguments.}
+
+\item{name}{Character. Simulation name (required in build mode).}
+
+\item{model}{Character. PK-Sim model name (defaults to \code{"4Comp"}).}
+
+\item{individual}{Character. Name of the individual building block.
+Mutually exclusive with \code{population}.}
+
+\item{population}{Character. Name of the population building block.
+Mutually exclusive with \code{individual}.}
+
+\item{compounds}{List of inline compound-config lists
+(\code{list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)}) and/or \link{CompoundProperties}
+objects (the escape hatch). Inline entries are resolved against the
+snapshot; \code{CompoundProperties} objects are passed through unchanged.}
+
+\item{events}{List of \link{EventSelection} objects or raw lists.}
+
+\item{observer_sets}{List of \link{ObserverSetSelection} objects or raw
+lists.}
+
+\item{observed_data_names}{Character vector of observed-data names.}
+
+\item{solver}{A \link{SolverSettings} object or raw list. Defaults to
+PK-Sim defaults.}
+
+\item{output_schema}{An \link{OutputSchema} object or raw list. Defaults to
+an empty schema.}
+
+\item{output_selections}{Character vector of output quantity paths.}
+
+\item{output_mappings}{List of \link{OutputMapping} objects or raw lists.}
+
+\item{parameters}{List of \link{LocalizedParameter} objects (created with
+\code{create_parameter(path = ..., ...)}) or raw parameter lists.}
+
+\item{advanced_parameters}{List of \link{AdvancedParameter} objects or raw
+lists (population simulations only).}
+
+\item{description}{Character. Free-text description of the simulation.}
+
+\item{allow_aging}{Logical. Whether the simulation allows aging.}
 }
 \value{
 The updated \link{Snapshot} object, returned invisibly.
 }
 \description{
-Add one or more \link{Simulation} objects to a \link{Snapshot}. References to
-missing building blocks (individual, population, compounds, events,
-observer sets, observed data, protocols, formulations) trigger one
-informational warning per simulation; the add proceeds either way.
+Build a \link{Simulation} from named arguments and attach it to a
+\link{Snapshot}, or attach a pre-built \link{Simulation}.
+
+A simulation is almost pure references into the snapshot, so the
+snapshot is its entry point. In build mode, with the snapshot in hand,
+\code{add_simulation()} resolves compound references and derives sensible
+defaults (calculation methods, formulation key, alternatives) from the
+referenced building blocks before attaching. Supply \code{name} plus exactly
+one of \code{individual} / \code{population}, and configure each compound inline
+through \code{compounds}. The escape-hatch factories
+(\code{\link[=create_compound_properties]{create_compound_properties()}}, \code{\link[=create_protocol_selection]{create_protocol_selection()}},
+\code{\link[=create_formulation_selection]{create_formulation_selection()}}) still work: pass a
+\link{CompoundProperties} object through the same \code{compounds} slot for
+multi-slot protocols and hand-built configurations. References to
+building blocks not yet in the snapshot trigger one informational
+warning per simulation; the add proceeds either way.
 }
 \examples{
 \dontrun{
-sim <- create_simulation(name = "Sim 1", individual = "Adult")
 snapshot <- load_snapshot("Midazolam") |>
-  add_simulation(sim)
+  add_simulation(
+    name = "Sim 1",
+    individual = "Korean (Yu 2004 study)",
+    compounds = list(list(
+      name = "Rifampicin",
+      protocol = "Yu 2004 - Rifampicin - 600 mg MD OD 10 days",
+      formulation = "Oral solution",
+      processes = c("Hepatic")
+    ))
+  )
 }
 }

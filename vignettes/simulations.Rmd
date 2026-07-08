@@ -22,7 +22,7 @@ library(osp.snapshots)
 
 ## Overview
 
-This vignette shows how to assemble a *Simulation* from named arguments and attach it to a *Snapshot*. A simulation binds together other building blocks (an individual or a population, compounds, events, observer sets, observed data, protocols, formulations) plus a solver, an output schema, and parameter overrides.
+This vignette shows how to build a *Simulation* and attach it to a *Snapshot* in a single `add_simulation()` call. A simulation binds together other building blocks (an individual or a population, compounds, events, observer sets, observed data, protocols, formulations) plus a solver, an output schema, and parameter overrides. Because a simulation is almost pure references into the snapshot, the snapshot is its entry point: with every building block already in hand, `add_simulation()` resolves those references and derives sensible defaults for you.
 
 We start with the `Midazolam` template, which already ships individuals, compounds, protocols, formulations, and events that we can reference by name.
 
@@ -35,12 +35,13 @@ names(snapshot$formulations)
 names(snapshot$events)
 ```
 
-## `create_simulation()` arguments at a glance
+## `add_simulation()` arguments at a glance
 
-Every argument falls into one of three kinds: a plain scalar, a character vector of names that reference existing building blocks, or a structured object built by a matching `create_*()` sub-factory. The sections that follow walk through each sub-factory; this table is the map.
+`add_simulation()` takes the `snapshot` as its first argument, then a `name` and the building-block references that make up the simulation. Every argument falls into one of three kinds: a plain scalar, a character vector of names that reference existing building blocks, or a structured value (most often an inline `compounds` config; see below). The sections that follow walk through each piece; this table is the map.
 
 | Argument              | Type                                                       | Required? |
 | --------------------- | ---------------------------------------------------------- | --------- |
+| `snapshot`            | a `Snapshot` (the entry point; first argument)             | yes       |
 | `name`                | string                                                     | yes       |
 | `individual`          | string (name of an Individual building block)              | XOR with `population` |
 | `population`          | string (name of a Population building block)               | XOR with `individual` |
@@ -51,7 +52,7 @@ Every argument falls into one of three kinds: a plain scalar, a character vector
 | `output_selections`   | character vector of output-quantity paths                  | no        |
 | `solver`              | `create_solver_settings()` output                          | no        |
 | `output_schema`       | `create_output_schema()` output                            | no        |
-| `compounds`           | list of `create_compound_properties()` outputs             | no        |
+| `compounds`           | list of inline compound-config lists (`list(name =, protocol =, formulation =, processes =, ...)`) and/or `create_compound_properties()` outputs | no |
 | `events`              | list of `create_event_selection()` outputs                 | no        |
 | `observer_sets`       | list of `create_observer_set_selection()` outputs          | no        |
 | `output_mappings`     | list of `create_output_mapping()` outputs                  | no        |
@@ -69,7 +70,7 @@ Every argument falls into one of three kinds: a plain scalar, a character vector
 - `output_selections`: no quantities are explicitly marked for reporting beyond whatever the model defaults to. Supply at least one path to control what the simulation outputs.
 - `solver`: PK-Sim builds a `SolverSettings` from `ISolverSettingsFactory.CreateDefault()` (built-in CVODE defaults).
 - `output_schema`: PK-Sim builds an empty schema via `IOutputSchemaFactory.CreateEmpty()`; the simulation reports no time points. Supply at least one interval to get output.
-- `compounds`: the simulation has no compound configuration. Compounds referenced indirectly (e.g. via a protocol) still need a `CompoundProperties` entry to be runnable.
+- `compounds`: the simulation has no compound configuration. Compounds referenced indirectly (e.g. via a protocol) still need a compound entry to be runnable.
 - `events`: no events are attached.
 - `observer_sets`: no observer sets are attached.
 - `output_mappings`: no observed-data-to-output bindings are recorded. Parameter identification and downstream comparison tools will have nothing to compare.
@@ -82,7 +83,7 @@ Every argument falls into one of three kinds: a plain scalar, a character vector
 
 **All arguments are optional**, with the PK-Sim fallback when omitted:
 
-- `abs_tol`, `rel_tol`, `use_jacobian`, `h0`, `h_min`, `h_max`, `mx_step`: each field omitted from the snapshot is filled by `ISolverSettingsFactory.CreateDefault()` on load, so the simulation runs with PK-Sim's built-in CVODE defaults. Calling `create_solver_settings()` with no arguments is the same as not supplying `solver` to `create_simulation()` at all.
+- `abs_tol`, `rel_tol`, `use_jacobian`, `h0`, `h_min`, `h_max`, `mx_step`: each field omitted from the snapshot is filled by `ISolverSettingsFactory.CreateDefault()` on load, so the simulation runs with PK-Sim's built-in CVODE defaults. Calling `create_solver_settings()` with no arguments is the same as not supplying `solver` to `add_simulation()` at all.
 
 ```{r}
 solver <- create_solver_settings(
@@ -117,33 +118,45 @@ schema <- create_output_schema(
 
 ## Compound properties
 
-`create_compound_properties()` configures one compound for the simulation.
+Each entry of `compounds` configures one compound for the simulation. The common path is an inline config list; the escape-hatch factories are still accepted through the same slot (see below).
 
-### Compound vs CompoundProperties
+### Compound vs compound configuration
 
 A `Compound` building block (the kind you find in `snapshot$compounds`) is the project-level definition of a drug: its physicochemical properties, the full menu of available alternatives, the process templates it ships, and so on. The same compound can be referenced by many simulations.
 
-`CompoundProperties` is the *per-simulation overlay* that picks one path through that menu. For each simulation that uses the compound you record:
+A compound *configuration* is the per-simulation overlay that picks one path through that menu. For each simulation that uses the compound you record:
 
 - which `calculation_methods` override the compound's defaults,
 - which `alternatives` (e.g. solubility, permeability) are selected,
 - which `processes` are enabled, and how each is wired to molecules or systemic types,
 - which `protocol` is used and which formulation fills each application slot.
 
-None of those choices live on the `Compound` building block, which is why `create_compound_properties()` exists as a separate step even when the compound is already in `snapshot$compounds`. The reference back to the building block is the `name` argument; everything else is simulation-local.
+Because the snapshot is the entry point, `add_simulation()` derives most of these from the referenced building block when you leave them out: you point at the compound by `name`, and the resolver fills in the rest.
 
-By contrast, `create_event_selection()` only takes `name` plus a `start_time`, and `create_observer_set_selection()` only takes `name`, because events and observer sets have nothing analogous to alternatives/processes/protocol to choose between at simulation time.
-
-### Arguments
+### Inline fields
 
 - **Required:** `name`, which must match a compound in the snapshot.
-- **Optional**, with the PK-Sim fallback when omitted:
-  - `calculation_methods`: the simulation uses the calculation-method cache already defined on the `Compound` building block.
-  - `alternatives`: each unspecified alternative group keeps the default alternative marked on the compound (typically the first or the one with `IsDefault = TRUE`).
-  - `processes`: every compound process that is not listed is treated as deselected; PK-Sim materialises the right placeholder (`NotSelectedSystemicProcess`, `NoInteractionProcess`, ...) so the simulation runs as if you had explicitly disabled it.
+- **Optional**, derived from the snapshot when omitted:
+  - `calculation_methods`: derived from the calculation methods defined on the referenced `Compound` building block.
+  - `alternatives`: each alternative group is defaulted to that group's default alternative (the one marked `IsDefault`, or `"User defined"` as a fallback).
+  - `formulation` (together with `protocol`): the resolver infers the formulation key from the referenced protocol's application slot (falling back to the literal `"Formulation"` key for simple protocols).
+  - `processes`: **never defaulted.** Omitting `processes` produces no process array, which deselects the compound's processes in PK-Sim (it materialises the right placeholder so the simulation runs as if you had explicitly disabled them). List the processes you want to keep. A name is classified as a systemic-process type when it is one of `"Hepatic"`, `"Renal"`, or `"Biliary"`; every other name is treated as a molecule name.
   - `protocol`: when omitted, the compound is included with no dosing protocol attached, which means it will not be administered during the simulation (useful for compounds that are only produced metabolically).
 
 ```{r}
+compound <- list(
+  name = "Midazolam",
+  protocol = "iv 1 mg (bolus)",
+  formulation = "Oral solution",
+  processes = c("Hepatic")
+)
+```
+
+### The escape hatch
+
+For a multi-slot protocol, or any hand-built configuration you want full control over, build the compound entry with the factory functions and pass the resulting `CompoundProperties` object through the same `compounds` slot. When you do, the resolver leaves it untouched (no defaulting):
+
+```{r, eval = FALSE}
 compound <- create_compound_properties(
   name = "Midazolam",
   calculation_methods = c(
@@ -228,35 +241,27 @@ overrides <- list(
 )
 ```
 
-## Assemble the simulation
+## Build, attach, and export
 
-With every input prepared, the final `create_simulation()` call wires them together.
-
-```{r}
-sim <- create_simulation(
-  name = "Midazolam single dose",
-  model = "4Comp",
-  individual = "Korean (Yu 2004 study)",
-  compounds = list(compound),
-  events = list(event),
-  solver = solver,
-  output_schema = schema,
-  output_selections = c(
-    "Organism|PeripheralVenousBlood|Midazolam|Plasma (Peripheral Venous Blood)"
-  ),
-  parameters = overrides
-)
-
-sim
-```
-
-## Attach and export
-
-`add_simulation()` appends the simulation to a snapshot. If any name referenced by the simulation does not resolve to a known building block, you get one informational warning per simulation; the add proceeds either way.
+With every input prepared, a single `add_simulation()` call builds the simulation from these references, resolves them against the snapshot, derives the compound defaults, and attaches the result. If any name referenced by the simulation does not resolve to a known building block, you get one informational warning per simulation; the add proceeds either way.
 
 ```{r}
 snapshot <- snapshot |>
-  add_simulation(sim)
+  add_simulation(
+    name = "Midazolam single dose",
+    model = "4Comp",
+    individual = "Korean (Yu 2004 study)",
+    compounds = list(compound),
+    events = list(event),
+    solver = solver,
+    output_schema = schema,
+    output_selections = c(
+      "Organism|PeripheralVenousBlood|Midazolam|Plasma (Peripheral Venous Blood)"
+    ),
+    parameters = overrides
+  )
+
+snapshot$simulations[["Midazolam single dose"]]
 ```
 
 Export with `export_snapshot()` and PK-Sim will load the resulting JSON.

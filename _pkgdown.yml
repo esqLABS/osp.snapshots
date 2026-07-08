@@ -120,7 +120,6 @@ reference:
   - create_protocol_selection
   - create_schema
   - create_schema_item
-  - create_simulation
   - create_solver_settings
 
 - title: "Mutators"
