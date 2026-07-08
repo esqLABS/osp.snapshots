@@ -19,11 +19,14 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(osp.snapshots)
 library(dplyr)
+library(gt)
 ```
 
-## Overview
+## Reporting the inputs that drive a simulation
 
-osp.snapshots can flatten the nested PK-Sim snapshot tree into tibbles ready for downstream analysis with `dplyr`. This vignette covers the entry point, the per-kind shapes, and a few common analysis patterns.
+A PK-Sim snapshot is mostly *configuration*: the compounds, individuals, formulations, protocols, and other building blocks that define how a simulation is set up. Observed data and simulation results are already easy to report with the wider R ecosystem; what has been awkward is reporting the **inputs**, because they live deep inside a nested JSON tree.
+
+`as_tibbles()` flattens those building blocks into tidy tibbles, one concept per table, so you can filter them with `dplyr` and render them as publication-quality tables. This vignette pairs `as_tibbles()` with [`gt`](https://gt.rstudio.com/) to turn the configuration of a model into report-ready HTML tables.
 
 ```{r}
 snapshot <- load_snapshot("Midazolam")
@@ -52,26 +55,36 @@ names(compound_dfs)
 
 The tibble layer is read-only: mutating a returned tibble does not feed changes back into the snapshot.
 
-## Compounds: `$properties` and `$processes`
+The sections below feature four kinds chosen because each has a different *shape*: a single flat table (protocols), a header split from a long-form parameter table (compounds, formulations), and several related tables keyed by an id (individuals). Every other kind follows one of these same shapes, so the same reporting recipe applies to all of them.
+
+## Compounds: a flat table and a long-form table
 
 `as_tibbles(snapshot, "compounds")` returns a list of two tibbles:
 
 * `$properties` carries one row per (compound, parameter) pair across the *Compound* physicochemical properties.
 * `$processes` is the long-form view: one row per (compound, process, parameter) triple across every biological *Process* (metabolism, transport, clearance, binding, ...).
 
+The physicochemical properties render directly as a report table:
+
 ```{r}
-head(compound_dfs$properties)
-head(compound_dfs$processes)
+compound_dfs$properties |>
+  gt() |>
+  tab_header(title = "Compound physicochemical properties")
 ```
 
-The `$processes` tibble carries a `category` column that mirrors `process$category` on the R6 side. Filtering by category gives the same view as the per-category groups on a compound:
+### Filtering before you render
 
-```{r, eval=FALSE}
+The `$processes` tibble carries a `category` column that mirrors `process$category` on the R6 side. Filtering by category with `dplyr::filter()` gives the same view as the per-category groups on a compound, and the filtered result flows straight into `gt`:
+
+```{r}
 compound_dfs$processes |>
-  filter(category == "metabolizing_enzymes")
+  filter(category == "metabolizing_enzymes") |>
+  select(process_name, molecule, parameter, value, unit) |>
+  gt() |>
+  tab_header(title = "Metabolizing enzymes")
 ```
 
-## Individuals: three related tibbles
+## Individuals: several related tables
 
 `as_tibbles(snapshot, "individuals")` returns three tibbles joinable on `individual_id`:
 
@@ -79,16 +92,19 @@ compound_dfs$processes |>
 * `$individuals_parameters` is the long-form view of the individual's parameter tree: one row per (individual, parameter path) pair, with value, unit, source, and value-origin metadata.
 * `$individuals_expressions` lists the expression profiles attached to each individual: one row per (individual, profile) pair.
 
+A focused selection of the demographic columns makes a compact subject table:
+
 ```{r}
 individual_dfs <- as_tibbles(snapshot, "individuals")
 names(individual_dfs)
 
-head(individual_dfs$individuals)
-head(individual_dfs$individuals_parameters)
-head(individual_dfs$individuals_expressions)
+individual_dfs$individuals |>
+  select(name, species, population, gender, age, age_unit, weight, weight_unit) |>
+  gt() |>
+  tab_header(title = "Individuals")
 ```
 
-## Formulations: `$formulations` and `$formulations_parameters`
+## Formulations: a header split from its parameters
 
 `as_tibbles(snapshot, "formulations")` returns two tibbles joinable on `formulation_id`:
 
@@ -98,53 +114,40 @@ head(individual_dfs$individuals_expressions)
 ```{r}
 formulation_dfs <- as_tibbles(snapshot, "formulations")
 names(formulation_dfs)
-head(formulation_dfs$formulations)
-head(formulation_dfs$formulations_parameters)
+
+formulation_dfs$formulations |>
+  gt() |>
+  tab_header(title = "Formulations")
+
+formulation_dfs$formulations_parameters |>
+  select(name, value, unit) |>
+  gt() |>
+  tab_header(title = "Formulation release parameters")
 ```
 
-## Populations: `$populations` and `$populations_parameters`
+## Protocols: a single flat table
 
-`as_tibbles(snapshot, "populations")` returns two tibbles joinable on `population_id`:
-
-* `$populations` has one row per *Population* with the sampling-recipe header: source population, individual name, sample size, proportion of females, seed, and the age, weight, height, BMI, and eGFR bound columns.
-* `$populations_parameters` is the long-form view of the sampling distributions PK-Sim will draw from: one row per (population, parameter) pair, with `distribution_type`, `statistic`, value, and unit.
+`as_tibbles(snapshot, "protocols")` returns a single tibble whether the snapshot has any protocols or not. *Advanced Protocols* contribute one row per *Schema* item, with the protocol-level, schema-level, and item-level parameters joined by name. This is the simplest shape: one kind, one table, ready to render.
 
 ```{r}
-population_dfs <- as_tibbles(snapshot, "populations")
-names(population_dfs)
-head(population_dfs$populations)
+as_tibbles(snapshot, "protocols") |>
+  select(protocol_name, dose, dose_unit, start_time, start_time_unit, dosing_interval) |>
+  gt() |>
+  tab_header(title = "Dosing protocols")
 ```
 
-## Protocols: `Schema` and `SchemaItem` rows
+## Every building block exports the same way
 
-`as_tibbles(snapshot, "protocols")` returns a single 13-column tibble whether the snapshot has any protocols or not. *Advanced Protocols* contribute one row per *Schema* item, with the protocol-level, schema-level, and item-level parameters joined by name.
+The four kinds above cover every shape `as_tibbles()` produces. The same call works for `"events"`, `"expression_profiles"`, `"populations"`, and `"observer_sets"`: each returns either a single flat tibble or a header split from a long-form parameter table, ready for the same `filter()` + `gt()` recipe. Kinds a snapshot does not define come back as empty (0-row) tibbles with the same columns, so reporting code never has to special-case a missing building block.
+
+Passing no `kind` converts everything at once, keyed by kind name, which is handy when assembling a multi-table report:
 
 ```{r}
-protocols_df <- as_tibbles(snapshot, "protocols")
-head(protocols_df)
+all_kinds <- as_tibbles(snapshot)
+names(all_kinds)
 ```
 
-## Observer sets: `$observer_sets` and `$observers`
-
-`as_tibbles(snapshot, "observer_sets")` returns a list of two tibbles joinable on `observer_set_id` (or `observer_set_name`):
-
-* `$observer_sets` has one row per *ObserverSet* with its name and the count of observers it contains.
-* `$observers` has one row per *Observer* with its name, type, dimension, `formula_expression`, `formula_dimension`, `formula_references` (the underlying `ExplicitFormula` references collapsed to `"alias=path"` pairs joined with `|`), and `container_tags` (the `|`-joined `Tag` values from the underlying `ContainerCriteria`).
-
-```{r, eval=FALSE}
-observer_dfs <- as_tibbles(snapshot, "observer_sets")
-names(observer_dfs)
-head(observer_dfs$observers)
-```
-
-## Observed data
-
-`as_tibbles(snapshot, "observed_data")` flattens every observed-data series into a long-form tibble ready for plotting.
-
-```{r}
-obs_data_df <- as_tibbles(snapshot, "observed_data")
-head(obs_data_df)
-```
+`"observed_data"` is also available and flattens every observed-data series into a long-form tibble, though it is measurement data rather than a configuration input.
 
 ## Next steps
 
