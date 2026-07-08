@@ -222,6 +222,19 @@ Export with `export_snapshot()` and PK-Sim will load the resulting JSON.
 export_snapshot(snapshot, "midazolam-with-new-sim.json")
 ```
 
+## Run the simulation
+
+`osp.snapshots` builds and edits snapshots; running them belongs to [`ospsuite`](https://www.open-systems-pharmacology.org/OSPSuite-R/). Once the snapshot is on disk, hand the JSON to `ospsuite::runSimulationsFromSnapshot()`, which loads every simulation it contains and writes the results to an output directory.
+
+```{r, eval = FALSE}
+library(ospsuite)
+
+runSimulationsFromSnapshot(
+  "midazolam-with-new-sim.json",
+  output = "results"
+)
+```
+
 ## Removing a simulation
 
 ```{r}

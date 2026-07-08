@@ -93,7 +93,7 @@ test_that("permeability is surfaced in print and the properties tibble", {
     name = "X",
     is_small_molecule = TRUE,
     molecular_weight = 250,
-    permeability = 0.0069
+    permeability = permeability(0.0069)
   )
 
   expect_snapshot(print(compound))
@@ -203,6 +203,43 @@ test_that("permeability field reads and writes on a compound without the key", {
   expect_equal(param$Unit, "cm/min")
 })
 
+test_that("physicochemical fields accept helper objects identically to scalars", {
+  helper <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+  scalar <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  helper$lipophilicity <- lipophilicity(2.5)
+  scalar$lipophilicity <- 2.5
+  expect_equal(helper$data$Lipophilicity, scalar$data$Lipophilicity)
+
+  helper$fraction_unbound <- fraction_unbound(0.2)
+  scalar$fraction_unbound <- 0.2
+  expect_equal(helper$data$FractionUnbound, scalar$data$FractionUnbound)
+
+  helper$intestinal_permeability <- intestinal_permeability(2e-05)
+  scalar$intestinal_permeability <- 2e-05
+  expect_equal(
+    helper$data$IntestinalPermeability,
+    scalar$data$IntestinalPermeability
+  )
+})
+
+test_that("solubility field accepts a helper matching the factory raw shape", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  compound$solubility <- solubility(9999, reference_pH = 7)
+  factory <- create_compound(
+    name = "X",
+    solubility = solubility(9999, reference_pH = 7)
+  )
+  expect_equal(compound$data$Solubility, factory$data$Solubility)
+})
+
+test_that("assigning the wrong helper to a physicochemical field aborts", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+  expect_snapshot(error = TRUE, compound$lipophilicity <- weight(70))
+  expect_snapshot(error = TRUE, compound$solubility <- lipophilicity(2.5))
+})
+
 test_that("physicochemical fields accept a raw alternative list verbatim", {
   compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
 
@@ -299,13 +336,11 @@ test_that("invalid physicochemical field assignments abort", {
 test_that("compound built with new arguments round-trips through export", {
   compound <- create_compound(
     name = "RTX",
-    lipophilicity = 2.5,
-    fraction_unbound = 1,
-    solubility = 9999,
-    reference_pH = 7,
-    solubility_gain_per_charge = 1000,
-    intestinal_permeability = 1.14e-05,
-    permeability = 0.0069,
+    lipophilicity = lipophilicity(2.5),
+    fraction_unbound = fraction_unbound(1),
+    solubility = solubility(9999, reference_pH = 7, gain_per_charge = 1000),
+    intestinal_permeability = intestinal_permeability(1.14e-05),
+    permeability = permeability(0.0069),
     pKa = list(list(type = "Base", value = 10.02)),
     processes = list(
       create_process(

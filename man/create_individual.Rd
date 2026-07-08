@@ -10,13 +10,9 @@ create_individual(
   population = NULL,
   gender = NULL,
   age = NULL,
-  age_unit = "year(s)",
   weight = NULL,
-  weight_unit = "kg",
   height = NULL,
-  height_unit = "cm",
   gestational_age = NULL,
-  gestational_age_unit = "week(s)",
   calculation_methods = NULL,
   disease_state = NULL,
   disease_state_parameters = NULL,
@@ -35,21 +31,14 @@ create_individual(
 
 \item{gender}{Character. Gender of the individual (must be valid ospsuite Gender)}
 
-\item{age}{Numeric. Age of the individual}
+\item{age}{An \code{\link[=age]{age()}} object, or \code{NULL}.}
 
-\item{age_unit}{Character. Unit for age (must be valid unit for "Age in years")}
+\item{weight}{A \code{\link[=weight]{weight()}} object, or \code{NULL}.}
 
-\item{weight}{Numeric. Weight of the individual}
+\item{height}{A \code{\link[=height]{height()}} object, or \code{NULL}.}
 
-\item{weight_unit}{Character. Unit for weight (must be valid unit for "Mass")}
-
-\item{height}{Numeric. Height of the individual}
-
-\item{height_unit}{Character. Unit for height (must be valid unit for "Length")}
-
-\item{gestational_age}{Numeric. Gestational age of the individual (for infant/preterm individuals)}
-
-\item{gestational_age_unit}{Character. Unit for gestational age (must be valid unit for "Time")}
+\item{gestational_age}{A \code{\link[=gestational_age]{gestational_age()}} object, or \code{NULL} (for
+infant/preterm individuals).}
 
 \item{calculation_methods}{Character vector. Calculation methods used for the individual}
 
@@ -88,9 +77,9 @@ individual <- create_individual(
   species = "Human",
   population = "European_ICRP_2002",
   gender = "MALE",
-  age = 30,
-  weight = 70,
-  height = 175
+  age = age(30),
+  weight = weight(70),
+  height = height(175)
 )
 
 # Create an individual with calculation methods
@@ -121,4 +110,8 @@ individual <- create_individual(
     )
   )
 )
+}
+\seealso{
+\code{\link[=age]{age()}}, \code{\link[=weight]{weight()}}, \code{\link[=height]{height()}}, \code{\link[=gestational_age]{gestational_age()}} for the
+demographic value-object helpers.
 }

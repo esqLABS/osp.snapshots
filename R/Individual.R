@@ -543,14 +543,11 @@ Individual <- R6::R6Class(
 #' @param species Character. Species of the individual (must be valid ospsuite Species)
 #' @param population Character. Population of the individual (must be valid ospsuite HumanPopulation)
 #' @param gender Character. Gender of the individual (must be valid ospsuite Gender)
-#' @param age Numeric. Age of the individual
-#' @param age_unit Character. Unit for age (must be valid unit for "Age in years")
-#' @param weight Numeric. Weight of the individual
-#' @param weight_unit Character. Unit for weight (must be valid unit for "Mass")
-#' @param height Numeric. Height of the individual
-#' @param height_unit Character. Unit for height (must be valid unit for "Length")
-#' @param gestational_age Numeric. Gestational age of the individual (for infant/preterm individuals)
-#' @param gestational_age_unit Character. Unit for gestational age (must be valid unit for "Time")
+#' @param age An [age()] object, or `NULL`.
+#' @param weight A [weight()] object, or `NULL`.
+#' @param height A [height()] object, or `NULL`.
+#' @param gestational_age A [gestational_age()] object, or `NULL` (for
+#'   infant/preterm individuals).
 #' @param calculation_methods Character vector. Calculation methods used for the individual
 #' @param disease_state Character. Disease state of the individual (optional)
 #' @param disease_state_parameters List. Parameters for disease state (optional)
@@ -566,6 +563,8 @@ Individual <- R6::R6Class(
 #'   entry must be path-bearing. Default `NULL` (no parameter overrides).
 #'
 #' @return An Individual object
+#' @seealso [age()], [weight()], [height()], [gestational_age()] for the
+#'   demographic value-object helpers.
 #' @export
 #'
 #' @examples
@@ -578,9 +577,9 @@ Individual <- R6::R6Class(
 #'   species = "Human",
 #'   population = "European_ICRP_2002",
 #'   gender = "MALE",
-#'   age = 30,
-#'   weight = 70,
-#'   height = 175
+#'   age = age(30),
+#'   weight = weight(70),
+#'   height = height(175)
 #' )
 #'
 #' # Create an individual with calculation methods
@@ -617,13 +616,9 @@ create_individual <- function(
   population = NULL,
   gender = NULL,
   age = NULL,
-  age_unit = "year(s)",
   weight = NULL,
-  weight_unit = "kg",
   height = NULL,
-  height_unit = "cm",
   gestational_age = NULL,
-  gestational_age_unit = "week(s)",
   calculation_methods = NULL,
   disease_state = NULL,
   disease_state_parameters = NULL,
@@ -642,18 +637,27 @@ create_individual <- function(
   if (!is.null(gender)) {
     validate_gender(gender)
   }
-  if (!is.null(age_unit)) {
-    validate_unit(age_unit, "Age in years")
-  }
-  if (!is.null(weight_unit)) {
-    validate_unit(weight_unit, "Mass")
-  }
-  if (!is.null(height_unit)) {
-    validate_unit(height_unit, "Length")
-  }
-  if (!is.null(gestational_age_unit)) {
-    validate_unit(gestational_age_unit, "Time")
-  }
+  # Each demographic field must be built with its helper (value, unit, and
+  # unit validation live in the helper). A bare scalar aborts with guidance.
+  require_value_spec(age, "age_spec", "age", example = "age = age(30)")
+  require_value_spec(
+    weight,
+    "weight_spec",
+    "weight",
+    example = "weight = weight(70)"
+  )
+  require_value_spec(
+    height,
+    "height_spec",
+    "height",
+    example = "height = height(175)"
+  )
+  require_value_spec(
+    gestational_age,
+    "gestational_age_spec",
+    "gestational_age",
+    example = "gestational_age = gestational_age(38)"
+  )
 
   # Validate the expression profiles, description, and parameters up front so
   # a bad argument aborts before any object is constructed (no half-built
@@ -691,18 +695,24 @@ create_individual <- function(
 
   # Add measurements with units
   if (!is.null(age)) {
-    characteristics_data$Age <- list(Value = age, Unit = age_unit)
+    characteristics_data$Age <- list(Value = age$value, Unit = age$unit)
   }
   if (!is.null(weight)) {
-    characteristics_data$Weight <- list(Value = weight, Unit = weight_unit)
+    characteristics_data$Weight <- list(
+      Value = weight$value,
+      Unit = weight$unit
+    )
   }
   if (!is.null(height)) {
-    characteristics_data$Height <- list(Value = height, Unit = height_unit)
+    characteristics_data$Height <- list(
+      Value = height$value,
+      Unit = height$unit
+    )
   }
   if (!is.null(gestational_age)) {
     characteristics_data$GestationalAge <- list(
-      Value = gestational_age,
-      Unit = gestational_age_unit
+      Value = gestational_age$value,
+      Unit = gestational_age$unit
     )
   }
 

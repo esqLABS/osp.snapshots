@@ -151,7 +151,7 @@ test_that("create_population carries a composed base individual verbatim", {
     species = "Human",
     population = "European_ICRP_2002",
     gender = "MALE",
-    age = 40,
+    age = age(40),
     seed = 99
   )
   pop <- create_population(

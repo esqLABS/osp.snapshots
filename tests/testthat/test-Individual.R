@@ -278,9 +278,9 @@ test_that("create_individual creates complete individual", {
     species = ospsuite::Species[1],
     population = ospsuite::HumanPopulation[1],
     gender = ospsuite::Gender[1],
-    age = 30,
-    weight = 70,
-    height = 175,
+    age = age(30),
+    weight = weight(70),
+    height = height(175),
     seed = 12345
   )
 
@@ -302,12 +302,9 @@ test_that("create_individual handles custom units", {
   # Create individual with custom units
   individual <- create_individual(
     name = "Custom Units",
-    age = 360,
-    age_unit = "month(s)",
-    weight = 70000,
-    weight_unit = "g",
-    height = 1.75,
-    height_unit = "m"
+    age = age(360, unit = "month(s)"),
+    weight = weight(70000, unit = "g"),
+    height = height(1.75, unit = "m")
   )
 
   # Test values and units are set correctly
@@ -338,19 +335,24 @@ test_that("create_individual validates inputs", {
     "Invalid gender"
   )
 
-  # Test invalid units
+  # Test invalid units (validated by the demographic helpers)
   expect_error(
-    create_individual(age = 30, age_unit = "invalid"),
+    age(30, unit = "invalid"),
     "Invalid unit"
   )
   expect_error(
-    create_individual(weight = 70, weight_unit = "invalid"),
+    weight(70, unit = "invalid"),
     "Invalid unit"
   )
   expect_error(
-    create_individual(height = 175, height_unit = "invalid"),
+    height(175, unit = "invalid"),
     "Invalid unit"
   )
+})
+
+test_that("create_individual rejects a plain scalar or the wrong helper", {
+  expect_snapshot(error = TRUE, create_individual(name = "X", age = 30))
+  expect_snapshot(error = TRUE, create_individual(name = "X", age = weight(70)))
 })
 
 test_that("Individual parameters can be accessed and modified", {
@@ -763,12 +765,9 @@ test_that("create_individual validates all inputs properly", {
       species = "Human",
       population = ospsuite::HumanPopulation[1],
       gender = ospsuite::Gender[1],
-      age = 30,
-      age_unit = "year(s)",
-      weight = 70,
-      weight_unit = "kg",
-      height = 180,
-      height_unit = "cm",
+      age = age(30, unit = "year(s)"),
+      weight = weight(70, unit = "kg"),
+      height = height(180, unit = "cm"),
       calculation_methods = c("Method1", "Method2"),
       disease_state = "CKD",
       disease_state_parameters = list(
@@ -778,17 +777,17 @@ test_that("create_individual validates all inputs properly", {
     )
   )
 
-  # Test invalid units
+  # Test invalid units (validated by the demographic helpers)
   expect_error(
-    create_individual(age_unit = "invalid_unit")
+    age(30, unit = "invalid_unit")
   )
 
   expect_error(
-    create_individual(weight_unit = "invalid_unit")
+    weight(70, unit = "invalid_unit")
   )
 
   expect_error(
-    create_individual(height_unit = "invalid_unit")
+    height(175, unit = "invalid_unit")
   )
 })
 
@@ -799,12 +798,10 @@ test_that("create_individual supports gestational age", {
     species = "Human",
     population = "Preterm",
     gender = "MALE",
-    age = 10.0,
-    age_unit = "day(s)",
-    gestational_age = 30.0,
-    gestational_age_unit = "week(s)",
-    weight = 1.5,
-    height = 40
+    age = age(10.0, unit = "day(s)"),
+    gestational_age = gestational_age(30.0, unit = "week(s)"),
+    weight = weight(1.5),
+    height = height(40)
   )
 
   # Test that gestational age was set correctly
@@ -909,6 +906,66 @@ test_that("Gestational age can be set to NULL after being set", {
   expect_equal(ind$gestational_age, 30)
   ind$gestational_age <- NULL
   expect_null(ind$gestational_age)
+})
+
+test_that("demographic fields accept helper objects identically to scalars", {
+  helper <- create_individual(name = "H")
+  scalar <- create_individual(name = "S")
+
+  helper$age <- age(25, unit = "year(s)")
+  scalar$age <- 25
+  scalar$age_unit <- "year(s)"
+  expect_equal(helper$data$OriginData$Age, scalar$data$OriginData$Age)
+
+  helper$weight <- weight(80)
+  scalar$weight <- 80
+  scalar$weight_unit <- "kg"
+  expect_equal(helper$data$OriginData$Weight, scalar$data$OriginData$Weight)
+
+  helper$height <- height(180)
+  scalar$height <- 180
+  scalar$height_unit <- "cm"
+  expect_equal(helper$data$OriginData$Height, scalar$data$OriginData$Height)
+
+  helper$gestational_age <- gestational_age(32)
+  scalar$gestational_age <- 32
+  scalar$gestational_age_unit <- "week(s)"
+  expect_equal(
+    helper$data$OriginData$GestationalAge,
+    scalar$data$OriginData$GestationalAge
+  )
+})
+
+test_that("assigning the wrong helper to a demographic field aborts", {
+  ind <- create_individual(name = "X")
+  expect_snapshot(error = TRUE, ind$age <- weight(70))
+})
+
+test_that("individual built with helpers round-trips through export", {
+  individual <- create_individual(
+    name = "RT Individual",
+    species = "Human",
+    population = "European_ICRP_2002",
+    gender = "MALE",
+    age = age(30),
+    weight = weight(70),
+    height = height(175),
+    gestational_age = gestational_age(38)
+  )
+  snap <- add_individual(create_snapshot(), individual)
+
+  path <- withr::local_tempfile(fileext = ".json")
+  export_snapshot(snap, path)
+  reloaded <- load_snapshot(path)
+  ri <- reloaded$individuals[[1]]
+
+  expect_equal(ri$data$OriginData$Age, individual$data$OriginData$Age)
+  expect_equal(ri$data$OriginData$Weight, individual$data$OriginData$Weight)
+  expect_equal(ri$data$OriginData$Height, individual$data$OriginData$Height)
+  expect_equal(
+    ri$data$OriginData$GestationalAge,
+    individual$data$OriginData$GestationalAge
+  )
 })
 
 test_that("Units can be set to NULL after being set", {
