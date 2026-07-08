@@ -2,17 +2,27 @@
 #'
 #' @description
 #' Unified bridge from a `Snapshot` to the tidyverse for any
-#' building-block kind plus observed data. Replaces the eight
+#' building-block kind plus observed data. Replaces the nine
 #' per-kind `get_*_dfs()` functions as the canonical entry point;
-#' those remain available as thin wrappers.
+#' those remain available as thin wrappers. Omit `kind` to convert
+#' every kind of a snapshot in a single call.
 #'
 #' @param snapshot A `Snapshot` object.
-#' @param kind Character scalar naming the collection to convert.
-#'   One of `"compounds"`, `"individuals"`, `"formulations"`,
+#' @param kind Character vector naming the collection(s) to convert,
+#'   or `NULL` (the default) to convert every kind. Each element must
+#'   be one of `"compounds"`, `"individuals"`, `"formulations"`,
 #'   `"populations"`, `"events"`, `"expression_profiles"`,
-#'   `"protocols"`, `"observer_sets"`, `"observed_data"`.
+#'   `"protocols"`, `"observer_sets"`, `"observed_data"`. A length-1
+#'   `kind` returns that kind's native shape directly (a tibble or a
+#'   named list of tibbles); a length-2-or-more `kind` returns a named
+#'   list keyed by the requested kinds, in request order; `NULL`
+#'   returns a named list of all nine kinds in the order above.
 #'
-#' @return A tibble or a named list of tibbles, depending on `kind`:
+#' @return When `kind` names a single collection, a tibble or a named
+#'   list of tibbles for that collection (see below). When `kind` names
+#'   several collections, or is `NULL` (all nine kinds), a named list
+#'   keyed by the requested kinds, each entry the native shape of that
+#'   kind:
 #' \itemize{
 #'   \item `"compounds"`: a list with `properties` and `processes`
 #'     tibbles. `properties` carries one row per (compound,
@@ -48,8 +58,12 @@
 #' # List of tibbles
 #' individuals <- as_tibbles(snapshot, "individuals")
 #' individuals$individuals_parameters
+#'
+#' # Omit `kind` to convert every kind at once, keyed by kind name
+#' all_kinds <- as_tibbles(snapshot)
+#' names(all_kinds)
 #' }
-as_tibbles <- function(snapshot, kind) {
+as_tibbles <- function(snapshot, kind = NULL) {
   validate_snapshot(snapshot)
 
   builders <- list(
@@ -64,20 +78,34 @@ as_tibbles <- function(snapshot, kind) {
     observed_data = as_tibbles_observed_data
   )
 
-  if (!is.character(kind) || length(kind) != 1L || is.na(kind)) {
+  if (is.null(kind)) {
+    kind <- names(builders)
+  }
+
+  if (!is.character(kind)) {
     cli::cli_abort(
-      "{.arg kind} must be a single string, not {.obj_type_friendly {kind}}."
+      "{.arg kind} must be `NULL` or a character vector, not \\
+      {.obj_type_friendly {kind}}."
     )
   }
 
-  if (!kind %in% names(builders)) {
+  if (length(kind) == 0L) {
+    cli::cli_abort("{.arg kind} must name at least one collection.")
+  }
+
+  unknown <- kind[!kind %in% names(builders)]
+  if (length(unknown) > 0L) {
     cli::cli_abort(c(
-      "Unknown {.arg kind} {.val {kind}}.",
+      "Unknown {.arg kind} {.val {unknown}}.",
       i = "Must be one of {.val {names(builders)}}."
     ))
   }
 
-  builders[[kind]](snapshot)
+  if (length(kind) == 1L) {
+    return(builders[[kind]](snapshot))
+  }
+
+  stats::setNames(lapply(kind, \(k) builders[[k]](snapshot)), kind)
 }
 
 as_tibbles_compounds <- function(snapshot) {
