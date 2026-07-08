@@ -32,22 +32,10 @@ A \link{CompoundProperties} object.
 \description{
 Build a \link{CompoundProperties} entry, used inside a \link{Simulation} to
 configure a \link{Compound} building block: which calculation methods to
-apply, which alternatives, processes, and protocol to use.
+apply, which alternatives, processes, and protocol to use. Internal
+machinery only: \code{\link[=add_simulation]{add_simulation()}}'s inline \code{compounds} argument (a
+friendly config list, with \code{alternatives} selected by property name and
+label) is the user-facing way to configure a compound for a simulation;
+this constructor is not part of the public API.
 }
-\examples{
-create_compound_properties(
-  name = "Rifampicin",
-  calculation_methods = c(
-    "Cellular partition coefficient method - Rodgers and Rowland"
-  ),
-  processes = list(
-    create_compound_process_selection(systemic_process_type = "Hepatic")
-  ),
-  protocol = create_protocol_selection(
-    name = "Rifampicin Protocol",
-    formulations = list(
-      create_formulation_selection(name = "Oral solution", key = "Formulation")
-    )
-  )
-)
-}
+\keyword{internal}

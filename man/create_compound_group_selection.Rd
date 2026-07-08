@@ -19,11 +19,9 @@ A \link{CompoundGroupSelection} object.
 \description{
 Build a \link{CompoundGroupSelection} entry, used inside a
 \link{CompoundProperties} to record which alternative is selected within an
-alternative group.
+alternative group. Internal machinery only: the friendly \code{alternatives}
+selection in \code{\link[=add_simulation]{add_simulation()}}'s \code{compounds} argument is the
+user-facing way to select an alternative; this constructor and the
+\verb{COMPOUND_*} group constants it takes are not part of the public API.
 }
-\examples{
-create_compound_group_selection(
-  group_name = "COMPOUND_SOLUBILITY",
-  alternative_name = "Aqueous"
-)
-}
+\keyword{internal}

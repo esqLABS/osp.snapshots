@@ -1,17 +1,13 @@
 # Shared internal resolver used by `add_simulation()` to turn the
 # `compounds` argument into raw `CompoundProperties`-shaped payloads,
-# deriving defaults from the snapshot in hand for inline entries and
-# passing escape-hatch objects through untouched. All functions here are
+# deriving defaults from the snapshot in hand. All functions here are
 # internal (non-exported).
 
-# Resolve a `compounds` argument (a list of inline compound-config lists
-# and/or `CompoundProperties` objects) into an unnamed list of raw
-# `CompoundProperties`-shaped payloads. Inline entries are resolved
-# against `snapshot` (calculation methods, formulation key, alternatives
-# derived from the referenced building blocks); `CompoundProperties`
-# objects are passed through as their raw `$data` with no defaulting, so
-# the resulting `Simulation$data$Compounds` array is identical in shape to
-# a hand-built factory tree.
+# Resolve a `compounds` argument (a list of inline compound-config lists)
+# into an unnamed list of raw `CompoundProperties`-shaped payloads. Each
+# entry is resolved against `snapshot` (calculation methods, formulation
+# key/map, alternatives derived from the referenced building block, merged
+# with any friendly `alternatives` override).
 #
 # @keywords internal
 resolve_compounds <- function(compounds, snapshot, call = parent.frame()) {
@@ -25,13 +21,20 @@ resolve_compounds <- function(compounds, snapshot, call = parent.frame()) {
   notes <- new_derivation_notes()
   resolved <- lapply(compounds, function(entry) {
     if (inherits(entry, "CompoundProperties")) {
-      entry$data
+      cli::cli_abort(
+        c(
+          "{.arg compounds} no longer accepts a {.cls CompoundProperties} \\
+          object.",
+          "i" = "Pass an inline compound-config list instead, e.g. \\
+          {.code list(name = ..., alternatives = c(solubility = \"FaSSIF\"))}."
+        ),
+        call = call
+      )
     } else if (is.list(entry) && !is.object(entry)) {
       resolve_one_compound(entry, snapshot, notes, call = call)
     } else {
       cli::cli_abort(
-        "Every entry of {.arg compounds} must be a {.cls CompoundProperties} \\
-        object or an inline compound-config list",
+        "Every entry of {.arg compounds} must be an inline compound-config list",
         call = call
       )
     }
@@ -74,20 +77,28 @@ resolve_one_compound <- function(
     }
   }
 
-  # alternatives (FR-5.3): supplied wins; else default each group.
-  if (!is.null(config$alternatives)) {
-    data$Alternatives <- to_raw_r6_or_list(
-      config$alternatives,
-      "CompoundGroupSelection",
-      "alternatives",
-      call = call
-    )
-  } else if (!is.null(compound)) {
+  # alternatives (FR-9/FR-10): a friendly-name selection overrides that
+  # group only; every group not named is defaulted as before, so the two
+  # sources are merged rather than one replacing the other (D-3).
+  selections <- list()
+  if (!is.null(compound)) {
     derived <- derive_alternatives(compound)
     if (!is.null(derived)) {
-      data$Alternatives <- derived
+      selections <- derived
       notes$add("alternatives", config$name)
     }
+  }
+  if (!is.null(config$alternatives)) {
+    overrides <- resolve_alternative_selections(
+      config$alternatives,
+      compound,
+      config$name,
+      call = call
+    )
+    selections <- merge_alternative_selections(selections, overrides)
+  }
+  if (length(selections) > 0) {
+    data$Alternatives <- selections
   }
 
   # processes (FR-5.4): never defaulted; only set when supplied.
@@ -99,12 +110,13 @@ resolve_one_compound <- function(
   # referenced protocol's slot. A formulation without a protocol has
   # nowhere to attach and is ignored.
   if (!is.null(config$protocol)) {
-    check_required_string(config$protocol, "protocol")
+    check_required_string(config$protocol, "protocol", call = call)
     data$Protocol <- build_protocol_selection(
       config$protocol,
       config$formulation,
       snapshot,
-      notes
+      notes,
+      call = call
     )
   }
 
@@ -122,33 +134,78 @@ derive_calculation_methods <- function(compound) {
   as.list(names)
 }
 
-# FR-5.2: build a `ProtocolSelection`-shaped payload, inferring the
-# formulation key from the referenced protocol's application slot. When
-# no formulation is supplied the protocol is bound without a formulation.
+# FR-5.2/D-4: build a `ProtocolSelection`-shaped payload. A plain,
+# unnamed string keeps today's meaning: infer the slot key from the
+# referenced protocol's application slot. A named character vector (or a
+# named list of length-one strings) maps application-slot key to
+# formulation name explicitly, binding one entry per named slot; this is
+# the friendly replacement for the multi-slot protocol case the retired
+# `create_compound_properties()` escape hatch served (FR-14). When no
+# formulation is supplied the protocol is bound without a formulation.
 build_protocol_selection <- function(
   protocol_name,
-  formulation_name,
+  formulation,
   snapshot,
-  notes
+  notes,
+  call = parent.frame()
 ) {
   result <- list(Name = protocol_name)
-  if (is.null(formulation_name)) {
+  if (is.null(formulation)) {
     return(result)
   }
-  check_required_string(formulation_name, "formulation")
 
+  if (is_formulation_map(formulation)) {
+    check_formulation_map_names(formulation, call = call)
+    result$Formulations <- Map(
+      function(key, name) list(Name = name, Key = key),
+      names(formulation),
+      unlist(formulation, use.names = FALSE)
+    ) |>
+      unname()
+    return(result)
+  }
+
+  check_required_string(formulation, "formulation", call = call)
   protocol <- snapshot$protocols[[protocol_name]]
   key <- infer_formulation_key(protocol, notes)
-  result$Formulations <- list(list(Name = formulation_name, Key = key))
+  result$Formulations <- list(list(Name = formulation, Key = key))
   result
+}
+
+# Internal: is `formulation` the slot-key-map shape (a named character
+# vector, or a named list of length-one strings), as opposed to a plain
+# unnamed string (D-4)? A named length-one vector is also a map (an
+# explicit slot key), not the "infer the key" path.
+is_formulation_map <- function(formulation) {
+  is_named_chr <- is.character(formulation) && !is.null(names(formulation))
+  is_named_list_of_strings <- is.list(formulation) &&
+    !is.object(formulation) &&
+    !is.null(names(formulation)) &&
+    all(vapply(
+      formulation,
+      function(x) is.character(x) && length(x) == 1,
+      logical(1)
+    ))
+  is_named_chr || is_named_list_of_strings
+}
+
+# Internal: abort if a named formulation map has an empty/missing slot key.
+check_formulation_map_names <- function(formulation, call = parent.frame()) {
+  if (any(!nzchar(names(formulation)))) {
+    cli::cli_abort(
+      "Every element of a named {.arg formulation} map must have a slot key name",
+      call = call
+    )
+  }
+  invisible(formulation)
 }
 
 # FR-5.2: infer the formulation key from a Protocol's application slots.
 # Simple protocols (no schemas) and unresolved protocols fall back to the
 # literal `"Formulation"` key. When a protocol has several slots with
 # differing keys, the single inline formulation maps to the first slot's
-# key and a multi-slot note is recorded (the escape hatch covers exact
-# multi-slot mapping).
+# key and a multi-slot note is recorded (the named `formulation` map,
+# D-4, covers exact multi-slot mapping).
 infer_formulation_key <- function(protocol, notes) {
   if (is.null(protocol)) {
     return("Formulation")
@@ -173,18 +230,26 @@ infer_formulation_key <- function(protocol, notes) {
   keys[[1]]
 }
 
-# FR-5.3: default each alternative group to its default alternative. The
-# alternative marked `IsDefault` wins (absent `IsDefault` defaults to
-# `TRUE` per the snapshot schema); otherwise the `"User defined"`
-# alternative is used, and a group with no resolvable default is skipped.
-derive_alternatives <- function(compound) {
-  field_to_group <- list(
+# Internal: the friendly property name -> COMPOUND_* alternative-group
+# constant map. The only place this mapping is defined; friendly names are
+# the create_compound() / Compound field names. Kept internal so the
+# COMPOUND_* constants never surface in user-facing code (FR-6, FR-7).
+compound_field_to_group <- function() {
+  list(
     lipophilicity = "COMPOUND_LIPOPHILICITY",
     fraction_unbound = "COMPOUND_FRACTION_UNBOUND",
     solubility = "COMPOUND_SOLUBILITY",
     intestinal_permeability = "COMPOUND_INTESTINAL_PERMEABILITY",
     permeability = "COMPOUND_PERMEABILITY"
   )
+}
+
+# FR-5.3: default each alternative group to its default alternative. The
+# alternative marked `IsDefault` wins (absent `IsDefault` defaults to
+# `TRUE` per the snapshot schema); otherwise the `"User defined"`
+# alternative is used, and a group with no resolvable default is skipped.
+derive_alternatives <- function(compound) {
+  field_to_group <- compound_field_to_group()
 
   selections <- list()
   for (field in names(field_to_group)) {
@@ -223,6 +288,151 @@ default_alternative_name <- function(alternatives) {
     }
   }
   NULL
+}
+
+# FR-6/FR-7: turn a friendly alternatives selection (named character vector
+# or named list of length-one strings) into CompoundGroupSelection-shaped
+# payloads. Validated against `compound` when it is present (FR-8); when
+# `compound` is NULL (unresolved reference, D-6) the mapping is still
+# emitted, unvalidated, so the missing-reference warning remains the
+# single signal.
+resolve_alternative_selections <- function(
+  alternatives,
+  compound,
+  compound_name,
+  call = parent.frame()
+) {
+  pairs <- normalize_alternative_selection(alternatives, call = call)
+  field_to_group <- compound_field_to_group()
+
+  dupes <- unique(pairs$property[duplicated(pairs$property)])
+  if (length(dupes) > 0) {
+    cli::cli_abort(
+      "{.arg alternatives} names {.val {dupes}} more than once; a group \\
+      can be selected at most once.",
+      call = call
+    )
+  }
+
+  unknown <- setdiff(pairs$property, names(field_to_group))
+  if (length(unknown) > 0) {
+    cli::cli_abort(
+      c(
+        "{.arg alternatives} names unknown propert{?y/ies} {.val {unknown}}.",
+        "i" = "Valid properties are {.val {names(field_to_group)}}."
+      ),
+      call = call
+    )
+  }
+
+  if (!is.null(compound)) {
+    for (i in seq_along(pairs$property)) {
+      validate_alternative_label(
+        compound,
+        pairs$property[[i]],
+        pairs$label[[i]],
+        compound_name,
+        call = call
+      )
+    }
+  }
+
+  Map(
+    function(property, label) {
+      list(GroupName = field_to_group[[property]], AlternativeName = label)
+    },
+    pairs$property,
+    pairs$label
+  ) |>
+    unname()
+}
+
+# Internal: coerce the `alternatives` argument (named character vector or
+# named list of length-one strings) into a `list(property=, label=)`
+# pair-of-vectors shape, aborting on anything else (FR-6, D-2).
+normalize_alternative_selection <- function(
+  alternatives,
+  call = parent.frame()
+) {
+  is_named_chr <- is.character(alternatives) && !is.null(names(alternatives))
+  is_named_list_of_strings <- is.list(alternatives) &&
+    !is.object(alternatives) &&
+    !is.null(names(alternatives)) &&
+    all(vapply(
+      alternatives,
+      function(x) is.character(x) && length(x) == 1,
+      logical(1)
+    ))
+
+  if (!is_named_chr && !is_named_list_of_strings) {
+    cli::cli_abort(
+      c(
+        "{.arg alternatives} must be a named character vector or a named \\
+        list of length-one strings.",
+        "i" = "For example {.code alternatives = c(solubility = \"FaSSIF\")}."
+      ),
+      call = call
+    )
+  }
+  if (any(!nzchar(names(alternatives)))) {
+    cli::cli_abort(
+      "Every element of {.arg alternatives} must be named",
+      call = call
+    )
+  }
+  list(
+    property = names(alternatives),
+    label = unlist(alternatives, use.names = FALSE)
+  )
+}
+
+# FR-8: abort unless `label` is an available alternative name on
+# `compound`'s `property`. Lists the available labels. `compound[[property]]`
+# returns the property's raw alternative array (each element a
+# `list(Name =, ...)`); the labels are each element's `Name`, not the
+# array's own (absent) `names()`.
+validate_alternative_label <- function(
+  compound,
+  property,
+  label,
+  compound_name,
+  call = parent.frame()
+) {
+  available <- compound[[property]]
+  labels <- if (length(available) > 0) {
+    vapply(available, function(alt) alt$Name, character(1))
+  } else {
+    character(0)
+  }
+  if (length(labels) == 0) {
+    cli::cli_abort(
+      "Compound {.val {compound_name}} has no {.field {property}} \\
+      alternatives available.",
+      call = call
+    )
+  }
+  if (!(label %in% labels)) {
+    cli::cli_abort(
+      c(
+        "Compound {.val {compound_name}} has no {.field {property}} \\
+        alternative named {.val {label}}.",
+        "i" = "Available: {.val {labels}}."
+      ),
+      call = call
+    )
+  }
+  invisible(TRUE)
+}
+
+# D-3/FR-9: layer `overrides` onto `derived`, replacing any entry whose
+# GroupName matches; entries only in `derived` pass through untouched.
+merge_alternative_selections <- function(derived, overrides) {
+  if (length(overrides) == 0) {
+    return(derived)
+  }
+  override_groups <- vapply(overrides, function(o) o$GroupName, character(1))
+  kept <- Filter(function(d) !(d$GroupName %in% override_groups), derived)
+  c(kept, overrides)
 }
 
 # FR-6: build `CompoundProcessSelection`-shaped payloads from either a
@@ -301,7 +511,8 @@ emit_derivation_notes <- function(notes) {
     cli::cli_inform(c(
       "!" = "{cli::qty(multi_slot)}Protocol{?s} {.val {multi_slot}} {?has/have} \\
       multiple application slots; mapped the formulation to the first slot.",
-      "i" = "Use {.fn create_compound_properties} for exact multi-slot mapping."
+      "i" = "Pass a named {.arg formulation} map (slot key = formulation \\
+      name) to bind every slot explicitly."
     ))
   }
 }

@@ -46,24 +46,33 @@ that PK-Sim uses to derive compound quantities.}
 compound parameters. This does not set physicochemical properties;
 use the dedicated arguments below for those.}
 
-\item{lipophilicity}{A \code{\link[=lipophilicity]{lipophilicity()}} object, or \code{NULL}. When
-supplied, one default \code{Lipophilicity} alternative is created.}
+\item{lipophilicity}{A \code{\link[=lipophilicity]{lipophilicity()}} object, a list of such objects
+to define several named alternatives (the first element is the
+default), or \code{NULL}. When supplied, one \code{Lipophilicity} alternative is
+created per element.}
 
-\item{fraction_unbound}{A \code{\link[=fraction_unbound]{fraction_unbound()}} object, or \code{NULL}. When
-supplied, one default \code{FractionUnbound} alternative is created.}
+\item{fraction_unbound}{A \code{\link[=fraction_unbound]{fraction_unbound()}} object, a list of such
+objects to define several named alternatives (the first element is the
+default), or \code{NULL}. When supplied, one \code{FractionUnbound} alternative
+is created per element.}
 
-\item{solubility}{A \code{\link[=solubility]{solubility()}} object, or \code{NULL}. Expresses either
-the scalar form (value at a reference pH, with optional gain per
-charge) or the table form (a pH/value table). When supplied, one
-\code{Solubility} alternative is created. See \code{\link[=solubility]{solubility()}} for the scalar
-vs table forms and the mutual-exclusivity rule.}
+\item{solubility}{A \code{\link[=solubility]{solubility()}} object, a list of such objects to
+define several named alternatives (the first element is the default),
+or \code{NULL}. Each object expresses either the scalar form (value at a
+reference pH, with optional gain per charge) or the table form (a
+pH/value table); a list may mix both forms. When supplied, one
+\code{Solubility} alternative is created per element. See \code{\link[=solubility]{solubility()}}
+for the scalar vs table forms and the mutual-exclusivity rule.}
 
-\item{intestinal_permeability}{An \code{\link[=intestinal_permeability]{intestinal_permeability()}} object, or
-\code{NULL}. When supplied, one default \code{IntestinalPermeability} alternative
-is created.}
+\item{intestinal_permeability}{An \code{\link[=intestinal_permeability]{intestinal_permeability()}} object, a
+list of such objects to define several named alternatives (the first
+element is the default), or \code{NULL}. When supplied, one
+\code{IntestinalPermeability} alternative is created per element.}
 
-\item{permeability}{A \code{\link[=permeability]{permeability()}} object, or \code{NULL}. When supplied,
-one default \code{Permeability} alternative is created.}
+\item{permeability}{A \code{\link[=permeability]{permeability()}} object, a list of such objects to
+define several named alternatives (the first element is the default),
+or \code{NULL}. When supplied, one \code{Permeability} alternative is created
+per element.}
 
 \item{pKa}{List of typed pKa entries, each a list with a \code{type}
 (one of \code{"Acid"}, \code{"Base"}, \code{"Neutral"}) and a numeric \code{value}, for
@@ -127,6 +136,15 @@ compound <- create_compound(
       pH = c(3, 6, 6.8),
       value = c(5000, 3000, 90)
     )
+  )
+)
+
+# Several named solubility alternatives (the first is the default)
+compound <- create_compound(
+  name = "Drug X",
+  solubility = list(
+    solubility(9999, name = "Aqueous"),
+    solubility(200, name = "FaSSIF")
   )
 )
 

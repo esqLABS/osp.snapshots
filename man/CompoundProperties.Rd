@@ -7,8 +7,12 @@
 An R6 class representing one entry in a \link{Simulation}'s \code{Compounds}
 array. Carries the compound reference (by name) plus the simulation's
 calculation-method overrides, alternative selections, process
-selections, and optional \link{ProtocolSelection}.
+selections, and optional \link{ProtocolSelection}. Internal machinery only:
+\code{\link[=add_simulation]{add_simulation()}}'s inline \code{compounds} argument is the user-facing way
+to configure a compound for a simulation; this class is not part of the
+public API.
 }
+\keyword{internal}
 \section{Active bindings}{
   \if{html}{\out{<div class="r6-active-bindings">}}
   \describe{

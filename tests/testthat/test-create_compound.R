@@ -178,6 +178,145 @@ test_that("create_compound sets a permeability alternative", {
   expect_equal(param$Unit, "cm/min")
 })
 
+
+# Multi-alternative (list) physicochemical property arguments ------------
+
+test_that("create_compound accepts a list of solubility alternatives", {
+  compound <- create_compound(
+    name = "X",
+    solubility = list(
+      solubility(9999, name = "Aqueous"),
+      solubility(200, name = "FaSSIF")
+    )
+  )
+
+  alt <- compound$data$Solubility
+  expect_length(alt, 2)
+  expect_equal(vapply(alt, `[[`, character(1), "Name"), c("Aqueous", "FaSSIF"))
+  expect_equal(alt[[1]]$IsDefault, TRUE)
+  expect_equal(alt[[2]]$IsDefault, FALSE)
+
+  # `compound$solubility` exposes both alternatives, each keyed by its
+  # label via its `Name` field.
+  labels <- vapply(compound$solubility, `[[`, character(1), "Name")
+  expect_equal(labels, c("Aqueous", "FaSSIF"))
+})
+
+test_that("create_compound accepts a list of alternatives for lipophilicity, fraction_unbound, intestinal_permeability, and permeability", {
+  compound <- create_compound(
+    name = "X",
+    lipophilicity = list(
+      lipophilicity(2.5, name = "Measured"),
+      lipophilicity(3.1, name = "Predicted")
+    ),
+    fraction_unbound = list(
+      fraction_unbound(0.1, name = "Plasma"),
+      fraction_unbound(0.2, name = "Microsomal")
+    ),
+    intestinal_permeability = list(
+      intestinal_permeability(1.14e-05, name = "Caco-2"),
+      intestinal_permeability(2e-05, name = "PAMPA")
+    ),
+    permeability = list(
+      permeability(0.0069, name = "Measured"),
+      permeability(0.008, name = "Predicted")
+    )
+  )
+
+  for (field in c(
+    "Lipophilicity",
+    "FractionUnbound",
+    "IntestinalPermeability",
+    "Permeability"
+  )) {
+    alt <- compound$data[[field]]
+    expect_length(alt, 2)
+    expect_equal(alt[[1]]$IsDefault, TRUE)
+    expect_equal(alt[[2]]$IsDefault, FALSE)
+  }
+  expect_equal(
+    vapply(compound$data$Lipophilicity, `[[`, character(1), "Name"),
+    c("Measured", "Predicted")
+  )
+  expect_equal(
+    vapply(compound$data$FractionUnbound, `[[`, character(1), "Name"),
+    c("Plasma", "Microsomal")
+  )
+  expect_equal(
+    vapply(compound$data$IntestinalPermeability, `[[`, character(1), "Name"),
+    c("Caco-2", "PAMPA")
+  )
+  expect_equal(
+    vapply(compound$data$Permeability, `[[`, character(1), "Name"),
+    c("Measured", "Predicted")
+  )
+})
+
+test_that("a length-one alternative list is byte-identical to a single value object", {
+  from_list <- create_compound(name = "X", solubility = list(solubility(9999)))
+  from_scalar <- create_compound(name = "X", solubility = solubility(9999))
+  expect_identical(from_list$data$Solubility, from_scalar$data$Solubility)
+})
+
+test_that("create_compound rejects a list containing a non-matching helper or a bare scalar", {
+  expect_snapshot(
+    error = TRUE,
+    create_compound(
+      name = "X",
+      solubility = list(solubility(9999), lipophilicity(2.5))
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_compound(name = "X", solubility = list(solubility(9999), 200))
+  )
+})
+
+test_that("create_compound rejects duplicate alternative names within one property", {
+  expect_snapshot(
+    error = TRUE,
+    create_compound(
+      name = "X",
+      solubility = list(solubility(9999), solubility(200))
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_compound(
+      name = "X",
+      solubility = list(
+        solubility(9999, name = "Aqueous"),
+        solubility(200, name = "Aqueous")
+      )
+    )
+  )
+})
+
+test_that("create_compound treats an empty list like NULL for a physicochemical property", {
+  compound <- create_compound(name = "X", solubility = list())
+  expect_null(compound$data$Solubility)
+})
+
+test_that("create_compound builds a multi-alternative solubility list mixing scalar and table forms", {
+  compound <- create_compound(
+    name = "X",
+    solubility = list(
+      solubility(9999, reference_pH = 7, name = "Scalar"),
+      solubility(
+        table = data.frame(pH = c(3, 6), value = c(5000, 3000)),
+        name = "Table"
+      )
+    )
+  )
+
+  alt <- compound$data$Solubility
+  expect_length(alt, 2)
+  expect_equal(alt[[1]]$Parameters[[1]]$Name, "Solubility at reference pH")
+  expect_equal(alt[[2]]$Parameters[[1]]$Name, "Solubility table")
+  expect_equal(alt[[1]]$IsDefault, TRUE)
+  expect_equal(alt[[2]]$IsDefault, FALSE)
+})
+
 test_that("helper-set physicochemical properties never land in Parameters", {
   compound <- create_compound(
     name = "X",

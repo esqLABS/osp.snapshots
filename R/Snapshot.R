@@ -531,9 +531,9 @@ Snapshot <- R6::R6Class(
     #' resolves compound references and derives defaults (calculation
     #' methods, formulation key, alternatives) before attaching. Supply
     #' `name` plus exactly one of `individual` / `population` to build; each
-    #' inline `compounds` entry is either a config list
-    #' (`list(name =, protocol =, formulation =, processes =, ...)`) or a
-    #' [CompoundProperties] escape-hatch object. Alternatively supply a
+    #' inline `compounds` entry is a config list
+    #' (`list(name =, protocol =, formulation =, processes =,
+    #' calculation_methods =, alternatives =)`). Alternatively supply a
     #' pre-built [Simulation] (or a list of them) through `simulation`.
     #' References to building blocks not yet in the snapshot trigger one
     #' informational warning per simulation; the add proceeds either way.
@@ -548,8 +548,19 @@ Snapshot <- R6::R6Class(
     #'   Mutually exclusive with `individual`.
     #' @param compounds List of inline compound-config lists
     #'   (`list(name =, protocol =, formulation =, processes =,
-    #'   calculation_methods =, alternatives =)`) and/or [CompoundProperties]
-    #'   objects (the escape hatch).
+    #'   calculation_methods =, alternatives =)`). `alternatives` is a
+    #'   named character vector (or named list of length-one strings)
+    #'   mapping a friendly property name (`lipophilicity`,
+    #'   `fraction_unbound`, `solubility`, `intestinal_permeability`,
+    #'   `permeability`) to the alternative label to select on that
+    #'   compound, for example `alternatives = c(solubility = "FaSSIF")`;
+    #'   it overrides the derived default for the named groups only, every
+    #'   other group is still defaulted from the compound. `formulation`
+    #'   accepts a single string (bound to the protocol's inferred first
+    #'   slot key, unchanged) or a named character vector mapping
+    #'   application-slot key to formulation name for a multi-slot
+    #'   protocol, for example `formulation = c(Formulation = "Oral
+    #'   solution", "Formulation 2" = "IV solution")`.
     #' @param events List of [EventSelection] objects or raw lists.
     #' @param observer_sets List of [ObserverSetSelection] objects or raw
     #'   lists.
@@ -1239,7 +1250,7 @@ Snapshot <- R6::R6Class(
     # raw simulation payload with the same validations, defaults, and error
     # messages as the standalone factory did, then wraps it in `Simulation`.
     # Compounds run through `resolve_compounds()` (inline configs resolved
-    # against the snapshot; `CompoundProperties` objects passed through).
+    # against the snapshot).
     .build_simulation = function(
       name,
       model,
@@ -2327,13 +2338,11 @@ remove_observed_data <- function(snapshot, observed_data_name) {
 #' defaults (calculation methods, formulation key, alternatives) from the
 #' referenced building blocks before attaching. Supply `name` plus exactly
 #' one of `individual` / `population`, and configure each compound inline
-#' through `compounds`. The escape-hatch factories
-#' ([create_compound_properties()], [create_protocol_selection()],
-#' [create_formulation_selection()]) still work: pass a
-#' [CompoundProperties] object through the same `compounds` slot for
-#' multi-slot protocols and hand-built configurations. References to
-#' building blocks not yet in the snapshot trigger one informational
-#' warning per simulation; the add proceeds either way.
+#' through `compounds`, selecting a specific alternative by friendly
+#' property name and label, or a multi-slot protocol's formulations, where
+#' the derived defaults are not enough. References to building blocks not
+#' yet in the snapshot trigger one informational warning per simulation;
+#' the add proceeds either way.
 #'
 #' @param snapshot A [Snapshot] object.
 #' @param simulation A pre-built [Simulation] object, or a list of such
@@ -2346,9 +2355,20 @@ remove_observed_data <- function(snapshot, observed_data_name) {
 #'   Mutually exclusive with `individual`.
 #' @param compounds List of inline compound-config lists
 #'   (`list(name =, protocol =, formulation =, processes =,
-#'   calculation_methods =, alternatives =)`) and/or [CompoundProperties]
-#'   objects (the escape hatch). Inline entries are resolved against the
-#'   snapshot; `CompoundProperties` objects are passed through unchanged.
+#'   calculation_methods =, alternatives =)`). Each entry is resolved
+#'   against the snapshot. `alternatives` is a named character vector (or
+#'   named list of length-one strings) mapping a friendly property name
+#'   (`lipophilicity`, `fraction_unbound`, `solubility`,
+#'   `intestinal_permeability`, `permeability`) to the alternative label to
+#'   select on that compound, for example
+#'   `alternatives = c(solubility = "FaSSIF")`; it overrides the derived
+#'   default for the named groups only, every other group is still
+#'   defaulted from the compound. `formulation` accepts a single string
+#'   (bound to the protocol's inferred first slot key, unchanged) or a
+#'   named character vector mapping application-slot key to formulation
+#'   name for a multi-slot protocol, for example
+#'   `formulation = c(Formulation = "Oral solution",
+#'   "Formulation 2" = "IV solution")`.
 #' @param events List of [EventSelection] objects or raw lists.
 #' @param observer_sets List of [ObserverSetSelection] objects or raw
 #'   lists.
@@ -2378,7 +2398,8 @@ remove_observed_data <- function(snapshot, observed_data_name) {
 #'       name = "Rifampicin",
 #'       protocol = "Yu 2004 - Rifampicin - 600 mg MD OD 10 days",
 #'       formulation = "Oral solution",
-#'       processes = c("Hepatic")
+#'       processes = c("Hepatic"),
+#'       alternatives = c(solubility = "FaSSIF")
 #'     ))
 #'   )
 #' }

@@ -42,9 +42,19 @@ Mutually exclusive with \code{population}.}
 Mutually exclusive with \code{individual}.}
 
 \item{compounds}{List of inline compound-config lists
-(\code{list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)}) and/or \link{CompoundProperties}
-objects (the escape hatch). Inline entries are resolved against the
-snapshot; \code{CompoundProperties} objects are passed through unchanged.}
+(\code{list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)}). Each entry is resolved
+against the snapshot. \code{alternatives} is a named character vector (or
+named list of length-one strings) mapping a friendly property name
+(\code{lipophilicity}, \code{fraction_unbound}, \code{solubility},
+\code{intestinal_permeability}, \code{permeability}) to the alternative label to
+select on that compound, for example
+\code{alternatives = c(solubility = "FaSSIF")}; it overrides the derived
+default for the named groups only, every other group is still
+defaulted from the compound. \code{formulation} accepts a single string
+(bound to the protocol's inferred first slot key, unchanged) or a
+named character vector mapping application-slot key to formulation
+name for a multi-slot protocol, for example
+\code{formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")}.}
 
 \item{events}{List of \link{EventSelection} objects or raw lists.}
 
@@ -86,13 +96,11 @@ snapshot is its entry point. In build mode, with the snapshot in hand,
 defaults (calculation methods, formulation key, alternatives) from the
 referenced building blocks before attaching. Supply \code{name} plus exactly
 one of \code{individual} / \code{population}, and configure each compound inline
-through \code{compounds}. The escape-hatch factories
-(\code{\link[=create_compound_properties]{create_compound_properties()}}, \code{\link[=create_protocol_selection]{create_protocol_selection()}},
-\code{\link[=create_formulation_selection]{create_formulation_selection()}}) still work: pass a
-\link{CompoundProperties} object through the same \code{compounds} slot for
-multi-slot protocols and hand-built configurations. References to
-building blocks not yet in the snapshot trigger one informational
-warning per simulation; the add proceeds either way.
+through \code{compounds}, selecting a specific alternative by friendly
+property name and label, or a multi-slot protocol's formulations, where
+the derived defaults are not enough. References to building blocks not
+yet in the snapshot trigger one informational warning per simulation;
+the add proceeds either way.
 }
 \examples{
 \dontrun{
@@ -104,7 +112,8 @@ snapshot <- load_snapshot("Midazolam") |>
       name = "Rifampicin",
       protocol = "Yu 2004 - Rifampicin - 600 mg MD OD 10 days",
       formulation = "Oral solution",
-      processes = c("Hepatic")
+      processes = c("Hepatic"),
+      alternatives = c(solubility = "FaSSIF")
     ))
   )
 }

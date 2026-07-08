@@ -34,42 +34,50 @@ objects so that mutations flow back to the export payload.}
     \item{\code{molecular_weight_unit}}{The unit of the molecular weight}
 
     \item{\code{lipophilicity}}{The lipophilicity data of the compound. Writable:
-assign a \code{\link[=lipophilicity]{lipophilicity()}} object, a numeric scalar to create a
-single default \code{Lipophilicity} alternative (parameter
-\code{"Lipophilicity"}, unit \code{"Log Units"}), a raw alternative list to
-set the array verbatim (the escape hatch for multiple, named, or
-species-specific alternatives), or \code{NULL} to clear the property.}
+assign a \code{\link[=lipophilicity]{lipophilicity()}} object, a list of such objects to
+define several named alternatives (the first element is the
+default), a numeric scalar to create a single default
+\code{Lipophilicity} alternative (parameter \code{"Lipophilicity"}, unit
+\code{"Log Units"}), a raw alternative list to set the array verbatim
+(the escape hatch for species-specific alternatives), or \code{NULL} to
+clear the property.}
 
     \item{\code{fraction_unbound}}{The fraction unbound data of the compound.
-Writable: assign a \code{\link[=fraction_unbound]{fraction_unbound()}} object, a numeric scalar to
-create a single default \code{FractionUnbound} alternative (parameter
+Writable: assign a \code{\link[=fraction_unbound]{fraction_unbound()}} object, a list of such
+objects to define several named alternatives (the first element is
+the default), a numeric scalar to create a single default
+\code{FractionUnbound} alternative (parameter
 \code{"Fraction unbound (plasma, reference value)"}, no unit), a raw
 alternative list to set the array verbatim, or \code{NULL} to clear the
 property.}
 
     \item{\code{solubility}}{The solubility data of the compound. Writable:
 assign a \code{\link[=solubility]{solubility()}} object to express reference pH, gain per
-charge, or a pH/value table, a numeric scalar to create a single
-default \code{Solubility} alternative (parameter
-\code{"Solubility at reference pH"}, unit \code{"mg/l"}), a raw alternative
-list to set the array verbatim, or \code{NULL} to clear the property.
-The numeric-scalar form cannot express reference pH, gain per
-charge, or table solubility; use a \code{\link[=solubility]{solubility()}} object or a raw
-alternative list for those.}
+charge, or a pH/value table, a list of such objects to define
+several named alternatives (the first element is the default), a
+numeric scalar to create a single default \code{Solubility} alternative
+(parameter \code{"Solubility at reference pH"}, unit \code{"mg/l"}), a raw
+alternative list to set the array verbatim, or \code{NULL} to clear the
+property. The numeric-scalar form cannot express reference pH,
+gain per charge, or table solubility; use a \code{\link[=solubility]{solubility()}} object
+or a raw alternative list for those.}
 
     \item{\code{intestinal_permeability}}{The intestinal permeability data of the
 compound. Writable: assign an \code{\link[=intestinal_permeability]{intestinal_permeability()}} object, a
-numeric scalar to create a single default \code{IntestinalPermeability}
-alternative (parameter
+list of such objects to define several named alternatives (the
+first element is the default), a numeric scalar to create a single
+default \code{IntestinalPermeability} alternative (parameter
 \code{"Specific intestinal permeability (transcellular)"}, unit
 \code{"cm/min"}), a raw alternative list to set the array verbatim, or
 \code{NULL} to clear the property.}
 
     \item{\code{permeability}}{The permeability data of the compound. Writable:
-assign a \code{\link[=permeability]{permeability()}} object, a numeric scalar to create a
-single default \code{Permeability} alternative (parameter
-\code{"Permeability"}, unit \code{"cm/min"}), a raw alternative list to set
-the array verbatim, or \code{NULL} to clear the property.}
+assign a \code{\link[=permeability]{permeability()}} object, a list of such objects to define
+several named alternatives (the first element is the default), a
+numeric scalar to create a single default \code{Permeability}
+alternative (parameter \code{"Permeability"}, unit \code{"cm/min"}), a raw
+alternative list to set the array verbatim, or \code{NULL} to clear the
+property.}
 
     \item{\code{pka_types}}{The pKa types of the compound. Writable: assign a
 list of \code{list(type =, value =)} entries (the \code{create_compound()}

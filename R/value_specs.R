@@ -533,6 +533,13 @@ check_numeric_vector <- function(value, arg, call = parent.frame()) {
 # another value-spec (wrong helper for the argument), or anything else (a bare
 # numeric, list, ...), which points the user at the helper. `helper` is the
 # constructor name to suggest; `example` is a short usage hint.
+#
+# `value` may also be a bare list (not itself a value-spec object) whose
+# every element must independently match `subclass`; each offending element
+# is diagnosed by position with the same two message branches, so a list of
+# alternatives gets the same guidance a single value object would (FR-3). An
+# empty list is valid and returned as-is: it means "no alternatives", which
+# the caller (e.g. `create_compound()`) treats the same as `NULL`.
 require_value_spec <- function(
   value,
   subclass,
@@ -547,6 +554,16 @@ require_value_spec <- function(
   }
   if (is.null(value) && !required) {
     return(invisible(value))
+  }
+  if (is.list(value) && !is.object(value)) {
+    return(require_value_spec_list(
+      value,
+      subclass,
+      arg,
+      helper = helper,
+      example = example,
+      call = call
+    ))
   }
   hint <- example %||% sprintf("%s = %s(...)", arg, helper)
   if (inherits(value, "osp_value_spec")) {
@@ -565,6 +582,60 @@ require_value_spec <- function(
     ),
     call = call
   )
+}
+
+# Internal: is `value` a non-empty bare list of `osp_value_spec` objects
+# (of any subclass)? Used by the `Compound` writable field setters to
+# detect the list-of-specs shape ahead of the generic raw-list branch,
+# which must keep storing an arbitrary raw list (e.g. a loaded alternative
+# array) verbatim.
+is_value_spec_list <- function(value) {
+  is.list(value) &&
+    !is.object(value) &&
+    length(value) > 0 &&
+    all(vapply(value, inherits, logical(1), "osp_value_spec"))
+}
+
+# Internal: validate every element of a bare list against `subclass`,
+# identifying the offending element by position. Shared by
+# `require_value_spec()` (the factory arguments) and the `Compound` writable
+# field setters, so a list of alternatives is validated identically on both
+# paths (FR-3, FR-5). An empty list passes through untouched.
+require_value_spec_list <- function(
+  value,
+  subclass,
+  arg,
+  helper = sub("_spec$", "", subclass),
+  example = NULL,
+  call = parent.frame()
+) {
+  if (length(value) == 0) {
+    return(invisible(value))
+  }
+  hint <- example %||% sprintf("%s = %s(...)", arg, helper)
+  for (i in seq_along(value)) {
+    element <- value[[i]]
+    if (inherits(element, subclass)) {
+      next
+    }
+    if (inherits(element, "osp_value_spec")) {
+      cli::cli_abort(
+        c(
+          "Element {i} of {.arg {arg}} was built with the wrong helper.",
+          "i" = "Use {.fn {helper}} for {.arg {arg}}, e.g. {.code {hint}}."
+        ),
+        call = call
+      )
+    }
+    cli::cli_abort(
+      c(
+        "Element {i} of {.arg {arg}} must be built with {.fn {helper}}.",
+        "i" = "For example {.code {hint}}."
+      ),
+      call = call
+    )
+  }
+  invisible(value)
 }
 
 # Internal: validate the two-column solubility `table`, reusing the exact

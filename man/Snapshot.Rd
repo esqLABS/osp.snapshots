@@ -640,9 +640,8 @@ The build mode is the entry point: with the snapshot in hand it
 resolves compound references and derives defaults (calculation
 methods, formulation key, alternatives) before attaching. Supply
 \code{name} plus exactly one of \code{individual} / \code{population} to build; each
-inline \code{compounds} entry is either a config list
-(\code{list(name =, protocol =, formulation =, processes =, ...)}) or a
-\link{CompoundProperties} escape-hatch object. Alternatively supply a
+inline \code{compounds} entry is a config list
+(\code{list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)}). Alternatively supply a
 pre-built \link{Simulation} (or a list of them) through \code{simulation}.
 References to building blocks not yet in the snapshot trigger one
 informational warning per simulation; the add proceeds either way.
@@ -682,8 +681,18 @@ Mutually exclusive with \code{population}.}
       \item{\code{population}}{Character. Name of the population building block.
 Mutually exclusive with \code{individual}.}
       \item{\code{compounds}}{List of inline compound-config lists
-(\code{list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)}) and/or \link{CompoundProperties}
-objects (the escape hatch).}
+(\code{list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)}). \code{alternatives} is a
+named character vector (or named list of length-one strings)
+mapping a friendly property name (\code{lipophilicity},
+\code{fraction_unbound}, \code{solubility}, \code{intestinal_permeability},
+\code{permeability}) to the alternative label to select on that
+compound, for example \code{alternatives = c(solubility = "FaSSIF")};
+it overrides the derived default for the named groups only, every
+other group is still defaulted from the compound. \code{formulation}
+accepts a single string (bound to the protocol's inferred first
+slot key, unchanged) or a named character vector mapping
+application-slot key to formulation name for a multi-slot
+protocol, for example \code{formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")}.}
       \item{\code{events}}{List of \link{EventSelection} objects or raw lists.}
       \item{\code{observer_sets}}{List of \link{ObserverSetSelection} objects or raw
 lists.}
