@@ -29,22 +29,10 @@ create_compound(
   calculation_methods = NULL,
   parameters = NULL,
   lipophilicity = NULL,
-  lipophilicity_unit = "Log Units",
-  lipophilicity_name = "User defined",
   fraction_unbound = NULL,
-  fraction_unbound_name = "User defined",
   solubility = NULL,
-  solubility_unit = "mg/l",
-  reference_pH = NULL,
-  solubility_gain_per_charge = NULL,
-  solubility_table = NULL,
-  solubility_name = "User defined",
   intestinal_permeability = NULL,
-  intestinal_permeability_unit = "cm/min",
-  intestinal_permeability_name = "User defined",
   permeability = NULL,
-  permeability_unit = "cm/min",
-  permeability_name = "User defined",
   pKa = NULL,
   processes = NULL
 )
@@ -95,100 +83,42 @@ create_compound(
 
 - lipophilicity:
 
-  Numeric scalar. Lipophilicity value. When supplied, one default
-  `Lipophilicity` alternative is created.
-
-- lipophilicity_unit:
-
-  Character. Unit for the lipophilicity parameter, validated against
-  dimension `"Log Units"`. Defaults to `"Log Units"`.
-
-- lipophilicity_name:
-
-  Character. `Name` of the created lipophilicity alternative. Defaults
-  to `"User defined"`.
+  A
+  [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md)
+  object, or `NULL`. When supplied, one default `Lipophilicity`
+  alternative is created.
 
 - fraction_unbound:
 
-  Numeric scalar. Fraction unbound value. When supplied, one default
-  `FractionUnbound` alternative is created. The fraction-unbound
-  parameter carries no unit.
-
-- fraction_unbound_name:
-
-  Character. `Name` of the created fraction-unbound alternative.
-  Defaults to `"User defined"`.
+  A
+  [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
+  object, or `NULL`. When supplied, one default `FractionUnbound`
+  alternative is created.
 
 - solubility:
 
-  Numeric scalar. Solubility-at-reference-pH value. When supplied, one
-  scalar-based `Solubility` alternative is created. Mutually exclusive
-  with `solubility_table`.
-
-- solubility_unit:
-
-  Character. Unit for the solubility parameter, validated against
-  dimension `"Concentration (mass)"`. Reused as the table Y unit.
-  Defaults to `"mg/l"`.
-
-- reference_pH:
-
-  Numeric scalar. Reference pH added to the same scalar `Solubility`
-  alternative as `solubility`. Not a standalone property: it is ignored
-  unless `solubility` is supplied, and it does not apply to the table
-  path.
-
-- solubility_gain_per_charge:
-
-  Numeric scalar. Optional `Solubility gain per charge` parameter added
-  to the same scalar `Solubility` alternative as `solubility`. Not a
-  standalone property: it is ignored unless `solubility` is supplied.
-
-- solubility_table:
-
-  Two-column data frame giving table-based solubility: the first column
-  is pH and the second is the solubility value. When supplied, one
-  `Solubility` alternative with a `Solubility table` parameter carrying
-  a `TableFormula` is created instead of a scalar solubility. Mutually
-  exclusive with `solubility`. Note: on import PK-Sim runs a
-  table-solubility preparation step that this package does not perform;
-  the package emits the faithful raw `Solubility table` + `TableFormula`
-  shape that round-trips through load/export at the JSON level.
-
-- solubility_name:
-
-  Character. `Name` of the created solubility alternative (scalar or
-  table). Defaults to `"User defined"`.
+  A
+  [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
+  object, or `NULL`. Expresses either the scalar form (value at a
+  reference pH, with optional gain per charge) or the table form (a
+  pH/value table). When supplied, one `Solubility` alternative is
+  created. See
+  [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
+  for the scalar vs table forms and the mutual-exclusivity rule.
 
 - intestinal_permeability:
 
-  Numeric scalar. Intestinal permeability value. When supplied, one
-  default `IntestinalPermeability` alternative is created.
-
-- intestinal_permeability_unit:
-
-  Character. Unit for the intestinal-permeability parameter, validated
-  against dimension `"Velocity"`. Defaults to `"cm/min"`.
-
-- intestinal_permeability_name:
-
-  Character. `Name` of the created intestinal-permeability alternative.
-  Defaults to `"User defined"`.
+  An
+  [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md)
+  object, or `NULL`. When supplied, one default `IntestinalPermeability`
+  alternative is created.
 
 - permeability:
 
-  Numeric scalar. Permeability value. When supplied, one default
-  `Permeability` alternative is created.
-
-- permeability_unit:
-
-  Character. Unit for the permeability parameter, validated against
-  dimension `"Velocity"`. Defaults to `"cm/min"`.
-
-- permeability_name:
-
-  Character. `Name` of the created permeability alternative. Defaults to
-  `"User defined"`.
+  A
+  [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md)
+  object, or `NULL`. When supplied, one default `Permeability`
+  alternative is created.
 
 - pKa:
 
@@ -216,6 +146,15 @@ A
 [Compound](https://esqlabs.github.io/osp.snapshots/dev/reference/Compound.md)
 object.
 
+## See also
+
+[`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md),
+[`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md),
+[`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md),
+[`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md),
+[`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md)
+for the physicochemical property helpers.
+
 ## Examples
 
 ``` r
@@ -233,26 +172,26 @@ compound <- create_compound(
 # Set the single-parameter physicochemical properties
 compound <- create_compound(
   name = "Drug X",
-  lipophilicity = 2.5,
-  fraction_unbound = 0.1,
-  intestinal_permeability = 1.14e-05,
-  permeability = 0.0069
+  lipophilicity = lipophilicity(2.5),
+  fraction_unbound = fraction_unbound(0.1),
+  intestinal_permeability = intestinal_permeability(1.14e-05),
+  permeability = permeability(0.0069)
 )
 
 # Solubility with reference pH and gain per charge
 compound <- create_compound(
   name = "Drug X",
-  solubility = 9999,
-  reference_pH = 7,
-  solubility_gain_per_charge = 1000
+  solubility = solubility(9999, reference_pH = 7, gain_per_charge = 1000)
 )
 
 # Table-based solubility (first column pH, second column value)
 compound <- create_compound(
   name = "Drug X",
-  solubility_table = data.frame(
-    pH = c(3, 6, 6.8),
-    value = c(5000, 3000, 90)
+  solubility = solubility(
+    table = data.frame(
+      pH = c(3, 6, 6.8),
+      value = c(5000, 3000, 90)
+    )
   )
 )
 

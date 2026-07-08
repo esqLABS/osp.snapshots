@@ -36,7 +36,11 @@ under each entry of the `Individuals` array.
 
 - `age`:
 
-  Numeric age value of the individual (in `age_unit`).
+  Numeric age value of the individual (in `age_unit`). Writable: assign
+  an
+  [`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md)
+  object to set the value and unit together, or a numeric scalar (the
+  unit defaults to `"year(s)"` when not already set).
 
 - `age_unit`:
 
@@ -45,7 +49,10 @@ under each entry of the `Individuals` array.
 - `gestational_age`:
 
   Numeric gestational age value (in `gestational_age_unit`), used for
-  preterm individuals.
+  preterm individuals. Writable: assign a
+  [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/gestational_age.md)
+  object to set the value and unit together, or a numeric scalar (the
+  unit defaults to `"week(s)"` when not already set).
 
 - `gestational_age_unit`:
 
@@ -53,7 +60,11 @@ under each entry of the `Individuals` array.
 
 - `weight`:
 
-  Numeric weight value of the individual (in `weight_unit`).
+  Numeric weight value of the individual (in `weight_unit`). Writable:
+  assign a
+  [`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md)
+  object to set the value and unit together, or a numeric scalar (the
+  unit defaults to `"kg"` when not already set).
 
 - `weight_unit`:
 
@@ -61,7 +72,11 @@ under each entry of the `Individuals` array.
 
 - `height`:
 
-  Numeric height value of the individual (in `height_unit`).
+  Numeric height value of the individual (in `height_unit`). Writable:
+  assign a
+  [`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md)
+  object to set the value and unit together, or a numeric scalar (the
+  unit defaults to `"cm"` when not already set).
 
 - `height_unit`:
 

@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9903</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9904</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -373,7 +373,7 @@ segments are migrated on load.</p>
 function (see <code><a href="../articles/creating-building-blocks.html">vignette("creating-building-blocks")</a></code>), then
 attach it with <code>add_*()</code>. Removal is by name.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">patient</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_A"</span>, age <span class="op">=</span> <span class="fl">35</span>, gender <span class="op">=</span> <span class="st">"FEMALE"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">patient</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_A"</span>, age <span class="op">=</span> <span class="fu"><a href="../reference/age.html">age</a></span><span class="op">(</span><span class="fl">35</span><span class="op">)</span>, gender <span class="op">=</span> <span class="st">"FEMALE"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/add_individual.html">add_individual</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="va">patient</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/remove_individual.html">remove_individual</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"Patient_A"</span><span class="op">)</span></span></code></pre></div>
@@ -386,8 +386,8 @@ first and return it invisibly, so you can chain them with the base pipe
 when you want to make several changes in one expression:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/add_individual.html">add_individual</a></span><span class="op">(</span><span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_A"</span>, age <span class="op">=</span> <span class="fl">35</span>, gender <span class="op">=</span> <span class="st">"FEMALE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/add_individual.html">add_individual</a></span><span class="op">(</span><span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_B"</span>, age <span class="op">=</span> <span class="fl">60</span>, gender <span class="op">=</span> <span class="st">"MALE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/add_individual.html">add_individual</a></span><span class="op">(</span><span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_A"</span>, age <span class="op">=</span> <span class="fu"><a href="../reference/age.html">age</a></span><span class="op">(</span><span class="fl">35</span><span class="op">)</span>, gender <span class="op">=</span> <span class="st">"FEMALE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/add_individual.html">add_individual</a></span><span class="op">(</span><span class="fu"><a href="../reference/create_individual.html">create_individual</a></span><span class="op">(</span><span class="st">"Patient_B"</span>, age <span class="op">=</span> <span class="fu"><a href="../reference/age.html">age</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span>, gender <span class="op">=</span> <span class="st">"MALE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/remove_population.html">remove_population</a></span><span class="op">(</span><span class="st">"Healthy Adults"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>

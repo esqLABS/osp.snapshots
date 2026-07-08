@@ -19,7 +19,7 @@ simulations."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9903</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9904</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,12 +67,7 @@ simulations.</p>
 <span>  <span class="va">name</span>,</span>
 <span>  <span class="va">time</span>,</span>
 <span>  <span class="va">values</span>,</span>
-<span>  time_unit <span class="op">=</span> <span class="st">"h"</span>,</span>
-<span>  value_unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  value_dimension <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  error <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  error_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  error_unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  molecular_weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lloq <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -88,49 +83,20 @@ simulations.</p>
 
 
 <dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
-<dd><p>Numeric vector. Time grid x-values (required).</p></dd>
+<dd><p>A <code><a href="time.html">time()</a></code> object giving the time grid x-values and their
+unit (required).</p></dd>
 
 
 <dt id="arg-values">values<a class="anchor" aria-label="anchor" href="#arg-values"></a></dt>
-<dd><p>Numeric vector. Measurement y-values, same length as
-<code>time</code> (required).</p></dd>
-
-
-<dt id="arg-time-unit">time_unit<a class="anchor" aria-label="anchor" href="#arg-time-unit"></a></dt>
-<dd><p>Character. Unit for <code>time</code> (for example <code>"h"</code>,
-<code>"min"</code>, <code>"day(s)"</code>). Validated against
-<code>ospsuite::ospUnits$Time</code>. Defaults to <code>"h"</code>.</p></dd>
-
-
-<dt id="arg-value-unit">value_unit<a class="anchor" aria-label="anchor" href="#arg-value-unit"></a></dt>
-<dd><p>Character. Unit for <code>values</code> (for example
-<code>"mg/l"</code>). When supplied alongside <code>value_dimension</code>, the unit is
-validated against the dimension via <code><a href="validate_unit.html">validate_unit()</a></code>.</p></dd>
-
-
-<dt id="arg-value-dimension">value_dimension<a class="anchor" aria-label="anchor" href="#arg-value-dimension"></a></dt>
-<dd><p>Character. Dimension for <code>values</code> (for
-example <code>"Concentration (mass)"</code>). Required (no default): pass one
-of the names of <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/ospDimensions.html" class="external-link">ospsuite::ospDimensions</a></code>. Previously defaulted
-silently to <code>"Concentration (mass)"</code>, which was wrong for
-non-concentration data.</p></dd>
+<dd><p>A <code><a href="values.html">values()</a></code> object giving the measurement y-values, their
+dimension, and an optional unit (required), same length as <code>time</code>. The
+dimension is supplied to <code><a href="values.html">values()</a></code> and is required there.</p></dd>
 
 
 <dt id="arg-error">error<a class="anchor" aria-label="anchor" href="#arg-error"></a></dt>
-<dd><p>Numeric vector. Optional error y-values, same length as
-<code>values</code>.</p></dd>
-
-
-<dt id="arg-error-type">error_type<a class="anchor" aria-label="anchor" href="#arg-error-type"></a></dt>
-<dd><p>Character. Auxiliary type for <code>error</code>, typically
-one of <code>"ArithmeticStdDev"</code>, <code>"GeometricStdDev"</code>, or
-<code>"ArithmeticStdErr"</code>. Defaults to <code>"ArithmeticStdDev"</code> when <code>error</code>
-is provided.</p></dd>
-
-
-<dt id="arg-error-unit">error_unit<a class="anchor" aria-label="anchor" href="#arg-error-unit"></a></dt>
-<dd><p>Character. Unit for <code>error</code>. Defaults to
-<code>value_unit</code>.</p></dd>
+<dd><p>A <code><a href="error.html">error()</a></code> object giving the optional error y-values, an
+optional unit (defaulting to the values unit), and the auxiliary type.
+Same length as the values series. <code>NULL</code> for no error series.</p></dd>
 
 
 <dt id="arg-molecular-weight">molecular_weight<a class="anchor" aria-label="anchor" href="#arg-molecular-weight"></a></dt>
@@ -151,27 +117,31 @@ stored alongside the data set.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html" class="external-link">ospsuite::DataSet</a></code> object.</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="time.html">time()</a></code>, <code><a href="values.html">values()</a></code>, <code><a href="error.html">error()</a></code> for the series value-object
+helpers.</p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a minimal observed data set</span></span></span>
 <span class="r-in"><span><span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu">create_observed_data</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Subject 001"</span>,</span></span>
-<span class="r-in"><span>  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, <span class="fl">18</span>, <span class="fl">11</span>, <span class="fl">5</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  value_dimension <span class="op">=</span> <span class="st">"Concentration (mass)"</span></span></span>
+<span class="r-in"><span>  time <span class="op">=</span> <span class="fu"><a href="time.html">time</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  values <span class="op">=</span> <span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, <span class="fl">18</span>, <span class="fl">11</span>, <span class="fl">5</span><span class="op">)</span>, dimension <span class="op">=</span> <span class="st">"Concentration (mass)"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create observed data with units and error</span></span></span>
 <span class="r-in"><span><span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu">create_observed_data</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Subject 001"</span>,</span></span>
-<span class="r-in"><span>  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, <span class="fl">18</span>, <span class="fl">11</span>, <span class="fl">5</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  time_unit <span class="op">=</span> <span class="st">"h"</span>,</span></span>
-<span class="r-in"><span>  value_unit <span class="op">=</span> <span class="st">"mg/l"</span>,</span></span>
-<span class="r-in"><span>  value_dimension <span class="op">=</span> <span class="st">"Concentration (mass)"</span>,</span></span>
-<span class="r-in"><span>  error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.2</span>, <span class="fl">1.5</span>, <span class="fl">1.1</span>, <span class="fl">0.6</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  error_type <span class="op">=</span> <span class="st">"ArithmeticStdDev"</span></span></span>
+<span class="r-in"><span>  time <span class="op">=</span> <span class="fu"><a href="time.html">time</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>, unit <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  values <span class="op">=</span> <span class="fu"><a href="values.html">values</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, <span class="fl">18</span>, <span class="fl">11</span>, <span class="fl">5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    unit <span class="op">=</span> <span class="st">"mg/l"</span>,</span></span>
+<span class="r-in"><span>    dimension <span class="op">=</span> <span class="st">"Concentration (mass)"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  error <span class="op">=</span> <span class="fu"><a href="error.html">error</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.2</span>, <span class="fl">1.5</span>, <span class="fl">1.1</span>, <span class="fl">0.6</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"ArithmeticStdDev"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

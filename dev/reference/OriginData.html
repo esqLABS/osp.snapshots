@@ -21,7 +21,7 @@ each entry of the Individuals array."><meta name="robots" content="noindex"></he
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9903</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9904</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,10 @@ JSON, refreshed from the embedded <a href="CalculationMethods.html">CalculationM
 
 
     <dt><code>age</code></dt>
-<dd><p>Numeric age value of the individual (in <code>age_unit</code>).</p></dd>
+<dd><p>Numeric age value of the individual (in <code>age_unit</code>).
+Writable: assign an <code><a href="age.html">age()</a></code> object to set the value and unit
+together, or a numeric scalar (the unit defaults to <code>"year(s)"</code>
+when not already set).</p></dd>
 
 
     <dt><code>age_unit</code></dt>
@@ -95,7 +98,10 @@ JSON, refreshed from the embedded <a href="CalculationMethods.html">CalculationM
 
     <dt><code>gestational_age</code></dt>
 <dd><p>Numeric gestational age value (in
-<code>gestational_age_unit</code>), used for preterm individuals.</p></dd>
+<code>gestational_age_unit</code>), used for preterm individuals. Writable:
+assign a <code><a href="gestational_age.html">gestational_age()</a></code> object to set the value and unit
+together, or a numeric scalar (the unit defaults to <code>"week(s)"</code>
+when not already set).</p></dd>
 
 
     <dt><code>gestational_age_unit</code></dt>
@@ -104,7 +110,9 @@ JSON, refreshed from the embedded <a href="CalculationMethods.html">CalculationM
 
     <dt><code>weight</code></dt>
 <dd><p>Numeric weight value of the individual (in
-<code>weight_unit</code>).</p></dd>
+<code>weight_unit</code>). Writable: assign a <code><a href="weight.html">weight()</a></code> object to set the
+value and unit together, or a numeric scalar (the unit defaults to
+<code>"kg"</code> when not already set).</p></dd>
 
 
     <dt><code>weight_unit</code></dt>
@@ -113,7 +121,9 @@ JSON, refreshed from the embedded <a href="CalculationMethods.html">CalculationM
 
     <dt><code>height</code></dt>
 <dd><p>Numeric height value of the individual (in
-<code>height_unit</code>).</p></dd>
+<code>height_unit</code>). Writable: assign a <code><a href="height.html">height()</a></code> object to set the
+value and unit together, or a numeric scalar (the unit defaults to
+<code>"cm"</code> when not already set).</p></dd>
 
 
     <dt><code>height_unit</code></dt>

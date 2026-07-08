@@ -12,13 +12,9 @@ create_individual(
   population = NULL,
   gender = NULL,
   age = NULL,
-  age_unit = "year(s)",
   weight = NULL,
-  weight_unit = "kg",
   height = NULL,
-  height_unit = "cm",
   gestational_age = NULL,
-  gestational_age_unit = "week(s)",
   calculation_methods = NULL,
   disease_state = NULL,
   disease_state_parameters = NULL,
@@ -50,36 +46,27 @@ create_individual(
 
 - age:
 
-  Numeric. Age of the individual
-
-- age_unit:
-
-  Character. Unit for age (must be valid unit for "Age in years")
+  An
+  [`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md)
+  object, or `NULL`.
 
 - weight:
 
-  Numeric. Weight of the individual
-
-- weight_unit:
-
-  Character. Unit for weight (must be valid unit for "Mass")
+  A
+  [`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md)
+  object, or `NULL`.
 
 - height:
 
-  Numeric. Height of the individual
-
-- height_unit:
-
-  Character. Unit for height (must be valid unit for "Length")
+  A
+  [`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md)
+  object, or `NULL`.
 
 - gestational_age:
 
-  Numeric. Gestational age of the individual (for infant/preterm
-  individuals)
-
-- gestational_age_unit:
-
-  Character. Unit for gestational age (must be valid unit for "Time")
+  A
+  [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/gestational_age.md)
+  object, or `NULL` (for infant/preterm individuals).
 
 - calculation_methods:
 
@@ -120,6 +107,14 @@ create_individual(
 
 An Individual object
 
+## See also
+
+[`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md),
+[`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md),
+[`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md),
+[`gestational_age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/gestational_age.md)
+for the demographic value-object helpers.
+
 ## Examples
 
 ``` r
@@ -132,9 +127,9 @@ individual <- create_individual(
   species = "Human",
   population = "European_ICRP_2002",
   gender = "MALE",
-  age = 30,
-  weight = 70,
-  height = 175
+  age = age(30),
+  weight = weight(70),
+  height = height(175)
 )
 
 # Create an individual with calculation methods

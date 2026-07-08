@@ -151,6 +151,36 @@ Construct building blocks and leaves from named arguments
 - [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_solver_settings.md)
   : Create a solver settings object for a simulation
 
+## Value-object helpers
+
+Bundle a value, unit, and field-specific extras for the create\_\*
+factory arguments
+
+- [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md)
+  : Lipophilicity value object
+- [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
+  : Fraction unbound value object
+- [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
+  : Solubility value object
+- [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md)
+  : Intestinal permeability value object
+- [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md)
+  : Permeability value object
+- [`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md)
+  : Age value object
+- [`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md)
+  : Weight value object
+- [`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md)
+  : Height value object
+- [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/gestational_age.md)
+  : Gestational age value object
+- [`time()`](https://esqlabs.github.io/osp.snapshots/dev/reference/time.md)
+  : Time series value object
+- [`values()`](https://esqlabs.github.io/osp.snapshots/dev/reference/values.md)
+  : Measurement values series value object
+- [`error()`](https://esqlabs.github.io/osp.snapshots/dev/reference/error.md)
+  : Error series value object
+
 ## Mutators
 
 Add and remove building blocks on a snapshot

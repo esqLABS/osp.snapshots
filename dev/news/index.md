@@ -13,6 +13,27 @@
   (duplicate names disambiguated with `_{n}`). Filter by
   `process$category` to recover the equivalent of the deprecated
   per-category accessors (#40).
+- [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md),
+  [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md),
+  and
+  [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
+  take value-object helpers
+  ([`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md),
+  [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md),
+  [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md),
+  [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md),
+  [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md),
+  [`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md),
+  [`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md),
+  [`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md),
+  [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/gestational_age.md),
+  [`time()`](https://esqlabs.github.io/osp.snapshots/dev/reference/time.md),
+  [`values()`](https://esqlabs.github.io/osp.snapshots/dev/reference/values.md),
+  [`error()`](https://esqlabs.github.io/osp.snapshots/dev/reference/error.md))
+  for their value/unit/name fields instead of the per-field
+  `_value`/`_unit`/`_name` scalar arguments; for example
+  `create_compound(name = "X", lipophilicity = lipophilicity(2.5))`
+  (#133).
 - [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   writes the identifier to `data$Name` for plain parameters (no `path`
   argument) and to `data$Path` for path-bearing parameters (with `path`
@@ -31,6 +52,23 @@
 
 ### New features
 
+- [`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md),
+  [`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md),
+  [`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md),
+  [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/gestational_age.md),
+  [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md),
+  [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md),
+  [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md),
+  [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md),
+  [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md),
+  [`time()`](https://esqlabs.github.io/osp.snapshots/dev/reference/time.md),
+  [`values()`](https://esqlabs.github.io/osp.snapshots/dev/reference/values.md),
+  and
+  [`error()`](https://esqlabs.github.io/osp.snapshots/dev/reference/error.md)
+  build small value objects that bundle a value, its unit, and any
+  field-specific extras for the `create_*()` factory arguments; each
+  owns its default unit and validates a supplied unit against the
+  field’s dimension (#133).
 - [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
   attaches one or more `Simulation` objects to a `Snapshot`. Unresolved
   references to other building blocks (individual, population,
@@ -59,19 +97,24 @@
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
   builds a compound from named arguments, with validation on
   `molecular_weight_unit` against
-  `ospsuite::ospUnits$"Molecular weight"` (#27, \#48). It also sets the
-  physicochemical properties directly: `lipophilicity`,
-  `fraction_unbound`, `solubility` (with `reference_pH`,
-  `solubility_gain_per_charge`, and `solubility_table`),
-  `intestinal_permeability`, `permeability`, and `pKa`, and attaches
-  `processes`; the matching `Compound` fields (`$lipophilicity`,
-  `$fraction_unbound`, `$solubility`, `$intestinal_permeability`,
-  `$permeability`, `$pka_types`, `$processes`) are writable so a loaded
-  compound can be mutated. Attach with
+  `ospsuite::ospUnits$"Molecular weight"` (#27, \#48). It sets the
+  physicochemical properties through value-object helpers:
+  [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md),
+  [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md),
+  [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
+  (expressing reference pH, gain per charge, or a pH/value table),
+  [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md),
+  and
+  [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md),
+  plus `pKa` and `processes`; the matching `Compound` fields
+  (`$lipophilicity`, `$fraction_unbound`, `$solubility`,
+  `$intestinal_permeability`, `$permeability`, `$pka_types`,
+  `$processes`) are writable and also accept the helper objects so a
+  loaded compound can be mutated. Attach with
   [`add_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_compound.md),
   remove by name with
   [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
-  (#39, \#115).
+  (#39, \#115, \#133).
 - [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_group_selection.md),
   [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md),
   [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md),
@@ -118,20 +161,33 @@
   the curated alias form is unchanged and `Formulation$formulation_type`
   now accepts any non-empty string (#120).
 - [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
-  gains `expression_profiles`, `description`, and `parameters` arguments
-  to attach expression-profile references, a description, and localized
-  parameter overrides at creation time; the
+  sets the demographic fields through value-object helpers
+  ([`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md),
+  [`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md),
+  [`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md),
+  [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/gestational_age.md)),
+  and gains `expression_profiles`, `description`, and `parameters`
+  arguments to attach expression-profile references, a description, and
+  localized parameter overrides at creation time; the
   `Individual$expression_profiles` binding is now writable and a new
-  read/write `Individual$description` binding is available (#117).
+  read/write `Individual$description` binding is available. The
+  demographic `Individual` fields also accept the helper objects (#117,
+  \#133).
 - [`create_molecule_list()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_molecule_list.md)
   builds an observer’s molecule list from `for_all`, `include`, and
   `exclude` (#119).
 - [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_observed_data.md)
   builds an
   [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
-  from named time, value, unit, and optional error-series arguments.
-  `value_dimension` is required and gates unit validation (#27, \#48).
-  Attach with
+  from the
+  [`time()`](https://esqlabs.github.io/osp.snapshots/dev/reference/time.md),
+  [`values()`](https://esqlabs.github.io/osp.snapshots/dev/reference/values.md),
+  and optional
+  [`error()`](https://esqlabs.github.io/osp.snapshots/dev/reference/error.md)
+  series value-object helpers. The values dimension is required and is
+  supplied to
+  [`values()`](https://esqlabs.github.io/osp.snapshots/dev/reference/values.md),
+  where it gates unit validation (#27, \#48, \#133). Attach with
   [`add_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_observed_data.md),
   remove with
   [`remove_observed_data()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observed_data.md)
