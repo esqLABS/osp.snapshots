@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9905</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9906</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,12 +73,20 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This vignette shows how to assemble a <em>Simulation</em> from named
-arguments and attach it to a <em>Snapshot</em>. A simulation binds
-together other building blocks (an individual or a population,
-compounds, events, observer sets, observed data, protocols,
-formulations) plus a solver, an output schema, and parameter
-overrides.</p>
+<p>A <em>Simulation</em> is almost pure references into a
+<em>Snapshot</em>: it names an individual (or a population), one or more
+compounds, and optionally events, observed data, and parameter
+overrides, all of which already live in the snapshot as building blocks.
+Because the snapshot holds every block a simulation points at, it is the
+entry point: <code><a href="../reference/add_simulation.html">add_simulation()</a></code> builds the simulation from
+named arguments, resolves those references, derives sensible defaults,
+and attaches the result, all in one call.</p>
+<p>This vignette starts with a complete <code><a href="../reference/add_simulation.html">add_simulation()</a></code>
+call, then explains each piece.</p>
+</div>
+<div class="section level2">
+<h2 id="load-the-template">Load the template<a class="anchor" aria-label="anchor" href="#load-the-template"></a>
+</h2>
 <p>We start with the <code>Midazolam</code> template, which already
 ships individuals, compounds, protocols, formulations, and events that
 we can reference by name.</p>
@@ -107,249 +115,69 @@ we can reference by name.</p>
 <span><span class="co">#&gt; [1] "High-fat breakfast"</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="create_simulation-arguments-at-a-glance">
-<code>create_simulation()</code> arguments at a glance<a class="anchor" aria-label="anchor" href="#create_simulation-arguments-at-a-glance"></a>
+<h2 id="build-and-attach-a-simulation">Build and attach a simulation<a class="anchor" aria-label="anchor" href="#build-and-attach-a-simulation"></a>
 </h2>
-<p>Every argument falls into one of three kinds: a plain scalar, a
-character vector of names that reference existing building blocks, or a
-structured object built by a matching <code>create_*()</code>
-sub-factory. The sections that follow walk through each sub-factory;
-this table is the map.</p>
-<table class="table">
-<colgroup>
-<col width="23%">
-<col width="65%">
-<col width="10%">
-</colgroup>
-<thead><tr class="header">
-<th>Argument</th>
-<th>Type</th>
-<th>Required?</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><code>name</code></td>
-<td>string</td>
-<td>yes</td>
-</tr>
-<tr class="even">
-<td><code>individual</code></td>
-<td>string (name of an Individual building block)</td>
-<td>XOR with <code>population</code>
-</td>
-</tr>
-<tr class="odd">
-<td><code>population</code></td>
-<td>string (name of a Population building block)</td>
-<td>XOR with <code>individual</code>
-</td>
-</tr>
-<tr class="even">
-<td><code>model</code></td>
-<td>string (defaults to <code>"4Comp"</code>)</td>
-<td>no</td>
-</tr>
-<tr class="odd">
-<td><code>description</code></td>
-<td>string</td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td><code>allow_aging</code></td>
-<td>logical</td>
-<td>no</td>
-</tr>
-<tr class="odd">
-<td><code>observed_data_names</code></td>
-<td>character vector of observed-data names</td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td><code>output_selections</code></td>
-<td>character vector of output-quantity paths</td>
-<td>no</td>
-</tr>
-<tr class="odd">
-<td><code>solver</code></td>
-<td>
-<code><a href="../reference/create_solver_settings.html">create_solver_settings()</a></code> output</td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td><code>output_schema</code></td>
-<td>
-<code><a href="../reference/create_output_schema.html">create_output_schema()</a></code> output</td>
-<td>no</td>
-</tr>
-<tr class="odd">
-<td><code>compounds</code></td>
-<td>list of <code><a href="../reference/create_compound_properties.html">create_compound_properties()</a></code> outputs</td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td><code>events</code></td>
-<td>list of <code><a href="../reference/create_event_selection.html">create_event_selection()</a></code> outputs</td>
-<td>no</td>
-</tr>
-<tr class="odd">
-<td><code>observer_sets</code></td>
-<td>list of <code><a href="../reference/create_observer_set_selection.html">create_observer_set_selection()</a></code> outputs</td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td><code>output_mappings</code></td>
-<td>list of <code><a href="../reference/create_output_mapping.html">create_output_mapping()</a></code> outputs</td>
-<td>no</td>
-</tr>
-<tr class="odd">
-<td><code>parameters</code></td>
-<td>list of <code>create_parameter(path = ...)</code> outputs</td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td><code>advanced_parameters</code></td>
-<td>list of <code>AdvancedParameter</code> objects (population sims
-only)</td>
-<td>no</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Exactly one</strong> of <code>individual</code> or
-<code>population</code> must be supplied (passing both, or neither,
-errors).</p>
-<div class="section level3">
-<h3 id="what-pk-sim-does-when-an-optional-argument-is-omitted">What PK-Sim does when an optional argument is omitted<a class="anchor" aria-label="anchor" href="#what-pk-sim-does-when-an-optional-argument-is-omitted"></a>
-</h3>
-<ul>
-<li>
-<code>model</code>: defaults to <code>"4Comp"</code> (the standard
-four-compartment model).</li>
-<li>
-<code>description</code>: stays empty; no functional effect on the
-simulation.</li>
-<li>
-<code>allow_aging</code>: defaults to <code>FALSE</code> on load (no
-ageing during the simulation window).</li>
-<li>
-<code>observed_data_names</code>: no observed-data sets are attached
-to the simulation.</li>
-<li>
-<code>output_selections</code>: no quantities are explicitly marked
-for reporting beyond whatever the model defaults to. Supply at least one
-path to control what the simulation outputs.</li>
-<li>
-<code>solver</code>: PK-Sim builds a <code>SolverSettings</code>
-from <code>ISolverSettingsFactory.CreateDefault()</code> (built-in CVODE
-defaults).</li>
-<li>
-<code>output_schema</code>: PK-Sim builds an empty schema via
-<code>IOutputSchemaFactory.CreateEmpty()</code>; the simulation reports
-no time points. Supply at least one interval to get output.</li>
-<li>
-<code>compounds</code>: the simulation has no compound
-configuration. Compounds referenced indirectly (e.g. via a protocol)
-still need a <code>CompoundProperties</code> entry to be runnable.</li>
-<li>
-<code>events</code>: no events are attached.</li>
-<li>
-<code>observer_sets</code>: no observer sets are attached.</li>
-<li>
-<code>output_mappings</code>: no observed-data-to-output bindings
-are recorded. Parameter identification and downstream comparison tools
-will have nothing to compare.</li>
-<li>
-<code>parameters</code>: no parameter overrides are applied; every
-quantity uses the value derived from its building block.</li>
-<li>
-<code>advanced_parameters</code>: no variability overrides on
-population sampling; default distributions apply.</li>
-</ul>
-</div>
-</div>
-<div class="section level2">
-<h2 id="solver-settings">Solver settings<a class="anchor" aria-label="anchor" href="#solver-settings"></a>
-</h2>
-<p><code><a href="../reference/create_solver_settings.html">create_solver_settings()</a></code> produces a sparse solver
-configuration.</p>
-<p><strong>All arguments are optional</strong>, with the PK-Sim fallback
-when omitted:</p>
-<ul>
-<li>
-<code>abs_tol</code>, <code>rel_tol</code>,
-<code>use_jacobian</code>, <code>h0</code>, <code>h_min</code>,
-<code>h_max</code>, <code>mx_step</code>: each field omitted from the
-snapshot is filled by
-<code>ISolverSettingsFactory.CreateDefault()</code> on load, so the
-simulation runs with PK-Sim’s built-in CVODE defaults. Calling
-<code><a href="../reference/create_solver_settings.html">create_solver_settings()</a></code> with no arguments is the same as
-not supplying <code>solver</code> to <code><a href="../reference/create_simulation.html">create_simulation()</a></code> at
-all.</li>
-</ul>
+<p>Here is the whole workflow in one call. Pass the
+<code>snapshot</code>, a <code>name</code>, exactly one of
+<code>individual</code> or <code>population</code>, and configure each
+compound inline with the protocol and formulation it should use.
+Everything else is optional.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">solver</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_solver_settings.html">create_solver_settings</a></span><span class="op">(</span></span>
-<span>  abs_tol <span class="op">=</span> <span class="fl">1e-9</span>,</span>
-<span>  rel_tol <span class="op">=</span> <span class="fl">1e-9</span>,</span>
-<span>  mx_step <span class="op">=</span> <span class="fl">100000</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="output-schema">Output schema<a class="anchor" aria-label="anchor" href="#output-schema"></a>
-</h2>
-<p><code><a href="../reference/create_output_schema.html">create_output_schema()</a></code> collects one or more <em>Output
-intervals</em>.</p>
-<ul>
-<li>
-<strong>Required:</strong> none.</li>
-<li>
-<strong>Optional</strong>, with the PK-Sim fallback when omitted:
-<ul>
-<li>
-<code>intervals</code>: defaults to an empty list. An output schema
-with no intervals means the simulation reports no time points; supply at
-least one interval if you want any output.</li>
-</ul>
-</li>
-</ul>
-<p>For <code><a href="../reference/create_output_interval.html">create_output_interval()</a></code>:</p>
-<ul>
-<li>
-<strong>Required:</strong> <code>start_time</code>,
-<code>end_time</code>, <code>resolution</code>, all numeric scalars in
-PK-Sim’s default units (<code>h</code>, <code>h</code>,
-<code>pts/h</code>).</li>
-<li>
-<strong>Optional</strong>, with the PK-Sim fallback when omitted:
-<ul>
-<li>
-<code>name</code>: PK-Sim assigns a generated unique name through
-<code>IContainerTask.CreateUniqueName()</code>.</li>
-</ul>
-</li>
-</ul>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_output_schema.html">create_output_schema</a></span><span class="op">(</span></span>
-<span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="../reference/create_output_interval.html">create_output_interval</a></span><span class="op">(</span>start_time <span class="op">=</span> <span class="fl">0</span>, end_time <span class="op">=</span> <span class="fl">2</span>, resolution <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="../reference/create_output_interval.html">create_output_interval</a></span><span class="op">(</span>start_time <span class="op">=</span> <span class="fl">2</span>, end_time <span class="op">=</span> <span class="fl">24</span>, resolution <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="va">snapshot</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/add_simulation.html">add_simulation</a></span><span class="op">(</span></span>
+<span>    name <span class="op">=</span> <span class="st">"Midazolam oral dose"</span>,</span>
+<span>    individual <span class="op">=</span> <span class="st">"Korean (Yu 2004 study)"</span>,</span>
+<span>    compounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        name <span class="op">=</span> <span class="st">"Midazolam"</span>,</span>
+<span>        protocol <span class="op">=</span> <span class="st">"po 15 mg"</span>,</span>
+<span>        formulation <span class="op">=</span> <span class="st">"Oral solution"</span>,</span>
+<span>        processes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Hepatic"</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    events <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="../reference/create_event_selection.html">create_event_selection</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"High-fat breakfast"</span>, start_time <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span></span>
+<span><span class="va">snapshot</span><span class="op">$</span><span class="va">simulations</span><span class="op">[[</span><span class="st">"Midazolam oral dose"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation: Midazolam oral dose</span> <span style="color: #00BBBB;">─────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; • Model: 4Comp</span></span>
+<span><span class="co">#&gt; • Individual: Korean (Yu 2004 study)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Compounds (1)</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • Midazolam</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Events (1)</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; • High-fat breakfast</span></span></code></pre></div>
+<p><code><a href="../reference/add_simulation.html">add_simulation()</a></code> reported which defaults it derived from
+the snapshot (here, Midazolam’s calculation methods and alternatives)
+and attached the simulation. If any name had not resolved to a known
+building block, you would also get one informational warning per
+simulation; the add proceeds either way.</p>
+<p>The rest of this vignette explains the arguments you just used, then
+the optional inputs you did not.</p>
 </div>
 <div class="section level2">
-<h2 id="compound-properties">Compound properties<a class="anchor" aria-label="anchor" href="#compound-properties"></a>
+<h2 id="configuring-compounds">Configuring compounds<a class="anchor" aria-label="anchor" href="#configuring-compounds"></a>
 </h2>
-<p><code><a href="../reference/create_compound_properties.html">create_compound_properties()</a></code> configures one compound for
-the simulation.</p>
+<p>Each entry of <code>compounds</code> configures one compound for the
+simulation. The common path is an inline config list, as above; the
+escape-hatch factories are still accepted through the same slot (see
+below).</p>
 <div class="section level3">
-<h3 id="compound-vs-compoundproperties">Compound vs CompoundProperties<a class="anchor" aria-label="anchor" href="#compound-vs-compoundproperties"></a>
+<h3 id="compound-vs-compound-configuration">Compound vs compound configuration<a class="anchor" aria-label="anchor" href="#compound-vs-compound-configuration"></a>
 </h3>
 <p>A <code>Compound</code> building block (the kind you find in
 <code>snapshot$compounds</code>) is the project-level definition of a
 drug: its physicochemical properties, the full menu of available
 alternatives, the process templates it ships, and so on. The same
 compound can be referenced by many simulations.</p>
-<p><code>CompoundProperties</code> is the <em>per-simulation
-overlay</em> that picks one path through that menu. For each simulation
-that uses the compound you record:</p>
+<p>A compound <em>configuration</em> is the per-simulation overlay that
+picks one path through that menu:</p>
 <ul>
 <li>which <code>calculation_methods</code> override the compound’s
 defaults,</li>
@@ -357,55 +185,54 @@ defaults,</li>
 selected,</li>
 <li>which <code>processes</code> are enabled, and how each is wired to
 molecules or systemic types,</li>
-<li>which <code>protocol</code> is used and which formulation fills each
-application slot.</li>
+<li>which <code>protocol</code> is used and which
+<code>formulation</code> fills each application slot.</li>
 </ul>
-<p>None of those choices live on the <code>Compound</code> building
-block, which is why <code><a href="../reference/create_compound_properties.html">create_compound_properties()</a></code> exists as
-a separate step even when the compound is already in
-<code>snapshot$compounds</code>. The reference back to the building
-block is the <code>name</code> argument; everything else is
-simulation-local.</p>
-<p>By contrast, <code><a href="../reference/create_event_selection.html">create_event_selection()</a></code> only takes
-<code>name</code> plus a <code>start_time</code>, and
-<code><a href="../reference/create_observer_set_selection.html">create_observer_set_selection()</a></code> only takes
-<code>name</code>, because events and observer sets have nothing
-analogous to alternatives/processes/protocol to choose between at
-simulation time.</p>
-</div>
-<div class="section level3">
-<h3 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a>
-</h3>
+<p>Because the snapshot is the entry point,
+<code><a href="../reference/add_simulation.html">add_simulation()</a></code> derives most of these from the referenced
+building block when you leave them out. You point at the compound by
+<code>name</code> and the resolver fills in the rest:</p>
 <ul>
 <li>
-<strong>Required:</strong> <code>name</code>, which must match a
-compound in the snapshot.</li>
+<code>calculation_methods</code>: derived from the calculation
+methods defined on the referenced <code>Compound</code> building
+block.</li>
 <li>
-<strong>Optional</strong>, with the PK-Sim fallback when omitted:
-<ul>
+<code>alternatives</code>: each alternative group is defaulted to
+that group’s default alternative (the one marked <code>IsDefault</code>,
+or <code>"User defined"</code> as a fallback).</li>
 <li>
-<code>calculation_methods</code>: the simulation uses the
-calculation-method cache already defined on the <code>Compound</code>
-building block.</li>
+<code>formulation</code> (together with <code>protocol</code>): the
+resolver infers the formulation key from the referenced protocol’s
+application slot, falling back to the literal <code>"Formulation"</code>
+key for simple protocols.</li>
 <li>
-<code>alternatives</code>: each unspecified alternative group keeps
-the default alternative marked on the compound (typically the first or
-the one with <code>IsDefault = TRUE</code>).</li>
-<li>
-<code>processes</code>: every compound process that is not listed is
-treated as deselected; PK-Sim materialises the right placeholder
-(<code>NotSelectedSystemicProcess</code>,
-<code>NoInteractionProcess</code>, …) so the simulation runs as if you
-had explicitly disabled it.</li>
+<code>processes</code>: <strong>never defaulted.</strong> Omitting
+<code>processes</code> produces no process array, which deselects the
+compound’s processes in PK-Sim (it materialises the right placeholder so
+the simulation runs as if you had explicitly disabled them). List the
+processes you want to keep. A name is classified as a systemic-process
+type when it is one of <code>"Hepatic"</code>, <code>"Renal"</code>, or
+<code>"Biliary"</code>; every other name is treated as a molecule
+name.</li>
 <li>
 <code>protocol</code>: when omitted, the compound is included with
-no dosing protocol attached, which means it will not be administered
-during the simulation (useful for compounds that are only produced
+no dosing protocol attached, so it will not be administered during the
+simulation (useful for compounds that are only produced
 metabolically).</li>
 </ul>
-</li>
-</ul>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>The only required field is <code>name</code>, which must match a
+compound in the snapshot.</p>
+</div>
+<div class="section level3">
+<h3 id="the-escape-hatch">The escape hatch<a class="anchor" aria-label="anchor" href="#the-escape-hatch"></a>
+</h3>
+<p>For a multi-slot protocol, or any hand-built configuration you want
+full control over, build the compound entry with the factory functions
+and pass the resulting <code>CompoundProperties</code> object through
+the same <code>compounds</code> slot. When you do, the resolver leaves
+it untouched (no defaulting):</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">compound</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_compound_properties.html">create_compound_properties</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"Midazolam"</span>,</span>
 <span>  calculation_methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -416,7 +243,7 @@ metabolically).</li>
 <span>    <span class="fu"><a href="../reference/create_compound_process_selection.html">create_compound_process_selection</a></span><span class="op">(</span>systemic_process_type <span class="op">=</span> <span class="st">"Hepatic"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  protocol <span class="op">=</span> <span class="fu"><a href="../reference/create_protocol_selection.html">create_protocol_selection</a></span><span class="op">(</span></span>
-<span>    name <span class="op">=</span> <span class="st">"iv 1 mg (bolus)"</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"po 15 mg"</span>,</span>
 <span>    formulations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      <span class="fu"><a href="../reference/create_formulation_selection.html">create_formulation_selection</a></span><span class="op">(</span></span>
 <span>        name <span class="op">=</span> <span class="st">"Oral solution"</span>,</span>
@@ -424,7 +251,14 @@ metabolically).</li>
 <span>      <span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="va">snapshot</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/add_simulation.html">add_simulation</a></span><span class="op">(</span></span>
+<span>    name <span class="op">=</span> <span class="st">"Midazolam (hand-built compound)"</span>,</span>
+<span>    individual <span class="op">=</span> <span class="st">"Korean (Yu 2004 study)"</span>,</span>
+<span>    compounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">compound</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p>The supporting factories follow the same convention:</p>
 <ul>
 <li>
@@ -440,106 +274,91 @@ internal to the parent compound.</li>
 <code>group_name</code> and <code>alternative_name</code> are both
 required. Does not reference a building block; it picks an alternative
 inside an alternative group defined on the parent compound.</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="protocol-selection-protocol-vs-protocolselection">Protocol selection: Protocol vs ProtocolSelection<a class="anchor" aria-label="anchor" href="#protocol-selection-protocol-vs-protocolselection"></a>
-</h3>
-<p><code><a href="../reference/create_protocol_selection.html">create_protocol_selection()</a></code> mirrors the same split as
-compounds. A <code>Protocol</code> building block (in
-<code>snapshot$protocols</code>) is the project-level dosing schedule
-with all its parameters. <code>ProtocolSelection</code> is the
-per-simulation overlay that points at one such protocol by
-<code>name</code> and records which <code>Formulation</code> fills each
-of the protocol’s application slots through <code>formulations</code> (a
-list of <code><a href="../reference/create_formulation_selection.html">create_formulation_selection()</a></code> outputs).</p>
-<ul>
 <li>
-<strong>Required:</strong> <code>name</code> (must match a protocol
-in the snapshot).</li>
+<code><a href="../reference/create_protocol_selection.html">create_protocol_selection()</a></code>: points at one protocol in
+<code>snapshot$protocols</code> by <code>name</code> and records which
+<code>Formulation</code> fills each of the protocol’s application slots
+through <code>formulations</code>. Supply a <code>formulations</code>
+entry for every slot the protocol requires; PK-Sim rejects the
+simulation at load time if a required slot is unbound.</li>
 <li>
-<strong>Optional</strong>, with the PK-Sim fallback when omitted:
-<ul>
-<li>
-<code>formulations</code>: protocol application slots that have no
-formulation binding stay empty; PK-Sim will reject the simulation at
-load time if the protocol requires a formulation for an unbound slot.
-Supply <code>formulations</code> for every slot that needs one
-(typically every slot in oral protocols).</li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="formulation-selection-formulation-vs-formulationselection">Formulation selection: Formulation vs FormulationSelection<a class="anchor" aria-label="anchor" href="#formulation-selection-formulation-vs-formulationselection"></a>
-</h3>
-<p>Same idea again. A <code>Formulation</code> building block (in
-<code>snapshot$formulations</code>) is the project-level dissolution
-profile. <code>FormulationSelection</code> is the per-simulation entry
-that binds that formulation to one application slot inside the chosen
-protocol.</p>
-<ul>
-<li>
-<strong>Required:</strong> <code>name</code> (must match a
-formulation in the snapshot) and <code>key</code> (the application slot
-identifier inside the protocol).</li>
+<code><a href="../reference/create_formulation_selection.html">create_formulation_selection()</a></code>: binds one formulation
+in <code>snapshot$formulations</code> (by <code>name</code>) to one
+application slot inside the chosen protocol (by <code>key</code>). Both
+are required.</li>
 </ul>
 </div>
 </div>
 <div class="section level2">
-<h2 id="event-and-observer-set-selections">Event and observer-set selections<a class="anchor" aria-label="anchor" href="#event-and-observer-set-selections"></a>
+<h2 id="optional-inputs">Optional inputs<a class="anchor" aria-label="anchor" href="#optional-inputs"></a>
 </h2>
+<p>The simulation above used only compounds and one event. The remaining
+arguments are all optional; supply them the same way, as extra named
+arguments to the same <code><a href="../reference/add_simulation.html">add_simulation()</a></code> call.</p>
 <div class="section level3">
-<h3 id="event-selection-event-vs-eventselection">Event selection: Event vs EventSelection<a class="anchor" aria-label="anchor" href="#event-selection-event-vs-eventselection"></a>
+<h3 id="events-and-observer-sets">Events and observer sets<a class="anchor" aria-label="anchor" href="#events-and-observer-sets"></a>
 </h3>
 <p>An <code>Event</code> building block (in
-<code>snapshot$events</code>) is the project-level event definition
-(template plus parameters). <code>EventSelection</code> is the
-per-simulation reference that picks one event by <code>name</code> and
-supplies its <code>start_time</code> for this simulation. Aside from
-<code>start_time</code>, events carry no per-simulation overlay.</p>
-<p><code><a href="../reference/create_event_selection.html">create_event_selection()</a></code>:</p>
-<ul>
-<li>
-<strong>Required:</strong> <code>name</code> (must match an event
-building block) and <code>start_time</code> (numeric, hours).</li>
-</ul>
+<code>snapshot$events</code>) is the project-level event definition.
+<code><a href="../reference/create_event_selection.html">create_event_selection()</a></code> picks one by <code>name</code> and
+supplies its <code>start_time</code> (hours) for this simulation; aside
+from <code>start_time</code>, events carry no per-simulation
+overlay.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">event</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_event_selection.html">create_event_selection</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"High-fat breakfast"</span>, start_time <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></code></pre></div>
+<p>An <code>ObserverSet</code> building block (in
+<code>snapshot$observer_sets</code>) is a project-level observer bundle.
+<code><a href="../reference/create_observer_set_selection.html">create_observer_set_selection()</a></code> picks one by
+<code>name</code>, with no per-simulation overlay at all, which is why
+the factory takes only that one argument. The <code>Midazolam</code>
+template ships no observer sets, but with a template that does the call
+would look like:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">observer_set</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_observer_set_selection.html">create_observer_set_selection</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"BrainPlasmaConcentration"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="observer-set-selection-observerset-vs-observersetselection">Observer-set selection: ObserverSet vs ObserverSetSelection<a class="anchor" aria-label="anchor" href="#observer-set-selection-observerset-vs-observersetselection"></a>
+<h3 id="solver-settings">Solver settings<a class="anchor" aria-label="anchor" href="#solver-settings"></a>
 </h3>
-<p>An <code>ObserverSet</code> building block (in
-<code>snapshot$observer_sets</code>) is the project-level observer
-bundle. <code>ObserverSetSelection</code> is the per-simulation
-reference that picks one observer set by <code>name</code>. There is no
-per-simulation overlay at all, which is why the factory takes only a
-single argument.</p>
-<p><code><a href="../reference/create_observer_set_selection.html">create_observer_set_selection()</a></code>:</p>
-<ul>
-<li>
-<strong>Required:</strong> <code>name</code> (must match an
-observer-set building block).</li>
-</ul>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">event</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_event_selection.html">create_event_selection</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"High-fat breakfast"</span>, start_time <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>Midazolam</code> template ships no observer sets, so we
-skip <code><a href="../reference/create_observer_set_selection.html">create_observer_set_selection()</a></code> in this walkthrough.
-With a template that does have one
-(<code>snapshot$observer_sets</code>), the call would look like:</p>
+<p><code><a href="../reference/create_solver_settings.html">create_solver_settings()</a></code> produces a sparse solver
+configuration; every argument is optional. Each field you omit is filled
+by PK-Sim’s built-in CVODE defaults on load, so calling it with no
+arguments is the same as not supplying <code>solver</code> at all.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">observer_set</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_observer_set_selection.html">create_observer_set_selection</a></span><span class="op">(</span></span>
-<span>  name <span class="op">=</span> <span class="st">"BrainPlasmaConcentration"</span></span>
+<code class="sourceCode R"><span><span class="va">solver</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_solver_settings.html">create_solver_settings</a></span><span class="op">(</span></span>
+<span>  abs_tol <span class="op">=</span> <span class="fl">1e-9</span>,</span>
+<span>  rel_tol <span class="op">=</span> <span class="fl">1e-9</span>,</span>
+<span>  mx_step <span class="op">=</span> <span class="fl">100000</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="output-schema">Output schema<a class="anchor" aria-label="anchor" href="#output-schema"></a>
+</h3>
+<p><code><a href="../reference/create_output_schema.html">create_output_schema()</a></code> collects one or more <em>output
+intervals</em>. An output schema with no intervals means the simulation
+reports no time points, so supply at least one interval if you want
+output. Each <code><a href="../reference/create_output_interval.html">create_output_interval()</a></code> requires
+<code>start_time</code>, <code>end_time</code>, and
+<code>resolution</code> (in PK-Sim’s default units <code>h</code>,
+<code>h</code>, <code>pts/h</code>).</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_output_schema.html">create_output_schema</a></span><span class="op">(</span></span>
+<span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="../reference/create_output_interval.html">create_output_interval</a></span><span class="op">(</span>start_time <span class="op">=</span> <span class="fl">0</span>, end_time <span class="op">=</span> <span class="fl">2</span>, resolution <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="../reference/create_output_interval.html">create_output_interval</a></span><span class="op">(</span>start_time <span class="op">=</span> <span class="fl">2</span>, end_time <span class="op">=</span> <span class="fl">24</span>, resolution <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Use <code>output_selections</code> (a character vector of full
+output-quantity paths) to control which quantities the simulation
+reports.</p>
 </div>
-<div class="section level2">
-<h2 id="optional-parameter-overrides">Optional parameter overrides<a class="anchor" aria-label="anchor" href="#optional-parameter-overrides"></a>
-</h2>
+<div class="section level3">
+<h3 id="parameter-overrides">Parameter overrides<a class="anchor" aria-label="anchor" href="#parameter-overrides"></a>
+</h3>
 <p>Simulation parameter overrides are <em>localized parameters</em>,
 identified by their full container path inside the simulation’s
 parameter tree. Use <code>create_parameter(path = ...)</code> to obtain
 one.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">overrides</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/create_parameter.html">create_parameter</a></span><span class="op">(</span></span>
 <span>    path <span class="op">=</span> <span class="st">"Organism|Liver|Volume"</span>,</span>
@@ -548,77 +367,59 @@ one.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="assemble-the-simulation">Assemble the simulation<a class="anchor" aria-label="anchor" href="#assemble-the-simulation"></a>
-</h2>
-<p>With every input prepared, the final <code><a href="../reference/create_simulation.html">create_simulation()</a></code>
-call wires them together.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_simulation.html">create_simulation</a></span><span class="op">(</span></span>
-<span>  name <span class="op">=</span> <span class="st">"Midazolam single dose"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"4Comp"</span>,</span>
-<span>  individual <span class="op">=</span> <span class="st">"Korean (Yu 2004 study)"</span>,</span>
-<span>  compounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">compound</span><span class="op">)</span>,</span>
-<span>  events <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">event</span><span class="op">)</span>,</span>
-<span>  solver <span class="op">=</span> <span class="va">solver</span>,</span>
-<span>  output_schema <span class="op">=</span> <span class="va">schema</span>,</span>
-<span>  output_selections <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Organism|PeripheralVenousBlood|Midazolam|Plasma (Peripheral Venous Blood)"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  parameters <span class="op">=</span> <span class="va">overrides</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sim</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Simulation: Midazolam single dose</span> <span style="color: #00BBBB;">───────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; • Model: 4Comp</span></span>
-<span><span class="co">#&gt; • Individual: Korean (Yu 2004 study)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Compounds (1)</span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • Midazolam</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Events (1)</span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • High-fat breakfast</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Output selections (1)</span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • Organism|PeripheralVenousBlood|Midazolam|Plasma (Peripheral Venous Blood)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Output schema</span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • 2 intervals</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Solver</span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; • AbsTol: 1e-09</span></span>
-<span><span class="co">#&gt; • RelTol: 1e-09</span></span>
-<span><span class="co">#&gt; • MxStep: 100000</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Parameter overrides (1)</span> ──</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="attach-and-export">Attach and export<a class="anchor" aria-label="anchor" href="#attach-and-export"></a>
-</h2>
-<p><code><a href="../reference/add_simulation.html">add_simulation()</a></code> appends the simulation to a snapshot.
-If any name referenced by the simulation does not resolve to a known
-building block, you get one informational warning per simulation; the
-add proceeds either way.</p>
+<div class="section level3">
+<h3 id="putting-the-optional-inputs-together">Putting the optional inputs together<a class="anchor" aria-label="anchor" href="#putting-the-optional-inputs-together"></a>
+</h3>
+<p>The prepared inputs slot straight into the same call:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="va">snapshot</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/add_simulation.html">add_simulation</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/add_simulation.html">add_simulation</a></span><span class="op">(</span></span>
+<span>    name <span class="op">=</span> <span class="st">"Midazolam oral dose (full)"</span>,</span>
+<span>    individual <span class="op">=</span> <span class="st">"Korean (Yu 2004 study)"</span>,</span>
+<span>    compounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Midazolam"</span>, protocol <span class="op">=</span> <span class="st">"po 15 mg"</span>, formulation <span class="op">=</span> <span class="st">"Oral solution"</span>, processes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Hepatic"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    events <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">event</span><span class="op">)</span>,</span>
+<span>    solver <span class="op">=</span> <span class="va">solver</span>,</span>
+<span>    output_schema <span class="op">=</span> <span class="va">schema</span>,</span>
+<span>    output_selections <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"Organism|PeripheralVenousBlood|Midazolam|Plasma (Peripheral Venous Blood)"</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    parameters <span class="op">=</span> <span class="va">overrides</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="export">Export<a class="anchor" aria-label="anchor" href="#export"></a>
+</h2>
 <p>Export with <code><a href="../reference/export_snapshot.html">export_snapshot()</a></code> and PK-Sim will load the
 resulting JSON.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/export_snapshot.html">export_snapshot</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"midazolam-with-new-sim.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="run-the-simulation">Run the simulation<a class="anchor" aria-label="anchor" href="#run-the-simulation"></a>
+</h2>
+<p><code>osp.snapshots</code> builds and edits snapshots; running them
+belongs to <a href="https://www.open-systems-pharmacology.org/OSPSuite-R/" class="external-link"><code>ospsuite</code></a>.
+Once the snapshot is on disk, hand the JSON to
+<code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/runSimulationsFromSnapshot.html" class="external-link">ospsuite::runSimulationsFromSnapshot()</a></code>, which loads every
+simulation it contains and writes the results to an output
+directory.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/open-systems-pharmacology/ospsuite-r" class="external-link">ospsuite</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/runSimulationsFromSnapshot.html" class="external-link">runSimulationsFromSnapshot</a></span><span class="op">(</span></span>
+<span>  <span class="st">"midazolam-with-new-sim.json"</span>,</span>
+<span>  output <span class="op">=</span> <span class="st">"results"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="removing-a-simulation">Removing a simulation<a class="anchor" aria-label="anchor" href="#removing-a-simulation"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="va">snapshot</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/remove_simulation.html">remove_simulation</a></span><span class="op">(</span><span class="st">"Midazolam single dose"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/remove_simulation.html">remove_simulation</a></span><span class="op">(</span><span class="st">"Midazolam oral dose"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

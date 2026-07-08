@@ -52,6 +52,30 @@
 
 ### New features
 
+- [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
+  is the entry point for building a simulation: with the snapshot in
+  hand it constructs a `Simulation` from named arguments (`name`,
+  `individual`/`population`, `compounds`, …), resolves the references,
+  and derives defaults (calculation methods from the compound, the
+  formulation key from the protocol’s slot, alternatives from each
+  group’s default) before attaching. Configure each compound inline
+  through
+  `compounds = list(list(name =, protocol =, formulation =, processes =, ...))`,
+  or pass a
+  [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md)
+  object through the same slot as an escape hatch. Unresolved references
+  to other building blocks (individual, population, compounds, events,
+  observer sets, observed data, protocols, formulations) trigger one
+  informational warning per simulation; the add proceeds either way
+  (#94, \#135).
+- `add_*()` mutators now accept either a single building block or a list
+  of building blocks, mirroring `remove_*()` which has accepted a
+  character vector of names since \#66. Success messages on both sides
+  now uniformly report `Added N kind(s)` / `Removed N kind(s)` (#92).
+- [`add_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_individual.md)
+  warns once per individual when it references expression profiles (by
+  composite `Molecule|Species|Category` id) that are not in the
+  snapshot; the add proceeds either way (#135).
 - [`age()`](https://esqlabs.github.io/osp.snapshots/dev/reference/age.md),
   [`weight()`](https://esqlabs.github.io/osp.snapshots/dev/reference/weight.md),
   [`height()`](https://esqlabs.github.io/osp.snapshots/dev/reference/height.md),
@@ -69,16 +93,6 @@
   field-specific extras for the `create_*()` factory arguments; each
   owns its default unit and validates a supplied unit against the
   field’s dimension (#133).
-- [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
-  attaches one or more `Simulation` objects to a `Snapshot`. Unresolved
-  references to other building blocks (individual, population,
-  compounds, events, observer sets, observed data, protocols,
-  formulations) trigger one informational warning per simulation; the
-  add proceeds either way (#94).
-- `add_*()` mutators now accept either a single building block or a list
-  of building blocks, mirroring `remove_*()` which has accepted a
-  character vector of names since \#66. Success messages on both sides
-  now uniformly report `Added N kind(s)` / `Removed N kind(s)` (#92).
 - [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
   converts any building-block collection to a tibble through one entry
   point, returning either a bare tibble (`"protocols"`,
@@ -125,11 +139,12 @@
   [`create_output_mapping()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_mapping.md),
   [`create_output_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_schema.md),
   [`create_protocol_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol_selection.md),
-  [`create_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_simulation.md),
   and
   [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_solver_settings.md)
-  build a `Simulation` and its supporting structures from named
-  arguments (#94).
+  build a `Simulation`’s supporting structures from named arguments, for
+  use as the escape hatch to
+  [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
+  and for hand-built configurations (#94).
 - [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_descriptor_condition.md)
   builds a container criterion (`Tag`, and an open-string `Type` such as
   `"InContainer"` or `"MatchTag"`) for an observer’s container criteria
@@ -274,7 +289,10 @@
   simulation slice of a snapshot with R6 accessors for solver settings,
   output schemas, compound configurations, event and observer-set
   selections, observed-data references, output mappings, and
-  `LocalizedParameter` overrides. Four post-run fields (`Interactions`,
+  `LocalizedParameter` overrides. Simulations are built through
+  [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
+  and loaded from snapshots; existing simulations are mutated in place
+  through their live bindings. Four post-run fields (`Interactions`,
   `AlteredBuildingBlocks`, `IndividualAnalyses`, `PopulationAnalyses`)
   are preserved byte-equivalent through `$data`, and construction
   enforces an XOR on `$individual` and `$population` so that exactly one

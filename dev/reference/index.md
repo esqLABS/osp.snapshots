@@ -146,8 +146,6 @@ Construct building blocks and leaves from named arguments
   : Create a new schema
 - [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
   : Create a new schema item
-- [`create_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_simulation.md)
-  : Create a simulation building block
 - [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_solver_settings.md)
   : Create a solver settings object for a simulation
 
@@ -204,7 +202,7 @@ Add and remove building blocks on a snapshot
 - [`add_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_protocol.md)
   : Add one or more protocols to a snapshot
 - [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
-  : Add one or more simulations to a snapshot
+  : Build a simulation from a snapshot and attach it
 - [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
   : Remove compounds from a snapshot
 - [`remove_event()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_event.md)
