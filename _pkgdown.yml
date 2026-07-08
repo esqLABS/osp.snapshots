@@ -17,8 +17,6 @@ navbar:
     articles:
       text: "Articles"
       menu:
-      - text: "Getting started with osp.snapshots"
-        href: articles/osp-snapshots.html
       - text: "Creating and managing building blocks"
         href: articles/creating-building-blocks.html
       - text: "Exporting snapshots to data frames"
