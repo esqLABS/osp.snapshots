@@ -1259,8 +1259,8 @@ Snapshot <- R6::R6Class(
       allow_aging,
       call = parent.frame()
     ) {
-      check_required_string(name, "name")
-      check_required_string(model, "model")
+      check_required_string(name, "name", call = call)
+      check_required_string(model, "model", call = call)
 
       has_individual <- !is.null(individual)
       has_population <- !is.null(population)
@@ -1274,9 +1274,9 @@ Snapshot <- R6::R6Class(
         )
       }
       if (has_individual) {
-        check_required_string(individual, "individual")
+        check_required_string(individual, "individual", call = call)
       } else {
-        check_required_string(population, "population")
+        check_required_string(population, "population", call = call)
       }
 
       if (!is.null(allow_aging)) {
@@ -1288,7 +1288,7 @@ Snapshot <- R6::R6Class(
         }
       }
       if (!is.null(description)) {
-        check_required_string(description, "description")
+        check_required_string(description, "description", call = call)
       }
 
       data <- list(Name = name, Model = model)

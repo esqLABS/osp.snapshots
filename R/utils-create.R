@@ -11,7 +11,7 @@ empty_named_list <- function() {
 
 # Internal: assert that `value` is a non-empty scalar character.
 # Used by the create_* factories to validate required string arguments.
-check_required_string <- function(value, arg_name) {
+check_required_string <- function(value, arg_name, call = parent.frame()) {
   if (
     missing(value) ||
       is.null(value) ||
@@ -22,7 +22,7 @@ check_required_string <- function(value, arg_name) {
   ) {
     cli::cli_abort(
       "{.arg {arg_name}} must be a non-empty string",
-      call = parent.frame()
+      call = call
     )
   }
   invisible(value)

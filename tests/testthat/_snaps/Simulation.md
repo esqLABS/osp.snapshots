@@ -145,7 +145,7 @@
     Code
       snap$add_simulation(name = "", individual = "A")
     Condition
-      Error in `private$.build_simulation()`:
+      Error in `snap$add_simulation()`:
       ! `name` must be a non-empty string
 
 ---
