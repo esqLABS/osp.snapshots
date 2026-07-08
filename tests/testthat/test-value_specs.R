@@ -65,7 +65,7 @@ test_that("helpers validate units against their dimension", {
 
 test_that("fraction_unbound() carries no unit slot", {
   spec <- fraction_unbound(0.1)
-  expect_named(unclass(spec), c("value", "name"))
+  expect_named(unclass(spec), c("value", "name", "default"))
 })
 
 test_that("single-value helpers reject non-numeric or non-scalar values", {
@@ -112,6 +112,34 @@ test_that("solubility() requires either a value or a table", {
 
 test_that("values() requires a dimension listing valid options", {
   expect_snapshot(error = TRUE, values(1:3))
+})
+
+test_that("default flag is validated and carried on the slot", {
+  expect_false(lipophilicity(2.5)$default)
+  expect_true(lipophilicity(2.5, default = TRUE)$default)
+  expect_snapshot(error = TRUE, lipophilicity(2.5, default = "yes"))
+  expect_snapshot(error = TRUE, lipophilicity(2.5, default = c(TRUE, FALSE)))
+
+  expect_false(fraction_unbound(0.1)$default)
+  expect_true(fraction_unbound(0.1, default = TRUE)$default)
+
+  expect_false(solubility(9999)$default)
+  expect_true(solubility(9999, default = TRUE)$default)
+  expect_false(
+    solubility(table = data.frame(pH = c(3, 6), value = c(5000, 90)))$default
+  )
+  expect_true(
+    solubility(
+      table = data.frame(pH = c(3, 6), value = c(5000, 90)),
+      default = TRUE
+    )$default
+  )
+
+  expect_false(intestinal_permeability(1.14e-05)$default)
+  expect_true(intestinal_permeability(1.14e-05, default = TRUE)$default)
+
+  expect_false(permeability(0.0069)$default)
+  expect_true(permeability(0.0069, default = TRUE)$default)
 })
 
 test_that("name defaults to 'User defined' and is carried verbatim", {

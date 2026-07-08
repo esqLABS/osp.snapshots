@@ -56,6 +56,26 @@
       ! Solubility is set either by a single value or by a table, not both.
       i Supply the scalar form (`value`, `reference_pH`, `gain_per_charge`) or `table`, not both.
 
+# create_compound aborts when two or more alternatives are marked default
+
+    Code
+      create_compound(name = "X", solubility = list(solubility(9999, name = "Aqueous",
+        default = TRUE), solubility(200, name = "FaSSIF", default = TRUE)))
+    Condition
+      Error in `create_compound()`:
+      ! `solubility` has 2 alternatives marked `default = TRUE`.
+      i Exactly one alternative may be the default; mark only one with `default = TRUE`.
+
+---
+
+    Code
+      create_compound(name = "X", lipophilicity = list(lipophilicity(2.5, name = "Measured",
+        default = TRUE), lipophilicity(3.1, name = "Predicted", default = TRUE)))
+    Condition
+      Error in `create_compound()`:
+      ! `lipophilicity` has 2 alternatives marked `default = TRUE`.
+      i Exactly one alternative may be the default; mark only one with `default = TRUE`.
+
 # create_compound rejects a list containing a non-matching helper or a bare scalar
 
     Code

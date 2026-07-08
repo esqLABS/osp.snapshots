@@ -1084,6 +1084,16 @@
       ! `permeability` must be built with `permeability()`.
       i For example `permeability = permeability(...)`.
 
+# assigning a physicochemical field with two defaults aborts, matching the factory
+
+    Code
+      compound$solubility <- list(solubility(9999, name = "Aqueous", default = TRUE),
+      solubility(200, name = "FaSSIF", default = TRUE))
+    Condition
+      Error:
+      ! `solubility` has 2 alternatives marked `default = TRUE`.
+      i Exactly one alternative may be the default; mark only one with `default = TRUE`.
+
 # solubility field rejects a list containing a non-matching helper
 
     Code

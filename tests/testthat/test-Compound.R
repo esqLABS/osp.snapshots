@@ -294,6 +294,32 @@ test_that("physicochemical fields accept a list of value objects matching the fa
     )
   )
   expect_equal(compound$data$Lipophilicity, factory_lipo$data$Lipophilicity)
+
+  # Non-first explicit default: the field-assignment path must match the
+  # factory path exactly (FR-6).
+  compound$solubility <- list(
+    solubility(9999, name = "Aqueous"),
+    solubility(200, name = "FaSSIF", default = TRUE)
+  )
+  factory_default <- create_compound(
+    name = "X",
+    solubility = list(
+      solubility(9999, name = "Aqueous"),
+      solubility(200, name = "FaSSIF", default = TRUE)
+    )
+  )
+  expect_equal(compound$data$Solubility, factory_default$data$Solubility)
+})
+
+test_that("assigning a physicochemical field with two defaults aborts, matching the factory", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+  expect_snapshot(
+    error = TRUE,
+    compound$solubility <- list(
+      solubility(9999, name = "Aqueous", default = TRUE),
+      solubility(200, name = "FaSSIF", default = TRUE)
+    )
+  )
 })
 
 test_that("solubility field rejects a list containing a non-matching helper", {
