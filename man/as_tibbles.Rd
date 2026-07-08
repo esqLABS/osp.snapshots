@@ -4,18 +4,27 @@
 \alias{as_tibbles}
 \title{Convert a snapshot collection to a tibble or list of tibbles}
 \usage{
-as_tibbles(snapshot, kind)
+as_tibbles(snapshot, kind = NULL)
 }
 \arguments{
 \item{snapshot}{A \code{Snapshot} object.}
 
-\item{kind}{Character scalar naming the collection to convert.
-One of \code{"compounds"}, \code{"individuals"}, \code{"formulations"},
+\item{kind}{Character vector naming the collection(s) to convert,
+or \code{NULL} (the default) to convert every kind. Each element must
+be one of \code{"compounds"}, \code{"individuals"}, \code{"formulations"},
 \code{"populations"}, \code{"events"}, \code{"expression_profiles"},
-\code{"protocols"}, \code{"observer_sets"}, \code{"observed_data"}.}
+\code{"protocols"}, \code{"observer_sets"}, \code{"observed_data"}. A length-1
+\code{kind} returns that kind's native shape directly (a tibble or a
+named list of tibbles); a length-2-or-more \code{kind} returns a named
+list keyed by the requested kinds, in request order; \code{NULL}
+returns a named list of all nine kinds in the order above.}
 }
 \value{
-A tibble or a named list of tibbles, depending on \code{kind}:
+When \code{kind} names a single collection, a tibble or a named
+list of tibbles for that collection (see below). When \code{kind} names
+several collections, or is \code{NULL} (all nine kinds), a named list
+keyed by the requested kinds, each entry the native shape of that
+kind:
 \itemize{
 \item \code{"compounds"}: a list with \code{properties} and \code{processes}
 tibbles. \code{properties} carries one row per (compound,
@@ -39,9 +48,10 @@ to its parent via \code{observer_set_id} / \code{observer_set_name}).
 }
 \description{
 Unified bridge from a \code{Snapshot} to the tidyverse for any
-building-block kind plus observed data. Replaces the eight
+building-block kind plus observed data. Replaces the nine
 per-kind \verb{get_*_dfs()} functions as the canonical entry point;
-those remain available as thin wrappers.
+those remain available as thin wrappers. Omit \code{kind} to convert
+every kind of a snapshot in a single call.
 }
 \examples{
 \dontrun{
@@ -55,5 +65,9 @@ compounds$processes
 # List of tibbles
 individuals <- as_tibbles(snapshot, "individuals")
 individuals$individuals_parameters
+
+# Omit `kind` to convert every kind at once, keyed by kind name
+all_kinds <- as_tibbles(snapshot)
+names(all_kinds)
 }
 }
