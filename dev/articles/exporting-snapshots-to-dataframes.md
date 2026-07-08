@@ -20,9 +20,13 @@ snapshot <- load_snapshot("Midazolam")
 ## The `as_tibbles()` entry point
 
 [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
-takes the snapshot plus a `kind` naming the collection to convert, and
-returns either a tibble or a named list of tibbles for collections that
-split into related tables.
+takes the snapshot plus an optional `kind` naming the collection(s) to
+convert, and returns either a tibble or a named list of tibbles for
+collections that split into related tables. `kind` is optional: omit it
+(or pass `NULL`) to convert every kind at once, returned as a named list
+keyed by kind; pass a single kind to get that kind’s tibble or list of
+tibbles directly; or pass a vector of kinds to get a named list keyed by
+just the requested kinds.
 
 Valid values of `kind`:
 

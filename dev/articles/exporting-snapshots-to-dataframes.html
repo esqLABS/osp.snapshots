@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9901</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9903</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,9 +84,14 @@ analysis patterns.</p>
 <div class="section level2">
 <h2 id="the-as_tibbles-entry-point">The <code>as_tibbles()</code> entry point<a class="anchor" aria-label="anchor" href="#the-as_tibbles-entry-point"></a>
 </h2>
-<p><code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> takes the snapshot plus a <code>kind</code>
-naming the collection to convert, and returns either a tibble or a named
-list of tibbles for collections that split into related tables.</p>
+<p><code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> takes the snapshot plus an optional
+<code>kind</code> naming the collection(s) to convert, and returns
+either a tibble or a named list of tibbles for collections that split
+into related tables. <code>kind</code> is optional: omit it (or pass
+<code>NULL</code>) to convert every kind at once, returned as a named
+list keyed by kind; pass a single kind to get that kind’s tibble or list
+of tibbles directly; or pass a vector of kinds to get a named list keyed
+by just the requested kinds.</p>
 <p>Valid values of <code>kind</code>:</p>
 <ul>
 <li><code>"compounds"</code></li>

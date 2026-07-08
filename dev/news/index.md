@@ -41,11 +41,14 @@
   of building blocks, mirroring `remove_*()` which has accepted a
   character vector of names since \#66. Success messages on both sides
   now uniformly report `Added N kind(s)` / `Removed N kind(s)` (#92).
-- `as_tibbles(snapshot, kind)` converts any building-block collection to
-  a tibble through one entry point, returning either a bare tibble
-  (`"protocols"`, `"observed_data"`) or a named list of related tibbles
-  (every other kind). The eight existing `get_*_dfs()` functions remain
-  available as thin wrappers (#36).
+- [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
+  converts any building-block collection to a tibble through one entry
+  point, returning either a bare tibble (`"protocols"`,
+  `"observed_data"`) or a named list of related tibbles (every other
+  kind). `kind` is optional and accepts a character vector: omit it (or
+  pass `NULL`) to get all kinds as a named list keyed by kind, or pass
+  several kinds to get just that subset. The nine existing `get_*_dfs()`
+  functions remain available as thin wrappers (#36, \#137).
 - `compound$calculation_methods` and
   `individual$origin_data$calculation_methods` return a
   `CalculationMethods` object you can inspect (`$names`, `$length`) and

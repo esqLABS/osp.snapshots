@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9901</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9903</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@
 <li>
 <code>add_*()</code> mutators now accept either a single building block or a list of building blocks, mirroring <code>remove_*()</code> which has accepted a character vector of names since #66. Success messages on both sides now uniformly report <code>Added N kind(s)</code> / <code>Removed N kind(s)</code> (#92).</li>
 <li>
-<code>as_tibbles(snapshot, kind)</code> converts any building-block collection to a tibble through one entry point, returning either a bare tibble (<code>"protocols"</code>, <code>"observed_data"</code>) or a named list of related tibbles (every other kind). The eight existing <code>get_*_dfs()</code> functions remain available as thin wrappers (#36).</li>
+<code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> converts any building-block collection to a tibble through one entry point, returning either a bare tibble (<code>"protocols"</code>, <code>"observed_data"</code>) or a named list of related tibbles (every other kind). <code>kind</code> is optional and accepts a character vector: omit it (or pass <code>NULL</code>) to get all kinds as a named list keyed by kind, or pass several kinds to get just that subset. The nine existing <code>get_*_dfs()</code> functions remain available as thin wrappers (#36, #137).</li>
 <li>
 <code>compound$calculation_methods</code> and <code>individual$origin_data$calculation_methods</code> return a <code>CalculationMethods</code> object you can inspect (<code>$names</code>, <code>$length</code>) and mutate (<code>$add()</code>, <code>$remove()</code>) (#30).</li>
 <li>
