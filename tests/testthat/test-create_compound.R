@@ -427,7 +427,7 @@ test_that("create_compound honours a non-first default in a mixed scalar/table s
   expect_equal(alt[[2]]$IsDefault, TRUE)
 })
 
-test_that("default_alternative_name() honours an explicit non-first default", {
+test_that("get_default_alternative() honours an explicit non-first default", {
   compound <- create_compound(
     name = "X",
     solubility = list(
@@ -435,7 +435,9 @@ test_that("default_alternative_name() honours an explicit non-first default", {
       solubility(200, name = "FaSSIF", default = TRUE)
     )
   )
-  expect_equal(default_alternative_name(compound$data$Solubility), "FaSSIF")
+  expect_equal(get_default_alternative(compound$data$Solubility), "FaSSIF")
+  # The user-facing field accessor returns the same classed group.
+  expect_equal(get_default_alternative(compound$solubility), "FaSSIF")
 })
 
 test_that("helper-set physicochemical properties never land in Parameters", {

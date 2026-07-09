@@ -362,10 +362,25 @@ print.physicochemical_property <- function(x, ...) {
   cli::cli_li("{property_name}:")
   cli::cli_ul(id = "prop_details")
 
+  # Name of the default alternative in this group, so it can be flagged
+  # below. pKa Types are not an alternative group and carry no default.
+  default_name <- if (property_name != "pKa Types") {
+    get_default_alternative(x)
+  } else {
+    NULL
+  }
+
   # Handle special cases for different property types
   for (i in seq_along(x)) {
     entry <- x[[i]]
     entry_name <- entry$Name %||% glue::glue("Entry {i}")
+    default_suffix <- if (
+      !is.null(default_name) && identical(entry$Name, default_name)
+    ) {
+      " (Default)"
+    } else {
+      ""
+    }
 
     if (property_name == "pKa Types") {
       # Special handling for pKa types - show both type and value
@@ -428,7 +443,7 @@ print.physicochemical_property <- function(x, ...) {
       source_info <- get_source(entry)
       if (length(x) > 1) {
         cli::cli_li(
-          "{entry_name}: {value_unit}{ph_info}{table_info} [{source_info}]"
+          "{entry_name}{default_suffix}: {value_unit}{ph_info}{table_info} [{source_info}]"
         )
       } else {
         cli::cli_li("{value_unit}{ph_info}{table_info} [{source_info}]")
@@ -439,7 +454,9 @@ print.physicochemical_property <- function(x, ...) {
       source_info <- get_source(entry)
 
       if (length(x) > 1) {
-        cli::cli_li("{entry_name}: {value_unit} [{source_info}]")
+        cli::cli_li(
+          "{entry_name}{default_suffix}: {value_unit} [{source_info}]"
+        )
       } else {
         cli::cli_li("{value_unit} [{source_info}]")
       }

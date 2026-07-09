@@ -38,7 +38,7 @@
       * Fraction Unbound:
         * 17 % [Publication - InVitro - (R13-5357)]
       * Solubility:
-        * Aqueous: 2800 mg/l (pH 7.5) [Publication - (R20-1499)]
+        * Aqueous (Default): 2800 mg/l (pH 7.5) [Publication - (R20-1499)]
         * test: 345 mg/l (pH 7) [Unknown]
       * Intestinal Permeability:
         * 3.836e-07 cm/min [Publication - (PK-Sim default calculation)]
@@ -103,19 +103,19 @@
       -- Physicochemical Properties --
       
       * Lipophilicity:
-        * Optimized: 2.8972038771 Log Units [ParameterIdentification - (Value updated
-        from '3.3.2 - Base oral model (SD, solution, + DDI, + MD), with CatC, both
-        pKa fitted' on 2024-03-11 17:39)]
+        * Optimized (Default): 2.8972038771 Log Units [ParameterIdentification -
+        (Value updated from '3.3.2 - Base oral model (SD, solution, + DDI, + MD),
+        with CatC, both pKa fitted' on 2024-03-11 17:39)]
         * LogP (Simcyp): 3.53 Log Units [Publication - (R13-5357)]
       * Fraction Unbound:
-        * Gertz et al. 2010: 0.031 [ParameterIdentification - (Value updated from 'PI
-        Hohmann iv+po, Hyland feUr MDZG, Thummel feUr unchanged - Pint' on 2019-04-09
-        16:10)]
+        * Gertz et al. 2010 (Default): 0.031 [ParameterIdentification - (Value
+        updated from 'PI Hohmann iv+po, Hyland feUr MDZG, Thummel feUr unchanged -
+        Pint' on 2019-04-09 16:10)]
         * test: 12 % [Publication - (R13-5357)]
       * Solubility:
-        * FaSSiF: 0.049 mg/ml (pH 6.5) [ParameterIdentification - (Value updated from
-        'PI Hohmann iv+po, Hyland feUr MDZG, Thummel feUr unchanged - Pint' on
-        2019-04-09 16:10)]
+        * FaSSiF (Default): 0.049 mg/ml (pH 6.5) [ParameterIdentification - (Value
+        updated from 'PI Hohmann iv+po, Hyland feUr MDZG, Thummel feUr unchanged -
+        Pint' on 2019-04-09 16:10)]
         * Table: 5000 mg/l (Table: pH 3→5000 mg/l, pH 6→3000 mg/l, pH 6.8→90 mg/l)
         [Publication - (R20-1499)]
       * Intestinal Permeability:
@@ -228,7 +228,7 @@
       * Fraction Unbound:
         * 17 % [Publication - InVitro - (R13-5357)]
       * Solubility:
-        * Aqueous: 2800 mg/l (pH 7.5) [Publication - (R20-1499)]
+        * Aqueous (Default): 2800 mg/l (pH 7.5) [Publication - (R20-1499)]
         * test: 345 mg/l (pH 7) [Unknown]
       * pKa Types:
         * Base: 7.9 [Database - (R24-3728)]
@@ -397,7 +397,7 @@
       * Fraction Unbound:
         * 0.45 [ParameterIdentification]
       * Solubility:
-        * Measurement: 3 mg/l (pH 7) [ParameterIdentification]
+        * Measurement (Default): 3 mg/l (pH 7) [ParameterIdentification]
         * test: 5 mg/l (pH 7) [Unknown]
       * pKa Types:
         * Base: 2 [Unknown]

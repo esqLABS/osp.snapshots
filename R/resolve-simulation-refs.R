@@ -311,7 +311,7 @@ derive_alternatives <- function(compound) {
     if (is.null(alternatives) || length(alternatives) == 0) {
       next
     }
-    alternative_name <- default_alternative_name(alternatives)
+    alternative_name <- get_default_alternative(alternatives)
     if (is.null(alternative_name)) {
       next
     }
@@ -327,10 +327,32 @@ derive_alternatives <- function(compound) {
   selections
 }
 
-# Pick the default alternative's name from a group's alternative array.
-# `IsDefault` absent means default (TRUE); an explicit `FALSE` opts out.
-# Falls back to the `"User defined"` alternative, else `NULL`.
-default_alternative_name <- function(alternatives) {
+#' Get the default alternative of a compound property
+#'
+#' Returns the name of the default alternative in a compound
+#' physicochemical-property group, for example the `Solubility`,
+#' `Lipophilicity`, or `FractionUnbound` field of a [Compound]. The default
+#' is the alternative whose `IsDefault` flag is `TRUE` (an absent flag is
+#' treated as `TRUE`, per the snapshot schema); when no alternative sets it,
+#' the `"User defined"` alternative is used, and a group with no resolvable
+#' default returns `NULL`.
+#'
+#' @param alternatives A compound physicochemical-property group, such as
+#'   `compound$solubility`, `compound$lipophilicity`, or any list of named
+#'   alternatives each carrying an optional `IsDefault` flag.
+#' @return The default alternative's name as a character string, or `NULL`
+#'   when the group has no resolvable default.
+#' @examples
+#' compound <- create_compound(
+#'   name = "Drug X",
+#'   solubility = list(
+#'     solubility(9999, name = "Aqueous"),
+#'     solubility(200, name = "FaSSIF", default = TRUE)
+#'   )
+#' )
+#' get_default_alternative(compound$solubility)
+#' @export
+get_default_alternative <- function(alternatives) {
   for (alt in alternatives) {
     if (isTRUE(alt$IsDefault %||% TRUE)) {
       return(alt$Name)
