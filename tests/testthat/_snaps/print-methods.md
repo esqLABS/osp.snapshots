@@ -69,6 +69,25 @@
       -- Formulations (0) ------------------------------------------------------------
       i No formulations found
 
+# print.snapshot_collection dispatches on simulation_collection
+
+    Code
+      print(snapshot$simulations)
+    Output
+      
+      -- Simulations (2) -------------------------------------------------------------
+      * simulation1 (Korean (Yu 2004 study))
+      * simulation2 (European (P-gp modified, CYP3A4 36 h))
+
+# print.snapshot_collection dispatches on empty simulation_collection
+
+    Code
+      print(simulations_named)
+    Output
+      
+      -- Simulations (0) -------------------------------------------------------------
+      i No simulations found
+
 # print.snapshot_collection errors when no collection_kind_info method exists
 
     Code

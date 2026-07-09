@@ -307,6 +307,20 @@ test_that("Mutations through OriginData propagate to the snapshot export", {
   expect_equal(reloaded_origin$Species, "Human")
 })
 
+test_that("Editing a loaded compound propagates to export and survives a round-trip", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  new_name <- "Renamed Compound"
+
+  snapshot$compounds[[1]]$name <- new_name
+  expect_equal(snapshot$data$Compounds[[1]]$Name, new_name)
+
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(temp_file)
+  reloaded <- load_snapshot(temp_file)
+
+  expect_equal(reloaded$data$Compounds[[1]]$Name, new_name)
+})
+
 test_that("Snapshot export drops a building-block section when all items are removed", {
   snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
   individual_names <- names(snapshot$individuals)
