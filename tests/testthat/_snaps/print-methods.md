@@ -135,8 +135,8 @@
       print(compound$lipophilicity)
     Message
       * Lipophilicity:
-        * Measured (Default): 2.5 Log Units [Unknown]
-        * Predicted: 3.1 Log Units [Unknown]
+        * Measured: 2.5 Log Units [Unknown]
+        * Predicted (Default): 3.1 Log Units [Unknown]
 
 # print.physicochemical_property omits the flag for a single alternative
 

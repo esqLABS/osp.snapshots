@@ -191,12 +191,12 @@ test_that("print.snapshot_collection dispatches on empty expression_profile_coll
 
 test_that("print.physicochemical_property flags the default alternative", {
   # The default is the second element, so the snapshot confirms `(Default)`
-  # marks the explicitly chosen alternative rather than the first or last.
+  # marks the explicitly chosen alternative rather than the first one.
   compound <- create_compound(
     name = "Drug X",
     lipophilicity = list(
-      lipophilicity(2.5, name = "Measured", default = TRUE),
-      lipophilicity(3.1, name = "Predicted")
+      lipophilicity(2.5, name = "Measured"),
+      lipophilicity(3.1, name = "Predicted", default = TRUE)
     )
   )
 
