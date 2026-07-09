@@ -25,7 +25,7 @@ long-form processes tibble returned by get_compounds_dfs()."><meta name="robots"
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9909</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,48 +107,54 @@ partner of the compound. Writable: one of <code>"Unknown"</code>, <code>"Albumin
     <dt><code>lipophilicity</code></dt>
 <dd><p>The lipophilicity data of the compound. Writable:
 assign a <code><a href="lipophilicity.html">lipophilicity()</a></code> object, a list of such objects to
-define several named alternatives (the first element is the
-default), a raw alternative list to set the array verbatim (the
-escape hatch for species-specific alternatives), or <code>NULL</code> to
-clear the property. A bare numeric scalar is rejected; use
-<code><a href="lipophilicity.html">lipophilicity()</a></code> instead.</p></dd>
+define several named alternatives (mark exactly one with
+<code>default = TRUE</code> to designate the group default; when none is
+marked, the first element is the default), a raw alternative list
+to set the array verbatim (the escape hatch for species-specific
+alternatives), or <code>NULL</code> to clear the property. A bare numeric
+scalar is rejected; use <code><a href="lipophilicity.html">lipophilicity()</a></code> instead.</p></dd>
 
 
     <dt><code>fraction_unbound</code></dt>
 <dd><p>The fraction unbound data of the compound.
 Writable: assign a <code><a href="fraction_unbound.html">fraction_unbound()</a></code> object, a list of such
-objects to define several named alternatives (the first element is
-the default), a raw alternative list to set the array verbatim, or
-<code>NULL</code> to clear the property. A bare numeric scalar is rejected;
-use <code><a href="fraction_unbound.html">fraction_unbound()</a></code> instead.</p></dd>
+objects to define several named alternatives (mark exactly one
+with <code>default = TRUE</code> to designate the group default; when none is
+marked, the first element is the default), a raw alternative list
+to set the array verbatim, or <code>NULL</code> to clear the property. A bare
+numeric scalar is rejected; use <code><a href="fraction_unbound.html">fraction_unbound()</a></code> instead.</p></dd>
 
 
     <dt><code>solubility</code></dt>
 <dd><p>The solubility data of the compound. Writable:
 assign a <code><a href="solubility.html">solubility()</a></code> object to express reference pH, gain per
 charge, or a pH/value table, a list of such objects to define
-several named alternatives (the first element is the default), a
-raw alternative list to set the array verbatim, or <code>NULL</code> to clear
-the property. A bare numeric scalar is rejected; use <code><a href="solubility.html">solubility()</a></code>
-instead.</p></dd>
+several named alternatives (mark exactly one with <code>default = TRUE</code>
+to designate the group default; when none is marked, the first
+element is the default), a raw alternative list to set the array
+verbatim, or <code>NULL</code> to clear the property. A bare numeric scalar is
+rejected; use <code><a href="solubility.html">solubility()</a></code> instead.</p></dd>
 
 
     <dt><code>intestinal_permeability</code></dt>
 <dd><p>The intestinal permeability data of the
 compound. Writable: assign an <code><a href="intestinal_permeability.html">intestinal_permeability()</a></code> object, a
-list of such objects to define several named alternatives (the
-first element is the default), a raw alternative list to set the
-array verbatim, or <code>NULL</code> to clear the property. A bare numeric
-scalar is rejected; use <code><a href="intestinal_permeability.html">intestinal_permeability()</a></code> instead.</p></dd>
+list of such objects to define several named alternatives (mark
+exactly one with <code>default = TRUE</code> to designate the group default;
+when none is marked, the first element is the default), a raw
+alternative list to set the array verbatim, or <code>NULL</code> to clear the
+property. A bare numeric scalar is rejected; use
+<code><a href="intestinal_permeability.html">intestinal_permeability()</a></code> instead.</p></dd>
 
 
     <dt><code>permeability</code></dt>
 <dd><p>The permeability data of the compound. Writable:
 assign a <code><a href="permeability.html">permeability()</a></code> object, a list of such objects to define
-several named alternatives (the first element is the default), a
-raw alternative list to set the array verbatim, or <code>NULL</code> to clear
-the property. A bare numeric scalar is rejected; use
-<code><a href="permeability.html">permeability()</a></code> instead.</p></dd>
+several named alternatives (mark exactly one with <code>default = TRUE</code>
+to designate the group default; when none is marked, the first
+element is the default), a raw alternative list to set the array
+verbatim, or <code>NULL</code> to clear the property. A bare numeric scalar is
+rejected; use <code><a href="permeability.html">permeability()</a></code> instead.</p></dd>
 
 
     <dt><code>pka_types</code></dt>

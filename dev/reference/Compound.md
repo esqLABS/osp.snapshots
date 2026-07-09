@@ -52,10 +52,11 @@ by
   The lipophilicity data of the compound. Writable: assign a
   [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md)
   object, a list of such objects to define several named alternatives
-  (the first element is the default), a raw alternative list to set the
-  array verbatim (the escape hatch for species-specific alternatives),
-  or `NULL` to clear the property. A bare numeric scalar is rejected;
-  use
+  (mark exactly one with `default = TRUE` to designate the group
+  default; when none is marked, the first element is the default), a raw
+  alternative list to set the array verbatim (the escape hatch for
+  species-specific alternatives), or `NULL` to clear the property. A
+  bare numeric scalar is rejected; use
   [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md)
   instead.
 
@@ -64,9 +65,10 @@ by
   The fraction unbound data of the compound. Writable: assign a
   [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
   object, a list of such objects to define several named alternatives
-  (the first element is the default), a raw alternative list to set the
-  array verbatim, or `NULL` to clear the property. A bare numeric scalar
-  is rejected; use
+  (mark exactly one with `default = TRUE` to designate the group
+  default; when none is marked, the first element is the default), a raw
+  alternative list to set the array verbatim, or `NULL` to clear the
+  property. A bare numeric scalar is rejected; use
   [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
   instead.
 
@@ -75,10 +77,11 @@ by
   The solubility data of the compound. Writable: assign a
   [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
   object to express reference pH, gain per charge, or a pH/value table,
-  a list of such objects to define several named alternatives (the first
-  element is the default), a raw alternative list to set the array
-  verbatim, or `NULL` to clear the property. A bare numeric scalar is
-  rejected; use
+  a list of such objects to define several named alternatives (mark
+  exactly one with `default = TRUE` to designate the group default; when
+  none is marked, the first element is the default), a raw alternative
+  list to set the array verbatim, or `NULL` to clear the property. A
+  bare numeric scalar is rejected; use
   [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md)
   instead.
 
@@ -87,9 +90,10 @@ by
   The intestinal permeability data of the compound. Writable: assign an
   [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md)
   object, a list of such objects to define several named alternatives
-  (the first element is the default), a raw alternative list to set the
-  array verbatim, or `NULL` to clear the property. A bare numeric scalar
-  is rejected; use
+  (mark exactly one with `default = TRUE` to designate the group
+  default; when none is marked, the first element is the default), a raw
+  alternative list to set the array verbatim, or `NULL` to clear the
+  property. A bare numeric scalar is rejected; use
   [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md)
   instead.
 
@@ -98,9 +102,10 @@ by
   The permeability data of the compound. Writable: assign a
   [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md)
   object, a list of such objects to define several named alternatives
-  (the first element is the default), a raw alternative list to set the
-  array verbatim, or `NULL` to clear the property. A bare numeric scalar
-  is rejected; use
+  (mark exactly one with `default = TRUE` to designate the group
+  default; when none is marked, the first element is the default), a raw
+  alternative list to set the array verbatim, or `NULL` to clear the
+  property. A bare numeric scalar is rejected; use
   [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md)
   instead.
 

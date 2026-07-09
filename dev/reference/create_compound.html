@@ -25,7 +25,7 @@ top-level alternative array or typed list rather than in Parameters."><meta name
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9908</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9909</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -137,40 +137,47 @@ use the dedicated arguments below for those.</p></dd>
 
 <dt id="arg-lipophilicity">lipophilicity<a class="anchor" aria-label="anchor" href="#arg-lipophilicity"></a></dt>
 <dd><p>A <code><a href="lipophilicity.html">lipophilicity()</a></code> object, a list of such objects
-to define several named alternatives (the first element is the
-default), or <code>NULL</code>. When supplied, one <code>Lipophilicity</code> alternative is
-created per element.</p></dd>
+to define several named alternatives (mark exactly one with
+<code>default = TRUE</code> to designate the group default; when none is marked,
+the first element is the default), or <code>NULL</code>. When supplied, one
+<code>Lipophilicity</code> alternative is created per element.</p></dd>
 
 
 <dt id="arg-fraction-unbound">fraction_unbound<a class="anchor" aria-label="anchor" href="#arg-fraction-unbound"></a></dt>
 <dd><p>A <code><a href="fraction_unbound.html">fraction_unbound()</a></code> object, a list of such
-objects to define several named alternatives (the first element is the
-default), or <code>NULL</code>. When supplied, one <code>FractionUnbound</code> alternative
-is created per element.</p></dd>
+objects to define several named alternatives (mark exactly one with
+<code>default = TRUE</code> to designate the group default; when none is marked,
+the first element is the default), or <code>NULL</code>. When supplied, one
+<code>FractionUnbound</code> alternative is created per element.</p></dd>
 
 
 <dt id="arg-solubility">solubility<a class="anchor" aria-label="anchor" href="#arg-solubility"></a></dt>
 <dd><p>A <code><a href="solubility.html">solubility()</a></code> object, a list of such objects to
-define several named alternatives (the first element is the default),
-or <code>NULL</code>. Each object expresses either the scalar form (value at a
-reference pH, with optional gain per charge) or the table form (a
-pH/value table); a list may mix both forms. When supplied, one
-<code>Solubility</code> alternative is created per element. See <code><a href="solubility.html">solubility()</a></code>
-for the scalar vs table forms and the mutual-exclusivity rule.</p></dd>
+define several named alternatives (mark exactly one with
+<code>default = TRUE</code> to designate the group default; when none is marked,
+the first element is the default), or <code>NULL</code>. Each object expresses
+either the scalar form (value at a reference pH, with optional gain
+per charge) or the table form (a pH/value table); a list may mix both
+forms. When supplied, one <code>Solubility</code> alternative is created per
+element. See <code><a href="solubility.html">solubility()</a></code> for the scalar vs table forms and the
+mutual-exclusivity rule.</p></dd>
 
 
 <dt id="arg-intestinal-permeability">intestinal_permeability<a class="anchor" aria-label="anchor" href="#arg-intestinal-permeability"></a></dt>
 <dd><p>An <code><a href="intestinal_permeability.html">intestinal_permeability()</a></code> object, a
-list of such objects to define several named alternatives (the first
-element is the default), or <code>NULL</code>. When supplied, one
-<code>IntestinalPermeability</code> alternative is created per element.</p></dd>
+list of such objects to define several named alternatives (mark
+exactly one with <code>default = TRUE</code> to designate the group default;
+when none is marked, the first element is the default), or <code>NULL</code>.
+When supplied, one <code>IntestinalPermeability</code> alternative is created
+per element.</p></dd>
 
 
 <dt id="arg-permeability">permeability<a class="anchor" aria-label="anchor" href="#arg-permeability"></a></dt>
 <dd><p>A <code><a href="permeability.html">permeability()</a></code> object, a list of such objects to
-define several named alternatives (the first element is the default),
-or <code>NULL</code>. When supplied, one <code>Permeability</code> alternative is created
-per element.</p></dd>
+define several named alternatives (mark exactly one with
+<code>default = TRUE</code> to designate the group default; when none is marked,
+the first element is the default), or <code>NULL</code>. When supplied, one
+<code>Permeability</code> alternative is created per element.</p></dd>
 
 
 <dt id="arg-pka">pKa<a class="anchor" aria-label="anchor" href="#arg-pka"></a></dt>
@@ -244,6 +251,15 @@ property helpers.</p></div>
 <span class="r-in"><span>  solubility <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span><span class="fl">9999</span>, name <span class="op">=</span> <span class="st">"Aqueous"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span><span class="fl">200</span>, name <span class="op">=</span> <span class="st">"FaSSIF"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Several named solubility alternatives, explicitly marking the default</span></span></span>
+<span class="r-in"><span><span class="va">compound</span> <span class="op">&lt;-</span> <span class="fu">create_compound</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Drug X"</span>,</span></span>
+<span class="r-in"><span>  solubility <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span><span class="fl">9999</span>, name <span class="op">=</span> <span class="st">"Aqueous"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span><span class="fl">200</span>, name <span class="op">=</span> <span class="st">"FaSSIF"</span>, default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

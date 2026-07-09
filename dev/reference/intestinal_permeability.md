@@ -10,7 +10,12 @@ Build an intestinal-permeability value object for
 ## Usage
 
 ``` r
-intestinal_permeability(value, unit = "cm/min", name = "User defined")
+intestinal_permeability(
+  value,
+  unit = "cm/min",
+  name = "User defined",
+  default = FALSE
+)
 ```
 
 ## Arguments
@@ -28,6 +33,17 @@ intestinal_permeability(value, unit = "cm/min", name = "User defined")
 
   Character. `Name` of the created alternative. Defaults to
   `"User defined"`.
+
+- default:
+
+  Logical. Whether this alternative is the group's default when it
+  appears in a list of alternatives passed to the matching
+  [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
+  argument or `Compound` field. Defaults to `FALSE`. Ignored for a
+  single (non-list) value object, which is always the default. When a
+  list has no element marked `default = TRUE`, the first element is the
+  default (unchanged behaviour); marking two or more elements
+  `default = TRUE` in the same list is an error.
 
 ## Value
 
@@ -64,6 +80,9 @@ intestinal_permeability(1.14e-05)
 #> $name
 #> [1] "User defined"
 #> 
+#> $default
+#> [1] FALSE
+#> 
 #> attr(,"class")
 #> [1] "intestinal_permeability_spec" "osp_value_spec"              
 create_compound(
@@ -79,4 +98,23 @@ create_compound(
 #> 
 #> • Intestinal Permeability:
 #>   • 1.14e-05 cm/min [Unknown]
+
+# Several alternatives, the second marked as the default
+create_compound(
+  name = "Drug X",
+  intestinal_permeability = list(
+    intestinal_permeability(1.14e-05, name = "Caco-2"),
+    intestinal_permeability(2e-05, name = "PAMPA", default = TRUE)
+  )
+)
+#> 
+#> ── Compound: Drug X ────────────────────────────────────────────────────────────
+#> 
+#> ── Basic Properties ──
+#> 
+#> ── Physicochemical Properties ──
+#> 
+#> • Intestinal Permeability:
+#>   • Caco-2: 1.14e-05 cm/min [Unknown]
+#>   • PAMPA (Default): 2e-05 cm/min [Unknown]
 ```

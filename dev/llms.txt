@@ -392,6 +392,8 @@ Bridge between PK-Sim observed data and ospsuite
 
 Helpers for validation and data conversion
 
+- [`get_default_alternative()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_default_alternative.md)
+  : Get the default alternative of a compound property
 - [`validate_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_snapshot.md)
   : Validate that an object is a Snapshot
 - [`validate_species()`](https://esqlabs.github.io/osp.snapshots/dev/reference/validate_species.md)

@@ -9,7 +9,7 @@ Produces one default `Permeability` alternative with parameter
 ## Usage
 
 ``` r
-permeability(value, unit = "cm/min", name = "User defined")
+permeability(value, unit = "cm/min", name = "User defined", default = FALSE)
 ```
 
 ## Arguments
@@ -27,6 +27,17 @@ permeability(value, unit = "cm/min", name = "User defined")
 
   Character. `Name` of the created alternative. Defaults to
   `"User defined"`.
+
+- default:
+
+  Logical. Whether this alternative is the group's default when it
+  appears in a list of alternatives passed to the matching
+  [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
+  argument or `Compound` field. Defaults to `FALSE`. Ignored for a
+  single (non-list) value object, which is always the default. When a
+  list has no element marked `default = TRUE`, the first element is the
+  default (unchanged behaviour); marking two or more elements
+  `default = TRUE` in the same list is an error.
 
 ## Value
 
@@ -63,6 +74,9 @@ permeability(0.0069)
 #> $name
 #> [1] "User defined"
 #> 
+#> $default
+#> [1] FALSE
+#> 
 #> attr(,"class")
 #> [1] "permeability_spec" "osp_value_spec"   
 create_compound(name = "Drug X", permeability = permeability(0.0069))
@@ -75,4 +89,23 @@ create_compound(name = "Drug X", permeability = permeability(0.0069))
 #> 
 #> • Permeability:
 #>   • 0.0069 cm/min [Unknown]
+
+# Several alternatives, the second marked as the default
+create_compound(
+  name = "Drug X",
+  permeability = list(
+    permeability(0.0069, name = "Measured"),
+    permeability(0.008, name = "Predicted", default = TRUE)
+  )
+)
+#> 
+#> ── Compound: Drug X ────────────────────────────────────────────────────────────
+#> 
+#> ── Basic Properties ──
+#> 
+#> ── Physicochemical Properties ──
+#> 
+#> • Permeability:
+#>   • Measured: 0.0069 cm/min [Unknown]
+#>   • Predicted (Default): 0.008 cm/min [Unknown]
 ```

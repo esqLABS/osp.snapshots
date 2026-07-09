@@ -24,7 +24,8 @@ solubility(
   reference_pH = NULL,
   gain_per_charge = NULL,
   table = NULL,
-  name = "User defined"
+  name = "User defined",
+  default = FALSE
 )
 ```
 
@@ -61,6 +62,17 @@ solubility(
 
   Character. `Name` of the created alternative (scalar or table).
   Defaults to `"User defined"`.
+
+- default:
+
+  Logical. Whether this alternative is the group's default when it
+  appears in a list of alternatives passed to the matching
+  [`create_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound.md)
+  argument or `Compound` field. Defaults to `FALSE`. Ignored for a
+  single (non-list) value object, which is always the default. When a
+  list has no element marked `default = TRUE`, the first element is the
+  default (unchanged behaviour); marking two or more elements
+  `default = TRUE` in the same list is an error.
 
 ## Value
 
@@ -110,6 +122,9 @@ solubility(9999, reference_pH = 7, gain_per_charge = 1000)
 #> $form
 #> [1] "scalar"
 #> 
+#> $default
+#> [1] FALSE
+#> 
 #> attr(,"class")
 #> [1] "solubility_spec" "osp_value_spec" 
 
@@ -139,6 +154,28 @@ solubility(table = data.frame(pH = c(3, 6, 6.8), value = c(5000, 3000, 90)))
 #> $form
 #> [1] "table"
 #> 
+#> $default
+#> [1] FALSE
+#> 
 #> attr(,"class")
 #> [1] "solubility_spec" "osp_value_spec" 
+
+# Several alternatives, the second marked as the default
+create_compound(
+  name = "Drug X",
+  solubility = list(
+    solubility(9999, name = "Aqueous"),
+    solubility(200, name = "FaSSIF", default = TRUE)
+  )
+)
+#> 
+#> ── Compound: Drug X ────────────────────────────────────────────────────────────
+#> 
+#> ── Basic Properties ──
+#> 
+#> ── Physicochemical Properties ──
+#> 
+#> • Solubility:
+#>   • Aqueous: 9999 mg/l [Unknown]
+#>   • FaSSIF (Default): 200 mg/l [Unknown]
 ```

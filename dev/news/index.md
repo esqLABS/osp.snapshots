@@ -154,7 +154,14 @@
   build small value objects that bundle a value, its unit, and any
   field-specific extras for the `create_*()` factory arguments; each
   owns its default unit and validates a supplied unit against the
-  field’s dimension (#133).
+  field’s dimension. The five compound physicochemical-property helpers
+  ([`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/dev/reference/lipophilicity.md),
+  [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md),
+  [`solubility()`](https://esqlabs.github.io/osp.snapshots/dev/reference/solubility.md),
+  [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/intestinal_permeability.md),
+  [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md))
+  also take a `default` argument to mark which alternative in a list is
+  the group’s default (#133, \#147).
 - [`as_tibbles()`](https://esqlabs.github.io/osp.snapshots/dev/reference/as_tibbles.md)
   converts any building-block collection to a tibble through one entry
   point, returning either a bare tibble (`"protocols"`,
@@ -183,19 +190,20 @@
   and
   [`permeability()`](https://esqlabs.github.io/osp.snapshots/dev/reference/permeability.md),
   plus `pKa` and `processes`; each property argument also accepts a list
-  of these objects to define several named alternatives, with the first
-  element as the default; the matching `Compound` fields
-  `$lipophilicity`, `$fraction_unbound`, `$solubility`,
-  `$intestinal_permeability`, and `$permeability` are writable and
-  require the same helper objects (single or a list for named
-  alternatives) so a loaded compound can be mutated. `$pka_types` is
-  writable with a list of `list(type =, value =)` entries (or a raw
+  of these objects to define several named alternatives, letting exactly
+  one be marked the group default via its helper’s `default = TRUE`
+  argument (the first element is the default when none is marked); the
+  matching `Compound` fields `$lipophilicity`, `$fraction_unbound`,
+  `$solubility`, `$intestinal_permeability`, and `$permeability` are
+  writable and require the same helper objects (single or a list for
+  named alternatives) so a loaded compound can be mutated. `$pka_types`
+  is writable with a list of `list(type =, value =)` entries (or a raw
   `PkaType` list), and `$processes` is writable with a list of `Process`
   objects (or raw process lists). Attach with
   [`add_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_compound.md),
   remove by name with
   [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_compound.md)
-  (#39, \#115, \#133, \#140, \#144).
+  (#39, \#115, \#133, \#140, \#144, \#147).
 - [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_group_selection.md),
   [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_process_selection.md),
   [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_compound_properties.md),
@@ -332,6 +340,11 @@
   and
   [`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.md)
   (#112).
+- [`get_default_alternative()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_default_alternative.md)
+  returns the name of the default alternative in a compound
+  physicochemical-property group, for example
+  `get_default_alternative(compound$solubility)`; printing such a group
+  also flags the default alternative with `(Default)` (#147).
 - `individual$origin_data` returns an `OriginData` object holding the
   demographic starting point of the individual (species, population,
   gender, age, weight, height, gestational age, calculation methods,
