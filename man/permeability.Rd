@@ -4,7 +4,7 @@
 \alias{permeability}
 \title{Permeability value object}
 \usage{
-permeability(value, unit = "cm/min", name = "User defined")
+permeability(value, unit = "cm/min", name = "User defined", default = FALSE)
 }
 \arguments{
 \item{value}{Numeric scalar. Permeability value.}
@@ -14,6 +14,14 @@ permeability(value, unit = "cm/min", name = "User defined")
 
 \item{name}{Character. \code{Name} of the created alternative. Defaults to
 \code{"User defined"}.}
+
+\item{default}{Logical. Whether this alternative is the group's default
+when it appears in a list of alternatives passed to the matching
+\code{\link[=create_compound]{create_compound()}} argument or \code{Compound} field. Defaults to \code{FALSE}.
+Ignored for a single (non-list) value object, which is always the
+default. When a list has no element marked \code{default = TRUE}, the first
+element is the default (unchanged behaviour); marking two or more
+elements \code{default = TRUE} in the same list is an error.}
 }
 \value{
 A \code{permeability_spec} object to pass to \code{\link[=create_compound]{create_compound()}}.
@@ -26,6 +34,15 @@ default \code{Permeability} alternative with parameter \code{"Permeability"}.
 \examples{
 permeability(0.0069)
 create_compound(name = "Drug X", permeability = permeability(0.0069))
+
+# Several alternatives, the second marked as the default
+create_compound(
+  name = "Drug X",
+  permeability = list(
+    permeability(0.0069, name = "Measured"),
+    permeability(0.008, name = "Predicted", default = TRUE)
+  )
+)
 }
 \seealso{
 \code{\link[=create_compound]{create_compound()}}

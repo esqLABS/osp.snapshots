@@ -202,6 +202,44 @@ test_that("create_compound accepts a list of solubility alternatives", {
   expect_equal(labels, c("Aqueous", "FaSSIF"))
 })
 
+test_that("create_compound honours an explicit default that is not the first element", {
+  compound <- create_compound(
+    name = "X",
+    solubility = list(
+      solubility(9999, name = "Aqueous"),
+      solubility(200, name = "FaSSIF", default = TRUE)
+    )
+  )
+
+  alt <- compound$data$Solubility
+  expect_length(alt, 2)
+  expect_equal(vapply(alt, `[[`, character(1), "Name"), c("Aqueous", "FaSSIF"))
+  expect_equal(alt[[1]]$IsDefault, FALSE)
+  expect_equal(alt[[2]]$IsDefault, TRUE)
+})
+
+test_that("create_compound honours an explicit lipophilicity default that is not the first element", {
+  compound <- create_compound(
+    name = "X",
+    lipophilicity = list(
+      lipophilicity(2.5, name = "Measured"),
+      lipophilicity(3.1, name = "Predicted", default = TRUE)
+    )
+  )
+
+  alt <- compound$data$Lipophilicity
+  expect_length(alt, 2)
+  expect_equal(
+    vapply(alt, `[[`, character(1), "Name"),
+    c("Measured", "Predicted")
+  )
+  expect_equal(alt[[1]]$IsDefault, FALSE)
+  expect_equal(alt[[2]]$IsDefault, TRUE)
+})
+
+# The tests below (unmodified) cover the "none marked" fallback (AC-2):
+# omitting `default` on every element still produces `alt[[1]]$IsDefault ==
+# TRUE`, exactly as before this change.
 test_that("create_compound accepts a list of alternatives for lipophilicity, fraction_unbound, intestinal_permeability, and permeability", {
   compound <- create_compound(
     name = "X",
@@ -252,10 +290,63 @@ test_that("create_compound accepts a list of alternatives for lipophilicity, fra
   )
 })
 
+test_that("create_compound aborts when two or more alternatives are marked default", {
+  expect_snapshot(
+    error = TRUE,
+    create_compound(
+      name = "X",
+      solubility = list(
+        solubility(9999, name = "Aqueous", default = TRUE),
+        solubility(200, name = "FaSSIF", default = TRUE)
+      )
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_compound(
+      name = "X",
+      lipophilicity = list(
+        lipophilicity(2.5, name = "Measured", default = TRUE),
+        lipophilicity(3.1, name = "Predicted", default = TRUE)
+      )
+    )
+  )
+})
+
+test_that("a single value object and a length-one list both ignore a redundant default flag", {
+  from_scalar <- create_compound(
+    name = "X",
+    solubility = solubility(9999, default = TRUE)
+  )
+  from_list <- create_compound(
+    name = "X",
+    solubility = list(solubility(9999, default = TRUE))
+  )
+  expect_equal(from_scalar$data$Solubility[[1]]$IsDefault, TRUE)
+  expect_equal(from_list$data$Solubility[[1]]$IsDefault, TRUE)
+  expect_no_error(from_scalar)
+  expect_no_error(from_list)
+})
+
 test_that("a length-one alternative list is byte-identical to a single value object", {
   from_list <- create_compound(name = "X", solubility = list(solubility(9999)))
   from_scalar <- create_compound(name = "X", solubility = solubility(9999))
   expect_identical(from_list$data$Solubility, from_scalar$data$Solubility)
+
+  # The redundant `default = TRUE` flag on a lone alternative must not
+  # change the byte-identical shape either (FR-5).
+  from_list_default <- create_compound(
+    name = "X",
+    solubility = list(solubility(9999, default = TRUE))
+  )
+  from_scalar_default <- create_compound(
+    name = "X",
+    solubility = solubility(9999, default = TRUE)
+  )
+  expect_identical(
+    from_list_default$data$Solubility,
+    from_scalar_default$data$Solubility
+  )
 })
 
 test_that("create_compound rejects a list containing a non-matching helper or a bare scalar", {
@@ -315,6 +406,38 @@ test_that("create_compound builds a multi-alternative solubility list mixing sca
   expect_equal(alt[[2]]$Parameters[[1]]$Name, "Solubility table")
   expect_equal(alt[[1]]$IsDefault, TRUE)
   expect_equal(alt[[2]]$IsDefault, FALSE)
+})
+
+test_that("create_compound honours a non-first default in a mixed scalar/table solubility list", {
+  compound <- create_compound(
+    name = "X",
+    solubility = list(
+      solubility(9999, reference_pH = 7, name = "Scalar"),
+      solubility(
+        table = data.frame(pH = c(3, 6), value = c(5000, 3000)),
+        name = "Table",
+        default = TRUE
+      )
+    )
+  )
+
+  alt <- compound$data$Solubility
+  expect_length(alt, 2)
+  expect_equal(alt[[1]]$IsDefault, FALSE)
+  expect_equal(alt[[2]]$IsDefault, TRUE)
+})
+
+test_that("get_default_alternative() honours an explicit non-first default", {
+  compound <- create_compound(
+    name = "X",
+    solubility = list(
+      solubility(9999, name = "Aqueous"),
+      solubility(200, name = "FaSSIF", default = TRUE)
+    )
+  )
+  expect_equal(get_default_alternative(compound$data$Solubility), "FaSSIF")
+  # The user-facing field accessor returns the same classed group.
+  expect_equal(get_default_alternative(compound$solubility), "FaSSIF")
 })
 
 test_that("helper-set physicochemical properties never land in Parameters", {

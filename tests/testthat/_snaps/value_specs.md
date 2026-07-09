@@ -12,6 +12,9 @@
       $name
       [1] "User defined"
       
+      $default
+      [1] FALSE
+      
 
 ---
 
@@ -23,6 +26,9 @@
       
       $name
       [1] "User defined"
+      
+      $default
+      [1] FALSE
       
 
 ---
@@ -51,6 +57,9 @@
       $form
       [1] "scalar"
       
+      $default
+      [1] FALSE
+      
 
 ---
 
@@ -78,6 +87,9 @@
       $form
       [1] "scalar"
       
+      $default
+      [1] FALSE
+      
 
 ---
 
@@ -93,6 +105,9 @@
       $name
       [1] "User defined"
       
+      $default
+      [1] FALSE
+      
 
 ---
 
@@ -107,6 +122,9 @@
       
       $name
       [1] "User defined"
+      
+      $default
+      [1] FALSE
       
 
 ---
@@ -437,4 +455,20 @@
       Error in `values()`:
       ! `dimension` is required.
       i Pass one of: AUC (mass), AUC (molar), AUCM (molar), Abundance per mass protein, Abundance per tissue, Age in weeks, Age in years, Amount, Amount per area, Amount per area per time, Amount per time, Ampere, Area, Area per amount per time, BMI, Becquerel, CL per mass protein, CL per recombinant enzyme, CV Viscosity, CV Viscosity per Volume, CV mmHg*s²/ml, Candela, Compliance, Compliance (Area), Concentration (mass), Concentration (molar), Concentration (molar) per time, Coulomb, Count, Count per mass, Count per volume, Density, Diffusion coefficient, Dimensionless, Dose per body surface area, Dose per body weight, Elastance, Energy, Farad, Flow, Flow per body surface area, Flow per weight, Flow per weight organ, Flow², Fraction, Gray, Henry, Hertz, Hydraulic conductivity, Inversed area, Inversed concentration (molar), Inversed length, Inversed mol, Inversed time, Inversed volume, Joule, Katal, Kelvin, Length, Log Units, Lumen, Lux, Mass, Mass per area, Mass per area per time, Mass per time, Mass per tissue, Molecular weight, Newton, Ohm, Pressure, RT, Radian, Resistance, Resolution, Second order rate constant, Siemens, Sievert, Slope, Steradian, Temperature, Tesla, Time, Time², Velocity, Viscosity, Vmax per mass protein, Vmax per recombinant enzyme, Vmax per transporter, Vmax per weight organ tissue, Volt, Volume, Volume per body weight, Watt, Weber.
+
+# default flag is validated and carried on the slot
+
+    Code
+      lipophilicity(2.5, default = "yes")
+    Condition
+      Error in `lipophilicity()`:
+      ! `default` must be a single logical value
+
+---
+
+    Code
+      lipophilicity(2.5, default = c(TRUE, FALSE))
+    Condition
+      Error in `lipophilicity()`:
+      ! `default` must be a single logical value
 

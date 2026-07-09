@@ -35,6 +35,13 @@ NULL
 #'   against dimension `"Log Units"`. Defaults to `"Log Units"`.
 #' @param name Character. `Name` of the created alternative. Defaults to
 #'   `"User defined"`.
+#' @param default Logical. Whether this alternative is the group's default
+#'   when it appears in a list of alternatives passed to the matching
+#'   [create_compound()] argument or `Compound` field. Defaults to `FALSE`.
+#'   Ignored for a single (non-list) value object, which is always the
+#'   default. When a list has no element marked `default = TRUE`, the first
+#'   element is the default (unchanged behaviour); marking two or more
+#'   elements `default = TRUE` in the same list is an error.
 #'
 #' @return A `lipophilicity_spec` object to pass to [create_compound()].
 #' @family value-object helpers
@@ -44,16 +51,32 @@ NULL
 #' @examples
 #' lipophilicity(2.5)
 #' create_compound(name = "Drug X", lipophilicity = lipophilicity(2.5))
-lipophilicity <- function(value, unit = "Log Units", name = "User defined") {
+#'
+#' # Several alternatives, the second marked as the default
+#' create_compound(
+#'   name = "Drug X",
+#'   lipophilicity = list(
+#'     lipophilicity(2.5, name = "Measured"),
+#'     lipophilicity(3.1, name = "Predicted", default = TRUE)
+#'   )
+#' )
+lipophilicity <- function(
+  value,
+  unit = "Log Units",
+  name = "User defined",
+  default = FALSE
+) {
   check_numeric_scalar(value, "value")
   validate_unit(unit, "Log Units")
   check_required_string(name, "name")
+  check_default_flag(default, "default")
   new_value_spec(
     "lipophilicity_spec",
     list(
       value = value,
       unit = unit,
-      name = name
+      name = name,
+      default = default
     )
   )
 }
@@ -70,6 +93,13 @@ lipophilicity <- function(value, unit = "Log Units", name = "User defined") {
 #' @param value Numeric scalar. Fraction-unbound value.
 #' @param name Character. `Name` of the created alternative. Defaults to
 #'   `"User defined"`.
+#' @param default Logical. Whether this alternative is the group's default
+#'   when it appears in a list of alternatives passed to the matching
+#'   [create_compound()] argument or `Compound` field. Defaults to `FALSE`.
+#'   Ignored for a single (non-list) value object, which is always the
+#'   default. When a list has no element marked `default = TRUE`, the first
+#'   element is the default (unchanged behaviour); marking two or more
+#'   elements `default = TRUE` in the same list is an error.
 #'
 #' @return A `fraction_unbound_spec` object to pass to [create_compound()].
 #' @family value-object helpers
@@ -79,14 +109,25 @@ lipophilicity <- function(value, unit = "Log Units", name = "User defined") {
 #' @examples
 #' fraction_unbound(0.1)
 #' create_compound(name = "Drug X", fraction_unbound = fraction_unbound(0.1))
-fraction_unbound <- function(value, name = "User defined") {
+#'
+#' # Several alternatives, the second marked as the default
+#' create_compound(
+#'   name = "Drug X",
+#'   fraction_unbound = list(
+#'     fraction_unbound(0.1, name = "Plasma"),
+#'     fraction_unbound(0.2, name = "Microsomal", default = TRUE)
+#'   )
+#' )
+fraction_unbound <- function(value, name = "User defined", default = FALSE) {
   check_numeric_scalar(value, "value")
   check_required_string(name, "name")
+  check_default_flag(default, "default")
   new_value_spec(
     "fraction_unbound_spec",
     list(
       value = value,
-      name = name
+      name = name,
+      default = default
     )
   )
 }
@@ -121,6 +162,13 @@ fraction_unbound <- function(value, name = "User defined") {
 #'   table form is built and the scalar-form arguments must be left unset.
 #' @param name Character. `Name` of the created alternative (scalar or table).
 #'   Defaults to `"User defined"`.
+#' @param default Logical. Whether this alternative is the group's default
+#'   when it appears in a list of alternatives passed to the matching
+#'   [create_compound()] argument or `Compound` field. Defaults to `FALSE`.
+#'   Ignored for a single (non-list) value object, which is always the
+#'   default. When a list has no element marked `default = TRUE`, the first
+#'   element is the default (unchanged behaviour); marking two or more
+#'   elements `default = TRUE` in the same list is an error.
 #'
 #' @return A `solubility_spec` object to pass to [create_compound()].
 #' @family value-object helpers
@@ -133,15 +181,26 @@ fraction_unbound <- function(value, name = "User defined") {
 #'
 #' # Table form (first column pH, second column value)
 #' solubility(table = data.frame(pH = c(3, 6, 6.8), value = c(5000, 3000, 90)))
+#'
+#' # Several alternatives, the second marked as the default
+#' create_compound(
+#'   name = "Drug X",
+#'   solubility = list(
+#'     solubility(9999, name = "Aqueous"),
+#'     solubility(200, name = "FaSSIF", default = TRUE)
+#'   )
+#' )
 solubility <- function(
   value = NULL,
   unit = "mg/l",
   reference_pH = NULL,
   gain_per_charge = NULL,
   table = NULL,
-  name = "User defined"
+  name = "User defined",
+  default = FALSE
 ) {
   check_required_string(name, "name")
+  check_default_flag(default, "default")
 
   is_table <- !is.null(table)
   scalar_supplied <- !is.null(value) ||
@@ -168,7 +227,8 @@ solubility <- function(
         gain_per_charge = NULL,
         table = table,
         name = name,
-        form = "table"
+        form = "table",
+        default = default
       )
     ))
   }
@@ -197,7 +257,8 @@ solubility <- function(
       gain_per_charge = gain_per_charge,
       table = NULL,
       name = name,
-      form = "scalar"
+      form = "scalar",
+      default = default
     )
   )
 }
@@ -216,6 +277,13 @@ solubility <- function(
 #'   `"Velocity"`. Defaults to `"cm/min"`.
 #' @param name Character. `Name` of the created alternative. Defaults to
 #'   `"User defined"`.
+#' @param default Logical. Whether this alternative is the group's default
+#'   when it appears in a list of alternatives passed to the matching
+#'   [create_compound()] argument or `Compound` field. Defaults to `FALSE`.
+#'   Ignored for a single (non-list) value object, which is always the
+#'   default. When a list has no element marked `default = TRUE`, the first
+#'   element is the default (unchanged behaviour); marking two or more
+#'   elements `default = TRUE` in the same list is an error.
 #'
 #' @return An `intestinal_permeability_spec` object to pass to
 #'   [create_compound()].
@@ -229,20 +297,32 @@ solubility <- function(
 #'   name = "Drug X",
 #'   intestinal_permeability = intestinal_permeability(1.14e-05)
 #' )
+#'
+#' # Several alternatives, the second marked as the default
+#' create_compound(
+#'   name = "Drug X",
+#'   intestinal_permeability = list(
+#'     intestinal_permeability(1.14e-05, name = "Caco-2"),
+#'     intestinal_permeability(2e-05, name = "PAMPA", default = TRUE)
+#'   )
+#' )
 intestinal_permeability <- function(
   value,
   unit = "cm/min",
-  name = "User defined"
+  name = "User defined",
+  default = FALSE
 ) {
   check_numeric_scalar(value, "value")
   validate_unit(unit, "Velocity")
   check_required_string(name, "name")
+  check_default_flag(default, "default")
   new_value_spec(
     "intestinal_permeability_spec",
     list(
       value = value,
       unit = unit,
-      name = name
+      name = name,
+      default = default
     )
   )
 }
@@ -259,6 +339,13 @@ intestinal_permeability <- function(
 #'   `"Velocity"`. Defaults to `"cm/min"`.
 #' @param name Character. `Name` of the created alternative. Defaults to
 #'   `"User defined"`.
+#' @param default Logical. Whether this alternative is the group's default
+#'   when it appears in a list of alternatives passed to the matching
+#'   [create_compound()] argument or `Compound` field. Defaults to `FALSE`.
+#'   Ignored for a single (non-list) value object, which is always the
+#'   default. When a list has no element marked `default = TRUE`, the first
+#'   element is the default (unchanged behaviour); marking two or more
+#'   elements `default = TRUE` in the same list is an error.
 #'
 #' @return A `permeability_spec` object to pass to [create_compound()].
 #' @family value-object helpers
@@ -268,16 +355,32 @@ intestinal_permeability <- function(
 #' @examples
 #' permeability(0.0069)
 #' create_compound(name = "Drug X", permeability = permeability(0.0069))
-permeability <- function(value, unit = "cm/min", name = "User defined") {
+#'
+#' # Several alternatives, the second marked as the default
+#' create_compound(
+#'   name = "Drug X",
+#'   permeability = list(
+#'     permeability(0.0069, name = "Measured"),
+#'     permeability(0.008, name = "Predicted", default = TRUE)
+#'   )
+#' )
+permeability <- function(
+  value,
+  unit = "cm/min",
+  name = "User defined",
+  default = FALSE
+) {
   check_numeric_scalar(value, "value")
   validate_unit(unit, "Velocity")
   check_required_string(name, "name")
+  check_default_flag(default, "default")
   new_value_spec(
     "permeability_spec",
     list(
       value = value,
       unit = unit,
-      name = name
+      name = name,
+      default = default
     )
   )
 }
@@ -515,6 +618,16 @@ new_value_spec <- function(subclass, slots) {
 check_numeric_scalar <- function(value, arg, call = parent.frame()) {
   if (!is.numeric(value) || length(value) != 1 || is.na(value)) {
     cli::cli_abort("{.arg {arg}} must be a numeric value", call = call)
+  }
+  invisible(value)
+}
+
+# Internal: abort unless `value` is a non-missing single logical. Used to
+# validate the `default` flag on the compound physicochemical-property
+# helpers.
+check_default_flag <- function(value, arg, call = parent.frame()) {
+  if (!is.logical(value) || length(value) != 1 || is.na(value)) {
+    cli::cli_abort("{.arg {arg}} must be a single logical value", call = call)
   }
   invisible(value)
 }

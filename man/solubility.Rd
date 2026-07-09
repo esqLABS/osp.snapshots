@@ -10,7 +10,8 @@ solubility(
   reference_pH = NULL,
   gain_per_charge = NULL,
   table = NULL,
-  name = "User defined"
+  name = "User defined",
+  default = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,14 @@ table form is built and the scalar-form arguments must be left unset.}
 
 \item{name}{Character. \code{Name} of the created alternative (scalar or table).
 Defaults to \code{"User defined"}.}
+
+\item{default}{Logical. Whether this alternative is the group's default
+when it appears in a list of alternatives passed to the matching
+\code{\link[=create_compound]{create_compound()}} argument or \code{Compound} field. Defaults to \code{FALSE}.
+Ignored for a single (non-list) value object, which is always the
+default. When a list has no element marked \code{default = TRUE}, the first
+element is the default (unchanged behaviour); marking two or more
+elements \code{default = TRUE} in the same list is an error.}
 }
 \value{
 A \code{solubility_spec} object to pass to \code{\link[=create_compound]{create_compound()}}.
@@ -57,6 +66,15 @@ solubility(9999, reference_pH = 7, gain_per_charge = 1000)
 
 # Table form (first column pH, second column value)
 solubility(table = data.frame(pH = c(3, 6, 6.8), value = c(5000, 3000, 90)))
+
+# Several alternatives, the second marked as the default
+create_compound(
+  name = "Drug X",
+  solubility = list(
+    solubility(9999, name = "Aqueous"),
+    solubility(200, name = "FaSSIF", default = TRUE)
+  )
+)
 }
 \seealso{
 \code{\link[=create_compound]{create_compound()}}

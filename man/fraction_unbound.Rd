@@ -4,13 +4,21 @@
 \alias{fraction_unbound}
 \title{Fraction unbound value object}
 \usage{
-fraction_unbound(value, name = "User defined")
+fraction_unbound(value, name = "User defined", default = FALSE)
 }
 \arguments{
 \item{value}{Numeric scalar. Fraction-unbound value.}
 
 \item{name}{Character. \code{Name} of the created alternative. Defaults to
 \code{"User defined"}.}
+
+\item{default}{Logical. Whether this alternative is the group's default
+when it appears in a list of alternatives passed to the matching
+\code{\link[=create_compound]{create_compound()}} argument or \code{Compound} field. Defaults to \code{FALSE}.
+Ignored for a single (non-list) value object, which is always the
+default. When a list has no element marked \code{default = TRUE}, the first
+element is the default (unchanged behaviour); marking two or more
+elements \code{default = TRUE} in the same list is an error.}
 }
 \value{
 A \code{fraction_unbound_spec} object to pass to \code{\link[=create_compound]{create_compound()}}.
@@ -25,6 +33,15 @@ bare value with no unit, so this helper takes no \code{unit} argument.
 \examples{
 fraction_unbound(0.1)
 create_compound(name = "Drug X", fraction_unbound = fraction_unbound(0.1))
+
+# Several alternatives, the second marked as the default
+create_compound(
+  name = "Drug X",
+  fraction_unbound = list(
+    fraction_unbound(0.1, name = "Plasma"),
+    fraction_unbound(0.2, name = "Microsomal", default = TRUE)
+  )
+)
 }
 \seealso{
 \code{\link[=create_compound]{create_compound()}}

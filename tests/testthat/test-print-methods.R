@@ -188,3 +188,26 @@ test_that("print.snapshot_collection dispatches on empty expression_profile_coll
   # Test the print method with empty collection
   expect_snapshot(print(profiles_named))
 })
+
+test_that("print.physicochemical_property flags the default alternative", {
+  # The default is the second element, so the snapshot confirms `(Default)`
+  # marks the explicitly chosen alternative rather than the first one.
+  compound <- create_compound(
+    name = "Drug X",
+    lipophilicity = list(
+      lipophilicity(2.5, name = "Measured"),
+      lipophilicity(3.1, name = "Predicted", default = TRUE)
+    )
+  )
+
+  expect_snapshot(print(compound$lipophilicity))
+})
+
+test_that("print.physicochemical_property omits the flag for a single alternative", {
+  compound <- create_compound(
+    name = "Drug X",
+    lipophilicity = lipophilicity(2.5)
+  )
+
+  expect_snapshot(print(compound$lipophilicity))
+})

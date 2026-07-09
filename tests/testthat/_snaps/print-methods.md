@@ -129,3 +129,20 @@
       -- Expression Profiles (0) -----------------------------------------------------
       i No expression profiles found
 
+# print.physicochemical_property flags the default alternative
+
+    Code
+      print(compound$lipophilicity)
+    Message
+      * Lipophilicity:
+        * Measured: 2.5 Log Units [Unknown]
+        * Predicted (Default): 3.1 Log Units [Unknown]
+
+# print.physicochemical_property omits the flag for a single alternative
+
+    Code
+      print(compound$lipophilicity)
+    Message
+      * Lipophilicity:
+        * 2.5 Log Units [Unknown]
+

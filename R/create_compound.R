@@ -30,28 +30,35 @@
 #'   compound parameters. This does not set physicochemical properties;
 #'   use the dedicated arguments below for those.
 #' @param lipophilicity A [lipophilicity()] object, a list of such objects
-#'   to define several named alternatives (the first element is the
-#'   default), or `NULL`. When supplied, one `Lipophilicity` alternative is
-#'   created per element.
+#'   to define several named alternatives (mark exactly one with
+#'   `default = TRUE` to designate the group default; when none is marked,
+#'   the first element is the default), or `NULL`. When supplied, one
+#'   `Lipophilicity` alternative is created per element.
 #' @param fraction_unbound A [fraction_unbound()] object, a list of such
-#'   objects to define several named alternatives (the first element is the
-#'   default), or `NULL`. When supplied, one `FractionUnbound` alternative
-#'   is created per element.
+#'   objects to define several named alternatives (mark exactly one with
+#'   `default = TRUE` to designate the group default; when none is marked,
+#'   the first element is the default), or `NULL`. When supplied, one
+#'   `FractionUnbound` alternative is created per element.
 #' @param solubility A [solubility()] object, a list of such objects to
-#'   define several named alternatives (the first element is the default),
-#'   or `NULL`. Each object expresses either the scalar form (value at a
-#'   reference pH, with optional gain per charge) or the table form (a
-#'   pH/value table); a list may mix both forms. When supplied, one
-#'   `Solubility` alternative is created per element. See [solubility()]
-#'   for the scalar vs table forms and the mutual-exclusivity rule.
+#'   define several named alternatives (mark exactly one with
+#'   `default = TRUE` to designate the group default; when none is marked,
+#'   the first element is the default), or `NULL`. Each object expresses
+#'   either the scalar form (value at a reference pH, with optional gain
+#'   per charge) or the table form (a pH/value table); a list may mix both
+#'   forms. When supplied, one `Solubility` alternative is created per
+#'   element. See [solubility()] for the scalar vs table forms and the
+#'   mutual-exclusivity rule.
 #' @param intestinal_permeability An [intestinal_permeability()] object, a
-#'   list of such objects to define several named alternatives (the first
-#'   element is the default), or `NULL`. When supplied, one
-#'   `IntestinalPermeability` alternative is created per element.
-#' @param permeability A [permeability()] object, a list of such objects to
-#'   define several named alternatives (the first element is the default),
-#'   or `NULL`. When supplied, one `Permeability` alternative is created
+#'   list of such objects to define several named alternatives (mark
+#'   exactly one with `default = TRUE` to designate the group default;
+#'   when none is marked, the first element is the default), or `NULL`.
+#'   When supplied, one `IntestinalPermeability` alternative is created
 #'   per element.
+#' @param permeability A [permeability()] object, a list of such objects to
+#'   define several named alternatives (mark exactly one with
+#'   `default = TRUE` to designate the group default; when none is marked,
+#'   the first element is the default), or `NULL`. When supplied, one
+#'   `Permeability` alternative is created per element.
 #' @param pKa List of typed pKa entries, each a list with a `type`
 #'   (one of `"Acid"`, `"Base"`, `"Neutral"`) and a numeric `value`, for
 #'   example `list(list(type = "Base", value = 10.02))`. Order is
@@ -112,6 +119,15 @@
 #'   solubility = list(
 #'     solubility(9999, name = "Aqueous"),
 #'     solubility(200, name = "FaSSIF")
+#'   )
+#' )
+#'
+#' # Several named solubility alternatives, explicitly marking the default
+#' compound <- create_compound(
+#'   name = "Drug X",
+#'   solubility = list(
+#'     solubility(9999, name = "Aqueous"),
+#'     solubility(200, name = "FaSSIF", default = TRUE)
 #'   )
 #' )
 #'
@@ -362,9 +378,10 @@ build_solubility_alternatives <- function(
 }
 
 # Internal: build a multi-alternative array from a list of matching
-# physicochemical-property specs. Element order is preserved; the first
-# element is `IsDefault = TRUE`, the rest `IsDefault = FALSE` (D-1, FR-2).
-# Duplicate `name`s are rejected (FR-4). Thin wrapper around
+# physicochemical-property specs. Element order is preserved; the element
+# flagged `default = TRUE` becomes `IsDefault = TRUE` (or the first element
+# when none is flagged); flagging two or more is a hard error (FR-2, FR-3,
+# FR-4). Duplicate `name`s are rejected (FR-8). Thin wrapper around
 # `specs_to_alternatives()`, passing the single-parameter converter.
 specs_to_single_param_alternatives <- function(
   specs,
@@ -383,9 +400,10 @@ specs_to_single_param_alternatives <- function(
 # Internal: the solubility equivalent of
 # `specs_to_single_param_alternatives()`. Each element independently
 # branches scalar vs table form via `spec_to_solubility_alternative()`
-# (edge case: a list may mix scalar-form and table-form elements). Thin
-# wrapper around `specs_to_alternatives()`, passing the solubility
-# converter.
+# (edge case: a list may mix scalar-form and table-form elements, and the
+# default designation works the same way across the mix since it is
+# orthogonal to the scalar/table branch). Thin wrapper around
+# `specs_to_alternatives()`, passing the solubility converter.
 specs_to_solubility_alternatives <- function(
   specs,
   property,
@@ -403,8 +421,11 @@ specs_to_solubility_alternatives <- function(
 # `specs_to_single_param_alternatives()` and
 # `specs_to_solubility_alternatives()`, which differ only in how a single
 # spec is converted into its alternative. Validates unique alternative
-# `name`s (FR-4), converts every element with `converter`, and marks the
-# first element as the default (D-1, FR-2).
+# `name`s (FR-8), resolves which element is the designated default
+# (FR-1/FR-2/FR-3/FR-4), converts every element with `converter`, and marks
+# the resolved element as the default. This is the single shared change
+# point: both `create_compound()` and the `Compound` writable-field
+# setters route through here (FR-6).
 specs_to_alternatives <- function(
   specs,
   property,
@@ -412,22 +433,43 @@ specs_to_alternatives <- function(
   call = parent.frame()
 ) {
   check_unique_alternative_names(specs, property, call = call)
+  default_index <- resolve_default_index(specs, property, call = call)
   alts <- lapply(specs, converter)
-  alts <- mark_default_alternative(alts)
+  alts <- mark_default_alternative(alts, default_index)
   unname(alts)
 }
 
-# Internal: set `IsDefault = TRUE` on the first alternative and `FALSE` on
-# every other, matching a single-object alternative's shape exactly when
-# `alts` has length one (no redundant explicit `IsDefault` sibling to
-# worry about, since the source alternative already carries
-# `IsDefault = TRUE`).
-mark_default_alternative <- function(alts) {
-  alts[[1]]$IsDefault <- TRUE
-  if (length(alts) > 1) {
-    for (i in seq_along(alts)[-1]) {
-      alts[[i]]$IsDefault <- FALSE
-    }
+# Internal: determine which element of a physicochemical-property spec
+# list is the designated default (FR-1). Reads each spec's `default` flag
+# (present only on specs built by the five compound-property helpers;
+# always FALSE/absent-equivalent otherwise). Zero flags set falls back to
+# the first element (FR-3); exactly one set uses that element (FR-2); two
+# or more set is a hard error naming the property (FR-4).
+resolve_default_index <- function(specs, property, call = parent.frame()) {
+  flags <- vapply(specs, function(s) isTRUE(s$default), logical(1))
+  n_defaults <- sum(flags)
+  if (n_defaults == 0) {
+    return(1L)
+  }
+  if (n_defaults > 1) {
+    cli::cli_abort(
+      c(
+        "{.arg {property}} has {n_defaults} alternatives marked {.code default = TRUE}.",
+        "i" = "Exactly one alternative may be the default; mark only one \\
+        with {.code default = TRUE}."
+      ),
+      call = call
+    )
+  }
+  which(flags)
+}
+
+# Internal: set `IsDefault = TRUE` on the alternative at `default_index`
+# and `FALSE` on every other, matching a single-object alternative's shape
+# exactly when `alts` has length one.
+mark_default_alternative <- function(alts, default_index = 1L) {
+  for (i in seq_along(alts)) {
+    alts[[i]]$IsDefault <- (i == default_index)
   }
   alts
 }

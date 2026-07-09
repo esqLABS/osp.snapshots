@@ -578,11 +578,12 @@ Compound <- R6::R6Class(
 
     #' @field lipophilicity The lipophilicity data of the compound. Writable:
     #'   assign a [lipophilicity()] object, a list of such objects to
-    #'   define several named alternatives (the first element is the
-    #'   default), a raw alternative list to set the array verbatim (the
-    #'   escape hatch for species-specific alternatives), or `NULL` to
-    #'   clear the property. A bare numeric scalar is rejected; use
-    #'   [lipophilicity()] instead.
+    #'   define several named alternatives (mark exactly one with
+    #'   `default = TRUE` to designate the group default; when none is
+    #'   marked, the first element is the default), a raw alternative list
+    #'   to set the array verbatim (the escape hatch for species-specific
+    #'   alternatives), or `NULL` to clear the property. A bare numeric
+    #'   scalar is rejected; use [lipophilicity()] instead.
     lipophilicity = function(value) {
       if (missing(value)) {
         result <- private$.data$Lipophilicity
@@ -602,10 +603,11 @@ Compound <- R6::R6Class(
 
     #' @field fraction_unbound The fraction unbound data of the compound.
     #'   Writable: assign a [fraction_unbound()] object, a list of such
-    #'   objects to define several named alternatives (the first element is
-    #'   the default), a raw alternative list to set the array verbatim, or
-    #'   `NULL` to clear the property. A bare numeric scalar is rejected;
-    #'   use [fraction_unbound()] instead.
+    #'   objects to define several named alternatives (mark exactly one
+    #'   with `default = TRUE` to designate the group default; when none is
+    #'   marked, the first element is the default), a raw alternative list
+    #'   to set the array verbatim, or `NULL` to clear the property. A bare
+    #'   numeric scalar is rejected; use [fraction_unbound()] instead.
     fraction_unbound = function(value) {
       if (missing(value)) {
         result <- private$.data$FractionUnbound
@@ -626,10 +628,11 @@ Compound <- R6::R6Class(
     #' @field solubility The solubility data of the compound. Writable:
     #'   assign a [solubility()] object to express reference pH, gain per
     #'   charge, or a pH/value table, a list of such objects to define
-    #'   several named alternatives (the first element is the default), a
-    #'   raw alternative list to set the array verbatim, or `NULL` to clear
-    #'   the property. A bare numeric scalar is rejected; use [solubility()]
-    #'   instead.
+    #'   several named alternatives (mark exactly one with `default = TRUE`
+    #'   to designate the group default; when none is marked, the first
+    #'   element is the default), a raw alternative list to set the array
+    #'   verbatim, or `NULL` to clear the property. A bare numeric scalar is
+    #'   rejected; use [solubility()] instead.
     solubility = function(value) {
       if (missing(value)) {
         result <- private$.data$Solubility
@@ -657,10 +660,12 @@ Compound <- R6::R6Class(
 
     #' @field intestinal_permeability The intestinal permeability data of the
     #'   compound. Writable: assign an [intestinal_permeability()] object, a
-    #'   list of such objects to define several named alternatives (the
-    #'   first element is the default), a raw alternative list to set the
-    #'   array verbatim, or `NULL` to clear the property. A bare numeric
-    #'   scalar is rejected; use [intestinal_permeability()] instead.
+    #'   list of such objects to define several named alternatives (mark
+    #'   exactly one with `default = TRUE` to designate the group default;
+    #'   when none is marked, the first element is the default), a raw
+    #'   alternative list to set the array verbatim, or `NULL` to clear the
+    #'   property. A bare numeric scalar is rejected; use
+    #'   [intestinal_permeability()] instead.
     intestinal_permeability = function(value) {
       if (missing(value)) {
         result <- private$.data$IntestinalPermeability
@@ -680,10 +685,11 @@ Compound <- R6::R6Class(
 
     #' @field permeability The permeability data of the compound. Writable:
     #'   assign a [permeability()] object, a list of such objects to define
-    #'   several named alternatives (the first element is the default), a
-    #'   raw alternative list to set the array verbatim, or `NULL` to clear
-    #'   the property. A bare numeric scalar is rejected; use
-    #'   [permeability()] instead.
+    #'   several named alternatives (mark exactly one with `default = TRUE`
+    #'   to designate the group default; when none is marked, the first
+    #'   element is the default), a raw alternative list to set the array
+    #'   verbatim, or `NULL` to clear the property. A bare numeric scalar is
+    #'   rejected; use [permeability()] instead.
     permeability = function(value) {
       if (missing(value)) {
         result <- private$.data$Permeability
