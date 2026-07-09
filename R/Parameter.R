@@ -198,12 +198,7 @@ Parameter <- R6::R6Class(
         private$.data$Unit <- NULL
         return(invisible(NULL))
       }
-      if (
-        !is.character(value) ||
-          length(value) != 1 ||
-          is.na(value) ||
-          !nzchar(value)
-      ) {
+      if (!is_non_empty_scalar_string(value)) {
         cli::cli_abort(
           "{.arg unit} must be a single non-empty character string"
         )
@@ -275,6 +270,11 @@ Parameter <- R6::R6Class(
 #' @param source Character. Source of the value (optional).
 #' @param description Character. Description of the value origin (optional).
 #' @param source_id Integer. ID of the source (optional).
+#' @param source_method Character. Value-origin determination method
+#'   (optional), mapped to `ValueOrigin.Method` in the emitted snapshot. One
+#'   of the `ValueOriginDeterminationMethodId` values: `"Undefined"`,
+#'   `"Unknown"`, `"Assumption"`, `"ManualFit"`, `"ParameterIdentification"`,
+#'   `"InVitro"`, `"InVivo"`, or `"Other"`.
 #' @param table_formula List. Table formula data for table parameters
 #'   (optional).
 #' @param table_points List. Points for table parameters, a list of x,y pairs
@@ -311,7 +311,8 @@ Parameter <- R6::R6Class(
 #'   value = 1.5,
 #'   unit = "L",
 #'   source = "Publication",
-#'   description = "Reference XYZ"
+#'   description = "Reference XYZ",
+#'   source_method = "ParameterIdentification"
 #' )
 #'
 #' # Create a localized parameter (path-bearing)
@@ -345,6 +346,7 @@ create_parameter <- function(
   source = NULL,
   description = NULL,
   source_id = NULL,
+  source_method = NULL,
   table_formula = NULL,
   table_points = NULL,
   x_name = NULL,
@@ -369,7 +371,12 @@ create_parameter <- function(
   }
 
   # Add value origin if any source information is provided
-  if (!is.null(source) || !is.null(description) || !is.null(source_id)) {
+  if (
+    !is.null(source) ||
+      !is.null(description) ||
+      !is.null(source_id) ||
+      !is.null(source_method)
+  ) {
     value_origin <- list()
     if (!is.null(source)) {
       value_origin$Source <- source
@@ -379,6 +386,9 @@ create_parameter <- function(
     }
     if (!is.null(source_id)) {
       value_origin$Id <- source_id
+    }
+    if (!is.null(source_method)) {
+      value_origin$Method <- source_method
     }
     data$ValueOrigin <- value_origin
   }

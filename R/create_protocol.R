@@ -18,8 +18,9 @@
 #'   `"Dermal"`, `"Rectal"`, `"Inhalation"`, or `"Intraperitoneal"`.
 #'   Mutually exclusive with `schemas`.
 #' @param dosing_interval Character. Dosing interval identifier for a
-#'   Simple Protocol (for example `"Single"`, `"DI_12_12"`,
-#'   `"DI_8_8_8"`, or `"DI_24"`).
+#'   Simple Protocol. Optional; when supplied it must be one of the fixed
+#'   PK-Sim `DosingIntervalId` values: `"Single"`, `"DI_6_6_6_6"`,
+#'   `"DI_6_6_12"`, `"DI_8_8_8"`, `"DI_12_12"`, or `"DI_24"`.
 #' @param target_organ Character. Target organ for the dose.
 #' @param target_compartment Character. Target compartment for the
 #'   dose.
@@ -131,6 +132,16 @@ create_protocol <- function(
     }
     if (!is.null(application_type)) {
       data$ApplicationType <- application_type
+    }
+    if (
+      !is.null(dosing_interval) &&
+        !dosing_interval %in% schema_item_dosing_intervals()
+    ) {
+      cli::cli_abort(c(
+        "{.arg dosing_interval} must be one of the fixed PK-Sim dosing intervals.",
+        "x" = "Got {.val {dosing_interval}}.",
+        "i" = "Valid values: {.val {schema_item_dosing_intervals()}}."
+      ))
     }
     if (!is.null(dosing_interval)) {
       data$DosingInterval <- dosing_interval

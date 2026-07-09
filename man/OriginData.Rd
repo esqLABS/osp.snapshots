@@ -58,12 +58,15 @@ value and unit together. A bare numeric scalar is rejected; use
     \item{\code{calculation_methods}}{A \link{CalculationMethods} object holding the
 calculation methods PK-Sim applies while creating the individual.}
 
-    \item{\code{disease_state}}{Optional disease state name (legacy snapshot
-shape).}
+    \item{\code{disease_state}}{Optional disease-state name. Read from the modern
+\code{Disease} object (\code{Disease$Name}) or, for a loaded legacy snapshot,
+the legacy \code{DiseaseState} key. Writing sets the modern \code{Disease$Name}.}
 
-    \item{\code{disease_state_parameters}}{Optional list of disease state
-parameters (legacy snapshot shape), preserved as-is for
-round-trip fidelity.}
+    \item{\code{disease_state_parameters}}{Optional list of disease-state
+parameters. Read from the modern \code{Disease} object
+(\code{Disease$Parameters}) or, for a loaded legacy snapshot, the legacy
+\code{DiseaseStateParameters} key. Writing sets the modern
+\code{Disease$Parameters}.}
   }
   \if{html}{\out{</div>}}
 }

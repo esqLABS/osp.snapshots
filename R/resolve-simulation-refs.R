@@ -60,7 +60,7 @@ resolve_one_compound <- function(
 
   data <- list(Name = config$name)
 
-  # calculation_methods (FR-5.1): supplied wins; else derive from the BB.
+  # calculation_methods: supplied wins; else derive from the building block.
   if (!is.null(config$calculation_methods)) {
     if (!is.character(config$calculation_methods)) {
       cli::cli_abort(
@@ -77,9 +77,10 @@ resolve_one_compound <- function(
     }
   }
 
-  # alternatives (FR-9/FR-10): a friendly-name selection overrides that
-  # group only; every group not named is defaulted as before, so the two
-  # sources are merged rather than one replacing the other (D-3).
+  # alternatives: a friendly-name selection overrides that group only;
+  # every group not named is defaulted as before, so the derived defaults
+  # and the explicit overrides are merged rather than one replacing the
+  # other.
   selections <- list()
   if (!is.null(compound)) {
     derived <- derive_alternatives(compound)
@@ -101,12 +102,12 @@ resolve_one_compound <- function(
     data$Alternatives <- selections
   }
 
-  # processes (FR-5.4): never defaulted; only set when supplied.
+  # processes: never defaulted; only set when supplied.
   if (!is.null(config$processes)) {
     data$Processes <- resolve_processes(config$processes, call = call)
   }
 
-  # protocol / formulation (FR-5.2): infer the formulation key from the
+  # protocol / formulation: infer the formulation key from the
   # referenced protocol's slot. A formulation without a protocol has
   # nowhere to attach and is ignored.
   if (!is.null(config$protocol)) {
@@ -123,7 +124,7 @@ resolve_one_compound <- function(
   data
 }
 
-# FR-5.1: default calculation methods from the compound building block.
+# Default calculation methods from the compound building block.
 # Returns the raw list-of-strings sink shape, or `NULL` when the compound
 # carries no calculation methods.
 derive_calculation_methods <- function(compound) {
@@ -134,14 +135,14 @@ derive_calculation_methods <- function(compound) {
   as.list(names)
 }
 
-# FR-5.2/D-4: build a `ProtocolSelection`-shaped payload. A plain,
-# unnamed string keeps today's meaning: infer the slot key from the
-# referenced protocol's application slot. A named character vector (or a
-# named list of length-one strings) maps application-slot key to
-# formulation name explicitly, binding one entry per named slot; this is
-# the friendly replacement for the multi-slot protocol case the retired
-# `create_compound_properties()` escape hatch served (FR-14). When no
-# formulation is supplied the protocol is bound without a formulation.
+# Build a `ProtocolSelection`-shaped payload. A plain, unnamed string keeps
+# today's meaning: infer the slot key from the referenced protocol's
+# application slot. A named character vector (or a named list of length-one
+# strings) maps application-slot key to formulation name explicitly, binding
+# one entry per named slot; this is the friendly replacement for the
+# multi-slot protocol case the retired `create_compound_properties()` escape
+# hatch served. When no formulation is supplied the protocol is bound
+# without a formulation.
 build_protocol_selection <- function(
   protocol_name,
   formulation,
@@ -176,8 +177,8 @@ build_protocol_selection <- function(
 
 # Internal: is `formulation` the slot-key-map shape (a named character
 # vector, or a named list of length-one strings), as opposed to a plain
-# unnamed string (D-4)? A named length-one vector is also a map (an
-# explicit slot key), not the "infer the key" path.
+# unnamed string? A named length-one vector is also a map (an explicit
+# slot key), not the "infer the key" path.
 is_formulation_map <- function(formulation) {
   is_named_chr <- is.character(formulation) && !is.null(names(formulation))
   is_named_list_of_strings <- is.list(formulation) &&
@@ -262,12 +263,12 @@ protocol_slot_keys <- function(protocol) {
   keys
 }
 
-# FR-5.2: infer the formulation key from a Protocol's application slots.
+# Infer the formulation key from a Protocol's application slots.
 # Simple protocols (no schemas) and unresolved protocols fall back to the
 # literal `"Formulation"` key. When a protocol has several slots with
 # differing keys, the single inline formulation maps to the first slot's
-# key and a multi-slot note is recorded (the named `formulation` map,
-# D-4, covers exact multi-slot mapping).
+# key and a multi-slot note is recorded (the named `formulation` map
+# covers exact multi-slot mapping).
 infer_formulation_key <- function(protocol, notes) {
   if (is.null(protocol)) {
     return("Formulation")
@@ -287,7 +288,7 @@ infer_formulation_key <- function(protocol, notes) {
 # Internal: the friendly property name -> COMPOUND_* alternative-group
 # constant map. The only place this mapping is defined; friendly names are
 # the create_compound() / Compound field names. Kept internal so the
-# COMPOUND_* constants never surface in user-facing code (FR-6, FR-7).
+# COMPOUND_* constants never surface in user-facing code.
 compound_field_to_group <- function() {
   list(
     lipophilicity = "COMPOUND_LIPOPHILICITY",
@@ -298,7 +299,7 @@ compound_field_to_group <- function() {
   )
 }
 
-# FR-5.3: default each alternative group to its default alternative. The
+# Default each alternative group to its default alternative. The
 # alternative marked `IsDefault` wins (absent `IsDefault` defaults to
 # `TRUE` per the snapshot schema); otherwise the `"User defined"`
 # alternative is used, and a group with no resolvable default is skipped.
@@ -366,12 +367,11 @@ get_default_alternative <- function(alternatives) {
   NULL
 }
 
-# FR-6/FR-7: turn a friendly alternatives selection (named character vector
-# or named list of length-one strings) into CompoundGroupSelection-shaped
-# payloads. Validated against `compound` when it is present (FR-8); when
-# `compound` is NULL (unresolved reference, D-6) the mapping is still
-# emitted, unvalidated, so the missing-reference warning remains the
-# single signal.
+# Turn a friendly alternatives selection (named character vector or named
+# list of length-one strings) into CompoundGroupSelection-shaped payloads.
+# Validated against `compound` when it is present; when `compound` is NULL
+# (unresolved reference) the mapping is still emitted, unvalidated, so the
+# missing-reference warning remains the single signal.
 resolve_alternative_selections <- function(
   alternatives,
   compound,
@@ -425,7 +425,7 @@ resolve_alternative_selections <- function(
 
 # Internal: coerce the `alternatives` argument (named character vector or
 # named list of length-one strings) into a `list(property=, label=)`
-# pair-of-vectors shape, aborting on anything else (FR-6, D-2).
+# pair-of-vectors shape, aborting on anything else.
 normalize_alternative_selection <- function(
   alternatives,
   call = parent.frame()
@@ -462,7 +462,7 @@ normalize_alternative_selection <- function(
   )
 }
 
-# FR-8: abort unless `label` is an available alternative name on
+# Abort unless `label` is an available alternative name on
 # `compound`'s `property`. Lists the available labels. `compound[[property]]`
 # returns the property's raw alternative array (each element a
 # `list(Name =, ...)`); the labels are each element's `Name`, not the
@@ -500,8 +500,8 @@ validate_alternative_label <- function(
   invisible(TRUE)
 }
 
-# D-3/FR-9: layer `overrides` onto `derived`, replacing any entry whose
-# GroupName matches; entries only in `derived` pass through untouched.
+# Layer `overrides` onto `derived`, replacing any entry whose GroupName
+# matches; entries only in `derived` pass through untouched.
 merge_alternative_selections <- function(derived, overrides) {
   if (length(overrides) == 0) {
     return(derived)
@@ -511,7 +511,7 @@ merge_alternative_selections <- function(derived, overrides) {
   c(kept, overrides)
 }
 
-# FR-6: build `CompoundProcessSelection`-shaped payloads from either a
+# Build `CompoundProcessSelection`-shaped payloads from either a
 # character vector of names or a list of explicit objects / raw lists.
 resolve_processes <- function(processes, call = parent.frame()) {
   if (is.character(processes)) {
@@ -538,7 +538,7 @@ resolve_processes <- function(processes, call = parent.frame()) {
   )
 }
 
-# FR-6 heuristic: classify a process name as a systemic-process type. The
+# Heuristic: classify a process name as a systemic-process type. The
 # three canonical tokens are treated as systemic; every other name is a
 # molecule name. Finer control (metabolite/compound qualifiers, other
 # systemic types) uses `create_compound_process_selection()`.
@@ -546,7 +546,7 @@ is_systemic_process <- function(name) {
   name %in% c("Hepatic", "Renal", "Biliary")
 }
 
-# FR-11: a small accumulator for derivation notes so the resolver emits
+# A small accumulator for derivation notes so the resolver emits
 # one concise informational summary per `resolve_compounds()` call rather
 # than a per-value chatter storm. Kept at message/inform level so it does
 # not pollute warning snapshots.

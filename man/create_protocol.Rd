@@ -26,8 +26,9 @@ PK-Sim application types: \code{"Oral"}, \code{"IntravenousBolus"},
 Mutually exclusive with \code{schemas}.}
 
 \item{dosing_interval}{Character. Dosing interval identifier for a
-Simple Protocol (for example \code{"Single"}, \code{"DI_12_12"},
-\code{"DI_8_8_8"}, or \code{"DI_24"}).}
+Simple Protocol. Optional; when supplied it must be one of the fixed
+PK-Sim \code{DosingIntervalId} values: \code{"Single"}, \code{"DI_6_6_6_6"},
+\code{"DI_6_6_12"}, \code{"DI_8_8_8"}, \code{"DI_12_12"}, or \code{"DI_24"}.}
 
 \item{target_organ}{Character. Target organ for the dose.}
 

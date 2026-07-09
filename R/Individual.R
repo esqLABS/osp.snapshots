@@ -565,8 +565,12 @@ Individual <- R6::R6Class(
 #' @param gestational_age A [gestational_age()] object, or `NULL` (for
 #'   infant/preterm individuals).
 #' @param calculation_methods Character vector. Calculation methods used for the individual
-#' @param disease_state Character. Disease state of the individual (optional)
-#' @param disease_state_parameters List. Parameters for disease state (optional)
+#' @param disease_state Character. Disease-state name of the individual
+#'   (optional). Together with `disease_state_parameters` it feeds the modern
+#'   `Disease` object (`{ Name, Parameters }`) emitted under
+#'   `OriginData$Disease`, matching [create_expression_profile()].
+#' @param disease_state_parameters List. Parameters for the disease state
+#'   (optional), keyed on `Name` in the emitted `Disease` object.
 #' @param seed Integer. Simulation seed (optional)
 #' @param expression_profiles Character vector of expression-profile composite
 #'   names (`Molecule|Species|Category`) to attach to the individual. Default
@@ -604,7 +608,8 @@ Individual <- R6::R6Class(
 #'   calculation_methods = c("Method 1", "Method 2", "Method 3")
 #' )
 #'
-#' # Create an individual with disease state
+#' # Create an individual with disease state (emitted as the modern
+#' # `Disease` object: `OriginData$Disease = { Name, Parameters }`)
 #' individual <- create_individual(
 #'   name = "Patient",
 #'   disease_state = "CKD",
@@ -737,12 +742,14 @@ create_individual <- function(
     characteristics_data$CalculationMethods <- calculation_methods
   }
 
-  # Add disease state information if provided
+  # Emit the modern Disease object (shared with create_expression_profile()),
+  # not the legacy DiseaseState / DiseaseStateParameters pair.
   if (!is.null(disease_state)) {
-    characteristics_data$DiseaseState <- disease_state
+    disease_input <- list(name = disease_state)
     if (!is.null(disease_state_parameters)) {
-      characteristics_data$DiseaseStateParameters <- disease_state_parameters
+      disease_input$parameters <- disease_state_parameters
     }
+    characteristics_data$Disease <- build_disease_state(disease_input)
   }
 
   # Create the data structure

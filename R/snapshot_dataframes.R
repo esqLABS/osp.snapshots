@@ -108,6 +108,205 @@ as_tibbles <- function(snapshot, kind = NULL) {
   stats::setNames(lapply(kind, \(k) builders[[k]](snapshot)), kind)
 }
 
+#' Get all compounds in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "compounds"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `properties` and `processes` tibbles; see
+#'   [as_tibbles()] for the column contract.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_compounds_dfs(snapshot)
+#' dfs$properties
+#' dfs$processes
+#' }
+get_compounds_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "compounds")
+}
+
+#' Get all individuals in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "individuals"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `individuals`, `individuals_parameters`, and
+#'   `individuals_expressions` tibbles.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_individuals_dfs(snapshot)
+#' }
+get_individuals_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "individuals")
+}
+
+#' Get all formulations in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "formulations"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `formulations` and `formulations_parameters`
+#'   tibbles. Table parameter points have `is_table_point = TRUE` and
+#'   carry `x_value`, `y_value`, and `table_name`.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_formulations_dfs(snapshot)
+#' }
+get_formulations_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "formulations")
+}
+
+#' Get all populations in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "populations"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `populations` and `populations_parameters`
+#'   tibbles.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_populations_dfs(snapshot)
+#' }
+get_populations_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "populations")
+}
+
+#' Get all events in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "events"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `events` and `events_parameters` tibbles.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_events_dfs(snapshot)
+#' }
+get_events_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "events")
+}
+
+#' Get all expression profiles in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with
+#' `kind = "expression_profiles"`. Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with `expression_profiles` and
+#'   `expression_profiles_parameters` tibbles.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' dfs <- get_expression_profiles_dfs(snapshot)
+#' }
+get_expression_profiles_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "expression_profiles")
+}
+
+#' Get all protocols in a snapshot as a single consolidated data frame
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "protocols"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A tibble with one row per protocol parameter (or per schema
+#'   item parameter for advanced protocols).
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' protocols_df <- get_protocols_dfs(snapshot)
+#' }
+get_protocols_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "protocols")
+}
+
+#' Get all observer sets in a snapshot as data frames
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "observer_sets"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A list with two tibbles. `observer_sets` has one row per
+#'   `ObserverSet` with columns `observer_set_id`, `name`,
+#'   `n_observers`. `observers` has one row per `Observer` with columns
+#'   `observer_set_id`, `observer_set_name`, `name`, `type`,
+#'   `dimension`, `formula_expression`, `formula_dimension`,
+#'   `formula_references`, `container_tags`; rows join back to their
+#'   parent `ObserverSet` by `observer_set_id` or `observer_set_name`.
+#'   `formula_references` flattens the underlying `ExplicitFormula`
+#'   references to `"alias=path"` pairs joined with `|`.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' observer_sets_df <- get_observer_sets_dfs(snapshot)
+#' }
+get_observer_sets_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "observer_sets")
+}
+
+#' Get all observed data in a snapshot as a tibble
+#'
+#' @description
+#' Thin wrapper around [as_tibbles()] with `kind = "observed_data"`.
+#' Prefer [as_tibbles()] in new code.
+#'
+#' @inheritParams as_tibbles
+#' @return A tibble in long format with columns `name`, `xValues`,
+#'   `yValues`, `yErrorValues`, `xDimension`, `xUnit`, `yDimension`,
+#'   `yUnit`, `yErrorType`, `yErrorUnit`, `molWeight`, `lloq`.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' snapshot <- load_snapshot("path/to/snapshot.json")
+#' observed_data_df <- get_observed_data_dfs(snapshot)
+#' }
+get_observed_data_dfs <- function(snapshot) {
+  as_tibbles(snapshot, "observed_data")
+}
+
 as_tibbles_compounds <- function(snapshot) {
   compounds <- snapshot$compounds
 
@@ -500,203 +699,4 @@ as_tibbles_observed_data <- function(snapshot) {
 
   result <- ospsuite::dataSetToTibble(dataSets = unname(observed_data_items))
   result[order(result$name, result$xValues), ]
-}
-
-#' Get all compounds in a snapshot as data frames
-#'
-#' @description
-#' Thin wrapper around [as_tibbles()] with `kind = "compounds"`.
-#' Prefer [as_tibbles()] in new code.
-#'
-#' @inheritParams as_tibbles
-#' @return A list with `properties` and `processes` tibbles; see
-#'   [as_tibbles()] for the column contract.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' dfs <- get_compounds_dfs(snapshot)
-#' dfs$properties
-#' dfs$processes
-#' }
-get_compounds_dfs <- function(snapshot) {
-  as_tibbles(snapshot, "compounds")
-}
-
-#' Get all individuals in a snapshot as data frames
-#'
-#' @description
-#' Thin wrapper around [as_tibbles()] with `kind = "individuals"`.
-#' Prefer [as_tibbles()] in new code.
-#'
-#' @inheritParams as_tibbles
-#' @return A list with `individuals`, `individuals_parameters`, and
-#'   `individuals_expressions` tibbles.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' dfs <- get_individuals_dfs(snapshot)
-#' }
-get_individuals_dfs <- function(snapshot) {
-  as_tibbles(snapshot, "individuals")
-}
-
-#' Get all formulations in a snapshot as data frames
-#'
-#' @description
-#' Thin wrapper around [as_tibbles()] with `kind = "formulations"`.
-#' Prefer [as_tibbles()] in new code.
-#'
-#' @inheritParams as_tibbles
-#' @return A list with `formulations` and `formulations_parameters`
-#'   tibbles. Table parameter points have `is_table_point = TRUE` and
-#'   carry `x_value`, `y_value`, and `table_name`.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' dfs <- get_formulations_dfs(snapshot)
-#' }
-get_formulations_dfs <- function(snapshot) {
-  as_tibbles(snapshot, "formulations")
-}
-
-#' Get all populations in a snapshot as data frames
-#'
-#' @description
-#' Thin wrapper around [as_tibbles()] with `kind = "populations"`.
-#' Prefer [as_tibbles()] in new code.
-#'
-#' @inheritParams as_tibbles
-#' @return A list with `populations` and `populations_parameters`
-#'   tibbles.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' dfs <- get_populations_dfs(snapshot)
-#' }
-get_populations_dfs <- function(snapshot) {
-  as_tibbles(snapshot, "populations")
-}
-
-#' Get all events in a snapshot as data frames
-#'
-#' @description
-#' Thin wrapper around [as_tibbles()] with `kind = "events"`.
-#' Prefer [as_tibbles()] in new code.
-#'
-#' @inheritParams as_tibbles
-#' @return A list with `events` and `events_parameters` tibbles.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' dfs <- get_events_dfs(snapshot)
-#' }
-get_events_dfs <- function(snapshot) {
-  as_tibbles(snapshot, "events")
-}
-
-#' Get all expression profiles in a snapshot as data frames
-#'
-#' @description
-#' Thin wrapper around [as_tibbles()] with
-#' `kind = "expression_profiles"`. Prefer [as_tibbles()] in new code.
-#'
-#' @inheritParams as_tibbles
-#' @return A list with `expression_profiles` and
-#'   `expression_profiles_parameters` tibbles.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' dfs <- get_expression_profiles_dfs(snapshot)
-#' }
-get_expression_profiles_dfs <- function(snapshot) {
-  as_tibbles(snapshot, "expression_profiles")
-}
-
-#' Get all protocols in a snapshot as a single consolidated data frame
-#'
-#' @description
-#' Thin wrapper around [as_tibbles()] with `kind = "protocols"`.
-#' Prefer [as_tibbles()] in new code.
-#'
-#' @inheritParams as_tibbles
-#' @return A tibble with one row per protocol parameter (or per schema
-#'   item parameter for advanced protocols).
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' protocols_df <- get_protocols_dfs(snapshot)
-#' }
-get_protocols_dfs <- function(snapshot) {
-  as_tibbles(snapshot, "protocols")
-}
-
-#' Get all observer sets in a snapshot as data frames
-#'
-#' @description
-#' Thin wrapper around [as_tibbles()] with `kind = "observer_sets"`.
-#' Prefer [as_tibbles()] in new code.
-#'
-#' @inheritParams as_tibbles
-#' @return A list with two tibbles. `observer_sets` has one row per
-#'   `ObserverSet` with columns `observer_set_id`, `name`,
-#'   `n_observers`. `observers` has one row per `Observer` with columns
-#'   `observer_set_id`, `observer_set_name`, `name`, `type`,
-#'   `dimension`, `formula_expression`, `formula_dimension`,
-#'   `formula_references`, `container_tags`; rows join back to their
-#'   parent `ObserverSet` by `observer_set_id` or `observer_set_name`.
-#'   `formula_references` flattens the underlying `ExplicitFormula`
-#'   references to `"alias=path"` pairs joined with `|`.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' observer_sets_df <- get_observer_sets_dfs(snapshot)
-#' }
-get_observer_sets_dfs <- function(snapshot) {
-  as_tibbles(snapshot, "observer_sets")
-}
-
-#' Get all observed data in a snapshot as a tibble
-#'
-#' @description
-#' Thin wrapper around [as_tibbles()] with `kind = "observed_data"`.
-#' Prefer [as_tibbles()] in new code.
-#'
-#' @inheritParams as_tibbles
-#' @return A tibble in long format with columns `name`, `xValues`,
-#'   `yValues`, `yErrorValues`, `xDimension`, `xUnit`, `yDimension`,
-#'   `yUnit`, `yErrorType`, `yErrorUnit`, `molWeight`, `lloq`.
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#' observed_data_df <- get_observed_data_dfs(snapshot)
-#' }
-get_observed_data_dfs <- function(snapshot) {
-  as_tibbles(snapshot, "observed_data")
 }

@@ -192,8 +192,8 @@ Compound <- R6::R6Class(
     # Shared setter for the single-parameter alternative-group fields. A
     # matching value-object helper (e.g. `lipophilicity()`) builds the
     # alternative from its own value/unit/name; a list of matching helper
-    # objects builds one alternative per element (first element default,
-    # FR-5); a raw alternative list is stored verbatim (a deliberate escape
+    # objects builds one alternative per element (first element is the
+    # default); a raw alternative list is stored verbatim (a deliberate escape
     # hatch); NULL clears the key; a bare numeric scalar (or anything else)
     # is rejected via `require_value_spec()`, which names the required
     # helper and also validates a list of helper objects. `unit = NULL`

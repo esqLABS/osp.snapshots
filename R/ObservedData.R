@@ -106,14 +106,13 @@ loadDataSetFromSnapshot <- function(observedDataStructure) {
               }
 
               # Map AuxiliaryType to yErrorType
-              # Common types: ArithmeticStdDev, GeometricStdDev, ArithmeticStdErr
+              # Common types: ArithmeticStdDev, GeometricStdDev
               if (!is.null(related_col$DataInfo$AuxiliaryType)) {
                 auxiliary_type <- related_col$DataInfo$AuxiliaryType
                 # Map to ospsuite error types
                 error_type_mapping <- list(
                   "ArithmeticStdDev" = "ArithmeticStdDev",
-                  "GeometricStdDev" = "GeometricStdDev",
-                  "ArithmeticStdErr" = "ArithmeticStdErr"
+                  "GeometricStdDev" = "GeometricStdDev"
                 )
 
                 if (auxiliary_type %in% names(error_type_mapping)) {

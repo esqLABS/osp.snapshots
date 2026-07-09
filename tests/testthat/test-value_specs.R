@@ -99,6 +99,16 @@ test_that("series helpers reject vectors containing missing values", {
   expect_snapshot(error = TRUE, error(c(0, NA)))
 })
 
+test_that("error() validates type against the schema AuxiliaryType values", {
+  # The off-schema legacy value is rejected.
+  expect_snapshot(error = TRUE, error(c(1, 2), type = "ArithmeticStdErr"))
+  # A clear typo is rejected.
+  expect_snapshot(error = TRUE, error(c(1, 2), type = "not-a-type"))
+  # A schema-valid value still succeeds and carries the type.
+  spec <- error(c(1, 2), type = "GeometricStdDev")
+  expect_equal(spec$type, "GeometricStdDev")
+})
+
 test_that("solubility() enforces scalar-vs-table exclusivity", {
   df <- data.frame(pH = c(3, 6), value = c(5000, 90))
   expect_snapshot(error = TRUE, solubility(9999, table = df))

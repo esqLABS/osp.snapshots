@@ -13,9 +13,9 @@ series.}
 \item{unit}{Character. Optional unit for the error. Defaults (in the
 factory) to the values-series unit when \code{NULL}.}
 
-\item{type}{Character. Auxiliary type for the error, typically one of
-\code{"ArithmeticStdDev"}, \code{"GeometricStdDev"}, or \code{"ArithmeticStdErr"}.
-Defaults to \code{"ArithmeticStdDev"}.}
+\item{type}{Character. Auxiliary type for the error, one of the schema
+\code{AuxiliaryType} values: \code{"ArithmeticStdDev"} (the default),
+\code{"GeometricStdDev"}, \code{"ArithmeticMeanPop"}, or \code{"GeometricMeanPop"}.}
 }
 \value{
 An \code{error_spec} object to pass to \code{\link[=create_observed_data]{create_observed_data()}}.

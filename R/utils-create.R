@@ -9,17 +9,22 @@ empty_named_list <- function() {
   stats::setNames(list(), character(0))
 }
 
+# Internal: the non-empty-scalar-character shape check, factored out so the
+# several setters and factories that require it share one definition. Returns
+# `TRUE` only when `value` is a length-one character vector that is neither
+# `NA` nor the empty string. It carries no abort message on purpose: each
+# call site keeps its own distinct, snapshot-asserted wording.
+is_non_empty_scalar_string <- function(value) {
+  is.character(value) &&
+    length(value) == 1 &&
+    !is.na(value) &&
+    nzchar(value)
+}
+
 # Internal: assert that `value` is a non-empty scalar character.
 # Used by the create_* factories to validate required string arguments.
 check_required_string <- function(value, arg_name, call = parent.frame()) {
-  if (
-    missing(value) ||
-      is.null(value) ||
-      !is.character(value) ||
-      length(value) != 1 ||
-      is.na(value) ||
-      !nzchar(value)
-  ) {
+  if (missing(value) || is.null(value) || !is_non_empty_scalar_string(value)) {
     cli::cli_abort(
       "{.arg {arg_name}} must be a non-empty string",
       call = call
@@ -214,10 +219,7 @@ build_disease_state <- function(disease, call = parent.frame()) {
     !is.list(disease) ||
       is.object(disease) ||
       is.null(name) ||
-      !is.character(name) ||
-      length(name) != 1 ||
-      is.na(name) ||
-      !nzchar(name)
+      !is_non_empty_scalar_string(name)
   ) {
     cli::cli_abort(
       "{.arg disease} must be a named list with a non-empty {.field name}",

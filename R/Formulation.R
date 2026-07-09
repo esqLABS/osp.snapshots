@@ -364,12 +364,7 @@ Formulation <- R6::R6Class(
       # `FormulationType` is a free-form repository key (see snapshot-spec):
       # accept any non-empty scalar string, rejecting only empty, `NA`,
       # non-character, or non-scalar input.
-      if (
-        !is.character(value) ||
-          length(value) != 1 ||
-          is.na(value) ||
-          !nzchar(value)
-      ) {
+      if (!is_non_empty_scalar_string(value)) {
         cli::cli_abort("{.arg formulation_type} must be a non-empty string")
       }
       private$.data$FormulationType <- value
@@ -1169,6 +1164,9 @@ create_formulation <- function(name, type, parameters = NULL) {
   Formulation$new(data)
 }
 
+# The exported `add_formulation()` convenience function is defined and
+# documented in R/Snapshot.R.
+
 # Internal: TRUE when `parameters` is the raw passthrough form (every entry
 # is a `Parameter` R6 object or a raw dict carrying a `Name`), as opposed to
 # the curated alias form (bare scalar/vector values keyed by alias names).
@@ -1187,38 +1185,3 @@ is_raw_parameters_list <- function(parameters) {
     logical(1)
   ))
 }
-
-#' Add a formulation to a snapshot
-#'
-#' @description
-#' Add a Formulation object to a Snapshot. This is a convenience function
-#' that works with the Snapshot class.
-#'
-#' @param snapshot A Snapshot object
-#' @param formulation A Formulation object created with create_formulation()
-#' @return The updated Snapshot object
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Load a snapshot
-#' snapshot <- load_snapshot("path/to/snapshot.json")
-#'
-#' # Create a new formulation
-#' form <- create_formulation(
-#'   name = "Custom Tablet",
-#'   type = "Weibull",
-#'   parameters = list(
-#'     dissolution_time = 60,
-#'     dissolution_time_unit = "min",
-#'     lag_time = 0,
-#'     lag_time_unit = "min",
-#'     dissolution_shape = 0.92,
-#'     suspension = TRUE
-#'   )
-#' )
-#'
-#' # Add the formulation to the snapshot
-#' snapshot <- add_formulation(snapshot, form)
-#' }
-# See R/Snapshot.R for add_formulation implementation

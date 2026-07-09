@@ -152,7 +152,10 @@ Population <- R6::R6Class(
         # Gestational age range (if available)
         if (!is.null(self$gestational_age_range)) {
           cli::cli_text(
-            "Gestational age range: {self$gestational_age_range$min} - {self$gestational_age_range$max} {self$gestational_age_range$unit}"
+            "Gestational age range: \\
+            {self$gestational_age_range$min} - \\
+            {self$gestational_age_range$max} \\
+            {self$gestational_age_range$unit}"
           )
         }
 

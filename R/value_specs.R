@@ -580,9 +580,9 @@ values <- function(value, unit = NULL, dimension) {
 #'   series.
 #' @param unit Character. Optional unit for the error. Defaults (in the
 #'   factory) to the values-series unit when `NULL`.
-#' @param type Character. Auxiliary type for the error, typically one of
-#'   `"ArithmeticStdDev"`, `"GeometricStdDev"`, or `"ArithmeticStdErr"`.
-#'   Defaults to `"ArithmeticStdDev"`.
+#' @param type Character. Auxiliary type for the error, one of the schema
+#'   `AuxiliaryType` values: `"ArithmeticStdDev"` (the default),
+#'   `"GeometricStdDev"`, `"ArithmeticMeanPop"`, or `"GeometricMeanPop"`.
 #'
 #' @return An `error_spec` object to pass to [create_observed_data()].
 #' @family value-object helpers
@@ -593,6 +593,13 @@ values <- function(value, unit = NULL, dimension) {
 #' error(c(0, 1.2, 1.5, 1.1, 0.6))
 error <- function(value, unit = NULL, type = "ArithmeticStdDev") {
   check_numeric_vector(value, "value")
+  if (!type %in% AUXILIARY_TYPES) {
+    cli::cli_abort(c(
+      "{.arg type} must be one of the schema {.field AuxiliaryType} values.",
+      "x" = "Got {.val {type}}.",
+      "i" = "Valid values: {.val {AUXILIARY_TYPES}}."
+    ))
+  }
   new_value_spec(
     "error_spec",
     list(
@@ -604,6 +611,18 @@ error <- function(value, unit = NULL, type = "ArithmeticStdDev") {
 }
 
 # Internal ----
+
+# Internal: the schema `AuxiliaryType` enum. The single source of truth for
+# the error auxiliary types `error()` accepts; `Undefined` is the
+# not-an-auxiliary sentinel and is enum-valid but not advertised as a user's
+# error type.
+AUXILIARY_TYPES <- c(
+  "Undefined",
+  "ArithmeticStdDev",
+  "GeometricStdDev",
+  "ArithmeticMeanPop",
+  "GeometricMeanPop"
+)
 
 # Internal: construct a classed value-spec object. Every helper returns a
 # plain tagged list carrying a subclass plus the shared `osp_value_spec`
@@ -656,7 +675,7 @@ check_numeric_vector <- function(value, arg, call = parent.frame()) {
 # `value` may also be a bare list (not itself a value-spec object) whose
 # every element must independently match `subclass`; each offending element
 # is diagnosed by position with the same two message branches, so a list of
-# alternatives gets the same guidance a single value object would (FR-3). An
+# alternatives gets the same guidance a single value object would. An
 # empty list is valid and returned as-is: it means "no alternatives", which
 # the caller (e.g. `create_compound()`) treats the same as `NULL`.
 require_value_spec <- function(
@@ -719,7 +738,7 @@ is_value_spec_list <- function(value) {
 # identifying the offending element by position. Shared by
 # `require_value_spec()` (the factory arguments) and the `Compound` writable
 # field setters, so a list of alternatives is validated identically on both
-# paths (FR-3, FR-5). An empty list passes through untouched.
+# paths. An empty list passes through untouched.
 require_value_spec_list <- function(
   value,
   subclass,

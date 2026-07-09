@@ -53,6 +53,10 @@ LocalizedParameter <- R6::R6Class(
         path <- data$Name
         used_name_fallback <- !is.null(path)
       }
+      # This shape check intentionally omits the character-class clause of
+      # `is_non_empty_scalar_string()`: a non-character scalar that is
+      # length-one, not `NA`, and passes `nzchar()` is accepted here, so it is
+      # kept inlined rather than routed through the shared predicate.
       if (
         is.null(path) ||
           length(path) != 1 ||

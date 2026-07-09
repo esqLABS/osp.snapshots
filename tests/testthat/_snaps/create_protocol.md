@@ -53,6 +53,16 @@
       x Got "NotARealType".
       i Valid values: "Oral", "IntravenousBolus", "IntravenousInfusion", "Intramuscular", "Subcutaneous", "Dermal", "Rectal", "Inhalation", and "Intraperitoneal".
 
+# create_protocol validates dosing_interval against the DosingIntervalId enum
+
+    Code
+      create_protocol(name = "P", application_type = "Oral", dosing_interval = "typo")
+    Condition
+      Error in `create_protocol()`:
+      ! `dosing_interval` must be one of the fixed PK-Sim dosing intervals.
+      x Got "typo".
+      i Valid values: "Single", "DI_6_6_6_6", "DI_6_6_12", "DI_8_8_8", "DI_12_12", and "DI_24".
+
 # create_protocol validates time_unit against the Time dimension
 
     Code

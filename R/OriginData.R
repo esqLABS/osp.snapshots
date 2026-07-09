@@ -130,7 +130,7 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$Age$Value)
       }
-      private$set_demographic("Age", value, "age_spec", "age", "year(s)")
+      private$set_demographic("Age", value, "age_spec", "age")
     },
 
     #' @field age_unit Unit string for `age`.
@@ -159,8 +159,7 @@ OriginData <- R6::R6Class(
         "GestationalAge",
         value,
         "gestational_age_spec",
-        "gestational_age",
-        "week(s)"
+        "gestational_age"
       )
     },
 
@@ -185,7 +184,7 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$Weight$Value)
       }
-      private$set_demographic("Weight", value, "weight_spec", "weight", "kg")
+      private$set_demographic("Weight", value, "weight_spec", "weight")
     },
 
     #' @field weight_unit Unit string for `weight`.
@@ -209,7 +208,7 @@ OriginData <- R6::R6Class(
       if (missing(value)) {
         return(private$.data$Height$Value)
       }
-      private$set_demographic("Height", value, "height_spec", "height", "cm")
+      private$set_demographic("Height", value, "height_spec", "height")
     },
 
     #' @field height_unit Unit string for `height`.
@@ -238,23 +237,29 @@ OriginData <- R6::R6Class(
       }
     },
 
-    #' @field disease_state Optional disease state name (legacy snapshot
-    #'   shape).
+    #' @field disease_state Optional disease-state name. Read from the modern
+    #'   `Disease` object (`Disease$Name`) or, for a loaded legacy snapshot,
+    #'   the legacy `DiseaseState` key. Writing sets the modern `Disease$Name`.
     disease_state = function(value) {
       if (missing(value)) {
-        return(private$.data$DiseaseState)
+        return(private$.data$Disease$Name %||% private$.data$DiseaseState)
       }
-      private$.data$DiseaseState <- value
+      private$.data$Disease$Name <- value
     },
 
-    #' @field disease_state_parameters Optional list of disease state
-    #'   parameters (legacy snapshot shape), preserved as-is for
-    #'   round-trip fidelity.
+    #' @field disease_state_parameters Optional list of disease-state
+    #'   parameters. Read from the modern `Disease` object
+    #'   (`Disease$Parameters`) or, for a loaded legacy snapshot, the legacy
+    #'   `DiseaseStateParameters` key. Writing sets the modern
+    #'   `Disease$Parameters`.
     disease_state_parameters = function(value) {
       if (missing(value)) {
-        return(private$.data$DiseaseStateParameters)
+        return(
+          private$.data$Disease$Parameters %||%
+            private$.data$DiseaseStateParameters
+        )
       }
-      private$.data$DiseaseStateParameters <- value
+      private$.data$Disease$Parameters <- value
     }
   ),
   private = list(
@@ -266,10 +271,8 @@ OriginData <- R6::R6Class(
     # delegates here after handling its own getter path. `value` must be the
     # matching value-object helper (e.g. `age()`), which sets both `Value`
     # and `Unit`; a bare scalar or any other input aborts pointing at the
-    # helper, mirroring the `create_individual()` factory. `default_unit` is
-    # unused now that every helper defaults its own `unit`, but is kept in
-    # the signature (and at each call site) to minimize the diff.
-    set_demographic = function(field, value, subclass, arg, default_unit) {
+    # helper, mirroring the `create_individual()` factory.
+    set_demographic = function(field, value, subclass, arg) {
       # Point the abort at the active-binding setter that delegated here, so
       # the error reads the same as when the guard lived inline in it.
       require_value_spec(value, subclass, arg, call = parent.frame())
