@@ -438,6 +438,10 @@
   documents its own fallback (#140).
 - `Population$egfr_range` now persists into the population settings, so
   an eGFR range set on a population survives export (#118).
+- [`print()`](https://rdrr.io/r/base/print.html) on
+  `snapshot$simulations` no longer errors. Previously it aborted because
+  the `simulation_collection` kind was missing its print-dispatch
+  methods, added for every other building-block collection (#149).
 - [`remove_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_expression_profile.md),
   [`remove_formulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_formulation.md),
   [`remove_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_individual.md),

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9909</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9910</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -165,6 +165,8 @@
 <code>Parameter$unit</code> validates only shape (a single non-empty string); dimension-aware unit validation is opportunistic since a bare <code>Parameter</code> carries no dimension. <code>Range$unit</code> remains unvalidated on the class itself; unit validation happens at the <code>Population</code> range setters that consume a <code>Range</code>. <code>Population$bmi_range</code>’s unit, <code>Compound$plasma_protein_binding_partner</code>, <code>AdvancedParameter$distribution_type</code>, the <code>Formulation</code> curated unit sub-parameters, and <code>CompoundProcessSelection$systemic_process_type</code> are validated at the strongest constraint confirmable in code; each documents its own fallback (#140).</li>
 <li>
 <code>Population$egfr_range</code> now persists into the population settings, so an eGFR range set on a population survives export (#118).</li>
+<li>
+<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> on <code>snapshot$simulations</code> no longer errors. Previously it aborted because the <code>simulation_collection</code> kind was missing its print-dispatch methods, added for every other building-block collection (#149).</li>
 <li>
 <code><a href="../reference/remove_expression_profile.html">remove_expression_profile()</a></code>, <code><a href="../reference/remove_formulation.html">remove_formulation()</a></code>, <code><a href="../reference/remove_individual.html">remove_individual()</a></code>, <code><a href="../reference/remove_observed_data.html">remove_observed_data()</a></code>, and <code><a href="../reference/remove_population.html">remove_population()</a></code> now report the actual number of entries removed instead of the length of the input vector, so the success message reads correctly when a requested name is not present in the snapshot (#66).</li>
 <li>Building-block collections now share a <code>snapshot_collection</code> S3 class with a single generic <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> method. The existing per-kind classes (<code>compound_collection</code>, <code>individual_collection</code>, …) are preserved as marker classes (#34).</li>
