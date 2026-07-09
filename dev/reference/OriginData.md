@@ -99,12 +99,16 @@ under each entry of the `Individuals` array.
 
 - `disease_state`:
 
-  Optional disease state name (legacy snapshot shape).
+  Optional disease-state name. Read from the modern `Disease` object
+  (`Disease$Name`) or, for a loaded legacy snapshot, the legacy
+  `DiseaseState` key. Writing sets the modern `Disease$Name`.
 
 - `disease_state_parameters`:
 
-  Optional list of disease state parameters (legacy snapshot shape),
-  preserved as-is for round-trip fidelity.
+  Optional list of disease-state parameters. Read from the modern
+  `Disease` object (`Disease$Parameters`) or, for a loaded legacy
+  snapshot, the legacy `DiseaseStateParameters` key. Writing sets the
+  modern `Disease$Parameters`.
 
 ## Methods
 

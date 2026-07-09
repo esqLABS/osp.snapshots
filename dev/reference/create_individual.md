@@ -74,11 +74,15 @@ create_individual(
 
 - disease_state:
 
-  Character. Disease state of the individual (optional)
+  Character. Disease-state name of the individual (optional). Together
+  with `disease_state_parameters` it feeds the modern `Disease` object
+  (`{ Name, Parameters }`) emitted under `OriginData$Disease`, matching
+  [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md).
 
 - disease_state_parameters:
 
-  List. Parameters for disease state (optional)
+  List. Parameters for the disease state (optional), keyed on `Name` in
+  the emitted `Disease` object.
 
 - seed:
 
@@ -138,7 +142,8 @@ individual <- create_individual(
   calculation_methods = c("Method 1", "Method 2", "Method 3")
 )
 
-# Create an individual with disease state
+# Create an individual with disease state (emitted as the modern
+# `Disease` object: `OriginData$Disease = { Name, Parameters }`)
 individual <- create_individual(
   name = "Patient",
   disease_state = "CKD",

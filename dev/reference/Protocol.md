@@ -39,7 +39,10 @@ fields.
 
 - `dosing_interval`:
 
-  The dosing interval (for simple protocols)
+  The dosing interval (for simple protocols). Writable: must be one of
+  the fixed PK-Sim dosing intervals (see
+  [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)'s
+  `dosing_interval` argument), or `NULL` to clear.
 
 - `time_unit`:
 

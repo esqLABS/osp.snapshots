@@ -42,8 +42,10 @@ create_protocol(
 
 - dosing_interval:
 
-  Character. Dosing interval identifier for a Simple Protocol (for
-  example `"Single"`, `"DI_12_12"`, `"DI_8_8_8"`, or `"DI_24"`).
+  Character. Dosing interval identifier for a Simple Protocol. Optional;
+  when supplied it must be one of the fixed PK-Sim `DosingIntervalId`
+  values: `"Single"`, `"DI_6_6_6_6"`, `"DI_6_6_12"`, `"DI_8_8_8"`,
+  `"DI_12_12"`, or `"DI_24"`.
 
 - target_organ:
 

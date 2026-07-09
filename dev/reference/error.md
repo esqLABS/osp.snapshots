@@ -31,9 +31,9 @@ error(value, unit = NULL, type = "ArithmeticStdDev")
 
 - type:
 
-  Character. Auxiliary type for the error, typically one of
-  `"ArithmeticStdDev"`, `"GeometricStdDev"`, or `"ArithmeticStdErr"`.
-  Defaults to `"ArithmeticStdDev"`.
+  Character. Auxiliary type for the error, one of the schema
+  `AuxiliaryType` values: `"ArithmeticStdDev"` (the default),
+  `"GeometricStdDev"`, `"ArithmeticMeanPop"`, or `"GeometricMeanPop"`.
 
 ## Value
 

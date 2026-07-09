@@ -135,14 +135,17 @@ calculation methods PK-Sim applies while creating the individual.</p></dd>
 
 
     <dt><code>disease_state</code></dt>
-<dd><p>Optional disease state name (legacy snapshot
-shape).</p></dd>
+<dd><p>Optional disease-state name. Read from the modern
+<code>Disease</code> object (<code>Disease$Name</code>) or, for a loaded legacy snapshot,
+the legacy <code>DiseaseState</code> key. Writing sets the modern <code>Disease$Name</code>.</p></dd>
 
 
     <dt><code>disease_state_parameters</code></dt>
-<dd><p>Optional list of disease state
-parameters (legacy snapshot shape), preserved as-is for
-round-trip fidelity.</p></dd>
+<dd><p>Optional list of disease-state
+parameters. Read from the modern <code>Disease</code> object
+(<code>Disease$Parameters</code>) or, for a loaded legacy snapshot, the legacy
+<code>DiseaseStateParameters</code> key. Writing sets the modern
+<code>Disease$Parameters</code>.</p></dd>
 
 
 </dl><p></p></div>

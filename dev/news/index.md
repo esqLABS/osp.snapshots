@@ -47,12 +47,29 @@
   matching `Compound`/`Individual`/`OriginData` fields now require the
   helper as well; a bare scalar (for example `individual$age <- 30` or
   `compound$lipophilicity <- 2.5`) is rejected (#133, \#140).
+- [`create_individual()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_individual.md)
+  now emits the current `Disease` object (`{ Name, Parameters }`) under
+  `OriginData$Disease` instead of the legacy `DiseaseState` /
+  `DiseaseStateParameters` pair, matching
+  [`create_expression_profile()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_expression_profile.md);
+  loaded legacy snapshots still read back correctly (#151).
 - [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
   writes the identifier to `data$Name` for plain parameters (no `path`
   argument) and to `data$Path` for path-bearing parameters (with `path`
   argument). Previously every result carried `data$Path`. Pass
   `path = ...` to get a path-bearing parameter; pass `name = ...` to get
   a plain one (#52).
+- [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
+  (and the `Protocol$dosing_interval` setter) now validate
+  `dosing_interval` against the fixed `DosingIntervalId` values
+  (`Single`, `DI_6_6_6_6`, `DI_6_6_12`, `DI_8_8_8`, `DI_12_12`, `DI_24`)
+  and error early on an unknown value, matching how `application_type`
+  is validated (#151).
+- [`error()`](https://esqlabs.github.io/osp.snapshots/dev/reference/error.md)
+  now validates `type` against the schema `AuxiliaryType` values
+  (`ArithmeticStdDev`, `GeometricStdDev`, `ArithmeticMeanPop`,
+  `GeometricMeanPop`) and no longer accepts the off-schema
+  `"ArithmeticStdErr"` (#151).
 - [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
   returns a list with two tibbles, `properties` and `processes`, instead
   of a single combined tibble. Update callers from
@@ -297,6 +314,10 @@
   remove with
   [`remove_observer_set()`](https://esqlabs.github.io/osp.snapshots/dev/reference/remove_observer_set.md)
   (#38).
+- [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
+  gains a `source_method` argument that carries the value-origin
+  determination method to `ValueOrigin.Method`, so it round-trips
+  (#151).
 - [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
   builds a population, taking `Range` objects for age, weight, height,
   and BMI bounds, and accepting `description`, `gestational_age_range`,

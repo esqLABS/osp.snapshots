@@ -65,6 +65,7 @@ tree); otherwise returns a plain <a href="Parameter.html">Parameter</a>.</p>
 <span>  source <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  description <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  source_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source_method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  table_formula <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  table_points <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  x_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -107,6 +108,14 @@ Individual, ExpressionProfile, and Simulation parameter sections).</p></dd>
 
 <dt id="arg-source-id">source_id<a class="anchor" aria-label="anchor" href="#arg-source-id"></a></dt>
 <dd><p>Integer. ID of the source (optional).</p></dd>
+
+
+<dt id="arg-source-method">source_method<a class="anchor" aria-label="anchor" href="#arg-source-method"></a></dt>
+<dd><p>Character. Value-origin determination method
+(optional), mapped to <code>ValueOrigin.Method</code> in the emitted snapshot. One
+of the <code>ValueOriginDeterminationMethodId</code> values: <code>"Undefined"</code>,
+<code>"Unknown"</code>, <code>"Assumption"</code>, <code>"ManualFit"</code>, <code>"ParameterIdentification"</code>,
+<code>"InVitro"</code>, <code>"InVivo"</code>, or <code>"Other"</code>.</p></dd>
 
 
 <dt id="arg-table-formula">table_formula<a class="anchor" aria-label="anchor" href="#arg-table-formula"></a></dt>
@@ -177,7 +186,8 @@ kind of parameter unambiguously.</p>
 <span class="r-in"><span>  value <span class="op">=</span> <span class="fl">1.5</span>,</span></span>
 <span class="r-in"><span>  unit <span class="op">=</span> <span class="st">"L"</span>,</span></span>
 <span class="r-in"><span>  source <span class="op">=</span> <span class="st">"Publication"</span>,</span></span>
-<span class="r-in"><span>  description <span class="op">=</span> <span class="st">"Reference XYZ"</span></span></span>
+<span class="r-in"><span>  description <span class="op">=</span> <span class="st">"Reference XYZ"</span>,</span></span>
+<span class="r-in"><span>  source_method <span class="op">=</span> <span class="st">"ParameterIdentification"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a localized parameter (path-bearing)</span></span></span>
