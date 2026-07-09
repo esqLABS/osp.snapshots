@@ -55,6 +55,21 @@ test_that("print.snapshot_collection dispatches on empty formulation_collection"
   expect_snapshot(print(formulations_named))
 })
 
+test_that("print.snapshot_collection dispatches on simulation_collection", {
+  snapshot <- load_snapshot(test_path("data", "test_snapshot.json"))
+  expect_snapshot(print(snapshot$simulations))
+})
+
+test_that("print.snapshot_collection dispatches on empty simulation_collection", {
+  simulations_named <- list()
+  class(simulations_named) <- c(
+    "simulation_collection",
+    "snapshot_collection",
+    "list"
+  )
+  expect_snapshot(print(simulations_named))
+})
+
 test_that("print.snapshot_collection errors when no collection_kind_info method exists", {
   unknown <- list(a = 1L, b = 2L)
   class(unknown) <- c("future_collection", "snapshot_collection", "list")
