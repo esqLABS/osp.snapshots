@@ -411,6 +411,26 @@
       Error in `error()`:
       ! `value` must be a non-empty numeric vector
 
+# error() validates type against the schema AuxiliaryType values
+
+    Code
+      error(c(1, 2), type = "ArithmeticStdErr")
+    Condition
+      Error in `error()`:
+      ! `type` must be one of the schema AuxiliaryType values.
+      x Got "ArithmeticStdErr".
+      i Valid values: "Undefined", "ArithmeticStdDev", "GeometricStdDev", "ArithmeticMeanPop", and "GeometricMeanPop".
+
+---
+
+    Code
+      error(c(1, 2), type = "not-a-type")
+    Condition
+      Error in `error()`:
+      ! `type` must be one of the schema AuxiliaryType values.
+      x Got "not-a-type".
+      i Valid values: "Undefined", "ArithmeticStdDev", "GeometricStdDev", "ArithmeticMeanPop", and "GeometricMeanPop".
+
 # solubility() enforces scalar-vs-table exclusivity
 
     Code

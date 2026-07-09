@@ -96,6 +96,40 @@ test_that("create_parameter creates parameters correctly", {
       Id = 123
     )
   )
+  # `Method` is absent when `source_method` is not supplied.
+  expect_null(full_param$value_origin$Method)
+})
+
+test_that("create_parameter carries source_method to ValueOrigin.Method", {
+  # A method-only value origin is emitted even without source/description/id.
+  method_only <- create_parameter(
+    name = "Organism|Liver|Volume",
+    value = 1.5,
+    source_method = "ParameterIdentification"
+  )
+  expect_equal(
+    method_only$value_origin,
+    list(Method = "ParameterIdentification")
+  )
+
+  # `Method` sits alongside the other value-origin keys when all are supplied.
+  full_param <- create_parameter(
+    name = "Organism|Liver|Volume",
+    value = 1.5,
+    source = "Publication",
+    description = "Test reference",
+    source_id = 123,
+    source_method = "InVitro"
+  )
+  expect_equal(
+    full_param$value_origin,
+    list(
+      Source = "Publication",
+      Description = "Test reference",
+      Id = 123,
+      Method = "InVitro"
+    )
+  )
 })
 
 test_that("Parameter fields can be modified", {

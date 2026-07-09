@@ -797,6 +797,34 @@ test_that("create_individual validates all inputs properly", {
   )
 })
 
+test_that("create_individual emits the modern Disease object, not legacy keys", {
+  ind <- create_individual(
+    name = "Patient",
+    disease_state = "CKD",
+    disease_state_parameters = list(
+      list(Name = "eGFR", Value = 45.0, Unit = "ml/min/1.73m²")
+    )
+  )
+
+  # Modern Disease object under OriginData$Disease.
+  expect_equal(ind$data$OriginData$Disease$Name, "CKD")
+  expect_equal(ind$data$OriginData$Disease$Parameters[[1]]$Name, "eGFR")
+
+  # Legacy keys are not written.
+  expect_null(ind$data$OriginData$DiseaseState)
+  expect_null(ind$data$OriginData$DiseaseStateParameters)
+
+  # The getters surface the disease back through the modern object.
+  expect_equal(ind$disease_state, "CKD")
+  expect_equal(ind$disease_state_parameters[[1]]$Name, "eGFR")
+})
+
+test_that("create_individual omits Disease$Parameters when none are supplied", {
+  ind <- create_individual(name = "Patient", disease_state = "CKD")
+  expect_equal(ind$data$OriginData$Disease$Name, "CKD")
+  expect_null(ind$data$OriginData$Disease$Parameters)
+})
+
 test_that("create_individual supports gestational age", {
   # Create an individual with gestational age
   individual <- create_individual(

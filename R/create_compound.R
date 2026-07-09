@@ -347,9 +347,9 @@ spec_to_solubility_alternative <- function(spec) {
 # Internal: dispatch a single-parameter physicochemical-property argument
 # (lipophilicity, fraction unbound, intestinal permeability, permeability)
 # to either the single-spec path (one `IsDefault = TRUE` alternative,
-# unchanged) or the list-of-specs path (one alternative per element, first
-# element default, FR-1/FR-2). Shared by the factory and the `Compound`
-# writable-field setters.
+# unchanged) or the list-of-specs path (one alternative per element, with
+# the first element as the default). Shared by the factory and the
+# `Compound` writable-field setters.
 build_single_param_alternatives <- function(
   value,
   param_name,
@@ -380,9 +380,9 @@ build_solubility_alternatives <- function(
 # Internal: build a multi-alternative array from a list of matching
 # physicochemical-property specs. Element order is preserved; the element
 # flagged `default = TRUE` becomes `IsDefault = TRUE` (or the first element
-# when none is flagged); flagging two or more is a hard error (FR-2, FR-3,
-# FR-4). Duplicate `name`s are rejected (FR-8). Thin wrapper around
-# `specs_to_alternatives()`, passing the single-parameter converter.
+# when none is flagged); flagging two or more is a hard error. Duplicate
+# `name`s are rejected. Thin wrapper around `specs_to_alternatives()`,
+# passing the single-parameter converter.
 specs_to_single_param_alternatives <- function(
   specs,
   param_name,
@@ -421,11 +421,10 @@ specs_to_solubility_alternatives <- function(
 # `specs_to_single_param_alternatives()` and
 # `specs_to_solubility_alternatives()`, which differ only in how a single
 # spec is converted into its alternative. Validates unique alternative
-# `name`s (FR-8), resolves which element is the designated default
-# (FR-1/FR-2/FR-3/FR-4), converts every element with `converter`, and marks
-# the resolved element as the default. This is the single shared change
-# point: both `create_compound()` and the `Compound` writable-field
-# setters route through here (FR-6).
+# `name`s, resolves which element is the designated default, converts every
+# element with `converter`, and marks the resolved element as the default.
+# This is the single shared change point: both `create_compound()` and the
+# `Compound` writable-field setters route through here.
 specs_to_alternatives <- function(
   specs,
   property,
@@ -440,11 +439,11 @@ specs_to_alternatives <- function(
 }
 
 # Internal: determine which element of a physicochemical-property spec
-# list is the designated default (FR-1). Reads each spec's `default` flag
+# list is the designated default. Reads each spec's `default` flag
 # (present only on specs built by the five compound-property helpers;
 # always FALSE/absent-equivalent otherwise). Zero flags set falls back to
-# the first element (FR-3); exactly one set uses that element (FR-2); two
-# or more set is a hard error naming the property (FR-4).
+# the first element; exactly one set uses that element; two or more set is
+# a hard error naming the property.
 resolve_default_index <- function(specs, property, call = parent.frame()) {
   flags <- vapply(specs, function(s) isTRUE(s$default), logical(1))
   n_defaults <- sum(flags)
@@ -475,9 +474,8 @@ mark_default_alternative <- function(alts, default_index = 1L) {
 }
 
 # Internal: abort if two elements of a physicochemical-property list share
-# the same alternative `name` (FR-4). PK-Sim resolves an alternative by
-# name within its group, so duplicate labels within one property are
-# ambiguous.
+# the same alternative `name`. PK-Sim resolves an alternative by name
+# within its group, so duplicate labels within one property are ambiguous.
 check_unique_alternative_names <- function(
   specs,
   property,

@@ -12,6 +12,7 @@ create_parameter(
   source = NULL,
   description = NULL,
   source_id = NULL,
+  source_method = NULL,
   table_formula = NULL,
   table_points = NULL,
   x_name = NULL,
@@ -37,6 +38,12 @@ Individual, ExpressionProfile, and Simulation parameter sections).}
 \item{description}{Character. Description of the value origin (optional).}
 
 \item{source_id}{Integer. ID of the source (optional).}
+
+\item{source_method}{Character. Value-origin determination method
+(optional), mapped to \code{ValueOrigin.Method} in the emitted snapshot. One
+of the \code{ValueOriginDeterminationMethodId} values: \code{"Undefined"},
+\code{"Unknown"}, \code{"Assumption"}, \code{"ManualFit"}, \code{"ParameterIdentification"},
+\code{"InVitro"}, \code{"InVivo"}, or \code{"Other"}.}
 
 \item{table_formula}{List. Table formula data for table parameters
 (optional).}
@@ -97,7 +104,8 @@ param <- create_parameter(
   value = 1.5,
   unit = "L",
   source = "Publication",
-  description = "Reference XYZ"
+  description = "Reference XYZ",
+  source_method = "ParameterIdentification"
 )
 
 # Create a localized parameter (path-bearing)

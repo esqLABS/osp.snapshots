@@ -133,7 +133,9 @@ create_population <- function(
         !is.null(source_population)
     ) {
       cli::cli_abort(c(
-        "{.arg individual} cannot be combined with {.arg individual_name}, {.arg species}, or {.arg source_population}.",
+        "{.arg individual} cannot be combined with \\
+        {.arg individual_name}, {.arg species}, or \\
+        {.arg source_population}.",
         "i" = "Fold those fields into the {.fn create_individual} call instead."
       ))
     }

@@ -42,9 +42,13 @@ infant/preterm individuals).}
 
 \item{calculation_methods}{Character vector. Calculation methods used for the individual}
 
-\item{disease_state}{Character. Disease state of the individual (optional)}
+\item{disease_state}{Character. Disease-state name of the individual
+(optional). Together with \code{disease_state_parameters} it feeds the modern
+\code{Disease} object (\verb{\{ Name, Parameters \}}) emitted under
+\code{OriginData$Disease}, matching \code{\link[=create_expression_profile]{create_expression_profile()}}.}
 
-\item{disease_state_parameters}{List. Parameters for disease state (optional)}
+\item{disease_state_parameters}{List. Parameters for the disease state
+(optional), keyed on \code{Name} in the emitted \code{Disease} object.}
 
 \item{seed}{Integer. Simulation seed (optional)}
 
@@ -88,7 +92,8 @@ individual <- create_individual(
   calculation_methods = c("Method 1", "Method 2", "Method 3")
 )
 
-# Create an individual with disease state
+# Create an individual with disease state (emitted as the modern
+# `Disease` object: `OriginData$Disease = { Name, Parameters }`)
 individual <- create_individual(
   name = "Patient",
   disease_state = "CKD",

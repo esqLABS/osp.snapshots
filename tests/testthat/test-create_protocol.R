@@ -224,6 +224,25 @@ test_that("create_protocol accepts a valid application_type and omits the check 
   expect_null(null_type$application_type)
 })
 
+test_that("create_protocol validates dosing_interval against the DosingIntervalId enum", {
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", application_type = "Oral", dosing_interval = "typo")
+  )
+})
+
+test_that("create_protocol accepts a valid dosing_interval and omits the check when NULL", {
+  valid <- create_protocol(name = "P", dosing_interval = "DI_24")
+  expect_s3_class(valid, "Protocol")
+  expect_equal(valid$dosing_interval, "DI_24")
+
+  no_interval <- create_protocol(name = "P")
+  expect_null(no_interval$dosing_interval)
+
+  null_interval <- create_protocol(name = "P", dosing_interval = NULL)
+  expect_null(null_interval$dosing_interval)
+})
+
 test_that("create_protocol validates time_unit against the Time dimension", {
   expect_snapshot(
     error = TRUE,

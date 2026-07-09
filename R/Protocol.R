@@ -294,16 +294,8 @@ Protocol <- R6::R6Class(
         return(NA_character_)
       }
 
-      switch(
-        self$dosing_interval,
-        "Single" = "Once",
-        "DI_8_8_8" = "3 times a day",
-        "DI_12_12" = "2 times a day",
-        "DI_6_6_6_6" = "4 times a day",
-        "DI_6_6_12" = "3 times a day",
-        "DI_24" = "Once a day",
-        self$dosing_interval
-      )
+      label <- PKSIM_DOSING_INTERVALS[self$dosing_interval]
+      if (is.na(label)) self$dosing_interval else unname(label)
     }
   ),
   active = list(
@@ -374,10 +366,19 @@ Protocol <- R6::R6Class(
       private$.data$ApplicationType <- value
     },
 
-    #' @field dosing_interval The dosing interval (for simple protocols)
+    #' @field dosing_interval The dosing interval (for simple protocols).
+    #'   Writable: must be one of the fixed PK-Sim dosing intervals (see
+    #'   [create_protocol()]'s `dosing_interval` argument), or `NULL` to clear.
     dosing_interval = function(value) {
       if (missing(value)) {
         return(private$.data$DosingInterval)
+      }
+      if (!is.null(value) && !(value %in% schema_item_dosing_intervals())) {
+        cli::cli_abort(c(
+          "{.arg dosing_interval} must be one of the fixed PK-Sim dosing intervals.",
+          "x" = "Got {.val {value}}.",
+          "i" = "Valid values: {.val {schema_item_dosing_intervals()}}."
+        ))
       }
       private$.data$DosingInterval <- value
     },
@@ -549,6 +550,28 @@ human_application_type <- function(application_type) {
     return(NA_character_)
   }
   if (is.na(label)) application_type else unname(label)
+}
+
+# Fixed PK-Sim dosing intervals accepted by `create_protocol()` and the
+# `Protocol$dosing_interval` setter, paired with their human-readable labels.
+# PK-Sim resolves the enum values via `DosingIntervals.ById()` (see
+# `snapshot-spec.md`). This is the single source of truth for the enum;
+# `schema_item_dosing_intervals()` and `Protocol$get_human_dosing_interval()`
+# both read from it. Names are the six `DosingIntervalId` enum values; values
+# are the labels.
+PKSIM_DOSING_INTERVALS <- c(
+  Single = "Once",
+  DI_6_6_6_6 = "4 times a day",
+  DI_6_6_12 = "3 times a day",
+  DI_8_8_8 = "3 times a day",
+  DI_12_12 = "2 times a day",
+  DI_24 = "Once a day"
+)
+
+# The fixed `DosingIntervalId` enum values, mirroring
+# `schema_item_application_types()`.
+schema_item_dosing_intervals <- function() {
+  names(PKSIM_DOSING_INTERVALS)
 }
 
 # Shared empty tibble used by Protocol$to_df() and as_tibbles_protocols(), so

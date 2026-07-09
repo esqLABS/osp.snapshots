@@ -31,7 +31,9 @@ Writable: must be one of the canonical PK-Sim application types
 (see \code{\link[=create_protocol]{create_protocol()}}'s \code{application_type} argument), or \code{NULL}
 to clear.}
 
-    \item{\code{dosing_interval}}{The dosing interval (for simple protocols)}
+    \item{\code{dosing_interval}}{The dosing interval (for simple protocols).
+Writable: must be one of the fixed PK-Sim dosing intervals (see
+\code{\link[=create_protocol]{create_protocol()}}'s \code{dosing_interval} argument), or \code{NULL} to clear.}
 
     \item{\code{time_unit}}{The time unit for the protocol. Writable: must be a
 valid unit for dimension \code{"Time"}, or \code{NULL} to clear.}
