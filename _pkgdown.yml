@@ -180,6 +180,7 @@ reference:
 - title: "Validators and utilities"
   desc: "Helpers for validation and data conversion"
   contents:
+  - get_default_alternative
   - validate_snapshot
   - validate_species
   - validate_population
