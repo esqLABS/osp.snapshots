@@ -36,10 +36,9 @@ top-level alternative array or typed list rather than in Parameters."></head><bo
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
-    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
-    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -83,22 +82,10 @@ top-level alternative array or typed list rather than in <code>Parameters</code>
 <span>  calculation_methods <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lipophilicity <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  lipophilicity_unit <span class="op">=</span> <span class="st">"Log Units"</span>,</span>
-<span>  lipophilicity_name <span class="op">=</span> <span class="st">"User defined"</span>,</span>
 <span>  fraction_unbound <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  fraction_unbound_name <span class="op">=</span> <span class="st">"User defined"</span>,</span>
 <span>  solubility <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  solubility_unit <span class="op">=</span> <span class="st">"mg/l"</span>,</span>
-<span>  reference_pH <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  solubility_gain_per_charge <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  solubility_table <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  solubility_name <span class="op">=</span> <span class="st">"User defined"</span>,</span>
 <span>  intestinal_permeability <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  intestinal_permeability_unit <span class="op">=</span> <span class="st">"cm/min"</span>,</span>
-<span>  intestinal_permeability_name <span class="op">=</span> <span class="st">"User defined"</span>,</span>
 <span>  permeability <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  permeability_unit <span class="op">=</span> <span class="st">"cm/min"</span>,</span>
-<span>  permeability_name <span class="op">=</span> <span class="st">"User defined"</span>,</span>
 <span>  pKa <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  processes <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -123,7 +110,8 @@ molecule. Defaults to <code>TRUE</code> in PK-Sim when omitted.</p></dd>
 
 <dt id="arg-plasma-protein-binding-partner">plasma_protein_binding_partner<a class="anchor" aria-label="anchor" href="#arg-plasma-protein-binding-partner"></a></dt>
 <dd><p>Character. Name of the plasma
-protein binding partner (for example <code>"Albumin"</code>).</p></dd>
+protein binding partner: one of <code>"Unknown"</code>, <code>"Albumin"</code>,
+<code>"Glycoprotein"</code>.</p></dd>
 
 
 <dt id="arg-molecular-weight">molecular_weight<a class="anchor" aria-label="anchor" href="#arg-molecular-weight"></a></dt>
@@ -148,105 +136,48 @@ use the dedicated arguments below for those.</p></dd>
 
 
 <dt id="arg-lipophilicity">lipophilicity<a class="anchor" aria-label="anchor" href="#arg-lipophilicity"></a></dt>
-<dd><p>Numeric scalar. Lipophilicity value. When supplied,
-one default <code>Lipophilicity</code> alternative is created.</p></dd>
-
-
-<dt id="arg-lipophilicity-unit">lipophilicity_unit<a class="anchor" aria-label="anchor" href="#arg-lipophilicity-unit"></a></dt>
-<dd><p>Character. Unit for the lipophilicity
-parameter, validated against dimension <code>"Log Units"</code>. Defaults to
-<code>"Log Units"</code>.</p></dd>
-
-
-<dt id="arg-lipophilicity-name">lipophilicity_name<a class="anchor" aria-label="anchor" href="#arg-lipophilicity-name"></a></dt>
-<dd><p>Character. <code>Name</code> of the created lipophilicity
-alternative. Defaults to <code>"User defined"</code>.</p></dd>
+<dd><p>A <code><a href="lipophilicity.html">lipophilicity()</a></code> object, a list of such objects
+to define several named alternatives (mark exactly one with
+<code>default = TRUE</code> to designate the group default; when none is marked,
+the first element is the default), or <code>NULL</code>. When supplied, one
+<code>Lipophilicity</code> alternative is created per element.</p></dd>
 
 
 <dt id="arg-fraction-unbound">fraction_unbound<a class="anchor" aria-label="anchor" href="#arg-fraction-unbound"></a></dt>
-<dd><p>Numeric scalar. Fraction unbound value. When
-supplied, one default <code>FractionUnbound</code> alternative is created. The
-fraction-unbound parameter carries no unit.</p></dd>
-
-
-<dt id="arg-fraction-unbound-name">fraction_unbound_name<a class="anchor" aria-label="anchor" href="#arg-fraction-unbound-name"></a></dt>
-<dd><p>Character. <code>Name</code> of the created
-fraction-unbound alternative. Defaults to <code>"User defined"</code>.</p></dd>
+<dd><p>A <code><a href="fraction_unbound.html">fraction_unbound()</a></code> object, a list of such
+objects to define several named alternatives (mark exactly one with
+<code>default = TRUE</code> to designate the group default; when none is marked,
+the first element is the default), or <code>NULL</code>. When supplied, one
+<code>FractionUnbound</code> alternative is created per element.</p></dd>
 
 
 <dt id="arg-solubility">solubility<a class="anchor" aria-label="anchor" href="#arg-solubility"></a></dt>
-<dd><p>Numeric scalar. Solubility-at-reference-pH value. When
-supplied, one scalar-based <code>Solubility</code> alternative is created.
-Mutually exclusive with <code>solubility_table</code>.</p></dd>
-
-
-<dt id="arg-solubility-unit">solubility_unit<a class="anchor" aria-label="anchor" href="#arg-solubility-unit"></a></dt>
-<dd><p>Character. Unit for the solubility parameter,
-validated against dimension <code>"Concentration (mass)"</code>. Reused as the
-table Y unit. Defaults to <code>"mg/l"</code>.</p></dd>
-
-
-<dt id="arg-reference-ph">reference_pH<a class="anchor" aria-label="anchor" href="#arg-reference-ph"></a></dt>
-<dd><p>Numeric scalar. Reference pH added to the same
-scalar <code>Solubility</code> alternative as <code>solubility</code>. Not a standalone
-property: it is ignored unless <code>solubility</code> is supplied, and it does
-not apply to the table path.</p></dd>
-
-
-<dt id="arg-solubility-gain-per-charge">solubility_gain_per_charge<a class="anchor" aria-label="anchor" href="#arg-solubility-gain-per-charge"></a></dt>
-<dd><p>Numeric scalar. Optional
-<code>Solubility gain per charge</code> parameter added to the same scalar
-<code>Solubility</code> alternative as <code>solubility</code>. Not a standalone property:
-it is ignored unless <code>solubility</code> is supplied.</p></dd>
-
-
-<dt id="arg-solubility-table">solubility_table<a class="anchor" aria-label="anchor" href="#arg-solubility-table"></a></dt>
-<dd><p>Two-column data frame giving table-based
-solubility: the first column is pH and the second is the solubility
-value. When supplied, one <code>Solubility</code> alternative with a
-<code>Solubility table</code> parameter carrying a <code>TableFormula</code> is created
-instead of a scalar solubility. Mutually exclusive with <code>solubility</code>.
-Note: on import PK-Sim runs a table-solubility preparation step that
-this package does not perform; the package emits the faithful raw
-<code>Solubility table</code> + <code>TableFormula</code> shape that round-trips through
-load/export at the JSON level.</p></dd>
-
-
-<dt id="arg-solubility-name">solubility_name<a class="anchor" aria-label="anchor" href="#arg-solubility-name"></a></dt>
-<dd><p>Character. <code>Name</code> of the created solubility
-alternative (scalar or table). Defaults to <code>"User defined"</code>.</p></dd>
+<dd><p>A <code><a href="solubility.html">solubility()</a></code> object, a list of such objects to
+define several named alternatives (mark exactly one with
+<code>default = TRUE</code> to designate the group default; when none is marked,
+the first element is the default), or <code>NULL</code>. Each object expresses
+either the scalar form (value at a reference pH, with optional gain
+per charge) or the table form (a pH/value table); a list may mix both
+forms. When supplied, one <code>Solubility</code> alternative is created per
+element. See <code><a href="solubility.html">solubility()</a></code> for the scalar vs table forms and the
+mutual-exclusivity rule.</p></dd>
 
 
 <dt id="arg-intestinal-permeability">intestinal_permeability<a class="anchor" aria-label="anchor" href="#arg-intestinal-permeability"></a></dt>
-<dd><p>Numeric scalar. Intestinal permeability
-value. When supplied, one default <code>IntestinalPermeability</code> alternative
-is created.</p></dd>
-
-
-<dt id="arg-intestinal-permeability-unit">intestinal_permeability_unit<a class="anchor" aria-label="anchor" href="#arg-intestinal-permeability-unit"></a></dt>
-<dd><p>Character. Unit for the
-intestinal-permeability parameter, validated against dimension
-<code>"Velocity"</code>. Defaults to <code>"cm/min"</code>.</p></dd>
-
-
-<dt id="arg-intestinal-permeability-name">intestinal_permeability_name<a class="anchor" aria-label="anchor" href="#arg-intestinal-permeability-name"></a></dt>
-<dd><p>Character. <code>Name</code> of the created
-intestinal-permeability alternative. Defaults to <code>"User defined"</code>.</p></dd>
+<dd><p>An <code><a href="intestinal_permeability.html">intestinal_permeability()</a></code> object, a
+list of such objects to define several named alternatives (mark
+exactly one with <code>default = TRUE</code> to designate the group default;
+when none is marked, the first element is the default), or <code>NULL</code>.
+When supplied, one <code>IntestinalPermeability</code> alternative is created
+per element.</p></dd>
 
 
 <dt id="arg-permeability">permeability<a class="anchor" aria-label="anchor" href="#arg-permeability"></a></dt>
-<dd><p>Numeric scalar. Permeability value. When supplied,
-one default <code>Permeability</code> alternative is created.</p></dd>
-
-
-<dt id="arg-permeability-unit">permeability_unit<a class="anchor" aria-label="anchor" href="#arg-permeability-unit"></a></dt>
-<dd><p>Character. Unit for the permeability parameter,
-validated against dimension <code>"Velocity"</code>. Defaults to <code>"cm/min"</code>.</p></dd>
-
-
-<dt id="arg-permeability-name">permeability_name<a class="anchor" aria-label="anchor" href="#arg-permeability-name"></a></dt>
-<dd><p>Character. <code>Name</code> of the created permeability
-alternative. Defaults to <code>"User defined"</code>.</p></dd>
+<dd><p>A <code><a href="permeability.html">permeability()</a></code> object, a list of such objects to
+define several named alternatives (mark exactly one with
+<code>default = TRUE</code> to designate the group default; when none is marked,
+the first element is the default), or <code>NULL</code>. When supplied, one
+<code>Permeability</code> alternative is created per element.</p></dd>
 
 
 <dt id="arg-pka">pKa<a class="anchor" aria-label="anchor" href="#arg-pka"></a></dt>
@@ -268,6 +199,12 @@ an empty <code><a href="https://rdrr.io/r/base/list.html" class="external-link">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <a href="Compound.html">Compound</a> object.</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="lipophilicity.html">lipophilicity()</a></code>, <code><a href="fraction_unbound.html">fraction_unbound()</a></code>, <code><a href="solubility.html">solubility()</a></code>,
+<code><a href="intestinal_permeability.html">intestinal_permeability()</a></code>, <code><a href="permeability.html">permeability()</a></code> for the physicochemical
+property helpers.</p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -285,26 +222,44 @@ an empty <code><a href="https://rdrr.io/r/base/list.html" class="external-link">
 <span class="r-in"><span><span class="co"># Set the single-parameter physicochemical properties</span></span></span>
 <span class="r-in"><span><span class="va">compound</span> <span class="op">&lt;-</span> <span class="fu">create_compound</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Drug X"</span>,</span></span>
-<span class="r-in"><span>  lipophilicity <span class="op">=</span> <span class="fl">2.5</span>,</span></span>
-<span class="r-in"><span>  fraction_unbound <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
-<span class="r-in"><span>  intestinal_permeability <span class="op">=</span> <span class="fl">1.14e-05</span>,</span></span>
-<span class="r-in"><span>  permeability <span class="op">=</span> <span class="fl">0.0069</span></span></span>
+<span class="r-in"><span>  lipophilicity <span class="op">=</span> <span class="fu"><a href="lipophilicity.html">lipophilicity</a></span><span class="op">(</span><span class="fl">2.5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  fraction_unbound <span class="op">=</span> <span class="fu"><a href="fraction_unbound.html">fraction_unbound</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  intestinal_permeability <span class="op">=</span> <span class="fu"><a href="intestinal_permeability.html">intestinal_permeability</a></span><span class="op">(</span><span class="fl">1.14e-05</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  permeability <span class="op">=</span> <span class="fu"><a href="permeability.html">permeability</a></span><span class="op">(</span><span class="fl">0.0069</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Solubility with reference pH and gain per charge</span></span></span>
 <span class="r-in"><span><span class="va">compound</span> <span class="op">&lt;-</span> <span class="fu">create_compound</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Drug X"</span>,</span></span>
-<span class="r-in"><span>  solubility <span class="op">=</span> <span class="fl">9999</span>,</span></span>
-<span class="r-in"><span>  reference_pH <span class="op">=</span> <span class="fl">7</span>,</span></span>
-<span class="r-in"><span>  solubility_gain_per_charge <span class="op">=</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span>  solubility <span class="op">=</span> <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span><span class="fl">9999</span>, reference_pH <span class="op">=</span> <span class="fl">7</span>, gain_per_charge <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Table-based solubility (first column pH, second column value)</span></span></span>
 <span class="r-in"><span><span class="va">compound</span> <span class="op">&lt;-</span> <span class="fu">create_compound</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Drug X"</span>,</span></span>
-<span class="r-in"><span>  solubility_table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    pH <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">6.8</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5000</span>, <span class="fl">3000</span>, <span class="fl">90</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  solubility <span class="op">=</span> <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      pH <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">6.8</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5000</span>, <span class="fl">3000</span>, <span class="fl">90</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Several named solubility alternatives (the first is the default)</span></span></span>
+<span class="r-in"><span><span class="va">compound</span> <span class="op">&lt;-</span> <span class="fu">create_compound</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Drug X"</span>,</span></span>
+<span class="r-in"><span>  solubility <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span><span class="fl">9999</span>, name <span class="op">=</span> <span class="st">"Aqueous"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span><span class="fl">200</span>, name <span class="op">=</span> <span class="st">"FaSSIF"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Several named solubility alternatives, explicitly marking the default</span></span></span>
+<span class="r-in"><span><span class="va">compound</span> <span class="op">&lt;-</span> <span class="fu">create_compound</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Drug X"</span>,</span></span>
+<span class="r-in"><span>  solubility <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span><span class="fl">9999</span>, name <span class="op">=</span> <span class="st">"Aqueous"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="solubility.html">solubility</a></span><span class="op">(</span><span class="fl">200</span>, name <span class="op">=</span> <span class="st">"FaSSIF"</span>, default <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -342,7 +297,7 @@ an empty <code><a href="https://rdrr.io/r/base/list.html" class="external-link">
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -281,8 +281,8 @@ back into the snapshot:
 ``` r
 
 ind <- snapshot$individuals$`European (P-gp modified, CYP3A4 36 h)`
-ind$age <- 45
-ind$weight <- 78
+ind$age <- age(45)
+ind$weight <- weight(78)
 ind
 #> 
 #> ── Individual: European (P-gp modified, CYP3A4 36 h) | Seed: 17189110 ──────────
@@ -338,7 +338,7 @@ then attach it with `add_*()`. Removal is by name.
 
 ``` r
 
-patient <- create_individual("Patient_A", age = 35, gender = "FEMALE")
+patient <- create_individual("Patient_A", age = age(35), gender = "FEMALE")
 add_individual(snapshot, patient)
 
 remove_individual(snapshot, "Patient_A")
@@ -353,8 +353,8 @@ make several changes in one expression:
 ``` r
 
 snapshot |>
-  add_individual(create_individual("Patient_A", age = 35, gender = "FEMALE")) |>
-  add_individual(create_individual("Patient_B", age = 60, gender = "MALE")) |>
+  add_individual(create_individual("Patient_A", age = age(35), gender = "FEMALE")) |>
+  add_individual(create_individual("Patient_B", age = age(60), gender = "MALE")) |>
   remove_population("Healthy Adults")
 ```
 

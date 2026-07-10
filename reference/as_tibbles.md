@@ -1,14 +1,15 @@
 # Convert a snapshot collection to a tibble or list of tibbles
 
 Unified bridge from a `Snapshot` to the tidyverse for any building-block
-kind plus observed data. Replaces the eight per-kind `get_*_dfs()`
+kind plus observed data. Replaces the nine per-kind `get_*_dfs()`
 functions as the canonical entry point; those remain available as thin
-wrappers.
+wrappers. Omit `kind` to convert every kind of a snapshot in a single
+call.
 
 ## Usage
 
 ``` r
-as_tibbles(snapshot, kind)
+as_tibbles(snapshot, kind = NULL)
 ```
 
 ## Arguments
@@ -19,14 +20,22 @@ as_tibbles(snapshot, kind)
 
 - kind:
 
-  Character scalar naming the collection to convert. One of
+  Character vector naming the collection(s) to convert, or `NULL` (the
+  default) to convert every kind. Each element must be one of
   `"compounds"`, `"individuals"`, `"formulations"`, `"populations"`,
   `"events"`, `"expression_profiles"`, `"protocols"`, `"observer_sets"`,
-  `"observed_data"`.
+  `"observed_data"`. A length-1 `kind` returns that kind's native shape
+  directly (a tibble or a named list of tibbles); a length-2-or-more
+  `kind` returns a named list keyed by the requested kinds, in request
+  order; `NULL` returns a named list of all nine kinds in the order
+  above.
 
 ## Value
 
-A tibble or a named list of tibbles, depending on `kind`:
+When `kind` names a single collection, a tibble or a named list of
+tibbles for that collection (see below). When `kind` names several
+collections, or is `NULL` (all nine kinds), a named list keyed by the
+requested kinds, each entry the native shape of that kind:
 
 - `"compounds"`: a list with `properties` and `processes` tibbles.
   `properties` carries one row per (compound, physicochemical property)
@@ -67,5 +76,9 @@ compounds$processes
 # List of tibbles
 individuals <- as_tibbles(snapshot, "individuals")
 individuals$individuals_parameters
+
+# Omit `kind` to convert every kind at once, keyed by kind name
+all_kinds <- as_tibbles(snapshot)
+names(all_kinds)
 } # }
 ```

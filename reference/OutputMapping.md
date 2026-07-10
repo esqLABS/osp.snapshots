@@ -14,23 +14,28 @@ weight(s) used when comparing the two.
 
 - `path`:
 
-  The simulation output quantity path.
+  The simulation output quantity path. Writable: must be a non-empty
+  scalar string, or `NULL` to clear.
 
 - `observed_data`:
 
-  The observed-data repository name.
+  The observed-data repository name. Writable: must be a non-empty
+  scalar string, or `NULL` to clear.
 
 - `scaling`:
 
-  The scaling used for the mapping.
+  The scaling used for the mapping. Writable: one of `"Linear"`,
+  `"Log"`, or `NULL` to clear.
 
 - `weight`:
 
-  A single weight applied to all points of the mapping.
+  A single weight applied to all points of the mapping. Writable: a
+  single numeric value, or `NULL` to clear.
 
 - `weights`:
 
-  A per-point weight vector.
+  A per-point weight vector. Writable: a numeric vector, or `NULL` to
+  clear.
 
 ## Methods
 

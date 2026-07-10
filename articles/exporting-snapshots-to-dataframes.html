@@ -33,10 +33,9 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
-    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
-    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+<li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -70,23 +69,36 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://esqlabs.github.io/osp.snapshots/">osp.snapshots</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gt.rstudio.com" class="external-link">gt</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+<h2 id="reporting-the-inputs-that-drive-a-simulation">Reporting the inputs that drive a simulation<a class="anchor" aria-label="anchor" href="#reporting-the-inputs-that-drive-a-simulation"></a>
 </h2>
-<p>osp.snapshots can flatten the nested PK-Sim snapshot tree into
-tibbles ready for downstream analysis with <code>dplyr</code>. This
-vignette covers the entry point, the per-kind shapes, and a few common
-analysis patterns.</p>
+<p>A PK-Sim snapshot is mostly <em>configuration</em>: the compounds,
+individuals, formulations, protocols, and other building blocks that
+define how a simulation is set up. Observed data and simulation results
+are already easy to report with the wider R ecosystem; what has been
+awkward is reporting the <strong>inputs</strong>, because they live deep
+inside a nested JSON tree.</p>
+<p><code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> flattens those building blocks into tidy
+tibbles, one concept per table, so you can filter them with
+<code>dplyr</code> and render them as publication-quality tables. This
+vignette pairs <code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> with <a href="https://gt.rstudio.com/" class="external-link"><code>gt</code></a> to turn the
+configuration of a model into report-ready HTML tables.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_snapshot.html">load_snapshot</a></span><span class="op">(</span><span class="st">"Midazolam"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="the-as_tibbles-entry-point">The <code>as_tibbles()</code> entry point<a class="anchor" aria-label="anchor" href="#the-as_tibbles-entry-point"></a>
 </h2>
-<p><code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> takes the snapshot plus a <code>kind</code>
-naming the collection to convert, and returns either a tibble or a named
-list of tibbles for collections that split into related tables.</p>
+<p><code><a href="../reference/as_tibbles.html">as_tibbles()</a></code> takes the snapshot plus an optional
+<code>kind</code> naming the collection(s) to convert, and returns
+either a tibble or a named list of tibbles for collections that split
+into related tables. <code>kind</code> is optional: omit it (or pass
+<code>NULL</code>) to convert every kind at once, returned as a named
+list keyed by kind; pass a single kind to get that kind’s tibble or list
+of tibbles directly; or pass a vector of kinds to get a named list keyed
+by just the requested kinds.</p>
 <p>Valid values of <code>kind</code>:</p>
 <ul>
 <li><code>"compounds"</code></li>
@@ -105,9 +117,15 @@ list of tibbles for collections that split into related tables.</p>
 <span><span class="co">#&gt; [1] "properties" "processes"</span></span></code></pre></div>
 <p>The tibble layer is read-only: mutating a returned tibble does not
 feed changes back into the snapshot.</p>
+<p>The sections below feature four kinds chosen because each has a
+different <em>shape</em>: a single flat table (protocols), a header
+split from a long-form parameter table (compounds, formulations), and
+several related tables keyed by an id (individuals). Every other kind
+follows one of these same shapes, so the same reporting recipe applies
+to all of them.</p>
 </div>
 <div class="section level2">
-<h2 id="compounds-properties-and-processes">Compounds: <code>$properties</code> and <code>$processes</code><a class="anchor" aria-label="anchor" href="#compounds-properties-and-processes"></a>
+<h2 id="compounds-a-flat-table-and-a-long-form-table">Compounds: a flat table and a long-form table<a class="anchor" aria-label="anchor" href="#compounds-a-flat-table-and-a-long-form-table"></a>
 </h2>
 <p><code>as_tibbles(snapshot, "compounds")</code> returns a list of two
 tibbles:</p>
@@ -120,38 +138,1223 @@ pair across the <em>Compound</em> physicochemical properties.</li>
 (compound, process, parameter) triple across every biological
 <em>Process</em> (metabolism, transport, clearance, binding, …).</li>
 </ul>
+<p>The physicochemical properties render directly as a report table:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">compound_dfs</span><span class="op">$</span><span class="va">properties</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
-<span><span class="co">#&gt;   compound  category              type  parameter value unit  data_source source</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Midazolam physicochemical_prop… lipo… Optimized 2.89… Log … <span style="color: #BB0000;">NA</span>          Param…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Midazolam physicochemical_prop… frac… Gertz et… 0.031 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          Param…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Midazolam physicochemical_prop… mole… <span style="color: #BB0000;">NA</span>        325.… g/mol <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Midazolam physicochemical_prop… halo… Cl        1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Midazolam physicochemical_prop… halo… F         1     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Midazolam physicochemical_prop… pKa   base      6.2   <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">compound_dfs</span><span class="op">$</span><span class="va">processes</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 11</span></span></span>
-<span><span class="co">#&gt;   compound  category       process_name parameter value unit  data_source source</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Midazolam protein_bindi… SpecificBin… koff      1     1/min Buhr 1997   Param…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Midazolam protein_bindi… SpecificBin… Kd        1.8   nmol… Buhr 1997   <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Midazolam renal_clearan… GlomerularF… GFR frac… 0.64… <span style="color: #BB0000;">NA</span>    Optimized   Param…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Midazolam metabolizing_… Metabolizat… In vitro… 850   pmol… Optimized   <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Midazolam metabolizing_… Metabolizat… Km        4     µmol… Optimized   aggre…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Midazolam metabolizing_… Metabolizat… kcat      8.76… 1/min Optimized   Param…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: molecule &lt;chr&gt;, metabolite &lt;chr&gt;, species &lt;chr&gt;</span></span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">compound_dfs</span><span class="op">$</span><span class="va">properties</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Compound physicochemical properties"</span><span class="op">)</span></span></code></pre></div>
+<div id="mwlefoodfi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mwlefoodfi table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#mwlefoodfi thead, #mwlefoodfi tbody, #mwlefoodfi tfoot, #mwlefoodfi tr, #mwlefoodfi td, #mwlefoodfi th {
+  border-style: none;
+}
+
+#mwlefoodfi p {
+  margin: 0;
+  padding: 0;
+}
+
+#mwlefoodfi .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#mwlefoodfi .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#mwlefoodfi .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#mwlefoodfi .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#mwlefoodfi .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#mwlefoodfi .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#mwlefoodfi .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#mwlefoodfi .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#mwlefoodfi .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#mwlefoodfi .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#mwlefoodfi .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#mwlefoodfi .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#mwlefoodfi .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#mwlefoodfi .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#mwlefoodfi .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#mwlefoodfi .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#mwlefoodfi .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#mwlefoodfi .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#mwlefoodfi .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#mwlefoodfi .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_left {
+  text-align: left;
+}
+
+#mwlefoodfi .gt_center {
+  text-align: center;
+}
+
+#mwlefoodfi .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#mwlefoodfi .gt_font_normal {
+  font-weight: normal;
+}
+
+#mwlefoodfi .gt_font_bold {
+  font-weight: bold;
+}
+
+#mwlefoodfi .gt_font_italic {
+  font-style: italic;
+}
+
+#mwlefoodfi .gt_super {
+  font-size: 65%;
+}
+
+#mwlefoodfi .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#mwlefoodfi .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#mwlefoodfi .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#mwlefoodfi .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#mwlefoodfi .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#mwlefoodfi .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#mwlefoodfi .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#mwlefoodfi .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#mwlefoodfi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading">
+<td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Compound physicochemical properties</td>
+    </tr>
+<tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="compound">compound</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="category">category</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="type">type</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="parameter">parameter</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="value">value</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="unit">unit</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="data_source">data_source</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="source">source</th>
+    </tr>
+</thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">lipophilicity</td>
+<td headers="parameter" class="gt_row gt_left">Optimized</td>
+<td headers="value" class="gt_row gt_right">2.8972038771</td>
+<td headers="unit" class="gt_row gt_left">Log Units</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">Parameter optimization</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">fraction_unbound</td>
+<td headers="parameter" class="gt_row gt_left">Gertz et al. 2010</td>
+<td headers="value" class="gt_row gt_right">0.031</td>
+<td headers="unit" class="gt_row gt_left">NA</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">Parameter optimization</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">molecular_weight</td>
+<td headers="parameter" class="gt_row gt_left">NA</td>
+<td headers="value" class="gt_row gt_right">325.78</td>
+<td headers="unit" class="gt_row gt_left">g/mol</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">halogens</td>
+<td headers="parameter" class="gt_row gt_left">Cl</td>
+<td headers="value" class="gt_row gt_right">1</td>
+<td headers="unit" class="gt_row gt_left">NA</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">halogens</td>
+<td headers="parameter" class="gt_row gt_left">F</td>
+<td headers="value" class="gt_row gt_right">1</td>
+<td headers="unit" class="gt_row gt_left">NA</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">pKa</td>
+<td headers="parameter" class="gt_row gt_left">base</td>
+<td headers="value" class="gt_row gt_right">6.2</td>
+<td headers="unit" class="gt_row gt_left">NA</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">pKa</td>
+<td headers="parameter" class="gt_row gt_left">acid</td>
+<td headers="value" class="gt_row gt_right">10.95</td>
+<td headers="unit" class="gt_row gt_left">NA</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">solubility</td>
+<td headers="parameter" class="gt_row gt_left">Aqueous solubility, pH 5</td>
+<td headers="value" class="gt_row gt_right">0.13</td>
+<td headers="unit" class="gt_row gt_left">mg/ml</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">Heikkinen 2012</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">solubility</td>
+<td headers="parameter" class="gt_row gt_left">FaSSIF, pH 6.5</td>
+<td headers="value" class="gt_row gt_right">0.049</td>
+<td headers="unit" class="gt_row gt_left">mg/ml</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">Heikkinen 2012</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">solubility</td>
+<td headers="parameter" class="gt_row gt_left">FeSSIF, pH 5</td>
+<td headers="value" class="gt_row gt_right">0.09</td>
+<td headers="unit" class="gt_row gt_left">mg/ml</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">Heikkinen 2012</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">physicochemical_property</td>
+<td headers="type" class="gt_row gt_left">intestinal_permeability</td>
+<td headers="parameter" class="gt_row gt_left">Optimized</td>
+<td headers="value" class="gt_row gt_right">0.00015549970673</td>
+<td headers="unit" class="gt_row gt_left">cm/min</td>
+<td headers="data_source" class="gt_row gt_left">NA</td>
+<td headers="source" class="gt_row gt_left">Parameter optimization</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">protein_binding_partners</td>
+<td headers="type" class="gt_row gt_left">SpecificBinding</td>
+<td headers="parameter" class="gt_row gt_left">koff, GABRG2</td>
+<td headers="value" class="gt_row gt_right">1</td>
+<td headers="unit" class="gt_row gt_left">1/min</td>
+<td headers="data_source" class="gt_row gt_left">Buhr 1997</td>
+<td headers="source" class="gt_row gt_left">Parameter optimization</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">protein_binding_partners</td>
+<td headers="type" class="gt_row gt_left">SpecificBinding</td>
+<td headers="parameter" class="gt_row gt_left">Kd, GABRG2</td>
+<td headers="value" class="gt_row gt_right">1.8</td>
+<td headers="unit" class="gt_row gt_left">nmol/l</td>
+<td headers="data_source" class="gt_row gt_left">Buhr 1997</td>
+<td headers="source" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">metabolizing_enzymes</td>
+<td headers="type" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="parameter" class="gt_row gt_left">In vitro Vmax for liver microsomes, CYP3A4</td>
+<td headers="value" class="gt_row gt_right">850</td>
+<td headers="unit" class="gt_row gt_left">pmol/min/mg mic. protein</td>
+<td headers="data_source" class="gt_row gt_left">Optimized</td>
+<td headers="source" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">metabolizing_enzymes</td>
+<td headers="type" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="parameter" class="gt_row gt_left">Km, CYP3A4</td>
+<td headers="value" class="gt_row gt_right">4</td>
+<td headers="unit" class="gt_row gt_left">µmol/l</td>
+<td headers="data_source" class="gt_row gt_left">Optimized</td>
+<td headers="source" class="gt_row gt_left">aggregated from literature</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">metabolizing_enzymes</td>
+<td headers="type" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="parameter" class="gt_row gt_left">kcat, CYP3A4</td>
+<td headers="value" class="gt_row gt_right">8.7607941215</td>
+<td headers="unit" class="gt_row gt_left">1/min</td>
+<td headers="data_source" class="gt_row gt_left">Optimized</td>
+<td headers="source" class="gt_row gt_left">Parameter optimization</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">metabolizing_enzymes</td>
+<td headers="type" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="parameter" class="gt_row gt_left">In vitro Vmax for liver microsomes, UGT1A4</td>
+<td headers="value" class="gt_row gt_right">276</td>
+<td headers="unit" class="gt_row gt_left">pmol/min/mg mic. protein</td>
+<td headers="data_source" class="gt_row gt_left">Optimized</td>
+<td headers="source" class="gt_row gt_left">Klieber 2008</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">metabolizing_enzymes</td>
+<td headers="type" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="parameter" class="gt_row gt_left">Content of CYP proteins in liver microsomes, UGT1A4</td>
+<td headers="value" class="gt_row gt_right">58</td>
+<td headers="unit" class="gt_row gt_left">pmol/mg mic. protein</td>
+<td headers="data_source" class="gt_row gt_left">Optimized</td>
+<td headers="source" class="gt_row gt_left">Achour 2014</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">metabolizing_enzymes</td>
+<td headers="type" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="parameter" class="gt_row gt_left">Km, UGT1A4</td>
+<td headers="value" class="gt_row gt_right">37.8</td>
+<td headers="unit" class="gt_row gt_left">µmol/l</td>
+<td headers="data_source" class="gt_row gt_left">Optimized</td>
+<td headers="source" class="gt_row gt_left">Klieber 2008</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">metabolizing_enzymes</td>
+<td headers="type" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="parameter" class="gt_row gt_left">kcat, UGT1A4</td>
+<td headers="value" class="gt_row gt_right">3.5911771641</td>
+<td headers="unit" class="gt_row gt_left">1/min</td>
+<td headers="data_source" class="gt_row gt_left">Optimized</td>
+<td headers="source" class="gt_row gt_left">Parameter optimization</td>
+</tr>
+<tr>
+<td headers="compound" class="gt_row gt_left">Midazolam</td>
+<td headers="category" class="gt_row gt_left">renal_clearance</td>
+<td headers="type" class="gt_row gt_left">GlomerularFiltration</td>
+<td headers="parameter" class="gt_row gt_left">GFR fraction</td>
+<td headers="value" class="gt_row gt_right">0.6401025724</td>
+<td headers="unit" class="gt_row gt_left">NA</td>
+<td headers="data_source" class="gt_row gt_left">Optimized</td>
+<td headers="source" class="gt_row gt_left">Parameter optimization</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="filtering-before-you-render">Filtering before you render<a class="anchor" aria-label="anchor" href="#filtering-before-you-render"></a>
+</h3>
 <p>The <code>$processes</code> tibble carries a <code>category</code>
 column that mirrors <code>process$category</code> on the R6 side.
-Filtering by category gives the same view as the per-category groups on
-a compound:</p>
+Filtering by category with <code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">dplyr::filter()</a></code> gives the same
+view as the per-category groups on a compound, and the filtered result
+flows straight into <code>gt</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">compound_dfs</span><span class="op">$</span><span class="va">processes</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">category</span> <span class="op">==</span> <span class="st">"metabolizing_enzymes"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">category</span> <span class="op">==</span> <span class="st">"metabolizing_enzymes"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">process_name</span>, <span class="va">molecule</span>, <span class="va">parameter</span>, <span class="va">value</span>, <span class="va">unit</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Metabolizing enzymes"</span><span class="op">)</span></span></code></pre></div>
+<div id="eexombwkke" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#eexombwkke table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#eexombwkke thead, #eexombwkke tbody, #eexombwkke tfoot, #eexombwkke tr, #eexombwkke td, #eexombwkke th {
+  border-style: none;
+}
+
+#eexombwkke p {
+  margin: 0;
+  padding: 0;
+}
+
+#eexombwkke .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#eexombwkke .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#eexombwkke .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#eexombwkke .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#eexombwkke .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#eexombwkke .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eexombwkke .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#eexombwkke .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#eexombwkke .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#eexombwkke .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#eexombwkke .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#eexombwkke .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#eexombwkke .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#eexombwkke .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#eexombwkke .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#eexombwkke .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#eexombwkke .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#eexombwkke .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#eexombwkke .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eexombwkke .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#eexombwkke .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#eexombwkke .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#eexombwkke .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eexombwkke .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#eexombwkke .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#eexombwkke .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eexombwkke .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eexombwkke .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#eexombwkke .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eexombwkke .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#eexombwkke .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eexombwkke .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#eexombwkke .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eexombwkke .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#eexombwkke .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eexombwkke .gt_left {
+  text-align: left;
+}
+
+#eexombwkke .gt_center {
+  text-align: center;
+}
+
+#eexombwkke .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#eexombwkke .gt_font_normal {
+  font-weight: normal;
+}
+
+#eexombwkke .gt_font_bold {
+  font-weight: bold;
+}
+
+#eexombwkke .gt_font_italic {
+  font-style: italic;
+}
+
+#eexombwkke .gt_super {
+  font-size: 65%;
+}
+
+#eexombwkke .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#eexombwkke .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#eexombwkke .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#eexombwkke .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#eexombwkke .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#eexombwkke .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#eexombwkke .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#eexombwkke .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#eexombwkke div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading">
+<td colspan="5" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Metabolizing enzymes</td>
+    </tr>
+<tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="process_name">process_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="molecule">molecule</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="parameter">parameter</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="value">value</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="unit">unit</th>
+    </tr>
+</thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="process_name" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="molecule" class="gt_row gt_left">CYP3A4</td>
+<td headers="parameter" class="gt_row gt_left">In vitro Vmax for liver microsomes</td>
+<td headers="value" class="gt_row gt_right">850</td>
+<td headers="unit" class="gt_row gt_left">pmol/min/mg mic. protein</td>
+</tr>
+<tr>
+<td headers="process_name" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="molecule" class="gt_row gt_left">CYP3A4</td>
+<td headers="parameter" class="gt_row gt_left">Km</td>
+<td headers="value" class="gt_row gt_right">4</td>
+<td headers="unit" class="gt_row gt_left">µmol/l</td>
+</tr>
+<tr>
+<td headers="process_name" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="molecule" class="gt_row gt_left">CYP3A4</td>
+<td headers="parameter" class="gt_row gt_left">kcat</td>
+<td headers="value" class="gt_row gt_right">8.7607941215</td>
+<td headers="unit" class="gt_row gt_left">1/min</td>
+</tr>
+<tr>
+<td headers="process_name" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="molecule" class="gt_row gt_left">UGT1A4</td>
+<td headers="parameter" class="gt_row gt_left">In vitro Vmax for liver microsomes</td>
+<td headers="value" class="gt_row gt_right">276</td>
+<td headers="unit" class="gt_row gt_left">pmol/min/mg mic. protein</td>
+</tr>
+<tr>
+<td headers="process_name" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="molecule" class="gt_row gt_left">UGT1A4</td>
+<td headers="parameter" class="gt_row gt_left">Content of CYP proteins in liver microsomes</td>
+<td headers="value" class="gt_row gt_right">58</td>
+<td headers="unit" class="gt_row gt_left">pmol/mg mic. protein</td>
+</tr>
+<tr>
+<td headers="process_name" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="molecule" class="gt_row gt_left">UGT1A4</td>
+<td headers="parameter" class="gt_row gt_left">Km</td>
+<td headers="value" class="gt_row gt_right">37.8</td>
+<td headers="unit" class="gt_row gt_left">µmol/l</td>
+</tr>
+<tr>
+<td headers="process_name" class="gt_row gt_left">MetabolizationLiverMicrosomes_MM</td>
+<td headers="molecule" class="gt_row gt_left">UGT1A4</td>
+<td headers="parameter" class="gt_row gt_left">kcat</td>
+<td headers="value" class="gt_row gt_right">3.5911771641</td>
+<td headers="unit" class="gt_row gt_left">1/min</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="individuals-three-related-tibbles">Individuals: three related tibbles<a class="anchor" aria-label="anchor" href="#individuals-three-related-tibbles"></a>
+<h2 id="individuals-several-related-tables">Individuals: several related tables<a class="anchor" aria-label="anchor" href="#individuals-several-related-tables"></a>
 </h2>
 <p><code>as_tibbles(snapshot, "individuals")</code> returns three
 tibbles joinable on <code>individual_id</code>:</p>
@@ -169,42 +1372,510 @@ pair, with value, unit, source, and value-origin metadata.</li>
 attached to each individual: one row per (individual, profile)
 pair.</li>
 </ul>
+<p>A focused selection of the demographic columns makes a compact
+subject table:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">individual_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"individuals"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "individuals"             "individuals_parameters" </span></span>
 <span><span class="co">#&gt; [3] "individuals_expressions"</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">individuals</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 18</span></span></span>
-<span><span class="co">#&gt;   individual_id         name  description   seed species population gender   age</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> European (P-gp modif… Euro… <span style="color: #BB0000;">NA</span>          1.72<span style="color: #949494;">e</span>7 Human   European_… MALE    30  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Korean (Yu 2004 stud… Kore… <span style="color: #BB0000;">NA</span>          5.30<span style="color: #949494;">e</span>7 Human   Asian_Tan… MALE    23.3</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 10 more variables: age_unit &lt;chr&gt;, gestational_age &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   gestational_age_unit &lt;chr&gt;, weight &lt;dbl&gt;, weight_unit &lt;chr&gt;, height &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   height_unit &lt;chr&gt;, disease_state &lt;chr&gt;, calculation_methods &lt;glue&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   disease_state_parameters &lt;chr&gt;</span></span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">individuals_parameters</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
-<span><span class="co">#&gt;   individual_id                   path  value unit  source description source_id</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> European (P-gp modified, CYP3A… Orga…     1 <span style="color: #BB0000;">NA</span>    Unkno… <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Korean (Yu 2004 study)          Orga…     1 <span style="color: #BB0000;">NA</span>    Unkno… <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">individuals_expressions</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
-<span><span class="co">#&gt;   individual_id                         profile                                 </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> European (P-gp modified, CYP3A4 36 h) CYP3A4|Human|European (P-gp modified, C…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> European (P-gp modified, CYP3A4 36 h) AADAC|Human|European (P-gp modified, CY…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> European (P-gp modified, CYP3A4 36 h) P-gp|Human|European (P-gp modified, CYP…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> European (P-gp modified, CYP3A4 36 h) OATP1B1|Human|European (P-gp modified, …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> European (P-gp modified, CYP3A4 36 h) ATP1A2|Human|European (P-gp modified, C…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> European (P-gp modified, CYP3A4 36 h) UGT1A4|Human|European (P-gp modified, C…</span></span></code></pre></div>
+<span><span class="va">individual_dfs</span><span class="op">$</span><span class="va">individuals</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">species</span>, <span class="va">population</span>, <span class="va">gender</span>, <span class="va">age</span>, <span class="va">age_unit</span>, <span class="va">weight</span>, <span class="va">weight_unit</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Individuals"</span><span class="op">)</span></span></code></pre></div>
+<div id="ulbfdpbcyv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ulbfdpbcyv table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ulbfdpbcyv thead, #ulbfdpbcyv tbody, #ulbfdpbcyv tfoot, #ulbfdpbcyv tr, #ulbfdpbcyv td, #ulbfdpbcyv th {
+  border-style: none;
+}
+
+#ulbfdpbcyv p {
+  margin: 0;
+  padding: 0;
+}
+
+#ulbfdpbcyv .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ulbfdpbcyv .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ulbfdpbcyv .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ulbfdpbcyv .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ulbfdpbcyv .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ulbfdpbcyv .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ulbfdpbcyv .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ulbfdpbcyv .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ulbfdpbcyv .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ulbfdpbcyv .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ulbfdpbcyv .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ulbfdpbcyv .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ulbfdpbcyv .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ulbfdpbcyv .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ulbfdpbcyv .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbfdpbcyv .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ulbfdpbcyv .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ulbfdpbcyv .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ulbfdpbcyv .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbfdpbcyv .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ulbfdpbcyv .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbfdpbcyv .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ulbfdpbcyv .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbfdpbcyv .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ulbfdpbcyv .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbfdpbcyv .gt_left {
+  text-align: left;
+}
+
+#ulbfdpbcyv .gt_center {
+  text-align: center;
+}
+
+#ulbfdpbcyv .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ulbfdpbcyv .gt_font_normal {
+  font-weight: normal;
+}
+
+#ulbfdpbcyv .gt_font_bold {
+  font-weight: bold;
+}
+
+#ulbfdpbcyv .gt_font_italic {
+  font-style: italic;
+}
+
+#ulbfdpbcyv .gt_super {
+  font-size: 65%;
+}
+
+#ulbfdpbcyv .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ulbfdpbcyv .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ulbfdpbcyv .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ulbfdpbcyv .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ulbfdpbcyv .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ulbfdpbcyv .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ulbfdpbcyv .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#ulbfdpbcyv .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ulbfdpbcyv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading">
+<td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Individuals</td>
+    </tr>
+<tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="name">name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="species">species</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="population">population</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="gender">gender</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="age">age</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="age_unit">age_unit</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="weight">weight</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="weight_unit">weight_unit</th>
+    </tr>
+</thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="name" class="gt_row gt_left">European (P-gp modified, CYP3A4 36 h)</td>
+<td headers="species" class="gt_row gt_left">Human</td>
+<td headers="population" class="gt_row gt_left">European_ICRP_2002</td>
+<td headers="gender" class="gt_row gt_left">MALE</td>
+<td headers="age" class="gt_row gt_right">30.0</td>
+<td headers="age_unit" class="gt_row gt_left">year(s)</td>
+<td headers="weight" class="gt_row gt_right">NA</td>
+<td headers="weight_unit" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="name" class="gt_row gt_left">Korean (Yu 2004 study)</td>
+<td headers="species" class="gt_row gt_left">Human</td>
+<td headers="population" class="gt_row gt_left">Asian_Tanaka_1996</td>
+<td headers="gender" class="gt_row gt_left">MALE</td>
+<td headers="age" class="gt_row gt_right">23.3</td>
+<td headers="age_unit" class="gt_row gt_left">year(s)</td>
+<td headers="weight" class="gt_row gt_right">66.9</td>
+<td headers="weight_unit" class="gt_row gt_left">kg</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section level2">
-<h2 id="formulations-formulations-and-formulations_parameters">Formulations: <code>$formulations</code> and
-<code>$formulations_parameters</code><a class="anchor" aria-label="anchor" href="#formulations-formulations-and-formulations_parameters"></a>
+<h2 id="formulations-a-header-split-from-its-parameters">Formulations: a header split from its parameters<a class="anchor" aria-label="anchor" href="#formulations-a-header-split-from-its-parameters"></a>
 </h2>
 <p><code>as_tibbles(snapshot, "formulations")</code> returns two tibbles
 joinable on <code>formulation_id</code>:</p>
@@ -221,125 +1892,1753 @@ pair, with value and unit.</li>
 <code class="sourceCode R"><span><span class="va">formulation_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"formulations"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">formulation_dfs</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "formulations"            "formulations_parameters"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">formulation_dfs</span><span class="op">$</span><span class="va">formulations</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span></span>
-<span><span class="co">#&gt;   formulation_id    name              formulation               formulation_type</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Oral solution     Oral solution     Formulation_Dissolved     Dissolved       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Tablet (Dormicum) Tablet (Dormicum) Formulation_Tablet_Weibu… Weibull</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">formulation_dfs</span><span class="op">$</span><span class="va">formulations_parameters</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 11</span></span></span>
-<span><span class="co">#&gt;   formulation_id    name   value unit  is_table_point x_value y_value table_name</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Tablet (Dormicum) Diss… 0.010<span style="text-decoration: underline;">7</span> min   FALSE               <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Tablet (Dormicum) Lag … 0      min   FALSE               <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Tablet (Dormicum) Diss… 4.38   <span style="color: #BB0000;">NA</span>    FALSE               <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Tablet (Dormicum) Use … 1      <span style="color: #BB0000;">NA</span>    FALSE               <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: source &lt;chr&gt;, description &lt;chr&gt;, source_id &lt;int&gt;</span></span></span></code></pre></div>
+<span></span>
+<span><span class="va">formulation_dfs</span><span class="op">$</span><span class="va">formulations</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Formulations"</span><span class="op">)</span></span></code></pre></div>
+<div id="kgufivjubq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kgufivjubq table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#kgufivjubq thead, #kgufivjubq tbody, #kgufivjubq tfoot, #kgufivjubq tr, #kgufivjubq td, #kgufivjubq th {
+  border-style: none;
+}
+
+#kgufivjubq p {
+  margin: 0;
+  padding: 0;
+}
+
+#kgufivjubq .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#kgufivjubq .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#kgufivjubq .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#kgufivjubq .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#kgufivjubq .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#kgufivjubq .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#kgufivjubq .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#kgufivjubq .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#kgufivjubq .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#kgufivjubq .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#kgufivjubq .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#kgufivjubq .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#kgufivjubq .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#kgufivjubq .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#kgufivjubq .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kgufivjubq .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#kgufivjubq .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#kgufivjubq .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#kgufivjubq .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kgufivjubq .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#kgufivjubq .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kgufivjubq .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#kgufivjubq .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kgufivjubq .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kgufivjubq .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kgufivjubq .gt_left {
+  text-align: left;
+}
+
+#kgufivjubq .gt_center {
+  text-align: center;
+}
+
+#kgufivjubq .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#kgufivjubq .gt_font_normal {
+  font-weight: normal;
+}
+
+#kgufivjubq .gt_font_bold {
+  font-weight: bold;
+}
+
+#kgufivjubq .gt_font_italic {
+  font-style: italic;
+}
+
+#kgufivjubq .gt_super {
+  font-size: 65%;
+}
+
+#kgufivjubq .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#kgufivjubq .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#kgufivjubq .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#kgufivjubq .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#kgufivjubq .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#kgufivjubq .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#kgufivjubq .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#kgufivjubq .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#kgufivjubq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading">
+<td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Formulations</td>
+    </tr>
+<tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="formulation_id">formulation_id</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="name">name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="formulation">formulation</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="formulation_type">formulation_type</th>
+    </tr>
+</thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="formulation_id" class="gt_row gt_left">Oral solution</td>
+<td headers="name" class="gt_row gt_left">Oral solution</td>
+<td headers="formulation" class="gt_row gt_left">Formulation_Dissolved</td>
+<td headers="formulation_type" class="gt_row gt_left">Dissolved</td>
+</tr>
+<tr>
+<td headers="formulation_id" class="gt_row gt_left">Tablet (Dormicum)</td>
+<td headers="name" class="gt_row gt_left">Tablet (Dormicum)</td>
+<td headers="formulation" class="gt_row gt_left">Formulation_Tablet_Weibull</td>
+<td headers="formulation_type" class="gt_row gt_left">Weibull</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="section level2">
-<h2 id="populations-populations-and-populations_parameters">Populations: <code>$populations</code> and
-<code>$populations_parameters</code><a class="anchor" aria-label="anchor" href="#populations-populations-and-populations_parameters"></a>
-</h2>
-<p><code>as_tibbles(snapshot, "populations")</code> returns two tibbles
-joinable on <code>population_id</code>:</p>
-<ul>
-<li>
-<code>$populations</code> has one row per <em>Population</em> with
-the sampling-recipe header: source population, individual name, sample
-size, proportion of females, seed, and the age, weight, height, BMI, and
-eGFR bound columns.</li>
-<li>
-<code>$populations_parameters</code> is the long-form view of the
-sampling distributions PK-Sim will draw from: one row per (population,
-parameter) pair, with <code>distribution_type</code>,
-<code>statistic</code>, value, and unit.</li>
-</ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">population_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"populations"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">population_dfs</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "populations"            "populations_parameters"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">population_dfs</span><span class="op">$</span><span class="va">populations</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 22</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 variables: population_id &lt;chr&gt;, name &lt;chr&gt;, seed &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   number_of_individuals &lt;int&gt;, proportion_of_females &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   source_population &lt;chr&gt;, individual_name &lt;chr&gt;, age_min &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   age_max &lt;dbl&gt;, age_unit &lt;chr&gt;, weight_min &lt;dbl&gt;, weight_max &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   weight_unit &lt;chr&gt;, height_min &lt;dbl&gt;, height_max &lt;dbl&gt;, height_unit &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   bmi_min &lt;dbl&gt;, bmi_max &lt;dbl&gt;, bmi_unit &lt;chr&gt;, egfr_min &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   egfr_max &lt;dbl&gt;, egfr_unit &lt;chr&gt;</span></span></span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="va">formulation_dfs</span><span class="op">$</span><span class="va">formulations_parameters</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">value</span>, <span class="va">unit</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Formulation release parameters"</span><span class="op">)</span></span></code></pre></div>
+<div id="txvafbsnay" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#txvafbsnay table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#txvafbsnay thead, #txvafbsnay tbody, #txvafbsnay tfoot, #txvafbsnay tr, #txvafbsnay td, #txvafbsnay th {
+  border-style: none;
+}
+
+#txvafbsnay p {
+  margin: 0;
+  padding: 0;
+}
+
+#txvafbsnay .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#txvafbsnay .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#txvafbsnay .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#txvafbsnay .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#txvafbsnay .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#txvafbsnay .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#txvafbsnay .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#txvafbsnay .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#txvafbsnay .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#txvafbsnay .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#txvafbsnay .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#txvafbsnay .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#txvafbsnay .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#txvafbsnay .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#txvafbsnay .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#txvafbsnay .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#txvafbsnay .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#txvafbsnay .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#txvafbsnay .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#txvafbsnay .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#txvafbsnay .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#txvafbsnay .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#txvafbsnay .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#txvafbsnay .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#txvafbsnay .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#txvafbsnay .gt_left {
+  text-align: left;
+}
+
+#txvafbsnay .gt_center {
+  text-align: center;
+}
+
+#txvafbsnay .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#txvafbsnay .gt_font_normal {
+  font-weight: normal;
+}
+
+#txvafbsnay .gt_font_bold {
+  font-weight: bold;
+}
+
+#txvafbsnay .gt_font_italic {
+  font-style: italic;
+}
+
+#txvafbsnay .gt_super {
+  font-size: 65%;
+}
+
+#txvafbsnay .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#txvafbsnay .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#txvafbsnay .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#txvafbsnay .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#txvafbsnay .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#txvafbsnay .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#txvafbsnay .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#txvafbsnay .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#txvafbsnay div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading">
+<td colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Formulation release parameters</td>
+    </tr>
+<tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="name">name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="value">value</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="unit">unit</th>
+    </tr>
+</thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="name" class="gt_row gt_left">Dissolution time (50% dissolved)</td>
+<td headers="value" class="gt_row gt_right">0.01074815</td>
+<td headers="unit" class="gt_row gt_left">min</td>
+</tr>
+<tr>
+<td headers="name" class="gt_row gt_left">Lag time</td>
+<td headers="value" class="gt_row gt_right">0.00000000</td>
+<td headers="unit" class="gt_row gt_left">min</td>
+</tr>
+<tr>
+<td headers="name" class="gt_row gt_left">Dissolution shape</td>
+<td headers="value" class="gt_row gt_right">4.38029432</td>
+<td headers="unit" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="name" class="gt_row gt_left">Use as suspension</td>
+<td headers="value" class="gt_row gt_right">1.00000000</td>
+<td headers="unit" class="gt_row gt_left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section level2">
-<h2 id="protocols-schema-and-schemaitem-rows">Protocols: <code>Schema</code> and <code>SchemaItem</code> rows<a class="anchor" aria-label="anchor" href="#protocols-schema-and-schemaitem-rows"></a>
+<h2 id="protocols-a-single-flat-table">Protocols: a single flat table<a class="anchor" aria-label="anchor" href="#protocols-a-single-flat-table"></a>
 </h2>
 <p><code>as_tibbles(snapshot, "protocols")</code> returns a single
-13-column tibble whether the snapshot has any protocols or not.
-<em>Advanced Protocols</em> contribute one row per <em>Schema</em> item,
-with the protocol-level, schema-level, and item-level parameters joined
-by name.</p>
+tibble whether the snapshot has any protocols or not. <em>Advanced
+Protocols</em> contribute one row per <em>Schema</em> item, with the
+protocol-level, schema-level, and item-level parameters joined by name.
+This is the simplest shape: one kind, one table, ready to render.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">protocols_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"protocols"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">protocols_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 13</span></span></span>
-<span><span class="co">#&gt;   protocol_name   schema_name schema_item_name type  formulation dosing_interval</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> iv 0.075 mg/kg… <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>               Intr… <span style="color: #BB0000;">NA</span>          Once           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> iv 0.05 mg/kg … <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>               Intr… <span style="color: #BB0000;">NA</span>          Once           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> iv 1 mg (5 min) <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>               Intr… <span style="color: #BB0000;">NA</span>          Once           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> iv 0.001 mg (5… <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>               Intr… <span style="color: #BB0000;">NA</span>          Once           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> iv 1 mg (bolus) <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>               Intr… <span style="color: #BB0000;">NA</span>          Once           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> iv 2 mg (2 min) <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>               Intr… <span style="color: #BB0000;">NA</span>          Once           </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 7 more variables: start_time &lt;dbl&gt;, start_time_unit &lt;chr&gt;, dose &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   dose_unit &lt;chr&gt;, rep_number &lt;dbl&gt;, rep_time &lt;chr&gt;, rep_time_unit &lt;chr&gt;</span></span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"protocols"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">protocol_name</span>, <span class="va">dose</span>, <span class="va">dose_unit</span>, <span class="va">start_time</span>, <span class="va">start_time_unit</span>, <span class="va">dosing_interval</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://gt.rstudio.com/reference/tab_header.html" class="external-link">tab_header</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Dosing protocols"</span><span class="op">)</span></span></code></pre></div>
+<div id="orehalspkz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#orehalspkz table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#orehalspkz thead, #orehalspkz tbody, #orehalspkz tfoot, #orehalspkz tr, #orehalspkz td, #orehalspkz th {
+  border-style: none;
+}
+
+#orehalspkz p {
+  margin: 0;
+  padding: 0;
+}
+
+#orehalspkz .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#orehalspkz .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#orehalspkz .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#orehalspkz .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#orehalspkz .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#orehalspkz .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#orehalspkz .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#orehalspkz .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#orehalspkz .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#orehalspkz .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#orehalspkz .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#orehalspkz .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#orehalspkz .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#orehalspkz .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#orehalspkz .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#orehalspkz .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#orehalspkz .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#orehalspkz .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#orehalspkz .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#orehalspkz .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#orehalspkz .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#orehalspkz .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#orehalspkz .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#orehalspkz .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#orehalspkz .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#orehalspkz .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#orehalspkz .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#orehalspkz .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#orehalspkz .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#orehalspkz .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#orehalspkz .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#orehalspkz .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#orehalspkz .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#orehalspkz .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#orehalspkz .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#orehalspkz .gt_left {
+  text-align: left;
+}
+
+#orehalspkz .gt_center {
+  text-align: center;
+}
+
+#orehalspkz .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#orehalspkz .gt_font_normal {
+  font-weight: normal;
+}
+
+#orehalspkz .gt_font_bold {
+  font-weight: bold;
+}
+
+#orehalspkz .gt_font_italic {
+  font-style: italic;
+}
+
+#orehalspkz .gt_super {
+  font-size: 65%;
+}
+
+#orehalspkz .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#orehalspkz .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#orehalspkz .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#orehalspkz .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#orehalspkz .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#orehalspkz .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#orehalspkz .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#orehalspkz .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#orehalspkz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading">
+<td colspan="6" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Dosing protocols</td>
+    </tr>
+<tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="protocol_name">protocol_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="dose">dose</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="dose_unit">dose_unit</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="start_time">start_time</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="start_time_unit">start_time_unit</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="dosing_interval">dosing_interval</th>
+    </tr>
+</thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 0.075 mg/kg (1 min)</td>
+<td headers="dose" class="gt_row gt_right">0.075</td>
+<td headers="dose_unit" class="gt_row gt_left">mg/kg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 0.05 mg/kg (30 min)</td>
+<td headers="dose" class="gt_row gt_right">0.050</td>
+<td headers="dose_unit" class="gt_row gt_left">mg/kg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 1 mg (5 min)</td>
+<td headers="dose" class="gt_row gt_right">1.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 0.001 mg (5 min)</td>
+<td headers="dose" class="gt_row gt_right">0.001</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 1 mg (bolus)</td>
+<td headers="dose" class="gt_row gt_right">1.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 2 mg (2 min)</td>
+<td headers="dose" class="gt_row gt_right">2.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 2 mg (bolus)</td>
+<td headers="dose" class="gt_row gt_right">2.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 0.05 mg/kg (2 min)</td>
+<td headers="dose" class="gt_row gt_right">0.050</td>
+<td headers="dose_unit" class="gt_row gt_left">mg/kg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 5 mg (30 sec)</td>
+<td headers="dose" class="gt_row gt_right">5.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 5 mg (bolus)</td>
+<td headers="dose" class="gt_row gt_right">5.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 0.05 mg/kg (bolus)</td>
+<td headers="dose" class="gt_row gt_right">0.050</td>
+<td headers="dose_unit" class="gt_row gt_left">mg/kg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 0.15 mg/kg (bolus)</td>
+<td headers="dose" class="gt_row gt_right">0.150</td>
+<td headers="dose_unit" class="gt_row gt_left">mg/kg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 1 mg</td>
+<td headers="dose" class="gt_row gt_right">1.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 5 mg</td>
+<td headers="dose" class="gt_row gt_right">5.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 7.5 mg</td>
+<td headers="dose" class="gt_row gt_right">7.500</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 0.075 mg</td>
+<td headers="dose" class="gt_row gt_right">0.075</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 3 mg</td>
+<td headers="dose" class="gt_row gt_right">3.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 4 mg</td>
+<td headers="dose" class="gt_row gt_right">4.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 6 mg</td>
+<td headers="dose" class="gt_row gt_right">6.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 8 mg</td>
+<td headers="dose" class="gt_row gt_right">8.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 15 mg</td>
+<td headers="dose" class="gt_row gt_right">15.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 2 mg</td>
+<td headers="dose" class="gt_row gt_right">2.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 0.075 mg/kg</td>
+<td headers="dose" class="gt_row gt_right">0.075</td>
+<td headers="dose_unit" class="gt_row gt_left">mg/kg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 10 mg</td>
+<td headers="dose" class="gt_row gt_right">10.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 20 mg</td>
+<td headers="dose" class="gt_row gt_right">20.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 40 mg</td>
+<td headers="dose" class="gt_row gt_right">40.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 0.003 mg</td>
+<td headers="dose" class="gt_row gt_right">0.003</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 15 mg (1 h delayed)</td>
+<td headers="dose" class="gt_row gt_right">15.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">1</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 2.5 mg</td>
+<td headers="dose" class="gt_row gt_right">2.500</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 0.01 mg</td>
+<td headers="dose" class="gt_row gt_right">0.010</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">po 3.5 mg</td>
+<td headers="dose" class="gt_row gt_right">3.500</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">Mikus 2017</td>
+<td headers="dose" class="gt_row gt_right">2.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">6</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">Mikus 2017</td>
+<td headers="dose" class="gt_row gt_right">4.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+<tr>
+<td headers="protocol_name" class="gt_row gt_left">iv 1 mg (2 min)</td>
+<td headers="dose" class="gt_row gt_right">1.000</td>
+<td headers="dose_unit" class="gt_row gt_left">mg</td>
+<td headers="start_time" class="gt_row gt_right">0</td>
+<td headers="start_time_unit" class="gt_row gt_left">h</td>
+<td headers="dosing_interval" class="gt_row gt_left">Once</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section level2">
-<h2 id="observer-sets-observer_sets-and-observers">Observer sets: <code>$observer_sets</code> and
-<code>$observers</code><a class="anchor" aria-label="anchor" href="#observer-sets-observer_sets-and-observers"></a>
+<h2 id="every-building-block-exports-the-same-way">Every building block exports the same way<a class="anchor" aria-label="anchor" href="#every-building-block-exports-the-same-way"></a>
 </h2>
-<p><code>as_tibbles(snapshot, "observer_sets")</code> returns a list of
-two tibbles joinable on <code>observer_set_id</code> (or
-<code>observer_set_name</code>):</p>
-<ul>
-<li>
-<code>$observer_sets</code> has one row per <em>ObserverSet</em>
-with its name and the count of observers it contains.</li>
-<li>
-<code>$observers</code> has one row per <em>Observer</em> with its
-name, type, dimension, <code>formula_expression</code>,
-<code>formula_dimension</code>, <code>formula_references</code> (the
-underlying <code>ExplicitFormula</code> references collapsed to
-<code>"alias=path"</code> pairs joined with <code>|</code>), and
-<code>container_tags</code> (the <code>|</code>-joined <code>Tag</code>
-values from the underlying <code>ContainerCriteria</code>).</li>
-</ul>
+<p>The four kinds above cover every shape <code><a href="../reference/as_tibbles.html">as_tibbles()</a></code>
+produces. The same call works for <code>"events"</code>,
+<code>"expression_profiles"</code>, <code>"populations"</code>, and
+<code>"observer_sets"</code>: each returns either a single flat tibble
+or a header split from a long-form parameter table, ready for the same
+<code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code> + <code><a href="https://gt.rstudio.com/reference/gt.html" class="external-link">gt()</a></code> recipe. Kinds a snapshot does
+not define come back as empty (0-row) tibbles with the same columns, so
+reporting code never has to special-case a missing building block.</p>
+<p>Passing no <code>kind</code> converts everything at once, keyed by
+kind name, which is handy when assembling a multi-table report:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">observer_dfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"observer_sets"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">observer_dfs</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">observer_dfs</span><span class="op">$</span><span class="va">observers</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="observed-data">Observed data<a class="anchor" aria-label="anchor" href="#observed-data"></a>
-</h2>
-<p><code>as_tibbles(snapshot, "observed_data")</code> flattens every
-observed-data series into a long-form tibble ready for plotting.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">obs_data_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span>, <span class="st">"observed_data"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">obs_data_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 30</span></span></span>
-<span><span class="co">#&gt;   name            xValues yValues yErrorValues xDimension xUnit yDimension yUnit</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Ahonen 1995 - …     0.5 0.015<span style="text-decoration: underline;">6</span>        0.023<span style="text-decoration: underline;">1</span> Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Ahonen 1995 - …     1   0.028<span style="text-decoration: underline;">0</span>        0.016<span style="text-decoration: underline;">0</span> Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Ahonen 1995 - …     1.5 0.023<span style="text-decoration: underline;">5</span>        0.010<span style="text-decoration: underline;">8</span> Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Ahonen 1995 - …     2   0.018<span style="text-decoration: underline;">5</span>      <span style="color: #BB0000;">NaN</span>      Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Ahonen 1995 - …     3   0.011<span style="text-decoration: underline;">8</span>      <span style="color: #BB0000;">NaN</span>      Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Ahonen 1995 - …     4   0.008<span style="text-decoration: underline;">48</span>     <span style="color: #BB0000;">NaN</span>      Time       h     Concentra… mg/l </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 more variables: yErrorType &lt;chr&gt;, yErrorUnit &lt;chr&gt;, molWeight &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   lloq &lt;dbl&gt;, `DB Version` &lt;chr&gt;, ID &lt;chr&gt;, `Study Id` &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Reference &lt;chr&gt;, Source &lt;chr&gt;, Grouping &lt;chr&gt;, `Data type` &lt;chr&gt;, N &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Molecule &lt;chr&gt;, Species &lt;chr&gt;, Organ &lt;chr&gt;, Compartment &lt;chr&gt;, Route &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Dose &lt;chr&gt;, `Times of Administration [h]` &lt;chr&gt;, Formulation &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   `Food state` &lt;chr&gt;, Comment &lt;chr&gt;</span></span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">all_kinds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_tibbles.html">as_tibbles</a></span><span class="op">(</span><span class="va">snapshot</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">all_kinds</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "compounds"           "individuals"         "formulations"       </span></span>
+<span><span class="co">#&gt; [4] "populations"         "events"              "expression_profiles"</span></span>
+<span><span class="co">#&gt; [7] "protocols"           "observer_sets"       "observed_data"</span></span></code></pre></div>
+<p><code>"observed_data"</code> is also available and flattens every
+observed-data series into a long-form tibble, though it is measurement
+data rather than a configuration input.</p>
 </div>
 <div class="section level2">
 <h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
@@ -358,7 +3657,7 @@ observed-data series into a long-form tibble ready for plotting.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
 <div class="pkgdown-footer-right">

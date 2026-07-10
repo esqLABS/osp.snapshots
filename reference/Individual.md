@@ -12,7 +12,8 @@ display a summary of its information.
 
 - `name`:
 
-  The name of the individual
+  The name of the individual. Writable: must be a non-empty scalar
+  string.
 
 - `seed`:
 
@@ -39,7 +40,11 @@ display a summary of its information.
 
 - `age`:
 
-  The age value of the individual
+  The age value of the individual. Writable: assign an
+  [`age()`](https://esqlabs.github.io/osp.snapshots/reference/age.md)
+  object; see
+  [OriginData](https://esqlabs.github.io/osp.snapshots/reference/OriginData.md)'s
+  `age` field for the full contract (a bare numeric scalar is rejected).
 
 - `age_unit`:
 
@@ -47,7 +52,12 @@ display a summary of its information.
 
 - `weight`:
 
-  The weight value of the individual
+  The weight value of the individual. Writable: assign a
+  [`weight()`](https://esqlabs.github.io/osp.snapshots/reference/weight.md)
+  object; see
+  [OriginData](https://esqlabs.github.io/osp.snapshots/reference/OriginData.md)'s
+  `weight` field for the full contract (a bare numeric scalar is
+  rejected).
 
 - `weight_unit`:
 
@@ -55,7 +65,12 @@ display a summary of its information.
 
 - `height`:
 
-  The height value of the individual
+  The height value of the individual. Writable: assign a
+  [`height()`](https://esqlabs.github.io/osp.snapshots/reference/height.md)
+  object; see
+  [OriginData](https://esqlabs.github.io/osp.snapshots/reference/OriginData.md)'s
+  `height` field for the full contract (a bare numeric scalar is
+  rejected).
 
 - `height_unit`:
 
@@ -63,7 +78,12 @@ display a summary of its information.
 
 - `gestational_age`:
 
-  The gestational age value of the individual
+  The gestational age value of the individual. Writable: assign a
+  [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/reference/gestational_age.md)
+  object; see
+  [OriginData](https://esqlabs.github.io/osp.snapshots/reference/OriginData.md)'s
+  `gestational_age` field for the full contract (a bare numeric scalar
+  is rejected).
 
 - `gestational_age_unit`:
 
@@ -79,7 +99,8 @@ display a summary of its information.
 
 - `parameters`:
 
-  The list of parameter objects with a custom print method
+  The list of parameter objects with a custom print method. Writable:
+  must be a list, or `NULL` to clear.
 
 - `calculation_methods`:
 

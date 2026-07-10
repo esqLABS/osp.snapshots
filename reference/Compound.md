@@ -27,15 +27,17 @@ by
 
 - `name`:
 
-  The name of the compound
+  The name of the compound. Writable: must be a non-empty scalar string.
 
 - `is_small_molecule`:
 
-  Whether the compound is a small molecule
+  Whether the compound is a small molecule. Writable: a single logical
+  value, or `NULL` to leave it unset (PK-Sim then defaults to `TRUE`).
 
 - `plasma_protein_binding_partner`:
 
-  The plasma protein binding partner of the compound
+  The plasma protein binding partner of the compound. Writable: one of
+  `"Unknown"`, `"Albumin"`, `"Glycoprotein"`, or `NULL` to clear.
 
 - `molecular_weight`:
 
@@ -47,47 +49,65 @@ by
 
 - `lipophilicity`:
 
-  The lipophilicity data of the compound. Writable: assign a numeric
-  scalar to create a single default `Lipophilicity` alternative
-  (parameter `"Lipophilicity"`, unit `"Log Units"`), a raw alternative
-  list to set the array verbatim (the escape hatch for multiple, named,
-  or species-specific alternatives), or `NULL` to clear the property.
+  The lipophilicity data of the compound. Writable: assign a
+  [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/reference/lipophilicity.md)
+  object, a list of such objects to define several named alternatives
+  (mark exactly one with `default = TRUE` to designate the group
+  default; when none is marked, the first element is the default), a raw
+  alternative list to set the array verbatim (the escape hatch for
+  species-specific alternatives), or `NULL` to clear the property. A
+  bare numeric scalar is rejected; use
+  [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/reference/lipophilicity.md)
+  instead.
 
 - `fraction_unbound`:
 
-  The fraction unbound data of the compound. Writable: assign a numeric
-  scalar to create a single default `FractionUnbound` alternative
-  (parameter `"Fraction unbound (plasma, reference value)"`, no unit), a
-  raw alternative list to set the array verbatim, or `NULL` to clear the
-  property.
+  The fraction unbound data of the compound. Writable: assign a
+  [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/reference/fraction_unbound.md)
+  object, a list of such objects to define several named alternatives
+  (mark exactly one with `default = TRUE` to designate the group
+  default; when none is marked, the first element is the default), a raw
+  alternative list to set the array verbatim, or `NULL` to clear the
+  property. A bare numeric scalar is rejected; use
+  [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/reference/fraction_unbound.md)
+  instead.
 
 - `solubility`:
 
-  The solubility data of the compound. Writable: assign a numeric scalar
-  to create a single default `Solubility` alternative (parameter
-  `"Solubility at reference pH"`, unit `"mg/l"`), a raw alternative list
-  to set the array verbatim, or `NULL` to clear the property. The scalar
-  form cannot express reference pH, gain per charge, or table
-  solubility; set those by assigning a raw alternative list or by using
-  [`create_compound()`](https://esqlabs.github.io/osp.snapshots/reference/create_compound.md)
-  with its `reference_pH`, `solubility_gain_per_charge`, or
-  `solubility_table` arguments.
+  The solubility data of the compound. Writable: assign a
+  [`solubility()`](https://esqlabs.github.io/osp.snapshots/reference/solubility.md)
+  object to express reference pH, gain per charge, or a pH/value table,
+  a list of such objects to define several named alternatives (mark
+  exactly one with `default = TRUE` to designate the group default; when
+  none is marked, the first element is the default), a raw alternative
+  list to set the array verbatim, or `NULL` to clear the property. A
+  bare numeric scalar is rejected; use
+  [`solubility()`](https://esqlabs.github.io/osp.snapshots/reference/solubility.md)
+  instead.
 
 - `intestinal_permeability`:
 
-  The intestinal permeability data of the compound. Writable: assign a
-  numeric scalar to create a single default `IntestinalPermeability`
-  alternative (parameter
-  `"Specific intestinal permeability (transcellular)"`, unit
-  `"cm/min"`), a raw alternative list to set the array verbatim, or
-  `NULL` to clear the property.
+  The intestinal permeability data of the compound. Writable: assign an
+  [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/reference/intestinal_permeability.md)
+  object, a list of such objects to define several named alternatives
+  (mark exactly one with `default = TRUE` to designate the group
+  default; when none is marked, the first element is the default), a raw
+  alternative list to set the array verbatim, or `NULL` to clear the
+  property. A bare numeric scalar is rejected; use
+  [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/reference/intestinal_permeability.md)
+  instead.
 
 - `permeability`:
 
-  The permeability data of the compound. Writable: assign a numeric
-  scalar to create a single default `Permeability` alternative
-  (parameter `"Permeability"`, unit `"cm/min"`), a raw alternative list
-  to set the array verbatim, or `NULL` to clear the property.
+  The permeability data of the compound. Writable: assign a
+  [`permeability()`](https://esqlabs.github.io/osp.snapshots/reference/permeability.md)
+  object, a list of such objects to define several named alternatives
+  (mark exactly one with `default = TRUE` to designate the group
+  default; when none is marked, the first element is the default), a raw
+  alternative list to set the array verbatim, or `NULL` to clear the
+  property. A bare numeric scalar is rejected; use
+  [`permeability()`](https://esqlabs.github.io/osp.snapshots/reference/permeability.md)
+  instead.
 
 - `pka_types`:
 

@@ -19,12 +19,7 @@ create_observed_data(
   name,
   time,
   values,
-  time_unit = "h",
-  value_unit = NULL,
-  value_dimension = NULL,
   error = NULL,
-  error_type = NULL,
-  error_unit = NULL,
   molecular_weight = NULL,
   lloq = NULL,
   metadata = NULL
@@ -39,47 +34,27 @@ create_observed_data(
 
 - time:
 
-  Numeric vector. Time grid x-values (required).
+  A
+  [`time()`](https://esqlabs.github.io/osp.snapshots/reference/time.md)
+  object giving the time grid x-values and their unit (required).
 
 - values:
 
-  Numeric vector. Measurement y-values, same length as `time`
-  (required).
-
-- time_unit:
-
-  Character. Unit for `time` (for example `"h"`, `"min"`, `"day(s)"`).
-  Validated against `ospsuite::ospUnits$Time`. Defaults to `"h"`.
-
-- value_unit:
-
-  Character. Unit for `values` (for example `"mg/l"`). When supplied
-  alongside `value_dimension`, the unit is validated against the
-  dimension via
-  [`validate_unit()`](https://esqlabs.github.io/osp.snapshots/reference/validate_unit.md).
-
-- value_dimension:
-
-  Character. Dimension for `values` (for example
-  `"Concentration (mass)"`). Required (no default): pass one of the
-  names of
-  [`ospsuite::ospDimensions`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/ospDimensions.html).
-  Previously defaulted silently to `"Concentration (mass)"`, which was
-  wrong for non-concentration data.
+  A
+  [`values()`](https://esqlabs.github.io/osp.snapshots/reference/values.md)
+  object giving the measurement y-values, their dimension, and an
+  optional unit (required), same length as `time`. The dimension is
+  supplied to
+  [`values()`](https://esqlabs.github.io/osp.snapshots/reference/values.md)
+  and is required there.
 
 - error:
 
-  Numeric vector. Optional error y-values, same length as `values`.
-
-- error_type:
-
-  Character. Auxiliary type for `error`, typically one of
-  `"ArithmeticStdDev"`, `"GeometricStdDev"`, or `"ArithmeticStdErr"`.
-  Defaults to `"ArithmeticStdDev"` when `error` is provided.
-
-- error_unit:
-
-  Character. Unit for `error`. Defaults to `value_unit`.
+  A
+  [`error()`](https://esqlabs.github.io/osp.snapshots/reference/error.md)
+  object giving the optional error y-values, an optional unit
+  (defaulting to the values unit), and the auxiliary type. Same length
+  as the values series. `NULL` for no error series.
 
 - molecular_weight:
 
@@ -100,26 +75,32 @@ An
 [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
 object.
 
+## See also
+
+[`time()`](https://esqlabs.github.io/osp.snapshots/reference/time.md),
+[`values()`](https://esqlabs.github.io/osp.snapshots/reference/values.md),
+[`error()`](https://esqlabs.github.io/osp.snapshots/reference/error.md)
+for the series value-object helpers.
+
 ## Examples
 
 ``` r
 # Create a minimal observed data set
 obs <- create_observed_data(
   name = "Subject 001",
-  time = c(0, 1, 2, 4, 8),
-  values = c(0, 12, 18, 11, 5),
-  value_dimension = "Concentration (mass)"
+  time = time(c(0, 1, 2, 4, 8)),
+  values = values(c(0, 12, 18, 11, 5), dimension = "Concentration (mass)")
 )
 
 # Create observed data with units and error
 obs <- create_observed_data(
   name = "Subject 001",
-  time = c(0, 1, 2, 4, 8),
-  values = c(0, 12, 18, 11, 5),
-  time_unit = "h",
-  value_unit = "mg/l",
-  value_dimension = "Concentration (mass)",
-  error = c(0, 1.2, 1.5, 1.1, 0.6),
-  error_type = "ArithmeticStdDev"
+  time = time(c(0, 1, 2, 4, 8), unit = "h"),
+  values = values(
+    c(0, 12, 18, 11, 5),
+    unit = "mg/l",
+    dimension = "Concentration (mass)"
+  ),
+  error = error(c(0, 1.2, 1.5, 1.1, 0.6), type = "ArithmeticStdDev")
 )
 ```

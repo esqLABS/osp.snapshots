@@ -58,9 +58,9 @@ patient <- create_individual(
   species = "Human",
   population = "European_ICRP_2002",
   gender = "FEMALE",
-  age = 35,
-  weight = 65,
-  height = 165
+  age = age(35),
+  weight = weight(65),
+  height = height(165)
 )
 
 patient
@@ -77,8 +77,14 @@ patient
 #> • Weight: 65 kg
 ```
 
-Extra demographics (e.g. `gestational_age`) are accepted as additional
-named arguments:
+Each demographic field takes a value-object helper
+([`age()`](https://esqlabs.github.io/osp.snapshots/reference/age.md),
+[`weight()`](https://esqlabs.github.io/osp.snapshots/reference/weight.md),
+[`height()`](https://esqlabs.github.io/osp.snapshots/reference/height.md),
+[`gestational_age()`](https://esqlabs.github.io/osp.snapshots/reference/gestational_age.md))
+that carries the value and its unit; the helper owns the default unit
+and validates a supplied unit. Extra demographics
+(e.g. `gestational_age`) are accepted the same way:
 
 ``` r
 
@@ -87,10 +93,10 @@ pregnant_patient <- create_individual(
   species = "Human",
   population = "European_ICRP_2002",
   gender = "FEMALE",
-  age = 28,
-  weight = 70,
-  height = 168,
-  gestational_age = 20 # weeks
+  age = age(28),
+  weight = weight(70),
+  height = height(168),
+  gestational_age = gestational_age(20) # weeks
 )
 
 pregnant_patient
@@ -592,21 +598,29 @@ snapshot <- add_observer_set(snapshot, brain_set)
 [`create_observed_data()`](https://esqlabs.github.io/osp.snapshots/reference/create_observed_data.md)
 builds an
 [`ospsuite::DataSet`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/DataSet.html)
-from named arguments for the time grid, measurement values, units, and
-optional error series. `value_dimension` is required (it has no default)
-and gates the unit validation. `time_unit` defaults to `"h"`, and
-`error`, `error_type`, `error_unit`, `molecular_weight`, `lloq`, and
+from value-object helpers for the time grid
+([`time()`](https://esqlabs.github.io/osp.snapshots/reference/time.md)),
+the measurement values
+([`values()`](https://esqlabs.github.io/osp.snapshots/reference/values.md)),
+and an optional error series
+([`error()`](https://esqlabs.github.io/osp.snapshots/reference/error.md)).
+The values dimension is required and is supplied to
+[`values()`](https://esqlabs.github.io/osp.snapshots/reference/values.md);
+it gates the unit validation.
+[`time()`](https://esqlabs.github.io/osp.snapshots/reference/time.md)
+defaults its unit to `"h"`, and `error`, `molecular_weight`, `lloq`, and
 `metadata` are optional.
 
 ``` r
 
 obs <- create_observed_data(
   name = "Phase I - Subject 001",
-  time = c(0, 0.5, 1, 2, 4, 8, 12, 24),
-  values = c(0, 12.5, 18.2, 15.8, 11.2, 6.8, 3.4, 1.1),
-  time_unit = "h",
-  value_unit = "mg/l",
-  value_dimension = "Concentration (mass)"
+  time = time(c(0, 0.5, 1, 2, 4, 8, 12, 24), unit = "h"),
+  values = values(
+    c(0, 12.5, 18.2, 15.8, 11.2, 6.8, 3.4, 1.1),
+    unit = "mg/l",
+    dimension = "Concentration (mass)"
+  )
 )
 
 obs
@@ -689,9 +703,9 @@ were added.
 ``` r
 
 patients <- list(
-  create_individual("Patient_A", age = 25, gender = "MALE"),
-  create_individual("Patient_B", age = 45, gender = "FEMALE"),
-  create_individual("Patient_C", age = 65, gender = "MALE")
+  create_individual("Patient_A", age = age(25), gender = "MALE"),
+  create_individual("Patient_B", age = age(45), gender = "FEMALE"),
+  create_individual("Patient_C", age = age(65), gender = "MALE")
 )
 
 snapshot <- add_individual(snapshot, patients)
@@ -727,8 +741,8 @@ patient
 
 ``` r
 
-patient$age <- 30
-patient$weight <- 75
+patient$age <- age(30)
+patient$weight <- weight(75)
 patient$gender <- "FEMALE"
 patient
 #> 

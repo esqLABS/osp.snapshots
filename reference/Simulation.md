@@ -40,7 +40,8 @@ and `PopulationAnalyses`. They survive round-trip without modelling.
 
 - `allow_aging`:
 
-  Whether the simulation allows aging.
+  Whether the simulation allows aging. Writable: a single logical value,
+  or `NULL` to clear.
 
 - `individual`:
 

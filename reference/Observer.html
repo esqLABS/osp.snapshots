@@ -32,10 +32,9 @@ not itself a building block; it lives inside an ObserverSet."></head><body>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
-    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
-    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -74,7 +73,8 @@ JSON (read-only).</p></dd>
 
 
     <dt><code>name</code></dt>
-<dd><p>The name of the observer.</p></dd>
+<dd><p>The name of the observer. Writable: must be a non-empty
+scalar string.</p></dd>
 
 
     <dt><code>type</code></dt>
@@ -86,7 +86,10 @@ validated against these two; assigning <code>NULL</code> removes the type.</p></
 
     <dt><code>dimension</code></dt>
 <dd><p>The dimension of the observed quantity, resolved
-in PK-Sim via <code>IDimensionRepository.DimensionByName()</code>.</p></dd>
+in PK-Sim via <code>IDimensionRepository.DimensionByName()</code>. Writable:
+must be a non-empty scalar string, or <code>NULL</code> to clear. There is no
+closed set of dimension names to validate against, so a required
+string is the strongest check available.</p></dd>
 
 
     <dt><code>formula</code></dt>
@@ -282,7 +285,7 @@ carries no references.</p><div class="section">
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -36,7 +36,12 @@ under each entry of the `Individuals` array.
 
 - `age`:
 
-  Numeric age value of the individual (in `age_unit`).
+  Numeric age value of the individual (in `age_unit`). Writable: assign
+  an [`age()`](https://esqlabs.github.io/osp.snapshots/reference/age.md)
+  object to set the value and unit together. A bare numeric scalar is
+  rejected; use
+  [`age()`](https://esqlabs.github.io/osp.snapshots/reference/age.md)
+  instead.
 
 - `age_unit`:
 
@@ -45,7 +50,12 @@ under each entry of the `Individuals` array.
 - `gestational_age`:
 
   Numeric gestational age value (in `gestational_age_unit`), used for
-  preterm individuals.
+  preterm individuals. Writable: assign a
+  [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/reference/gestational_age.md)
+  object to set the value and unit together. A bare numeric scalar is
+  rejected; use
+  [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/reference/gestational_age.md)
+  instead.
 
 - `gestational_age_unit`:
 
@@ -53,7 +63,13 @@ under each entry of the `Individuals` array.
 
 - `weight`:
 
-  Numeric weight value of the individual (in `weight_unit`).
+  Numeric weight value of the individual (in `weight_unit`). Writable:
+  assign a
+  [`weight()`](https://esqlabs.github.io/osp.snapshots/reference/weight.md)
+  object to set the value and unit together. A bare numeric scalar is
+  rejected; use
+  [`weight()`](https://esqlabs.github.io/osp.snapshots/reference/weight.md)
+  instead.
 
 - `weight_unit`:
 
@@ -61,7 +77,13 @@ under each entry of the `Individuals` array.
 
 - `height`:
 
-  Numeric height value of the individual (in `height_unit`).
+  Numeric height value of the individual (in `height_unit`). Writable:
+  assign a
+  [`height()`](https://esqlabs.github.io/osp.snapshots/reference/height.md)
+  object to set the value and unit together. A bare numeric scalar is
+  rejected; use
+  [`height()`](https://esqlabs.github.io/osp.snapshots/reference/height.md)
+  instead.
 
 - `height_unit`:
 
@@ -76,12 +98,16 @@ under each entry of the `Individuals` array.
 
 - `disease_state`:
 
-  Optional disease state name (legacy snapshot shape).
+  Optional disease-state name. Read from the modern `Disease` object
+  (`Disease$Name`) or, for a loaded legacy snapshot, the legacy
+  `DiseaseState` key. Writing sets the modern `Disease$Name`.
 
 - `disease_state_parameters`:
 
-  Optional list of disease state parameters (legacy snapshot shape),
-  preserved as-is for round-trip fidelity.
+  Optional list of disease-state parameters. Read from the modern
+  `Disease` object (`Disease$Parameters`) or, for a loaded legacy
+  snapshot, the legacy `DiseaseStateParameters` key. Writing sets the
+  modern `Disease$Parameters`.
 
 ## Methods
 

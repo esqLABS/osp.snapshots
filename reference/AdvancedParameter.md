@@ -18,7 +18,9 @@ An R6 class that represents an advanced parameter in a population.
 
 - `distribution_type`:
 
-  The distribution type of the parameter
+  The distribution type of the parameter. Writable: one of `"Normal"`,
+  `"LogNormal"`, `"Uniform"`, `"Discrete"`, `"Unknown"`, or `NULL` to
+  clear.
 
 - `parameters`:
 

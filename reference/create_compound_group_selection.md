@@ -5,6 +5,11 @@ Build a
 entry, used inside a
 [CompoundProperties](https://esqlabs.github.io/osp.snapshots/reference/CompoundProperties.md)
 to record which alternative is selected within an alternative group.
+Internal machinery only: the friendly `alternatives` selection in
+[`add_simulation()`](https://esqlabs.github.io/osp.snapshots/reference/add_simulation.md)'s
+`compounds` argument is the user-facing way to select an alternative;
+this constructor and the `COMPOUND_*` group constants it takes are not
+part of the public API.
 
 ## Usage
 
@@ -29,21 +34,3 @@ create_compound_group_selection(group_name, alternative_name)
 A
 [CompoundGroupSelection](https://esqlabs.github.io/osp.snapshots/reference/CompoundGroupSelection.md)
 object.
-
-## Examples
-
-``` r
-create_compound_group_selection(
-  group_name = "COMPOUND_SOLUBILITY",
-  alternative_name = "Aqueous"
-)
-#> <CompoundGroupSelection>
-#>   Public:
-#>     alternative_name: active binding
-#>     clone: function (deep = FALSE) 
-#>     data: active binding
-#>     group_name: active binding
-#>     initialize: function (data) 
-#>   Private:
-#>     .data: list
-```

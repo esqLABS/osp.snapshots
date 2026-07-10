@@ -20,13 +20,14 @@ inside a `Protocols` building block.
 
 - `name`:
 
-  The name of the schema.
+  The name of the schema. Writable: must be a non-empty scalar string.
 
 - `parameters`:
 
   The schema-level
   [Parameter](https://esqlabs.github.io/osp.snapshots/reference/Parameter.md)
   objects (number of repetitions, time between repetitions, ...).
+  Writable: must be a list, or `NULL` to clear.
 
 - `items`:
 

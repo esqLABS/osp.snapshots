@@ -189,9 +189,9 @@ particle <- create_formulation(
   type = "Particle",
   parameters = list(
     thickness = 25,
-    thickness_unit = "\\u00b5m",
+    thickness_unit = "µm",
     radius = 5,
-    radius_unit = "\\u00b5m"
+    radius_unit = "µm"
   )
 )
 #> No distribution_type provided, using default of mono

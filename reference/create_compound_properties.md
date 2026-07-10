@@ -7,7 +7,12 @@ entry, used inside a
 to configure a
 [Compound](https://esqlabs.github.io/osp.snapshots/reference/Compound.md)
 building block: which calculation methods to apply, which alternatives,
-processes, and protocol to use.
+processes, and protocol to use. Internal machinery only:
+[`add_simulation()`](https://esqlabs.github.io/osp.snapshots/reference/add_simulation.md)'s
+inline `compounds` argument (a friendly config list, with `alternatives`
+selected by property name and label) is the user-facing way to configure
+a compound for a simulation; this constructor is not part of the public
+API.
 
 ## Usage
 
@@ -55,39 +60,3 @@ create_compound_properties(
 A
 [CompoundProperties](https://esqlabs.github.io/osp.snapshots/reference/CompoundProperties.md)
 object.
-
-## Examples
-
-``` r
-create_compound_properties(
-  name = "Rifampicin",
-  calculation_methods = c(
-    "Cellular partition coefficient method - Rodgers and Rowland"
-  ),
-  processes = list(
-    create_compound_process_selection(systemic_process_type = "Hepatic")
-  ),
-  protocol = create_protocol_selection(
-    name = "Rifampicin Protocol",
-    formulations = list(
-      create_formulation_selection(name = "Oral solution", key = "Formulation")
-    )
-  )
-)
-#> <CompoundProperties>
-#>   Public:
-#>     alternatives: active binding
-#>     calculation_methods: active binding
-#>     clone: function (deep = FALSE) 
-#>     data: active binding
-#>     initialize: function (data) 
-#>     name: active binding
-#>     processes: active binding
-#>     protocol: active binding
-#>   Private:
-#>     .alternatives: list
-#>     .data: list
-#>     .processes: list
-#>     .protocol: ProtocolSelection, R6
-#>     deep_clone: function (name, value) 
-```

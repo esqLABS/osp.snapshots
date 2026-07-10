@@ -24,7 +24,7 @@ fields.
 
 - `name`:
 
-  The name of the protocol
+  The name of the protocol. Writable: must be a non-empty scalar string.
 
 - `is_advanced`:
 
@@ -32,19 +32,27 @@ fields.
 
 - `application_type`:
 
-  The application type (for simple protocols)
+  The application type (for simple protocols). Writable: must be one of
+  the canonical PK-Sim application types (see
+  [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/reference/create_protocol.md)'s
+  `application_type` argument), or `NULL` to clear.
 
 - `dosing_interval`:
 
-  The dosing interval (for simple protocols)
+  The dosing interval (for simple protocols). Writable: must be one of
+  the fixed PK-Sim dosing intervals (see
+  [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/reference/create_protocol.md)'s
+  `dosing_interval` argument), or `NULL` to clear.
 
 - `time_unit`:
 
-  The time unit for the protocol
+  The time unit for the protocol. Writable: must be a valid unit for
+  dimension `"Time"`, or `NULL` to clear.
 
 - `parameters`:
 
-  The parameters of the protocol (for simple protocols)
+  The parameters of the protocol (for simple protocols). Writable: must
+  be a list, or `NULL` to clear.
 
 - `schemas`:
 

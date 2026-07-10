@@ -187,7 +187,9 @@ Invisibly returns the object
 
 ### `Snapshot$add_individual()`
 
-Add one or more Individual objects to the snapshot.
+Add one or more Individual objects to the snapshot. References to
+expression profiles not yet in the snapshot trigger one informational
+warning per individual; the add proceeds either way.
 
 #### Usage
 
@@ -510,18 +512,145 @@ Invisibly returns the object
 
 ### `Snapshot$add_simulation()`
 
-Add one or more Simulation objects to the snapshot.
+Build a simulation from named arguments and attach it, or attach a
+pre-built simulation.
+
+The build mode is the entry point: with the snapshot in hand it resolves
+compound references and derives defaults (calculation methods,
+formulation key, alternatives) before attaching. Supply `name` plus
+exactly one of `individual` / `population` to build; each inline
+`compounds` entry is a config list
+(`list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)`).
+Alternatively supply a pre-built
+[Simulation](https://esqlabs.github.io/osp.snapshots/reference/Simulation.md)
+(or a list of them) through `simulation`. References to building blocks
+not yet in the snapshot trigger one informational warning per
+simulation; the add proceeds either way.
 
 #### Usage
 
-    Snapshot$add_simulation(simulation)
+    Snapshot$add_simulation(
+      simulation = NULL,
+      name = NULL,
+      model = "4Comp",
+      individual = NULL,
+      population = NULL,
+      compounds = NULL,
+      events = NULL,
+      observer_sets = NULL,
+      observed_data_names = NULL,
+      solver = NULL,
+      output_schema = NULL,
+      output_selections = NULL,
+      output_mappings = NULL,
+      parameters = NULL,
+      advanced_parameters = NULL,
+      description = NULL,
+      allow_aging = NULL
+    )
 
 #### Arguments
 
 - `simulation`:
 
-  A Simulation object created with create_simulation(), or a list of
-  such objects.
+  A pre-built
+  [Simulation](https://esqlabs.github.io/osp.snapshots/reference/Simulation.md)
+  object, or a list of such objects. Leave `NULL` to build a simulation
+  from the named arguments instead.
+
+- `name`:
+
+  Character. Simulation name (required in build mode).
+
+- `model`:
+
+  Character. PK-Sim model name (defaults to `"4Comp"`).
+
+- `individual`:
+
+  Character. Name of the individual building block. Mutually exclusive
+  with `population`.
+
+- `population`:
+
+  Character. Name of the population building block. Mutually exclusive
+  with `individual`.
+
+- `compounds`:
+
+  List of inline compound-config lists
+  (`list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =)`).
+  `alternatives` is a named character vector (or named list of
+  length-one strings) mapping a friendly property name (`lipophilicity`,
+  `fraction_unbound`, `solubility`, `intestinal_permeability`,
+  `permeability`) to the alternative label to select on that compound,
+  for example `alternatives = c(solubility = "FaSSIF")`; it overrides
+  the derived default for the named groups only, every other group is
+  still defaulted from the compound. `formulation` accepts a single
+  string (bound to the protocol's inferred first slot key, unchanged) or
+  a named character vector (or named list of length-one strings) mapping
+  application-slot key to formulation name for a multi-slot protocol,
+  for example
+  `formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")`.
+
+- `events`:
+
+  List of
+  [EventSelection](https://esqlabs.github.io/osp.snapshots/reference/EventSelection.md)
+  objects or raw lists.
+
+- `observer_sets`:
+
+  List of
+  [ObserverSetSelection](https://esqlabs.github.io/osp.snapshots/reference/ObserverSetSelection.md)
+  objects or raw lists.
+
+- `observed_data_names`:
+
+  Character vector of observed-data names.
+
+- `solver`:
+
+  A
+  [SolverSettings](https://esqlabs.github.io/osp.snapshots/reference/SolverSettings.md)
+  object or raw list. Defaults to PK-Sim defaults.
+
+- `output_schema`:
+
+  An
+  [OutputSchema](https://esqlabs.github.io/osp.snapshots/reference/OutputSchema.md)
+  object or raw list. Defaults to an empty schema.
+
+- `output_selections`:
+
+  Character vector of output quantity paths.
+
+- `output_mappings`:
+
+  List of
+  [OutputMapping](https://esqlabs.github.io/osp.snapshots/reference/OutputMapping.md)
+  objects or raw lists.
+
+- `parameters`:
+
+  List of
+  [LocalizedParameter](https://esqlabs.github.io/osp.snapshots/reference/LocalizedParameter.md)
+  objects (created with `create_parameter(path = ..., ...)`) or raw
+  parameter lists.
+
+- `advanced_parameters`:
+
+  List of
+  [AdvancedParameter](https://esqlabs.github.io/osp.snapshots/reference/AdvancedParameter.md)
+  objects or raw lists (population simulations only).
+
+- `description`:
+
+  Character. Free-text description of the simulation.
+
+- `allow_aging`:
+
+  Logical. Whether the simulation allows aging.
 
 #### Returns
 

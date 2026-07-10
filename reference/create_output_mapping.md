@@ -33,7 +33,7 @@ create_output_mapping(
 
 - scaling:
 
-  Character. Scaling used for the mapping (e.g. `"Linear"`, `"Log"`).
+  Character. Scaling used for the mapping: one of `"Linear"`, `"Log"`.
 
 - weight:
 

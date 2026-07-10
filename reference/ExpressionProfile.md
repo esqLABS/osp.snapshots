@@ -4,13 +4,11 @@ An R6 class that represents an expression profile in an OSP snapshot.
 This class provides methods to access different properties of an
 expression profile and display a summary of its information.
 
-## Public fields
+## Active bindings
 
 - `data`:
 
-  The raw data of the expression profile
-
-## Active bindings
+  The raw data of the expression profile (read-only).
 
 - `type`:
 

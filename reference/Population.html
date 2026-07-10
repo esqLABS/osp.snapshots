@@ -22,10 +22,9 @@ and display a summary of its information."></head><body>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
-    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
-    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -58,7 +57,8 @@ and display a summary of its information.</p>
 
 
     <dt><code>name</code></dt>
-<dd><p>The name of the population</p></dd>
+<dd><p>The name of the population. Writable: must be a
+non-empty scalar string.</p></dd>
 
 
     <dt><code>description</code></dt>
@@ -86,7 +86,8 @@ argument of <code><a href="create_population.html">create_population()</a></code
 
 
     <dt><code>number_of_individuals</code></dt>
-<dd><p>The number of individuals in the population</p></dd>
+<dd><p>The number of individuals in the
+population. Writable: must be a single positive whole number.</p></dd>
 
 
     <dt><code>proportion_of_females</code></dt>
@@ -94,24 +95,31 @@ argument of <code><a href="create_population.html">create_population()</a></code
 
 
     <dt><code>age_range</code></dt>
-<dd><p>The age range for the population</p></dd>
+<dd><p>The age range for the population. Writable: the
+<code>Range</code>'s <code>unit</code> must be a valid unit for dimension <code>"Age in years"</code>.</p></dd>
 
 
     <dt><code>weight_range</code></dt>
-<dd><p>The weight range for the population</p></dd>
+<dd><p>The weight range for the population. Writable:
+the <code>Range</code>'s <code>unit</code> must be a valid unit for dimension <code>"Mass"</code>.</p></dd>
 
 
     <dt><code>height_range</code></dt>
-<dd><p>The height range for the population</p></dd>
+<dd><p>The height range for the population. Writable:
+the <code>Range</code>'s <code>unit</code> must be a valid unit for dimension <code>"Length"</code>.</p></dd>
 
 
     <dt><code>bmi_range</code></dt>
-<dd><p>The BMI range for the population</p></dd>
+<dd><p>The BMI range for the population. Writable: when
+the <code>"BMI"</code> dimension resolves in the installed <code>ospsuite</code>, the
+<code>Range</code>'s <code>unit</code> must be a valid unit for it; otherwise the unit is
+left unvalidated (a documented, opportunistic limitation).</p></dd>
 
 
     <dt><code>gestational_age_range</code></dt>
 <dd><p>The gestational age range used for
-population generation</p></dd>
+population generation. Writable: the <code>Range</code>'s <code>unit</code> must be a
+valid unit for dimension <code>"Time"</code>.</p></dd>
 
 
     <dt><code>egfr_range</code></dt>
@@ -222,7 +230,7 @@ values.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
 <div class="pkgdown-footer-right">

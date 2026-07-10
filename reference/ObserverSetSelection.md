@@ -14,7 +14,8 @@ building block by name.
 
 - `name`:
 
-  The name of the observer-set building block.
+  The name of the observer-set building block. Writable: must be a
+  non-empty scalar string.
 
 ## Methods
 

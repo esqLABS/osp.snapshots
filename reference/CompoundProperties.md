@@ -6,6 +6,10 @@ An R6 class representing one entry in a
 simulation's calculation-method overrides, alternative selections,
 process selections, and optional
 [ProtocolSelection](https://esqlabs.github.io/osp.snapshots/reference/ProtocolSelection.md).
+Internal machinery only:
+[`add_simulation()`](https://esqlabs.github.io/osp.snapshots/reference/add_simulation.md)'s
+inline `compounds` argument is the user-facing way to configure a
+compound for a simulation; this class is not part of the public API.
 
 ## Active bindings
 
@@ -17,12 +21,14 @@ process selections, and optional
 
 - `name`:
 
-  The name of the compound building block.
+  The name of the compound building block. Writable: must be a non-empty
+  scalar string.
 
 - `calculation_methods`:
 
   Character vector of calculation method names that override the
-  compound's defaults in this simulation.
+  compound's defaults in this simulation. Writable: must be a character
+  vector, or `NULL` to clear.
 
 - `alternatives`:
 

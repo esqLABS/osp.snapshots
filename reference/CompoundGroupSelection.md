@@ -4,7 +4,11 @@ An R6 class representing one entry in a
 [CompoundProperties](https://esqlabs.github.io/osp.snapshots/reference/CompoundProperties.md)'s
 `Alternatives` array. Each entry pairs an alternative group (e.g.
 `"COMPOUND_SOLUBILITY"`) with the selected alternative within that
-group.
+group. Internal machinery only:
+[`add_simulation()`](https://esqlabs.github.io/osp.snapshots/reference/add_simulation.md)'s
+friendly `alternatives` selection (by property name and label) is the
+user-facing way to select an alternative; this class and the
+`COMPOUND_*` group constants it carries are not part of the public API.
 
 ## Active bindings
 
@@ -14,11 +18,13 @@ group.
 
 - `group_name`:
 
-  The alternative group name.
+  The alternative group name. Writable: must be a non-empty scalar
+  string.
 
 - `alternative_name`:
 
-  The selected alternative name in the group.
+  The selected alternative name in the group. Writable: must be a
+  non-empty scalar string.
 
 ## Methods
 

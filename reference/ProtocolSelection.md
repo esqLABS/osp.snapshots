@@ -18,7 +18,8 @@ mapping formulation keys to formulation building blocks.
 
 - `name`:
 
-  The name of the protocol building block.
+  The name of the protocol building block. Writable: must be a non-empty
+  scalar string.
 
 - `formulations`:
 

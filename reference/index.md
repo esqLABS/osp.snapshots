@@ -46,12 +46,8 @@ Reusable R6 leaf classes and sub-structures held inside building blocks
   : AdvancedParameter class for Population advanced parameters
 - [`CalculationMethods`](https://esqlabs.github.io/osp.snapshots/reference/CalculationMethods.md)
   : CalculationMethods class for OSP snapshots
-- [`CompoundGroupSelection`](https://esqlabs.github.io/osp.snapshots/reference/CompoundGroupSelection.md)
-  : CompoundGroupSelection class for compound alternative selections
 - [`CompoundProcessSelection`](https://esqlabs.github.io/osp.snapshots/reference/CompoundProcessSelection.md)
   : CompoundProcessSelection class for compound process selections
-- [`CompoundProperties`](https://esqlabs.github.io/osp.snapshots/reference/CompoundProperties.md)
-  : CompoundProperties class for Simulation compound configurations
 - [`EventSelection`](https://esqlabs.github.io/osp.snapshots/reference/EventSelection.md)
   : EventSelection class for Simulation event references
 - [`FormulationSelection`](https://esqlabs.github.io/osp.snapshots/reference/FormulationSelection.md)
@@ -94,12 +90,8 @@ Construct building blocks and leaves from named arguments
 
 - [`create_compound()`](https://esqlabs.github.io/osp.snapshots/reference/create_compound.md)
   : Create a new compound
-- [`create_compound_group_selection()`](https://esqlabs.github.io/osp.snapshots/reference/create_compound_group_selection.md)
-  : Create a compound alternative group selection
 - [`create_compound_process_selection()`](https://esqlabs.github.io/osp.snapshots/reference/create_compound_process_selection.md)
   : Create a compound process selection
-- [`create_compound_properties()`](https://esqlabs.github.io/osp.snapshots/reference/create_compound_properties.md)
-  : Create compound properties for a simulation
 - [`create_descriptor_condition()`](https://esqlabs.github.io/osp.snapshots/reference/create_descriptor_condition.md)
   : Create a container criterion for an observer
 - [`create_event()`](https://esqlabs.github.io/osp.snapshots/reference/create_event.md)
@@ -146,10 +138,38 @@ Construct building blocks and leaves from named arguments
   : Create a new schema
 - [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/reference/create_schema_item.md)
   : Create a new schema item
-- [`create_simulation()`](https://esqlabs.github.io/osp.snapshots/reference/create_simulation.md)
-  : Create a simulation building block
 - [`create_solver_settings()`](https://esqlabs.github.io/osp.snapshots/reference/create_solver_settings.md)
   : Create a solver settings object for a simulation
+
+## Value-object helpers
+
+Bundle a value, unit, and field-specific extras for the create\_\*
+factory arguments
+
+- [`lipophilicity()`](https://esqlabs.github.io/osp.snapshots/reference/lipophilicity.md)
+  : Lipophilicity value object
+- [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/reference/fraction_unbound.md)
+  : Fraction unbound value object
+- [`solubility()`](https://esqlabs.github.io/osp.snapshots/reference/solubility.md)
+  : Solubility value object
+- [`intestinal_permeability()`](https://esqlabs.github.io/osp.snapshots/reference/intestinal_permeability.md)
+  : Intestinal permeability value object
+- [`permeability()`](https://esqlabs.github.io/osp.snapshots/reference/permeability.md)
+  : Permeability value object
+- [`age()`](https://esqlabs.github.io/osp.snapshots/reference/age.md) :
+  Age value object
+- [`weight()`](https://esqlabs.github.io/osp.snapshots/reference/weight.md)
+  : Weight value object
+- [`height()`](https://esqlabs.github.io/osp.snapshots/reference/height.md)
+  : Height value object
+- [`gestational_age()`](https://esqlabs.github.io/osp.snapshots/reference/gestational_age.md)
+  : Gestational age value object
+- [`time()`](https://esqlabs.github.io/osp.snapshots/reference/time.md)
+  : Time series value object
+- [`values()`](https://esqlabs.github.io/osp.snapshots/reference/values.md)
+  : Measurement values series value object
+- [`error()`](https://esqlabs.github.io/osp.snapshots/reference/error.md)
+  : Error series value object
 
 ## Mutators
 
@@ -174,7 +194,7 @@ Add and remove building blocks on a snapshot
 - [`add_protocol()`](https://esqlabs.github.io/osp.snapshots/reference/add_protocol.md)
   : Add one or more protocols to a snapshot
 - [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/reference/add_simulation.md)
-  : Add one or more simulations to a snapshot
+  : Build a simulation from a snapshot and attach it
 - [`remove_compound()`](https://esqlabs.github.io/osp.snapshots/reference/remove_compound.md)
   : Remove compounds from a snapshot
 - [`remove_event()`](https://esqlabs.github.io/osp.snapshots/reference/remove_event.md)
@@ -232,6 +252,8 @@ Bridge between PK-Sim observed data and ospsuite
 
 Helpers for validation and data conversion
 
+- [`get_default_alternative()`](https://esqlabs.github.io/osp.snapshots/reference/get_default_alternative.md)
+  : Get the default alternative of a compound property
 - [`validate_snapshot()`](https://esqlabs.github.io/osp.snapshots/reference/validate_snapshot.md)
   : Validate that an object is a Snapshot
 - [`validate_species()`](https://esqlabs.github.io/osp.snapshots/reference/validate_species.md)

@@ -20,10 +20,9 @@ All arguments are optional and will use default values if not provided."></head>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
-    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
-    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -55,13 +54,9 @@ All arguments are optional and will use default values if not provided.</p>
 <span>  population <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  gender <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  age <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  age_unit <span class="op">=</span> <span class="st">"year(s)"</span>,</span>
 <span>  weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  weight_unit <span class="op">=</span> <span class="st">"kg"</span>,</span>
 <span>  height <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  height_unit <span class="op">=</span> <span class="st">"cm"</span>,</span>
 <span>  gestational_age <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  gestational_age_unit <span class="op">=</span> <span class="st">"week(s)"</span>,</span>
 <span>  calculation_methods <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  disease_state <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  disease_state_parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -93,35 +88,20 @@ All arguments are optional and will use default values if not provided.</p>
 
 
 <dt id="arg-age">age<a class="anchor" aria-label="anchor" href="#arg-age"></a></dt>
-<dd><p>Numeric. Age of the individual</p></dd>
-
-
-<dt id="arg-age-unit">age_unit<a class="anchor" aria-label="anchor" href="#arg-age-unit"></a></dt>
-<dd><p>Character. Unit for age (must be valid unit for "Age in years")</p></dd>
+<dd><p>An <code><a href="age.html">age()</a></code> object, or <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-weight">weight<a class="anchor" aria-label="anchor" href="#arg-weight"></a></dt>
-<dd><p>Numeric. Weight of the individual</p></dd>
-
-
-<dt id="arg-weight-unit">weight_unit<a class="anchor" aria-label="anchor" href="#arg-weight-unit"></a></dt>
-<dd><p>Character. Unit for weight (must be valid unit for "Mass")</p></dd>
+<dd><p>A <code><a href="weight.html">weight()</a></code> object, or <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-height">height<a class="anchor" aria-label="anchor" href="#arg-height"></a></dt>
-<dd><p>Numeric. Height of the individual</p></dd>
-
-
-<dt id="arg-height-unit">height_unit<a class="anchor" aria-label="anchor" href="#arg-height-unit"></a></dt>
-<dd><p>Character. Unit for height (must be valid unit for "Length")</p></dd>
+<dd><p>A <code><a href="height.html">height()</a></code> object, or <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-gestational-age">gestational_age<a class="anchor" aria-label="anchor" href="#arg-gestational-age"></a></dt>
-<dd><p>Numeric. Gestational age of the individual (for infant/preterm individuals)</p></dd>
-
-
-<dt id="arg-gestational-age-unit">gestational_age_unit<a class="anchor" aria-label="anchor" href="#arg-gestational-age-unit"></a></dt>
-<dd><p>Character. Unit for gestational age (must be valid unit for "Time")</p></dd>
+<dd><p>A <code><a href="gestational_age.html">gestational_age()</a></code> object, or <code>NULL</code> (for
+infant/preterm individuals).</p></dd>
 
 
 <dt id="arg-calculation-methods">calculation_methods<a class="anchor" aria-label="anchor" href="#arg-calculation-methods"></a></dt>
@@ -129,11 +109,15 @@ All arguments are optional and will use default values if not provided.</p>
 
 
 <dt id="arg-disease-state">disease_state<a class="anchor" aria-label="anchor" href="#arg-disease-state"></a></dt>
-<dd><p>Character. Disease state of the individual (optional)</p></dd>
+<dd><p>Character. Disease-state name of the individual
+(optional). Together with <code>disease_state_parameters</code> it feeds the modern
+<code>Disease</code> object (<code>{ Name, Parameters }</code>) emitted under
+<code>OriginData$Disease</code>, matching <code><a href="create_expression_profile.html">create_expression_profile()</a></code>.</p></dd>
 
 
 <dt id="arg-disease-state-parameters">disease_state_parameters<a class="anchor" aria-label="anchor" href="#arg-disease-state-parameters"></a></dt>
-<dd><p>List. Parameters for disease state (optional)</p></dd>
+<dd><p>List. Parameters for the disease state
+(optional), keyed on <code>Name</code> in the emitted <code>Disease</code> object.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -162,6 +146,11 @@ entry must be path-bearing. Default <code>NULL</code> (no parameter overrides).<
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An Individual object</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="age.html">age()</a></code>, <code><a href="weight.html">weight()</a></code>, <code><a href="height.html">height()</a></code>, <code><a href="gestational_age.html">gestational_age()</a></code> for the
+demographic value-object helpers.</p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -174,9 +163,9 @@ entry must be path-bearing. Default <code>NULL</code> (no parameter overrides).<
 <span class="r-in"><span>  species <span class="op">=</span> <span class="st">"Human"</span>,</span></span>
 <span class="r-in"><span>  population <span class="op">=</span> <span class="st">"European_ICRP_2002"</span>,</span></span>
 <span class="r-in"><span>  gender <span class="op">=</span> <span class="st">"MALE"</span>,</span></span>
-<span class="r-in"><span>  age <span class="op">=</span> <span class="fl">30</span>,</span></span>
-<span class="r-in"><span>  weight <span class="op">=</span> <span class="fl">70</span>,</span></span>
-<span class="r-in"><span>  height <span class="op">=</span> <span class="fl">175</span></span></span>
+<span class="r-in"><span>  age <span class="op">=</span> <span class="fu"><a href="age.html">age</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  weight <span class="op">=</span> <span class="fu"><a href="weight.html">weight</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  height <span class="op">=</span> <span class="fu"><a href="height.html">height</a></span><span class="op">(</span><span class="fl">175</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create an individual with calculation methods</span></span></span>
@@ -185,7 +174,8 @@ entry must be path-bearing. Default <code>NULL</code> (no parameter overrides).<
 <span class="r-in"><span>  calculation_methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Method 1"</span>, <span class="st">"Method 2"</span>, <span class="st">"Method 3"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create an individual with disease state</span></span></span>
+<span class="r-in"><span><span class="co"># Create an individual with disease state (emitted as the modern</span></span></span>
+<span class="r-in"><span><span class="co"># `Disease` object: `OriginData$Disease = { Name, Parameters }`)</span></span></span>
 <span class="r-in"><span><span class="va">individual</span> <span class="op">&lt;-</span> <span class="fu">create_individual</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Patient"</span>,</span></span>
 <span class="r-in"><span>  disease_state <span class="op">=</span> <span class="st">"CKD"</span>,</span></span>
@@ -214,7 +204,7 @@ entry must be path-bearing. Default <code>NULL</code> (no parameter overrides).<
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -12,7 +12,8 @@ display a summary of its information.
 
 - `name`:
 
-  The name of the population
+  The name of the population. Writable: must be a non-empty scalar
+  string.
 
 - `description`:
 
@@ -41,7 +42,8 @@ display a summary of its information.
 
 - `number_of_individuals`:
 
-  The number of individuals in the population
+  The number of individuals in the population. Writable: must be a
+  single positive whole number.
 
 - `proportion_of_females`:
 
@@ -49,23 +51,30 @@ display a summary of its information.
 
 - `age_range`:
 
-  The age range for the population
+  The age range for the population. Writable: the `Range`'s `unit` must
+  be a valid unit for dimension `"Age in years"`.
 
 - `weight_range`:
 
-  The weight range for the population
+  The weight range for the population. Writable: the `Range`'s `unit`
+  must be a valid unit for dimension `"Mass"`.
 
 - `height_range`:
 
-  The height range for the population
+  The height range for the population. Writable: the `Range`'s `unit`
+  must be a valid unit for dimension `"Length"`.
 
 - `bmi_range`:
 
-  The BMI range for the population
+  The BMI range for the population. Writable: when the `"BMI"` dimension
+  resolves in the installed `ospsuite`, the `Range`'s `unit` must be a
+  valid unit for it; otherwise the unit is left unvalidated (a
+  documented, opportunistic limitation).
 
 - `gestational_age_range`:
 
-  The gestational age range used for population generation
+  The gestational age range used for population generation. Writable:
+  the `Range`'s `unit` must be a valid unit for dimension `"Time"`.
 
 - `egfr_range`:
 

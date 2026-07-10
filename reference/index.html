@@ -18,10 +18,9 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
-    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
-    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -180,24 +179,10 @@
 
         <dt>
 
-          <code><a href="CompoundGroupSelection.html">CompoundGroupSelection</a></code>
-
-        </dt>
-        <dd>CompoundGroupSelection class for compound alternative selections</dd>
-
-        <dt>
-
           <code><a href="CompoundProcessSelection.html">CompoundProcessSelection</a></code>
 
         </dt>
         <dd>CompoundProcessSelection class for compound process selections</dd>
-
-        <dt>
-
-          <code><a href="CompoundProperties.html">CompoundProperties</a></code>
-
-        </dt>
-        <dd>CompoundProperties class for Simulation compound configurations</dd>
 
         <dt>
 
@@ -336,24 +321,10 @@
 
         <dt>
 
-          <code><a href="create_compound_group_selection.html">create_compound_group_selection()</a></code>
-
-        </dt>
-        <dd>Create a compound alternative group selection</dd>
-
-        <dt>
-
           <code><a href="create_compound_process_selection.html">create_compound_process_selection()</a></code>
 
         </dt>
         <dd>Create a compound process selection</dd>
-
-        <dt>
-
-          <code><a href="create_compound_properties.html">create_compound_properties()</a></code>
-
-        </dt>
-        <dd>Create compound properties for a simulation</dd>
 
         <dt>
 
@@ -518,17 +489,103 @@
 
         <dt>
 
-          <code><a href="create_simulation.html">create_simulation()</a></code>
-
-        </dt>
-        <dd>Create a simulation building block</dd>
-
-        <dt>
-
           <code><a href="create_solver_settings.html">create_solver_settings()</a></code>
 
         </dt>
         <dd>Create a solver settings object for a simulation</dd>
+      </dl></div><div class="section level2">
+      <h2 id="value-object-helpers">Value-object helpers<a class="anchor" aria-label="anchor" href="#value-object-helpers"></a></h2>
+
+      <div class="section-desc"><p>Bundle a value, unit, and field-specific extras for the create_* factory arguments</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="lipophilicity.html">lipophilicity()</a></code>
+
+        </dt>
+        <dd>Lipophilicity value object</dd>
+
+        <dt>
+
+          <code><a href="fraction_unbound.html">fraction_unbound()</a></code>
+
+        </dt>
+        <dd>Fraction unbound value object</dd>
+
+        <dt>
+
+          <code><a href="solubility.html">solubility()</a></code>
+
+        </dt>
+        <dd>Solubility value object</dd>
+
+        <dt>
+
+          <code><a href="intestinal_permeability.html">intestinal_permeability()</a></code>
+
+        </dt>
+        <dd>Intestinal permeability value object</dd>
+
+        <dt>
+
+          <code><a href="permeability.html">permeability()</a></code>
+
+        </dt>
+        <dd>Permeability value object</dd>
+
+        <dt>
+
+          <code><a href="age.html">age()</a></code>
+
+        </dt>
+        <dd>Age value object</dd>
+
+        <dt>
+
+          <code><a href="weight.html">weight()</a></code>
+
+        </dt>
+        <dd>Weight value object</dd>
+
+        <dt>
+
+          <code><a href="height.html">height()</a></code>
+
+        </dt>
+        <dd>Height value object</dd>
+
+        <dt>
+
+          <code><a href="gestational_age.html">gestational_age()</a></code>
+
+        </dt>
+        <dd>Gestational age value object</dd>
+
+        <dt>
+
+          <code><a href="time.html">time()</a></code>
+
+        </dt>
+        <dd>Time series value object</dd>
+
+        <dt>
+
+          <code><a href="values.html">values()</a></code>
+
+        </dt>
+        <dd>Measurement values series value object</dd>
+
+        <dt>
+
+          <code><a href="error.html">error()</a></code>
+
+        </dt>
+        <dd>Error series value object</dd>
       </dl></div><div class="section level2">
       <h2 id="mutators">Mutators<a class="anchor" aria-label="anchor" href="#mutators"></a></h2>
 
@@ -607,7 +664,7 @@
           <code><a href="add_simulation.html">add_simulation()</a></code>
 
         </dt>
-        <dd>Add one or more simulations to a snapshot</dd>
+        <dd>Build a simulation from a snapshot and attach it</dd>
 
         <dt>
 
@@ -785,6 +842,13 @@
 
       <dl><dt>
 
+          <code><a href="get_default_alternative.html">get_default_alternative()</a></code>
+
+        </dt>
+        <dd>Get the default alternative of a compound property</dd>
+
+        <dt>
+
           <code><a href="validate_snapshot.html">validate_snapshot()</a></code>
 
         </dt>
@@ -937,7 +1001,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
 <div class="pkgdown-footer-right">

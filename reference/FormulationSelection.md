@@ -13,11 +13,13 @@ to a formulation key used by an application within the protocol.
 
 - `name`:
 
-  The name of the formulation building block.
+  The name of the formulation building block. Writable: must be a
+  non-empty scalar string.
 
 - `key`:
 
-  The formulation key (application slot) inside the protocol.
+  The formulation key (application slot) inside the protocol. Writable:
+  must be a non-empty scalar string.
 
 ## Methods
 

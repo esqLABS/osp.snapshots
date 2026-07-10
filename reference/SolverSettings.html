@@ -24,10 +24,9 @@ absent on export."></head><body>
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/osp-snapshots.html">Get started</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/osp-snapshots.html">Getting started with osp.snapshots</a></li>
-    <li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
-    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/creating-building-blocks.html">Creating and managing building blocks</a></li>
     <li><a class="dropdown-item" href="../articles/simulations.html">Building simulations from scratch</a></li>
+    <li><a class="dropdown-item" href="../articles/exporting-snapshots-to-dataframes.html">Exporting snapshots to data frames</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -64,31 +63,39 @@ PK-Sim's snapshot mapper requires the object shape.</p></dd>
 
 
     <dt><code>abs_tol</code></dt>
-<dd><p>Absolute solver tolerance.</p></dd>
+<dd><p>Absolute solver tolerance. Writable: a single numeric
+value, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>rel_tol</code></dt>
-<dd><p>Relative solver tolerance.</p></dd>
+<dd><p>Relative solver tolerance. Writable: a single numeric
+value, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>use_jacobian</code></dt>
-<dd><p>Whether to use the Jacobian during integration.</p></dd>
+<dd><p>Whether to use the Jacobian during integration.
+Writable: a single logical value, or <code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>h0</code></dt>
-<dd><p>Initial step size.</p></dd>
+<dd><p>Initial step size. Writable: a single numeric value, or
+<code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>h_min</code></dt>
-<dd><p>Minimum step size.</p></dd>
+<dd><p>Minimum step size. Writable: a single numeric value, or
+<code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>h_max</code></dt>
-<dd><p>Maximum step size.</p></dd>
+<dd><p>Maximum step size. Writable: a single numeric value, or
+<code>NULL</code> to clear.</p></dd>
 
 
     <dt><code>mx_step</code></dt>
-<dd><p>Maximum number of internal solver steps.</p></dd>
+<dd><p>Maximum number of internal solver steps. Writable: a
+single positive whole number (stored as an integer), or <code>NULL</code> to
+clear.</p></dd>
 
 
 </dl><p></p></div>
@@ -143,7 +150,7 @@ PK-Sim's snapshot mapper requires the object shape.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Developed by Felix MIL, Diane Lefaudeux, ESQlabs, GmbH. Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
 <div class="pkgdown-footer-right">
