@@ -1,3 +1,5 @@
+# osp.snapshots (development version)
+
 # osp.snapshots 1.0.0
 
 ## Breaking changes
