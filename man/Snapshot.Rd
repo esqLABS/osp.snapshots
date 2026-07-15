@@ -9,12 +9,17 @@ methods to access different components of the snapshot and visualize its
 structure.
 }
 \section{Supported snapshot versions}{
-\code{Snapshot} only accepts PK-Sim v11+ snapshots, i.e. integer \code{Version}
-values of \code{79} or greater (see \code{osp.snapshots:::SUPPORTED_VERSION_MIN}).
-Earlier snapshots use different conventions (notably \code{Applications|...}
-instead of \code{Events|...} in parameter paths) and are not modelled by this
-package; \code{Snapshot$new()} aborts on them rather than silently rewriting
-fields. Hand-rolled list input must supply \code{Version} for the same reason.
+\code{Snapshot} accepts PK-Sim snapshots whose integer \code{Version} is within the
+supported band \code{79} (v11.2) to \code{81} (v13), inclusive (see
+\code{osp.snapshots:::SUPPORTED_VERSION_MIN} and
+\code{osp.snapshots:::SUPPORTED_VERSION_MAX}). A snapshot above the ceiling
+aborts as "not supported yet". A below-floor snapshot in the \code{74-78} band
+can be migrated up to whatever the installed \code{ospsuite} core emits by
+passing \code{upgrade = TRUE}, which round-trips it through PK-Sim; without it,
+such a snapshot reports how to migrate and does not load. Snapshots below
+\code{74} are too old to migrate and abort. A snapshot newer than the installed
+\code{ospsuite} core (but still in band) loads with a warning that it may not
+load or run there. Hand-rolled list input must supply \code{Version}.
 }
 
 \examples{
@@ -182,7 +187,7 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
   Create a new Snapshot object from a JSON file or a list
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{Snapshot$new(input)}
+    \preformatted{Snapshot$new(input, upgrade = FALSE)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -190,8 +195,15 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     \describe{
       \item{\code{input}}{Path to the snapshot JSON file, URL, template name, or a
 list containing snapshot data. The parsed data must contain an
-integer \code{Version} field of \code{79} (v11.2) or greater; older or missing
-versions abort.}
+integer \code{Version} field within the supported band (\code{79} to \code{81});
+an out-of-band or missing version aborts (see the
+"Supported snapshot versions" section).}
+      \item{\code{upgrade}}{Logical, default \code{FALSE}. When \code{TRUE} and the snapshot's
+\code{Version} is in the below-floor migration band (\code{74-78}), the snapshot
+is round-tripped through the installed PK-Sim core to upgrade it to a
+supported version before loading (slow, several minutes). When \code{FALSE},
+a below-floor snapshot reports how to migrate and aborts. Ignored for
+in-band snapshots, which are never migrated.}
     }
     \if{html}{\out{</div>}}
   }

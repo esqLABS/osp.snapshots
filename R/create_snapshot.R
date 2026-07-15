@@ -45,11 +45,16 @@ create_snapshot <- function(name = NULL, description = NULL) {
     cli::cli_abort("{.arg description} must be a single string")
   }
 
-  data <- list(Version = 80)
-
-  if (!is.null(name)) {
-    data$Name <- name
+  # Author at the highest supported version so a freshly created snapshot
+  # matches the current PK-Sim format. At v81 the top-level `Name` precedes
+  # `Version` in the serialized JSON, and `jsonlite::write_json()` preserves
+  # list order, so build `Name` first when it is supplied.
+  data <- if (!is.null(name)) {
+    list(Name = name, Version = SUPPORTED_VERSION_MAX)
+  } else {
+    list(Version = SUPPORTED_VERSION_MAX)
   }
+
   if (!is.null(description)) {
     data$Description <- description
   }
