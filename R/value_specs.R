@@ -90,6 +90,10 @@ lipophilicity <- function(
 #' `"Fraction unbound (plasma, reference value)"`. Fraction unbound stores a
 #' bare value with no unit, so this helper takes no `unit` argument.
 #'
+#' Fraction unbound is the one species-dependent single-parameter group, so
+#' the emitted alternative carries a `Species` field (see `species`), which
+#' PK-Sim requires to load the snapshot.
+#'
 #' @param value Numeric scalar. Fraction-unbound value.
 #' @param name Character. `Name` of the created alternative. Defaults to
 #'   `"User defined"`.
@@ -100,6 +104,13 @@ lipophilicity <- function(
 #'   default. When a list has no element marked `default = TRUE`, the first
 #'   element is the default (unchanged behaviour); marking two or more
 #'   elements `default = TRUE` in the same list is an error.
+#' @param species Character. PK-Sim species emitted as the alternative's
+#'   `Species` field. Defaults to `"Human"` and is validated against
+#'   `ospsuite::Species`. Fraction unbound is species-dependent, and PK-Sim
+#'   rejects a snapshot whose fraction-unbound alternative has no resolvable
+#'   species, so this is emitted on every fraction-unbound alternative. A
+#'   user hand-building a raw alternative list (the `Compound$fraction_unbound`
+#'   escape hatch) is responsible for its own `Species`.
 #'
 #' @return A `fraction_unbound_spec` object to pass to [create_compound()].
 #' @family value-object helpers
@@ -118,16 +129,23 @@ lipophilicity <- function(
 #'     fraction_unbound(0.2, name = "Microsomal", default = TRUE)
 #'   )
 #' )
-fraction_unbound <- function(value, name = "User defined", default = FALSE) {
+fraction_unbound <- function(
+  value,
+  name = "User defined",
+  default = FALSE,
+  species = "Human"
+) {
   check_numeric_scalar(value, "value")
   check_required_string(name, "name")
   check_default_flag(default, "default")
+  validate_species(species)
   new_value_spec(
     "fraction_unbound_spec",
     list(
       value = value,
       name = name,
-      default = default
+      default = default,
+      species = species
     )
   )
 }

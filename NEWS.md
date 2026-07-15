@@ -1,5 +1,7 @@
 # osp.snapshots (development version)
 
+- `fraction_unbound()` gains a `species` argument (default `"Human"`, validated against `ospsuite::Species`) and now emits a `Species` field on the fraction-unbound alternative, which PK-Sim requires to load the snapshot (#156).
+
 # osp.snapshots 1.0.0
 
 ## Breaking changes

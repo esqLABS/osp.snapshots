@@ -53,6 +53,19 @@ test_that("create_snapshot result composes with add_*() mutators", {
   expect_true("Drug X" %in% names(s$compounds))
 })
 
+test_that("validate_snapshot accepts a snapshot with a fraction-unbound compound", {
+  compound <- create_compound(
+    name = "Drug X",
+    fraction_unbound = fraction_unbound(1)
+  )
+  s <- add_compound(create_snapshot(), compound)
+
+  expect_true(validate_snapshot(s))
+  # validate_snapshot() passes even when Species is absent, so assert the
+  # emitted fraction-unbound alternative actually carries the species.
+  expect_equal(compound$data$FractionUnbound[[1]]$Species, "Human")
+})
+
 test_that("create_snapshot rejects non-scalar or non-character arguments", {
   expect_snapshot(error = TRUE, create_snapshot(name = 1))
   expect_snapshot(error = TRUE, create_snapshot(name = c("a", "b")))

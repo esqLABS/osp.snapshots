@@ -220,6 +220,7 @@ test_that("single-parameter physicochemical fields are writable by helper", {
   fu <- compound$data$FractionUnbound[[1]]$Parameters[[1]]
   expect_equal(fu$Value, 0.2)
   expect_null(fu$Unit)
+  expect_equal(compound$data$FractionUnbound[[1]]$Species, "Human")
 
   compound$solubility <- solubility(500)
   sol <- compound$data$Solubility[[1]]$Parameters[[1]]
@@ -231,6 +232,13 @@ test_that("single-parameter physicochemical fields are writable by helper", {
   ip <- compound$data$IntestinalPermeability[[1]]$Parameters[[1]]
   expect_equal(ip$Value, 2e-05)
   expect_equal(ip$Unit, "cm/min")
+})
+
+test_that("fraction_unbound field setter carries the species override", {
+  compound <- test_snapshot$clone()$compounds[[1]]$clone(deep = TRUE)
+
+  compound$fraction_unbound <- fraction_unbound(1, species = "Rat")
+  expect_equal(compound$data$FractionUnbound[[1]]$Species, "Rat")
 })
 
 test_that("permeability field reads and writes on a compound without the key", {

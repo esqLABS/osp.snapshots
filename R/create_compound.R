@@ -317,14 +317,22 @@ create_compound <- function(
 # alternative array via `build_single_param_alternative()`. Shared by the
 # factory and the `Compound` writable-field setter so the unwrapping lives in
 # one place. `spec$unit` is `NULL` for fraction unbound (no unit slot), which
-# the builder treats as "omit unit".
+# the builder treats as "omit unit". Fraction unbound is the one
+# species-dependent single-parameter group, so a `fraction_unbound_spec`
+# additionally carries its `species` onto the alternative as a `Species` key
+# (PK-Sim rejects a fraction-unbound alternative without a resolvable species);
+# the other groups pass through unchanged.
 spec_to_single_param_alternative <- function(spec, param_name) {
-  build_single_param_alternative(
+  alt <- build_single_param_alternative(
     spec$name,
     param_name,
     spec$value,
     spec$unit
   )
+  if (inherits(spec, "fraction_unbound_spec")) {
+    alt[[1]]$Species <- spec$species
+  }
+  alt
 }
 
 # Internal: unwrap a `solubility_spec` into its `Solubility` alternative,

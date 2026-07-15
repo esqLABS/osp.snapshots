@@ -21,6 +21,16 @@ test_that("validate_unit rejects invalid units", {
   )
 })
 
+test_that("validate_species accepts a valid scalar species", {
+  expect_true(validate_species("Human"))
+})
+
+test_that("validate_species rejects a non-scalar or empty species with a clear message", {
+  expect_snapshot(error = TRUE, validate_species(c("Human", "Dog")))
+  expect_snapshot(error = TRUE, validate_species(character(0)))
+  expect_snapshot(error = TRUE, validate_species(NA_character_))
+})
+
 test_that("convert_ospsuite_time_unit_to_lubridate works correctly", {
   # Test mapping of ospsuite units to lubridate units
   expect_equal(convert_ospsuite_time_unit_to_lubridate("s"), "seconds")

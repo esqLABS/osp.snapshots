@@ -65,7 +65,7 @@ test_that("helpers validate units against their dimension", {
 
 test_that("fraction_unbound() carries no unit slot", {
   spec <- fraction_unbound(0.1)
-  expect_named(unclass(spec), c("value", "name", "default"))
+  expect_named(unclass(spec), c("value", "name", "default", "species"))
 })
 
 test_that("single-value helpers reject non-numeric or non-scalar values", {
