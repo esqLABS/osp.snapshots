@@ -126,6 +126,66 @@ to_raw_parameters <- function(parameters, name_key) {
   })
 }
 
+# Internal: the accepted dose-family units, the single source of truth shared
+# by `resolve_input_dose_parameter()`'s membership test and its error message.
+# PK-Sim's "Input dose" dose family is NOT a resolvable ospsuite dimension
+# (neither `ospsuite::getUnitsForDimension("Input dose")` nor
+# `ospsuite::ospUnits[["Input dose"]]` returns it), so the accepted set is the
+# union of the four real ospsuite dimensions the family maps onto: plain doses
+# (`Mass`, `Amount`), doses per body weight (`Dose per body weight`), and doses
+# per body surface area (`Dose per body surface area`). Each dimension is
+# resolved with the same tolerant lookup `validate_unit()` uses so behaviour
+# stays consistent with the rest of the package.
+dose_family_units <- function() {
+  dimensions <- c(
+    "Mass",
+    "Amount",
+    "Dose per body weight",
+    "Dose per body surface area"
+  )
+  units <- unlist(lapply(dimensions, function(dim) {
+    tryCatch(
+      ospsuite::getUnitsForDimension(dim),
+      error = function(e) unlist(ospsuite::ospUnits[[dim]], use.names = FALSE)
+    )
+  }))
+  unique(units)
+}
+
+# Internal: resolve the canonical name of a single parameter entry, handling
+# both accepted shapes (a `Parameter` R6 object or a raw list) exactly as
+# `to_raw_parameters()` reconciles Name/Path. Falls back to `Path` when only
+# `Path` is present, and to `NA_character_` when neither resolves, so a caller
+# scanning entry names with `vapply(..., character(1))` stays character-typed
+# and a malformed entry simply never matches a target name.
+resolve_parameter_name <- function(entry) {
+  raw <- if (inherits(entry, "Parameter")) entry$data else entry
+  raw$Name %||% raw$Path %||% NA_character_
+}
+
+# Internal: resolve a promoted dose value and unit into the single raw
+# `InputDose` parameter shape. Validates `unit` against the accepted
+# dose-family units (see `dose_family_units()`), aborting with `call` so the
+# error is attributed to the calling factory rather than this helper. Does NOT
+# validate the numeric `dose` value; the calling factory owns the finite-scalar
+# check. Always returns a parameter named `InputDose` (never `Dose`,
+# `DosePerBodyWeight`, or `DosePerBodySurfaceArea`); the unit alone carries the
+# dose family. Designed for reuse: it holds no schema-item-specific state, so
+# `create_protocol()` can adopt it for the Simple-protocol dose.
+resolve_input_dose_parameter <- function(dose, unit, call = parent.frame()) {
+  valid_units <- dose_family_units()
+  if (!(unit %in% valid_units)) {
+    cli::cli_abort(
+      c(
+        "Invalid dose unit: {unit}",
+        "i" = "Valid dose units are: {toString(valid_units)}"
+      ),
+      call = call
+    )
+  }
+  list(Name = "InputDose", Value = dose, Unit = unit)
+}
+
 # Internal: map the `expression` argument of `create_expression_profile()`
 # (and the `ExpressionProfile$expression` setter) to a raw
 # `ExpressionContainer[]` list, or `NULL` when the input is empty. The

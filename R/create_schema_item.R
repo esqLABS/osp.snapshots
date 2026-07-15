@@ -16,6 +16,20 @@
 #'   types: `"Oral"`, `"IntravenousBolus"`, `"IntravenousInfusion"`,
 #'   `"Intramuscular"`, `"Subcutaneous"`, `"Dermal"`, `"Rectal"`,
 #'   `"Inhalation"`, or `"Intraperitoneal"`.
+#' @param dose Numeric scalar dose for the application, written as a
+#'   single `InputDose` parameter. `NULL` (default) emits no dose
+#'   parameter. The dose family (plain dose, per body weight, or per body
+#'   surface area) is selected by `dose_unit`.
+#' @param dose_unit Character. Unit for `dose`, default `"mg"`. Must be a
+#'   dose-family unit (a Mass, Amount, dose-per-body-weight, or
+#'   dose-per-body-surface-area unit, for example `"mg"`, `"mg/kg"`, or
+#'   `"mg/m²"`). Consulted only when `dose` is supplied.
+#' @param start_time Numeric scalar application start time, written as a
+#'   `"Start time"` parameter. `NULL` (default) emits no start-time
+#'   parameter. Zero and negative values are allowed.
+#' @param start_time_unit Character. Unit for `start_time`, default `"h"`,
+#'   validated against the `"Time"` dimension. Consulted only when
+#'   `start_time` is supplied.
 #' @param formulation_key Character. Formulation key linking the schema
 #'   item to a formulation selection in the owning simulation.
 #' @param target_organ Character. Target organ for the application.
@@ -23,13 +37,25 @@
 #'   application.
 #' @param parameters List of [Parameter] objects (created with
 #'   [create_parameter()]) or raw parameter lists. These become the
-#'   application-level parameters (dose, start time, ...).
+#'   application-level parameters (dose, start time, ...). The promoted
+#'   `dose` and `start_time` arguments flow into the same `"InputDose"`
+#'   and `"Start time"` parameters, so supplying a setting both as a
+#'   promoted argument and as the matching `parameters` entry is an error.
 #'
 #' @return A [SchemaItem] object.
 #' @export
 #'
 #' @examples
-#' # An oral schema item with one dose
+#' # An oral schema item using the promoted dose and start-time arguments
+#' item <- create_schema_item(
+#'   name = "Item 1",
+#'   application_type = "Oral",
+#'   dose = 10,
+#'   dose_unit = "mg",
+#'   start_time = 0
+#' )
+#'
+#' # The same, authored through the free-form `parameters` escape hatch
 #' item <- create_schema_item(
 #'   name = "Item 1",
 #'   application_type = "Oral",
@@ -45,13 +71,15 @@
 #'   application_type = "IntravenousBolus",
 #'   target_organ = "VenousBlood",
 #'   target_compartment = "Plasma",
-#'   parameters = list(
-#'     create_parameter(name = "InputDose", value = 5, unit = "mg")
-#'   )
+#'   dose = 5
 #' )
 create_schema_item <- function(
   name,
   application_type,
+  dose = NULL,
+  dose_unit = "mg",
+  start_time = NULL,
+  start_time_unit = "h",
   formulation_key = NULL,
   target_organ = NULL,
   target_compartment = NULL,
@@ -70,6 +98,55 @@ create_schema_item <- function(
     cli::cli_abort("{.arg parameters} must be a list")
   }
 
+  # Resolve the promoted dosing arguments into raw parameter entries. A unit
+  # argument stays inert (no validation, no emitted parameter) while its paired
+  # value is NULL.
+  dose_param <- NULL
+  if (!is.null(dose)) {
+    if (!is.numeric(dose) || length(dose) != 1 || !is.finite(dose)) {
+      cli::cli_abort("{.arg dose} must be a single finite numeric value")
+    }
+    dose_param <- resolve_input_dose_parameter(dose, dose_unit)
+  }
+  start_time_param <- NULL
+  if (!is.null(start_time)) {
+    if (
+      !is.numeric(start_time) ||
+        length(start_time) != 1 ||
+        !is.finite(start_time)
+    ) {
+      cli::cli_abort("{.arg start_time} must be a single finite numeric value")
+    }
+    validate_unit(start_time_unit, "Time")
+    start_time_param <- list(
+      Name = "Start time",
+      Value = start_time,
+      Unit = start_time_unit
+    )
+  }
+
+  # Reject supplying a setting both as a promoted argument and as the matching
+  # `parameters` entry. Names are resolved from both accepted entry shapes (a
+  # `Parameter` R6 object or a raw list) exactly as `to_raw_parameters()` does,
+  # and compared case-sensitively against the canonical PK-Sim names. Dose is
+  # checked before start time, so a single, first-detected conflict is
+  # reported.
+  if (!is.null(parameters)) {
+    existing_names <- vapply(parameters, resolve_parameter_name, character(1))
+    if (!is.null(dose) && "InputDose" %in% existing_names) {
+      cli::cli_abort(c(
+        "{.arg dose} conflicts with an {.val InputDose} entry in {.arg parameters}.",
+        "i" = "Supply the dose either as the {.arg dose} argument or as a {.val InputDose} entry in {.arg parameters}, not both."
+      ))
+    }
+    if (!is.null(start_time) && "Start time" %in% existing_names) {
+      cli::cli_abort(c(
+        "{.arg start_time} conflicts with a {.val Start time} entry in {.arg parameters}.",
+        "i" = "Supply the start time either as the {.arg start_time} argument or as a {.val Start time} entry in {.arg parameters}, not both."
+      ))
+    }
+  }
+
   data <- list(
     Name = name,
     ApplicationType = application_type
@@ -84,10 +161,19 @@ create_schema_item <- function(
   if (!is.null(target_compartment)) {
     data$TargetCompartment <- target_compartment
   }
-  if (!is.null(parameters)) {
+
+  # Assemble the parameter set: promoted entries first (dose, then start time)
+  # for deterministic output, then the caller's `parameters` in given order.
+  # PK-Sim matches parameters by Name, so ordering is not semantically
+  # significant. Only set `data$Parameters` when the combined set is non-empty,
+  # keeping the no-promoted-args, no-`parameters` path byte-identical to before.
+  promoted <- c(list(dose_param), list(start_time_param))
+  promoted <- promoted[!vapply(promoted, is.null, logical(1))]
+  combined <- c(promoted, parameters)
+  if (length(combined) > 0) {
     # Schema item parameters use Name (not Path) in the JSON shape, mirroring
     # the simple-protocol path.
-    data$Parameters <- to_raw_parameters(parameters, "Name")
+    data$Parameters <- to_raw_parameters(combined, "Name")
   }
 
   SchemaItem$new(data)
