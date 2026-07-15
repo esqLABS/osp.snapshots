@@ -227,7 +227,11 @@ test_that("create_protocol accepts a valid application_type and omits the check 
 test_that("create_protocol validates dosing_interval against the DosingIntervalId enum", {
   expect_snapshot(
     error = TRUE,
-    create_protocol(name = "P", application_type = "Oral", dosing_interval = "typo")
+    create_protocol(
+      name = "P",
+      application_type = "Oral",
+      dosing_interval = "typo"
+    )
   )
 })
 
@@ -250,4 +254,189 @@ test_that("create_protocol validates time_unit against the Time dimension", {
   )
   valid <- create_protocol(name = "P", time_unit = "h")
   expect_equal(valid$time_unit, "h")
+})
+
+test_that("create_protocol promotes dose, start_time, and end_time to parameters", {
+  protocol <- create_protocol(
+    name = "Single dose",
+    application_type = "Oral",
+    dosing_interval = "Single",
+    dose = 10,
+    dose_unit = "mg",
+    start_time = 0,
+    end_time = 24,
+    time_unit = "h"
+  )
+
+  expect_s3_class(protocol, "Protocol")
+  expect_snapshot(protocol$data$Parameters)
+})
+
+test_that("create_protocol emits a single InputDose for any dose-family unit", {
+  for (unit in c("mg", "mmol", "mg/kg", "mg/m²")) {
+    protocol <- create_protocol(
+      name = "Dose",
+      application_type = "Oral",
+      dosing_interval = "Single",
+      dose = 5,
+      dose_unit = unit
+    )
+    input_dose <- Filter(
+      function(p) identical(p$Name, "InputDose"),
+      protocol$data$Parameters
+    )
+    other_dose <- Filter(
+      function(p) {
+        p$Name %in%
+          c("Dose", "DosePerBodyWeight", "DosePerBodySurfaceArea")
+      },
+      protocol$data$Parameters
+    )
+    expect_length(input_dose, 1)
+    expect_length(other_dose, 0)
+    expect_equal(input_dose[[1]]$Value, 5)
+    expect_equal(input_dose[[1]]$Unit, unit)
+  }
+})
+
+test_that("create_protocol rejects an invalid dose_unit", {
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", dose = 5, dose_unit = "banana")
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", dose = 5, dose_unit = "h")
+  )
+})
+
+test_that("create_protocol rejects non-finite or non-scalar dose values", {
+  expect_snapshot(error = TRUE, create_protocol(name = "P", dose = NA))
+  expect_snapshot(error = TRUE, create_protocol(name = "P", dose = c(1, 2)))
+  expect_snapshot(error = TRUE, create_protocol(name = "P", dose = Inf))
+  expect_snapshot(error = TRUE, create_protocol(name = "P", start_time = "0"))
+})
+
+test_that("create_protocol errors when a promoted argument conflicts with parameters", {
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      dose = 10,
+      parameters = list(
+        create_parameter(name = "InputDose", value = 5, unit = "mg")
+      )
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      start_time = 0,
+      parameters = list(
+        create_parameter(name = "Start time", value = 1, unit = "h")
+      )
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      end_time = 24,
+      parameters = list(
+        create_parameter(name = "End time", value = 12, unit = "h")
+      )
+    )
+  )
+})
+
+test_that("create_protocol detects a Path-keyed conflict after Name normalisation", {
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      dose = 10,
+      parameters = list(
+        create_parameter(path = "InputDose", value = 5, unit = "mg")
+      )
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      dose = 10,
+      parameters = list(list(Path = "InputDose", Value = 5, Unit = "mg"))
+    )
+  )
+})
+
+test_that("create_protocol resolves the end_time unit from time_unit", {
+  with_time_unit <- create_protocol(
+    name = "P",
+    end_time = 24,
+    time_unit = "min"
+  )
+  end_entry <- Filter(
+    function(p) identical(p$Name, "End time"),
+    with_time_unit$data$Parameters
+  )
+  expect_equal(end_entry[[1]]$Unit, "min")
+  expect_equal(with_time_unit$data$TimeUnit, "min")
+
+  without_time_unit <- create_protocol(name = "P", end_time = 24)
+  end_entry <- Filter(
+    function(p) identical(p$Name, "End time"),
+    without_time_unit$data$Parameters
+  )
+  expect_equal(end_entry[[1]]$Unit, "h")
+  expect_null(without_time_unit$data$TimeUnit)
+})
+
+test_that("create_protocol rejects the promoted arguments combined with schemas", {
+  schemas <- list(list(
+    Name = "Schema 1",
+    SchemaItems = list(list(Name = "Item 1", ApplicationType = "Oral"))
+  ))
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", dose = 10, schemas = schemas)
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", start_time = 0, schemas = schemas)
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", end_time = 24, schemas = schemas)
+  )
+
+  # Default unit arguments must not trip the mutual-exclusivity check.
+  advanced <- create_protocol(name = "P", schemas = schemas)
+  expect_s3_class(advanced, "Protocol")
+})
+
+test_that("create_protocol leaves output unchanged when no promoted argument is supplied", {
+  promoted <- create_protocol(
+    name = "P",
+    application_type = "Oral",
+    dosing_interval = "Single",
+    parameters = list(
+      create_parameter(name = "Start time", value = 0, unit = "h"),
+      create_parameter(name = "InputDose", value = 10, unit = "mg")
+    )
+  )
+  hand_built <- list(
+    Name = "P",
+    ApplicationType = "Oral",
+    DosingInterval = "Single",
+    Parameters = list(
+      list(Name = "Start time", Value = 0, Unit = "h"),
+      list(Name = "InputDose", Value = 10, Unit = "mg")
+    )
+  )
+  expect_equal(promoted$data, hand_built)
+
+  bare <- create_protocol(name = "P")
+  expect_null(bare$data$Parameters)
 })
