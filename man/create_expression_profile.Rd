@@ -13,6 +13,12 @@ create_expression_profile(
   transport_type = NULL,
   ontogeny = NULL,
   parameters = NULL,
+  reference_concentration = NULL,
+  reference_concentration_unit = "µmol/l",
+  half_life_liver = NULL,
+  half_life_liver_unit = "h",
+  half_life_intestine = NULL,
+  half_life_intestine_unit = "h",
   expression = NULL,
   disease = NULL,
   description = NULL
@@ -42,6 +48,35 @@ list. If a string is supplied it is wrapped as
 \item{parameters}{List of \link{Parameter} objects (created with
 \code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists describing relative
 expression and other per-organ values.}
+
+\item{reference_concentration}{Numeric or \code{NULL}. Global molecule
+reference concentration, written to the \code{Path}
+\code{"{molecule}|Reference concentration"}. Validated as a single finite
+numeric. \code{NULL} (default) emits nothing. Dimension
+\code{"Concentration (molar)"}.}
+
+\item{reference_concentration_unit}{Character. Unit for
+\code{reference_concentration}, validated against the
+\code{"Concentration (molar)"} dimension. Default \code{"µmol/l"}.
+Consulted only when \code{reference_concentration} is supplied.}
+
+\item{half_life_liver}{Numeric or \code{NULL}. Global molecule liver
+half-life, written to the \code{Path} \code{"{molecule}|t1/2 (liver)"}.
+Validated as a single finite numeric. \code{NULL} (default) emits nothing.
+Dimension \code{"Time"}.}
+
+\item{half_life_liver_unit}{Character. Unit for \code{half_life_liver},
+validated against the \code{"Time"} dimension. Default \code{"h"}. Consulted
+only when \code{half_life_liver} is supplied.}
+
+\item{half_life_intestine}{Numeric or \code{NULL}. Global molecule intestine
+half-life, written to the \code{Path} \code{"{molecule}|t1/2 (intestine)"}.
+Validated as a single finite numeric. \code{NULL} (default) emits nothing.
+Dimension \code{"Time"}.}
+
+\item{half_life_intestine_unit}{Character. Unit for
+\code{half_life_intestine}, validated against the \code{"Time"} dimension.
+Default \code{"h"}. Consulted only when \code{half_life_intestine} is supplied.}
 
 \item{expression}{Per-organ relative expression, written to the
 snapshot's \code{Expression} array. Supply a data frame (or tibble), one
@@ -74,6 +109,12 @@ the raw list shape for you.
 An \link{ExpressionProfile}'s identity is the composite
 \code{Molecule|Species|Category}, so all three of \code{molecule}, \code{species},
 and \code{category} are required.
+
+The \code{reference_concentration}, \code{half_life_liver}, and
+\code{half_life_intestine} arguments promote the three fixed global
+molecule-properties scalars as a convenience over hand-authoring them
+through \code{parameters}. A promoted argument and the equivalent
+\code{parameters} entry produce identical snapshot JSON.
 }
 \examples{
 # Create a minimal enzyme expression profile
@@ -104,5 +145,14 @@ profile <- create_expression_profile(
     name = c("Liver", "Kidney"),
     value = c(1, 0.5)
   )
+)
+
+# Set the global reference concentration directly
+profile <- create_expression_profile(
+  molecule = "CYP3A4",
+  species = "Human",
+  category = "Healthy",
+  type = "Enzyme",
+  reference_concentration = 4.32
 )
 }

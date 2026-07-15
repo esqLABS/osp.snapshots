@@ -126,6 +126,58 @@ to_raw_parameters <- function(parameters, name_key) {
   })
 }
 
+# Internal: build the promoted global-molecule-scalar `LocalizedParameter`
+# entries for `create_expression_profile()`. `specs` is a list with one entry
+# per promoted scalar, each `list(arg, value, unit, dimension, leaf)` in the
+# fixed argument order (reference concentration, liver half-life, intestine
+# half-life). `existing_paths` is the character vector of effective `Path`s
+# already present in the resolved `parameters` list, used for conflict
+# detection. A `NULL` value is a silent no-op (unit ignored, not validated).
+# For each supplied value the helper validates the value (a single finite
+# numeric) and the unit (via `validate_unit()`), aborts on a `Path` collision
+# with `existing_paths`, and accumulates an unnamed `list(Path, Value, Unit)`
+# entry. Returns an unnamed list of entries (empty when none supplied) so it
+# serialises as a JSON array.
+build_promoted_molecule_parameters <- function(
+  molecule,
+  specs,
+  existing_paths,
+  call = parent.frame()
+) {
+  promoted <- list()
+  for (spec in specs) {
+    if (is.null(spec$value)) {
+      next
+    }
+    if (
+      !is.numeric(spec$value) ||
+        length(spec$value) != 1 ||
+        !is.finite(spec$value)
+    ) {
+      cli::cli_abort(
+        "{.arg {spec$arg}} must be a single finite numeric value",
+        call = call
+      )
+    }
+    validate_unit(spec$unit, spec$dimension)
+    path <- paste0(molecule, "|", spec$leaf)
+    if (path %in% existing_paths) {
+      cli::cli_abort(
+        c(
+          "{.arg {spec$arg}} conflicts with an entry in {.arg parameters}.",
+          "i" = "The parameter {.val {path}} may be set via {.arg {spec$arg}} or via {.arg parameters}, not both."
+        ),
+        call = call
+      )
+    }
+    promoted <- c(
+      promoted,
+      list(list(Path = path, Value = spec$value, Unit = spec$unit))
+    )
+  }
+  promoted
+}
+
 # Internal: map the `expression` argument of `create_expression_profile()`
 # (and the `ExpressionProfile$expression` setter) to a raw
 # `ExpressionContainer[]` list, or `NULL` when the input is empty. The

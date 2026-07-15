@@ -9,6 +9,12 @@
 #' `Molecule|Species|Category`, so all three of `molecule`, `species`,
 #' and `category` are required.
 #'
+#' The `reference_concentration`, `half_life_liver`, and
+#' `half_life_intestine` arguments promote the three fixed global
+#' molecule-properties scalars as a convenience over hand-authoring them
+#' through `parameters`. A promoted argument and the equivalent
+#' `parameters` entry produce identical snapshot JSON.
+#'
 #' @param molecule Character. Name of the molecule (for example
 #'   `"CYP3A4"`). Required.
 #' @param species Character. Species (for example `"Human"`). Required.
@@ -25,6 +31,29 @@
 #' @param parameters List of [Parameter] objects (created with
 #'   [create_parameter()]) or raw parameter lists describing relative
 #'   expression and other per-organ values.
+#' @param reference_concentration Numeric or `NULL`. Global molecule
+#'   reference concentration, written to the `Path`
+#'   `"{molecule}|Reference concentration"`. Validated as a single finite
+#'   numeric. `NULL` (default) emits nothing. Dimension
+#'   `"Concentration (molar)"`.
+#' @param reference_concentration_unit Character. Unit for
+#'   `reference_concentration`, validated against the
+#'   `"Concentration (molar)"` dimension. Default `"µmol/l"`.
+#'   Consulted only when `reference_concentration` is supplied.
+#' @param half_life_liver Numeric or `NULL`. Global molecule liver
+#'   half-life, written to the `Path` `"{molecule}|t1/2 (liver)"`.
+#'   Validated as a single finite numeric. `NULL` (default) emits nothing.
+#'   Dimension `"Time"`.
+#' @param half_life_liver_unit Character. Unit for `half_life_liver`,
+#'   validated against the `"Time"` dimension. Default `"h"`. Consulted
+#'   only when `half_life_liver` is supplied.
+#' @param half_life_intestine Numeric or `NULL`. Global molecule intestine
+#'   half-life, written to the `Path` `"{molecule}|t1/2 (intestine)"`.
+#'   Validated as a single finite numeric. `NULL` (default) emits nothing.
+#'   Dimension `"Time"`.
+#' @param half_life_intestine_unit Character. Unit for
+#'   `half_life_intestine`, validated against the `"Time"` dimension.
+#'   Default `"h"`. Consulted only when `half_life_intestine` is supplied.
 #' @param expression Per-organ relative expression, written to the
 #'   snapshot's `Expression` array. Supply a data frame (or tibble), one
 #'   row per organ/compartment, with a required `name` column
@@ -76,6 +105,15 @@
 #'     value = c(1, 0.5)
 #'   )
 #' )
+#'
+#' # Set the global reference concentration directly
+#' profile <- create_expression_profile(
+#'   molecule = "CYP3A4",
+#'   species = "Human",
+#'   category = "Healthy",
+#'   type = "Enzyme",
+#'   reference_concentration = 4.32
+#' )
 create_expression_profile <- function(
   molecule,
   species,
@@ -85,6 +123,12 @@ create_expression_profile <- function(
   transport_type = NULL,
   ontogeny = NULL,
   parameters = NULL,
+  reference_concentration = NULL,
+  reference_concentration_unit = "µmol/l",
+  half_life_liver = NULL,
+  half_life_liver_unit = "h",
+  half_life_intestine = NULL,
+  half_life_intestine_unit = "h",
   expression = NULL,
   disease = NULL,
   description = NULL
@@ -119,11 +163,49 @@ create_expression_profile <- function(
       cli::cli_abort("{.arg ontogeny} must be a scalar character or a list")
     }
   }
-  if (!is.null(parameters)) {
-    if (!is.list(parameters)) {
-      cli::cli_abort("{.arg parameters} must be a list")
-    }
-    data$Parameters <- to_raw_parameters(parameters, "Path")
+  if (!is.null(parameters) && !is.list(parameters)) {
+    cli::cli_abort("{.arg parameters} must be a list")
+  }
+  raw_params <- if (is.null(parameters)) {
+    list()
+  } else {
+    to_raw_parameters(parameters, "Path")
+  }
+  existing_paths <- vapply(
+    raw_params,
+    function(p) if (is.null(p$Path)) NA_character_ else p$Path,
+    character(1)
+  )
+  promoted <- build_promoted_molecule_parameters(
+    molecule = molecule,
+    specs = list(
+      list(
+        arg = "reference_concentration",
+        value = reference_concentration,
+        unit = reference_concentration_unit,
+        dimension = "Concentration (molar)",
+        leaf = "Reference concentration"
+      ),
+      list(
+        arg = "half_life_liver",
+        value = half_life_liver,
+        unit = half_life_liver_unit,
+        dimension = "Time",
+        leaf = "t1/2 (liver)"
+      ),
+      list(
+        arg = "half_life_intestine",
+        value = half_life_intestine,
+        unit = half_life_intestine_unit,
+        dimension = "Time",
+        leaf = "t1/2 (intestine)"
+      )
+    ),
+    existing_paths = existing_paths
+  )
+  combined <- c(promoted, raw_params)
+  if (length(combined) > 0) {
+    data$Parameters <- combined
   }
 
   containers <- build_expression_containers(expression)
