@@ -11,8 +11,9 @@
 validate_unit <- function(unit, dimension) {
   valid_units <- tryCatch(
     ospsuite::getUnitsForDimension(dimension),
-    error = function(e)
+    error = function(e) {
       unlist(ospsuite::ospUnits[[dimension]], use.names = FALSE)
+    }
   )
   if (!(unit %in% valid_units)) {
     cli::cli_abort(
@@ -31,10 +32,16 @@ validate_unit <- function(unit, dimension) {
 #' Check if a species is valid using ospsuite Species enum.
 #' Throws an error if the species is invalid.
 #'
-#' @param species Species value to validate
+#' @param species Species value to validate. Must be a single, non-`NA`
+#'   value.
 #' @return TRUE if valid, throws an error if invalid
 #' @export
 validate_species <- function(species) {
+  if (length(species) != 1L || is.na(species)) {
+    cli::cli_abort(
+      "{.arg species} must be a single, non-missing value"
+    )
+  }
   valid_species <- ospsuite::Species
   if (!species %in% valid_species) {
     cli::cli_abort(

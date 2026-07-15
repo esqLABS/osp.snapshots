@@ -571,6 +571,10 @@ test_that("physicochemical helpers reject non-numeric values", {
   expect_snapshot(error = TRUE, lipophilicity("a"))
   expect_snapshot(error = TRUE, fraction_unbound("a"))
   expect_snapshot(error = TRUE, fraction_unbound(1, species = "Klingon"))
+  expect_snapshot(
+    error = TRUE,
+    fraction_unbound(1, species = c("Human", "Dog"))
+  )
   expect_snapshot(error = TRUE, solubility("a"))
   expect_snapshot(error = TRUE, solubility(9999, reference_pH = "a"))
   expect_snapshot(error = TRUE, solubility(9999, gain_per_charge = "a"))

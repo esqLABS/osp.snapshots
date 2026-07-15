@@ -159,6 +159,14 @@
 ---
 
     Code
+      fraction_unbound(1, species = c("Human", "Dog"))
+    Condition
+      Error in `validate_species()`:
+      ! `species` must be a single, non-missing value
+
+---
+
+    Code
       solubility("a")
     Condition
       Error in `solubility()`:

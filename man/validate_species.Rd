@@ -7,7 +7,8 @@
 validate_species(species)
 }
 \arguments{
-\item{species}{Species value to validate}
+\item{species}{Species value to validate. Must be a single, non-\code{NA}
+value.}
 }
 \value{
 TRUE if valid, throws an error if invalid
