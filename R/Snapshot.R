@@ -1479,11 +1479,14 @@ Snapshot <- R6::R6Class(
       }
 
       # Version-aware authoring: PK-Sim v13 (Version 81) added the
-      # `CheckNegativeValues` solver field. Emit it only when the snapshot is
-      # at 81 so a v81 snapshot round-trips against a v13 core, while 79/80
-      # snapshots stay free of the newer-only field. Only set it when absent
-      # so an explicitly supplied value is preserved.
-      if (identical(private$.raw_version(), SUPPORTED_VERSION_MAX)) {
+      # `CheckNegativeValues` solver field. Emit it when the snapshot is at 81
+      # or newer so a v81 snapshot round-trips against a v13 core and future
+      # versions inherit the (additive) field, while 79/80 snapshots stay free
+      # of the newer-only field. The 81 threshold is the version that
+      # introduced the field, independent of the current ceiling. Only set it
+      # when absent so an explicitly supplied value is preserved.
+      version_num <- private$.raw_version()
+      if (!is.na(version_num) && version_num >= 81L) {
         if (is.null(data$Solver$CheckNegativeValues)) {
           data$Solver$CheckNegativeValues <- TRUE
         }
