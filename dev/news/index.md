@@ -2,6 +2,14 @@
 
 ## osp.snapshots (development version)
 
+- [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
+  gains a `species` argument (default `"Human"`, validated against
+  [`ospsuite::Species`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html))
+  and now emits a `Species` field on the fraction-unbound alternative,
+  which PK-Sim requires to load the snapshot (#156).
+
+## osp.snapshots 1.0.0
+
 ### Breaking changes
 
 - `AdvancedParameter$distribution_type` is now validated against the

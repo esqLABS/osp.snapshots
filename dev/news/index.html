@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.2.9910</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,8 +40,13 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ospsnapshots-development-version">osp.snapshots (development version)<a class="anchor" aria-label="anchor" href="#ospsnapshots-development-version"></a></h2>
+<ul><li>
+<code><a href="../reference/fraction_unbound.html">fraction_unbound()</a></code> gains a <code>species</code> argument (default <code>"Human"</code>, validated against <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html" class="external-link">ospsuite::Species</a></code>) and now emits a <code>Species</code> field on the fraction-unbound alternative, which PK-Sim requires to load the snapshot (#156).</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.0" id="ospsnapshots-100">osp.snapshots 1.0.0<a class="anchor" aria-label="anchor" href="#ospsnapshots-100"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-1-0-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-0-0"></a></h3>
 <ul><li>
 <code>AdvancedParameter$distribution_type</code> is now validated against the distribution-type enum (<code>Normal</code>, <code>LogNormal</code>, <code>Uniform</code>, <code>Discrete</code>, <code>Unknown</code>).</li>
 <li>
@@ -92,7 +97,7 @@
 <code>SolverSettings</code> fields (<code>abs_tol</code>, <code>rel_tol</code>, <code>use_jacobian</code>, <code>h0</code>, <code>h_min</code>, <code>h_max</code>, <code>mx_step</code>) are now validated per <code><a href="../reference/create_solver_settings.html">create_solver_settings()</a></code>’s existing rules.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-1-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0"></a></h3>
 <ul><li>
 <code><a href="../reference/add_simulation.html">add_simulation()</a></code> is the entry point for building a simulation: with the snapshot in hand it constructs a <code>Simulation</code> from named arguments (<code>name</code>, <code>individual</code>/<code>population</code>, <code>compounds</code>, …), resolves the references, and derives defaults (calculation methods from the compound, the formulation key from the protocol’s slot, alternatives from each group’s default) before attaching. Configure each compound inline through <code>compounds = list(list(name =, protocol =, formulation =, processes =, calculation_methods =, alternatives =, ...))</code>: select a specific alternative by friendly property name and label (<code>alternatives = c(solubility = "FaSSIF")</code>, overriding the derived default for that group only) or bind a multi-slot protocol’s formulations explicitly (<code>formulation = c(Formulation = "Oral solution", "Formulation 2" = "IV solution")</code>); a named <code>formulation</code> map that names a slot key the referenced protocol does not have is not an error, only an informational message, since PK-Sim itself rejects an unbound or mis-bound slot at load time. Unresolved references to other building blocks (individual, population, compounds, events, observer sets, observed data, protocols, formulations) trigger one informational warning per simulation; the add proceeds either way (#94, #135, #144).</li>
 <li>
@@ -158,7 +163,7 @@
 <li>Parameters that live in a parameter tree (under an <code>Individual</code>, <code>ExpressionProfile</code>, or <code>Simulation</code>) are now <code>LocalizedParameter</code> objects, identified by a pipe-separated path. Pre-v11 <code>Applications|...</code> segments are migrated to <code>Events|...</code> on load. <code><a href="../reference/create_parameter.html">create_parameter()</a></code> routes to <code>LocalizedParameter</code> when called with a <code>path</code> argument (#31).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="minor-improvements-and-fixes-development-version">Minor improvements and fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-fixes-development-version"></a></h3>
+<h3 id="minor-improvements-and-fixes-1-0-0">Minor improvements and fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-fixes-1-0-0"></a></h3>
 <ul><li>
 <code>as_tibbles(snapshot, "protocols")</code> (and the legacy <code><a href="../reference/get_protocols_dfs.html">get_protocols_dfs()</a></code> wrapper) now returns the same 13 columns whether the snapshot has any protocols or not. Previously the empty-state path returned an 18-column tibble that disagreed with the populated path, breaking <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows()</a></code> across mixed snapshots (#56).</li>
 <li>

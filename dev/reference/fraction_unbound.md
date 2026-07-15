@@ -8,10 +8,19 @@ parameter `"Fraction unbound (plasma, reference value)"`. Fraction
 unbound stores a bare value with no unit, so this helper takes no `unit`
 argument.
 
+Fraction unbound is the one species-dependent single-parameter group, so
+the emitted alternative carries a `Species` field (see `species`), which
+PK-Sim requires to load the snapshot.
+
 ## Usage
 
 ``` r
-fraction_unbound(value, name = "User defined", default = FALSE)
+fraction_unbound(
+  value,
+  name = "User defined",
+  default = FALSE,
+  species = "Human"
+)
 ```
 
 ## Arguments
@@ -35,6 +44,17 @@ fraction_unbound(value, name = "User defined", default = FALSE)
   list has no element marked `default = TRUE`, the first element is the
   default (unchanged behaviour); marking two or more elements
   `default = TRUE` in the same list is an error.
+
+- species:
+
+  Character. PK-Sim species emitted as the alternative's `Species`
+  field. Defaults to `"Human"` and is validated against
+  [`ospsuite::Species`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html).
+  Fraction unbound is species-dependent, and PK-Sim rejects a snapshot
+  whose fraction-unbound alternative has no resolvable species, so this
+  is emitted on every fraction-unbound alternative. A user hand-building
+  a raw alternative list (the `Compound$fraction_unbound` escape hatch)
+  is responsible for its own `Species`.
 
 ## Value
 
@@ -70,6 +90,9 @@ fraction_unbound(0.1)
 #> 
 #> $default
 #> [1] FALSE
+#> 
+#> $species
+#> [1] "Human"
 #> 
 #> attr(,"class")
 #> [1] "fraction_unbound_spec" "osp_value_spec"       
