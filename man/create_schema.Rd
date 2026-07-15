@@ -4,19 +4,53 @@
 \alias{create_schema}
 \title{Create a new schema}
 \usage{
-create_schema(name, parameters = NULL, items = NULL)
+create_schema(
+  name,
+  parameters = NULL,
+  items = NULL,
+  number_of_repetitions = NULL,
+  time_between_repetitions = NULL,
+  time_between_repetitions_unit = "h",
+  start_time = NULL,
+  start_time_unit = "h"
+)
 }
 \arguments{
 \item{name}{Character. Name of the schema (required).}
 
 \item{parameters}{List of \link{Parameter} objects (created with
-\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists. These become the
-schema-level parameters (\verb{Start time}, \code{NumberOfRepetitions},
-\code{TimeBetweenRepetitions}, ...).}
+\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists. This is the escape
+hatch for any schema-level parameter not promoted to a plain
+argument. Each promoted argument is mutually exclusive with a
+matching entry here (an entry named \code{"NumberOfRepetitions"},
+\code{"TimeBetweenRepetitions"}, or \code{"Start time"}): supply a repetition
+parameter either as the plain argument or as a \code{parameters} entry,
+not both.}
 
 \item{items}{List of \link{SchemaItem} objects (created with
 \code{\link[=create_schema_item]{create_schema_item()}}) or raw schema item lists. These define the
 applications inside the schema.}
+
+\item{number_of_repetitions}{Numeric. Optional count of schema
+repetitions (\code{NumberOfRepetitions}). A single finite whole number
+(dimensionless, no unit). Mutually exclusive with a
+\code{"NumberOfRepetitions"} entry in \code{parameters}.}
+
+\item{time_between_repetitions}{Numeric. Optional time between
+repetitions (\code{TimeBetweenRepetitions}). A single finite numeric.
+Mutually exclusive with a \code{"TimeBetweenRepetitions"} entry in
+\code{parameters}.}
+
+\item{time_between_repetitions_unit}{Character. Display unit for
+\code{time_between_repetitions}, default \code{"h"}, validated against the
+\code{"Time"} dimension.}
+
+\item{start_time}{Numeric. Optional schema start time (\verb{Start time}).
+A single finite numeric. Mutually exclusive with a \code{"Start time"}
+entry in \code{parameters}.}
+
+\item{start_time_unit}{Character. Display unit for \code{start_time},
+default \code{"h"}, validated against the \code{"Time"} dimension.}
 }
 \value{
 A \link{Schema} object.
@@ -27,12 +61,24 @@ This is a thin factory around \code{Schema$new()} that builds the raw list
 shape for you.
 
 A schema is a repeatable block inside an Advanced \link{Protocol}: it has
-a name, schema-level parameters (typically \code{NumberOfRepetitions} and
-\code{TimeBetweenRepetitions}), and an ordered list of \link{SchemaItem}
-applications.
+a name, schema-level parameters (typically \code{NumberOfRepetitions},
+\code{TimeBetweenRepetitions}, and \verb{Start time}), and an ordered list of
+\link{SchemaItem} applications. The three repetition parameters are
+available as the plain, unit-aware arguments \code{number_of_repetitions},
+\code{time_between_repetitions}, and \code{start_time}; anything else is supplied
+through the \code{parameters} escape hatch.
 }
 \examples{
-# A once-daily schema with a single oral application
+# A schema using the promoted repetition arguments
+schema <- create_schema(
+  name = "Schema 1",
+  number_of_repetitions = 3,
+  time_between_repetitions = 24,
+  start_time = 0
+)
+
+# A once-daily schema with a single oral application, using the
+# `parameters` escape hatch for the schema-level parameters
 schema <- create_schema(
   name = "Schema 1",
   parameters = list(
