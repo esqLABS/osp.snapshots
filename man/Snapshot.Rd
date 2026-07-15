@@ -13,13 +13,16 @@ structure.
 supported band \code{79} (v11.2) to \code{81} (v13), inclusive (see
 \code{osp.snapshots:::SUPPORTED_VERSION_MIN} and
 \code{osp.snapshots:::SUPPORTED_VERSION_MAX}). A snapshot above the ceiling
-aborts as "not supported yet". A below-floor snapshot in the \code{74-78} band
-can be migrated up to whatever the installed \code{ospsuite} core emits by
-passing \code{upgrade = TRUE}, which round-trips it through PK-Sim; without it,
-such a snapshot reports how to migrate and does not load. Snapshots below
-\code{74} are too old to migrate and abort. A snapshot newer than the installed
-\code{ospsuite} core (but still in band) loads with a warning that it may not
-load or run there. Hand-rolled list input must supply \code{Version}.
+aborts as not supported in this version. A below-floor snapshot in the
+\code{74-78} band can be migrated by passing \code{upgrade = TRUE}, which round-trips
+it through PK-Sim up to the version the installed \code{ospsuite} core emits;
+migration requires that core to emit a supported version (\code{79} to \code{81}) and
+aborts before converting when it would emit something above the ceiling.
+Without \code{upgrade = TRUE}, a below-floor snapshot reports how to migrate and
+does not load. Snapshots below \code{74} are too old to migrate and abort. A
+snapshot newer than the installed \code{ospsuite} core (but still in band) loads
+with a warning that it may not load or run there. Hand-rolled list input
+must supply \code{Version}.
 }
 
 \examples{
@@ -194,9 +197,10 @@ snapshot$remove_expression_profile("CYP3A4_Human_Healthy")
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{input}}{Path to the snapshot JSON file, URL, template name, or a
-list containing snapshot data. The parsed data must contain an
-integer \code{Version} field within the supported band (\code{79} to \code{81});
-an out-of-band or missing version aborts (see the
+list containing snapshot data. The parsed data must contain an integer
+\code{Version} field. Versions \code{79} to \code{81} load normally; versions \code{74} to
+\code{78} load only with \code{upgrade = TRUE} (otherwise they report how to
+migrate and abort); all other or missing versions abort (see the
 "Supported snapshot versions" section).}
       \item{\code{upgrade}}{Logical, default \code{FALSE}. When \code{TRUE} and the snapshot's
 \code{Version} is in the below-floor migration band (\code{74-78}), the snapshot

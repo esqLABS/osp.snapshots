@@ -13,10 +13,12 @@ test_that("upgrade = TRUE migrates a below-floor snapshot through PK-Sim", {
   testthat::skip_on_ci()
   testthat::skip_if_offline()
   # The v12 core segfaults on macOS during snapshot conversion; only run
-  # where the installed core sits within the supported band (v13 emits 81).
+  # where the installed core emits exactly the current authoring version
+  # (v13 emits 81). A core emitting anything else (an older 80, or a future
+  # 82+ that migration would reject) is skipped.
   testthat::skip_if(
-    .installed_core_version() < SUPPORTED_VERSION_MAX,
-    "requires a PK-Sim core that emits a supported snapshot version"
+    .installed_core_version() != SUPPORTED_VERSION_MAX,
+    "requires a PK-Sim core that emits the current supported snapshot version"
   )
 
   # A real below-floor snapshot: the Midazolam-Model v1.1 release is Version

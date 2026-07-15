@@ -79,7 +79,6 @@
       Error in `private$.validate_version()`:
       ! Snapshot Version 73 is too old to migrate.
       i osp.snapshots supports snapshots from Version 79 to 81, and can migrate Version 74 to 78.
-      i Re-export the project from a newer PK-Sim before loading it.
 
 ---
 
@@ -91,7 +90,6 @@
       Error in `private$.validate_version()`:
       ! Snapshot Version 73 is too old to migrate.
       i osp.snapshots supports snapshots from Version 79 to 81, and can migrate Version 74 to 78.
-      i Re-export the project from a newer PK-Sim before loading it.
 
 # Snapshot rejects snapshots newer than the supported ceiling
 
@@ -101,8 +99,8 @@
       i Creating snapshot from list data
     Condition
       Error in `private$.validate_version()`:
-      ! Snapshot Version 82 is not supported yet.
-      i osp.snapshots supports snapshots up to Version 81; upgrade osp.snapshots to load newer snapshots.
+      ! Snapshot Version 82 is not supported in this version.
+      i osp.snapshots v1.0.0.9001 supports snapshots up to Version 81.
 
 ---
 
@@ -112,8 +110,8 @@
       i Reading snapshot from 'data/snapshot_v82.json'
     Condition
       Error in `private$.validate_version()`:
-      ! Snapshot Version 82 is not supported yet.
-      i osp.snapshots supports snapshots up to Version 81; upgrade osp.snapshots to load newer snapshots.
+      ! Snapshot Version 82 is not supported in this version.
+      i osp.snapshots v1.0.0.9001 supports snapshots up to Version 81.
 
 ---
 
@@ -123,8 +121,8 @@
       i Creating snapshot from list data
     Condition
       Error in `private$.validate_version()`:
-      ! Snapshot Version 82 is not supported yet.
-      i osp.snapshots supports snapshots up to Version 81; upgrade osp.snapshots to load newer snapshots.
+      ! Snapshot Version 82 is not supported in this version.
+      i osp.snapshots v1.0.0.9001 supports snapshots up to Version 81.
 
 # Snapshot warns when a snapshot is newer than the installed core
 
@@ -150,6 +148,60 @@
       ! Cannot migrate this snapshot with the installed ospsuite core.
       i The installed core would emit Version 82, which is above the highest version osp.snapshots supports (Version 81).
       i Upgrade osp.snapshots (or install a matching ospsuite) before migrating.
+
+# Snapshot rejects an invalid upgrade argument
+
+    Code
+      Snapshot$new(list(Version = 80), upgrade = 1)
+    Condition
+      Error in `initialize()`:
+      ! `upgrade` must be a single `TRUE` or `FALSE`.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 80), upgrade = "TRUE")
+    Condition
+      Error in `initialize()`:
+      ! `upgrade` must be a single `TRUE` or `FALSE`.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 80), upgrade = NA)
+    Condition
+      Error in `initialize()`:
+      ! `upgrade` must be a single `TRUE` or `FALSE`.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 80), upgrade = c(TRUE, FALSE))
+    Condition
+      Error in `initialize()`:
+      ! `upgrade` must be a single `TRUE` or `FALSE`.
+
+# Snapshot rejects a non-integer Version instead of truncating it
+
+    Code
+      Snapshot$new(list(Version = 81.9))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot is missing an integer Version field.
+      i osp.snapshots requires PK-Sim v11+ snapshots (Version >= 79).
+
+---
+
+    Code
+      Snapshot$new(list(Version = "81"))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot is missing an integer Version field.
+      i osp.snapshots requires PK-Sim v11+ snapshots (Version >= 79).
 
 # Snapshot rejects snapshots missing a Version field
 

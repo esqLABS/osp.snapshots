@@ -708,6 +708,30 @@ test_that("Snapshot migration aborts before converting on an incompatible core",
   )
 })
 
+test_that("Snapshot rejects an invalid upgrade argument", {
+  # `upgrade` must be a single, non-missing logical: numeric, character, NA,
+  # and vector inputs are rejected at the public boundary rather than being
+  # silently treated as FALSE.
+  expect_snapshot(Snapshot$new(list(Version = 80), upgrade = 1), error = TRUE)
+  expect_snapshot(
+    Snapshot$new(list(Version = 80), upgrade = "TRUE"),
+    error = TRUE
+  )
+  expect_snapshot(Snapshot$new(list(Version = 80), upgrade = NA), error = TRUE)
+  expect_snapshot(
+    Snapshot$new(list(Version = 80), upgrade = c(TRUE, FALSE)),
+    error = TRUE
+  )
+})
+
+test_that("Snapshot rejects a non-integer Version instead of truncating it", {
+  # A fractional version (`81.9`) or a numeric string (`"81"`) must not be
+  # silently coerced past the version gate; both are treated as a missing
+  # integer Version and abort.
+  expect_snapshot(Snapshot$new(list(Version = 81.9)), error = TRUE)
+  expect_snapshot(Snapshot$new(list(Version = "81")), error = TRUE)
+})
+
 test_that("Snapshot rejects snapshots missing a Version field", {
   expect_snapshot(Snapshot$new(list(Compounds = list())), error = TRUE)
 })
