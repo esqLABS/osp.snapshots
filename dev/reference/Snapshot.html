@@ -11,7 +11,7 @@ structure."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,12 +52,20 @@ structure.</p>
 
     <div class="section level2">
     <h2 id="supported-snapshot-versions">Supported snapshot versions<a class="anchor" aria-label="anchor" href="#supported-snapshot-versions"></a></h2>
-    <p><code>Snapshot</code> only accepts PK-Sim v11+ snapshots, i.e. integer <code>Version</code>
-values of <code>79</code> or greater (see <code>osp.snapshots:::SUPPORTED_VERSION_MIN</code>).
-Earlier snapshots use different conventions (notably <code>Applications|...</code>
-instead of <code>Events|...</code> in parameter paths) and are not modelled by this
-package; <code>Snapshot$new()</code> aborts on them rather than silently rewriting
-fields. Hand-rolled list input must supply <code>Version</code> for the same reason.</p>
+    <p><code>Snapshot</code> accepts PK-Sim snapshots whose integer <code>Version</code> is within the
+supported band <code>79</code> (v11.2) to <code>81</code> (v13), inclusive (see
+<code>osp.snapshots:::SUPPORTED_VERSION_MIN</code> and
+<code>osp.snapshots:::SUPPORTED_VERSION_MAX</code>). A snapshot above the ceiling
+aborts as not supported in this version. A below-floor snapshot in the
+<code>74-78</code> band can be migrated by passing <code>upgrade = TRUE</code>, which round-trips
+it through PK-Sim up to the version the installed <code>ospsuite</code> core emits;
+migration requires that core to emit a supported version (<code>79</code> to <code>81</code>) and
+aborts before converting when it would emit something above the ceiling.
+Without <code>upgrade = TRUE</code>, a below-floor snapshot reports how to migrate and
+does not load. Snapshots below <code>74</code> are too old to migrate and abort. A
+snapshot newer than the installed <code>ospsuite</code> core (but still in band) loads
+with a warning that it may not load or run there. Hand-rolled list input
+must supply <code>Version</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
@@ -148,14 +156,24 @@ fields. Hand-rolled list input must supply <code>Version</code> for the same rea
 <h3 id="snapshot-new-"><code>Snapshot$new()</code><a class="anchor" aria-label="anchor" href="#snapshot-new-"></a></h3>
 <p>Create a new Snapshot object from a JSON file or a list</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Snapshot.html">Snapshot</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">input</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/Snapshot.html">Snapshot</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">input</span>, upgrade <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>input</code></dt>
 <dd><p>Path to the snapshot JSON file, URL, template name, or a
-list containing snapshot data. The parsed data must contain an
-integer <code>Version</code> field of <code>79</code> (v11.2) or greater; older or missing
-versions abort.</p></dd>
+list containing snapshot data. The parsed data must contain an integer
+<code>Version</code> field. Versions <code>79</code> to <code>81</code> load normally; versions <code>74</code> to
+<code>78</code> load only with <code>upgrade = TRUE</code> (otherwise they report how to
+migrate and abort); all other or missing versions abort (see the
+"Supported snapshot versions" section).</p></dd>
+
+      <dt><code>upgrade</code></dt>
+<dd><p>Logical, default <code>FALSE</code>. When <code>TRUE</code> and the snapshot's
+<code>Version</code> is in the below-floor migration band (<code>74-78</code>), the snapshot
+is round-tripped through the installed PK-Sim core to upgrade it to a
+supported version before loading (slow, several minutes). When <code>FALSE</code>,
+a below-floor snapshot reports how to migrate and aborts. Ignored for
+in-band snapshots, which are never migrated.</p></dd>
 
 
 </dl><p></p></div>

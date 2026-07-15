@@ -21,7 +21,7 @@ export_snapshot()."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,16 +98,25 @@ same <code>NULL</code>-versus-supplied and empty-string semantics as <code>name<
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># An empty snapshot</span></span></span>
 <span class="r-in"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu">create_snapshot</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating snapshot from list data</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Snapshot <span style="color: #00BB00;">Version</span> 81 is newer than the installed <span style="color: #0000BB;">ospsuite</span> core (<span style="color: #00BB00;">Version</span> 80).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> It may not load or run in the installed <span style="color: #0000BB;">ospsuite</span>; editing and exporting still</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   work here.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Snapshot loaded successfully</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A named and described snapshot</span></span></span>
 <span class="r-in"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu">create_snapshot</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"My Project"</span>, description <span class="op">=</span> <span class="st">"Notes"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating snapshot from list data</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Snapshot <span style="color: #00BB00;">Version</span> 81 is newer than the installed <span style="color: #0000BB;">ospsuite</span> core (<span style="color: #00BB00;">Version</span> 80).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> It may not load or run in the installed <span style="color: #0000BB;">ospsuite</span>; editing and exporting still</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   work here.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Snapshot loaded successfully</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Populate it with a building block</span></span></span>
 <span class="r-in"><span><span class="va">snapshot</span> <span class="op">&lt;-</span> <span class="fu"><a href="add_compound.html">add_compound</a></span><span class="op">(</span><span class="fu">create_snapshot</span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="create_compound.html">create_compound</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Drug X"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Creating snapshot from list data</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Snapshot <span style="color: #00BB00;">Version</span> 81 is newer than the installed <span style="color: #0000BB;">ospsuite</span> core (<span style="color: #00BB00;">Version</span> 80).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> It may not load or run in the installed <span style="color: #0000BB;">ospsuite</span>; editing and exporting still</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   work here.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Snapshot loaded successfully</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Added 1 compound(s)</span>
 </code></pre></div>

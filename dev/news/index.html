@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,15 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ospsnapshots-development-version">osp.snapshots (development version)<a class="anchor" aria-label="anchor" href="#ospsnapshots-development-version"></a></h2>
 <ul><li>
+<code><a href="../reference/create_snapshot.html">create_snapshot()</a></code> now authors the current PK-Sim v13 snapshot version (<code>Version 81</code>) instead of <code>80</code>, ordering the top-level <code>Name</code> before <code>Version</code> and emitting the new <code>CheckNegativeValues</code> solver field when a simulation is added (#161).</li>
+<li>
 <code><a href="../reference/fraction_unbound.html">fraction_unbound()</a></code> gains a <code>species</code> argument (default <code>"Human"</code>, validated against <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html" class="external-link">ospsuite::Species</a></code>) and now emits a <code>Species</code> field on the fraction-unbound alternative, which PK-Sim requires to load the snapshot (#156).</li>
+<li>
+<code><a href="../reference/load_snapshot.html">load_snapshot()</a></code> and <code>Snapshot$new()</code> gain an <code>upgrade</code> argument (default <code>FALSE</code>) that migrates a below-floor PK-Sim snapshot (<code>Version 74-78</code>) up to the installed core’s version via a PK-Sim round trip; without it, such a snapshot reports how to migrate and does not load (#161).</li>
+<li>
+<code><a href="../reference/load_snapshot.html">load_snapshot()</a></code> now supports PK-Sim v13 snapshots (<code>Version 81</code>), reports their PK-Sim version, and rejects snapshots newer than it supports (<code>Version 82+</code>) with a clear error (#161).</li>
+<li>
+<code><a href="../reference/load_snapshot.html">load_snapshot()</a></code> warns, rather than fails, when a supported snapshot is newer than the installed <code>ospsuite</code> core, since it may not load or run there (#161).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="ospsnapshots-100">osp.snapshots 1.0.0<a class="anchor" aria-label="anchor" href="#ospsnapshots-100"></a></h2>

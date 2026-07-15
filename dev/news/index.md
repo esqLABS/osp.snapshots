@@ -2,11 +2,28 @@
 
 ## osp.snapshots (development version)
 
+- [`create_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_snapshot.md)
+  now authors the current PK-Sim v13 snapshot version (`Version 81`)
+  instead of `80`, ordering the top-level `Name` before `Version` and
+  emitting the new `CheckNegativeValues` solver field when a simulation
+  is added (#161).
 - [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
   gains a `species` argument (default `"Human"`, validated against
   [`ospsuite::Species`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html))
   and now emits a `Species` field on the fraction-unbound alternative,
   which PK-Sim requires to load the snapshot (#156).
+- [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
+  and `Snapshot$new()` gain an `upgrade` argument (default `FALSE`) that
+  migrates a below-floor PK-Sim snapshot (`Version 74-78`) up to the
+  installed core’s version via a PK-Sim round trip; without it, such a
+  snapshot reports how to migrate and does not load (#161).
+- [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
+  now supports PK-Sim v13 snapshots (`Version 81`), reports their PK-Sim
+  version, and rejects snapshots newer than it supports (`Version 82+`)
+  with a clear error (#161).
+- [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
+  warns, rather than fails, when a supported snapshot is newer than the
+  installed `ospsuite` core, since it may not load or run there (#161).
 
 ## osp.snapshots 1.0.0
 
