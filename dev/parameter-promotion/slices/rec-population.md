@@ -1,0 +1,12 @@
+### create_population()
+
+16 of the 113 crawled snapshots carried a `Populations` section (populations are the least common in-scope block, as most published models are single-individual). The tally distinguishes two kinds of population parameter: the scalar demographic `ParameterRange` entries in `Populations[].Settings` (fixed keys `Age`, `Weight`, `Height`, `GestationalAge`, `BMI`, each carrying `Min`/`Max`/`Unit`) and the per-molecule `AdvancedParameters` (enzyme/transporter `Reference concentration` and `t1/2` values, e.g. `CYP3A4|Reference concentration` on 13 models). The demographic ranges are reusable scalars and are the promotion candidates; the advanced enzyme parameters are per-molecule localized values (the same structural situation as expression profiles) and are recorded in the raw tally but not promoted as flat scalar arguments.
+
+| argument | pksim_parameter | default_unit | dimension | occurrences | n_models | evidence |
+|---|---|---|---|---|---|---|
+| `age` | `Age` | `year(s)` | Age in years | 73 | 16 | D5(a): on all 16 population-bearing models; the most common demographic range. Maps to the `Age` `ParameterRange`; observed units `day(s)`/`month(s)`/`year(s)` all in the age/time family, canonical default `year(s)`. |
+| `weight` | `Weight` | `kg` | Mass | 38 | 11 | D5(a): on 11 of 16 models (>= 5 models, majority). Maps to the `Weight` `ParameterRange`; `kg` validated against dimension `Mass`. |
+| `height` | `Height` | `cm` | Length | 16 | 7 | D5(a): on 7 models (>= 5 models). Maps to the `Height` `ParameterRange`; `cm` validated against dimension `Length`. |
+| `bmi` | `BMI` | `kg/m²` | BMI | 29 | 7 | D5(a): on 7 models (>= 5 models). Maps to the `BMI` `ParameterRange`; `kg/m²` validated against dimension `BMI`. |
+
+`GestationalAge` did not appear in this corpus (the pregnancy models publish their snapshots in subfolders and were not among the crawled files), but it is the fifth canonical demographic range and a follow-up should include it alongside the four above for completeness (D5(b): canonical range, low frequency here). The per-molecule advanced parameters (`CYP3A4|Reference concentration`, 57 occurrences / 13 models; `CYP3A4|t1/2 (intestine)` and `CYP3A4|t1/2 (liver)`, 47 occurrences / 12 models each; and similar CYP1A2/CYP2D6/CYP2C8/ABCB1/UGT1A4 entries) are frequent but per-molecule localized, so they belong to a structured expression-variability sub-API rather than a flat scalar argument, and are deferred with the same rationale as `create_expression_profile()`.

@@ -1,0 +1,5 @@
+"factory","parameter_id","id_field","occurrences","n_models","distinct_units","source_models"
+"event","Meal energy content","Name",14,11,"kcal","Atazanavir-Model;Atazanavir-Raltegravir-DDI;Cabozantinib-Model;Griseofulvin-Model;Mefenamic_acid-Dapagliflozin-DDI;Mefenamic-acid-Model;Metformin-Model;Methotrexate-Model;Paracetamol-Model;Posaconazole-Model;Pregabalin-Model"
+"event","Meal fraction solid","Name",3,3,"(none)","Cabozantinib-Model;Metformin-Model;Posaconazole-Model"
+"event","Gallbladder emptying lag time","Name",2,1,"min","Cabozantinib-Model"
+"event","Meal volume","Name",1,1,"l","Metformin-Model"
