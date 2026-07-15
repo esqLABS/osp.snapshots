@@ -83,10 +83,20 @@ test_that("create_compound sets a fraction unbound alternative without a unit", 
     fraction_unbound = fraction_unbound(1)
   )
 
-  param <- compound$data$FractionUnbound[[1]]$Parameters[[1]]
+  alt <- compound$data$FractionUnbound[[1]]
+  param <- alt$Parameters[[1]]
   expect_equal(param$Name, "Fraction unbound (plasma, reference value)")
   expect_equal(param$Value, 1)
   expect_null(param$Unit)
+  expect_equal(alt$Species, "Human")
+})
+
+test_that("fraction_unbound species defaults to Human and can be overridden", {
+  compound <- create_compound(
+    name = "X",
+    fraction_unbound = fraction_unbound(1, species = "Rat")
+  )
+  expect_equal(compound$data$FractionUnbound[[1]]$Species, "Rat")
 })
 
 test_that("create_compound bundles reference pH and gain per charge into solubility", {
@@ -279,6 +289,10 @@ test_that("create_compound accepts a list of alternatives for lipophilicity, fra
   expect_equal(
     vapply(compound$data$FractionUnbound, `[[`, character(1), "Name"),
     c("Plasma", "Microsomal")
+  )
+  expect_equal(
+    vapply(compound$data$FractionUnbound, `[[`, character(1), "Species"),
+    c("Human", "Human")
   )
   expect_equal(
     vapply(compound$data$IntestinalPermeability, `[[`, character(1), "Name"),
@@ -525,9 +539,38 @@ test_that("create_compound attaches processes", {
   )
 })
 
+test_that("only fraction unbound gains a Species key", {
+  compound <- create_compound(
+    name = "X",
+    lipophilicity = lipophilicity(2.5),
+    intestinal_permeability = intestinal_permeability(1.14e-05),
+    permeability = permeability(0.0069)
+  )
+  expect_false("Species" %in% names(compound$data$Lipophilicity[[1]]))
+  expect_false("Species" %in% names(compound$data$IntestinalPermeability[[1]]))
+  expect_false("Species" %in% names(compound$data$Permeability[[1]]))
+})
+
+test_that("solubility alternatives gain no Species key (scalar and table)", {
+  scalar <- create_compound(
+    name = "X",
+    solubility = solubility(9999, reference_pH = 7)
+  )
+  expect_false("Species" %in% names(scalar$data$Solubility[[1]]))
+
+  tbl <- create_compound(
+    name = "X",
+    solubility = solubility(
+      table = data.frame(pH = c(3, 6), value = c(5000, 90))
+    )
+  )
+  expect_false("Species" %in% names(tbl$data$Solubility[[1]]))
+})
+
 test_that("physicochemical helpers reject non-numeric values", {
   expect_snapshot(error = TRUE, lipophilicity("a"))
   expect_snapshot(error = TRUE, fraction_unbound("a"))
+  expect_snapshot(error = TRUE, fraction_unbound(1, species = "Klingon"))
   expect_snapshot(error = TRUE, solubility("a"))
   expect_snapshot(error = TRUE, solubility(9999, reference_pH = "a"))
   expect_snapshot(error = TRUE, solubility(9999, gain_per_charge = "a"))

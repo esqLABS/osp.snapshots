@@ -4,7 +4,12 @@
 \alias{fraction_unbound}
 \title{Fraction unbound value object}
 \usage{
-fraction_unbound(value, name = "User defined", default = FALSE)
+fraction_unbound(
+  value,
+  name = "User defined",
+  default = FALSE,
+  species = "Human"
+)
 }
 \arguments{
 \item{value}{Numeric scalar. Fraction-unbound value.}
@@ -19,6 +24,14 @@ Ignored for a single (non-list) value object, which is always the
 default. When a list has no element marked \code{default = TRUE}, the first
 element is the default (unchanged behaviour); marking two or more
 elements \code{default = TRUE} in the same list is an error.}
+
+\item{species}{Character. PK-Sim species emitted as the alternative's
+\code{Species} field. Defaults to \code{"Human"} and is validated against
+\code{ospsuite::Species}. Fraction unbound is species-dependent, and PK-Sim
+rejects a snapshot whose fraction-unbound alternative has no resolvable
+species, so this is emitted on every fraction-unbound alternative. A
+user hand-building a raw alternative list (the \code{Compound$fraction_unbound}
+escape hatch) is responsible for its own \code{Species}.}
 }
 \value{
 A \code{fraction_unbound_spec} object to pass to \code{\link[=create_compound]{create_compound()}}.
@@ -29,6 +42,10 @@ Build a fraction-unbound value object for \code{\link[=create_compound]{create_c
 field). Produces one default \code{FractionUnbound} alternative with parameter
 \code{"Fraction unbound (plasma, reference value)"}. Fraction unbound stores a
 bare value with no unit, so this helper takes no \code{unit} argument.
+
+Fraction unbound is the one species-dependent single-parameter group, so
+the emitted alternative carries a \code{Species} field (see \code{species}), which
+PK-Sim requires to load the snapshot.
 }
 \examples{
 fraction_unbound(0.1)

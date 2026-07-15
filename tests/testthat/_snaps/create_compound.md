@@ -150,6 +150,15 @@
 ---
 
     Code
+      fraction_unbound(1, species = "Klingon")
+    Condition
+      Error in `validate_species()`:
+      ! Invalid species: Klingon
+      i Valid species are: Beagle, Dog, Human, Minipig, Monkey, Mouse, Rabbit, Rat
+
+---
+
+    Code
       solubility("a")
     Condition
       Error in `solubility()`:

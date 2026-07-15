@@ -53,6 +53,15 @@ test_that("create_snapshot result composes with add_*() mutators", {
   expect_true("Drug X" %in% names(s$compounds))
 })
 
+test_that("validate_snapshot accepts a snapshot with a fraction-unbound compound", {
+  s <- add_compound(
+    create_snapshot(),
+    create_compound(name = "Drug X", fraction_unbound = fraction_unbound(1))
+  )
+
+  expect_true(validate_snapshot(s))
+})
+
 test_that("create_snapshot rejects non-scalar or non-character arguments", {
   expect_snapshot(error = TRUE, create_snapshot(name = 1))
   expect_snapshot(error = TRUE, create_snapshot(name = c("a", "b")))

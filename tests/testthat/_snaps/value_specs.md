@@ -30,6 +30,9 @@
       $default
       [1] FALSE
       
+      $species
+      [1] "Human"
+      
 
 ---
 
