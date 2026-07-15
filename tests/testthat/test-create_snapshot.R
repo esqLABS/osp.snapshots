@@ -87,6 +87,28 @@ test_that("v80 authoring omits the v81-only CheckNegativeValues solver field", {
   expect_null(solver$CheckNegativeValues)
 })
 
+test_that("authoring above v81 still emits CheckNegativeValues (future-proof)", {
+  # The field is anchored to the fixed version 81 that introduced it, not to
+  # the current ceiling, so raising `SUPPORTED_VERSION_MAX` must not stop it
+  # being emitted for versions at or above 81. Lift the ceiling above the
+  # snapshot version so a version-82 snapshot loads in band, and pin the
+  # installed core to 82 so no newer-than-installed warning fires, then
+  # confirm the solver still carries the field. Under a ceiling-coupled test
+  # (version equal to the ceiling) this case could not distinguish the fixed
+  # anchor from the ceiling; keeping version < ceiling is what pins it.
+  testthat::local_mocked_bindings(
+    SUPPORTED_VERSION_MAX = 83L,
+    .installed_core_version = function() 82L,
+    .package = "osp.snapshots"
+  )
+
+  s <- Snapshot$new(list(Version = 82))
+  s <- add_simulation(s, name = "Sim", model = "M", individual = "I")
+
+  solver <- s$data$Simulations[[1]]$Solver
+  expect_true(solver$CheckNegativeValues)
+})
+
 test_that("create_snapshot result composes with add_*() mutators", {
   s <- add_compound(create_snapshot(), create_compound(name = "Drug X"))
 
