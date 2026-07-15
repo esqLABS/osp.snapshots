@@ -188,6 +188,151 @@ test_that("Individual parameters load as LocalizedParameter", {
   expect_s3_class(first_param, "Parameter")
 })
 
+# Renal-clearance container rename on localized-parameter paths ---------------
+#
+# The rename is a snapshot-level load step (not a `LocalizedParameter`
+# behaviour), so these load a hand-rolled snapshot through `Snapshot$new()` and
+# assert the normalized path.
+
+test_that("Snapshot renames renal-clearance containers on localized paths", {
+  data <- list(
+    Version = 79,
+    Compounds = list(list(Name = "Drug")),
+    Simulations = list(list(
+      Name = "Sim",
+      Parameters = list(
+        list(
+          Path = "Sim|Organism|Kidney|Drug|GlomerularFiltration|Plasma clearance",
+          Value = 1
+        ),
+        list(
+          Path = "Sim|Organism|Kidney|Drug|RenalClearance|Fraction",
+          Value = 2
+        )
+      )
+    ))
+  )
+  snapshot <- Snapshot$new(data)
+
+  paths <- vapply(
+    snapshot$data$Simulations[[1]]$Parameters,
+    \(p) p$Path,
+    character(1)
+  )
+  expect_equal(
+    paths,
+    c(
+      "Sim|Organism|Kidney|Drug|GlomerularFiltration-Drug|Plasma clearance",
+      "Sim|Organism|Kidney|Drug|RenalClearance-Drug|Fraction"
+    )
+  )
+})
+
+test_that("Snapshot renames renal containers on individual parameter paths", {
+  data <- list(
+    Version = 79,
+    Compounds = list(list(Name = "Drug")),
+    Individuals = list(list(
+      Name = "Ind",
+      Parameters = list(
+        list(
+          Path = "Organism|Kidney|Drug|GlomerularFiltration|Plasma clearance",
+          Value = 1
+        )
+      )
+    ))
+  )
+  snapshot <- Snapshot$new(data)
+
+  path <- snapshot$data$Individuals[[1]]$Parameters[[1]]$Path
+  expect_equal(
+    path,
+    "Organism|Kidney|Drug|GlomerularFiltration-Drug|Plasma clearance"
+  )
+})
+
+test_that("Snapshot renames renal containers on population base-individual paths", {
+  data <- list(
+    Version = 79,
+    Compounds = list(list(Name = "Drug")),
+    Populations = list(list(
+      Name = "Pop",
+      Settings = list(
+        Individual = list(
+          Name = "Base",
+          Parameters = list(
+            list(
+              Path = "Organism|Kidney|Drug|RenalClearance|Fraction",
+              Value = 1
+            )
+          )
+        )
+      )
+    ))
+  )
+  snapshot <- Snapshot$new(data)
+
+  path <- snapshot$data$Populations[[1]]$Settings$Individual$Parameters[[
+    1
+  ]]$Path
+  expect_equal(path, "Organism|Kidney|Drug|RenalClearance-Drug|Fraction")
+})
+
+test_that("Renal rename matches whole segments, not substrings", {
+  # `GFR (specific)` (a parameter) and `MyGlomerularFiltrationX` (a substring
+  # containing the container word) must be left unchanged.
+  data <- list(
+    Version = 79,
+    Compounds = list(list(Name = "Drug")),
+    Simulations = list(list(
+      Name = "Sim",
+      Parameters = list(
+        list(Path = "Sim|Organism|Kidney|GFR (specific)", Value = 1),
+        list(Path = "Sim|MyGlomerularFiltrationX|Sub|Item", Value = 2)
+      )
+    ))
+  )
+  snapshot <- Snapshot$new(data)
+
+  paths <- vapply(
+    snapshot$data$Simulations[[1]]$Parameters,
+    \(p) p$Path,
+    character(1)
+  )
+  expect_equal(
+    paths,
+    c(
+      "Sim|Organism|Kidney|GFR (specific)",
+      "Sim|MyGlomerularFiltrationX|Sub|Item"
+    )
+  )
+})
+
+test_that("Renal rename leaves the segment unchanged when the compound is ambiguous", {
+  # Two compounds and no adjacent-segment compound match: the owning compound
+  # cannot be determined, so the segment is left intact and one informational
+  # message is emitted rather than producing an unresolvable path.
+  data <- list(
+    Version = 79,
+    Compounds = list(list(Name = "DrugA"), list(Name = "DrugB")),
+    Simulations = list(list(
+      Name = "Sim",
+      Parameters = list(
+        list(
+          Path = "Sim|Organism|Kidney|GlomerularFiltration|Plasma clearance",
+          Value = 1
+        )
+      )
+    ))
+  )
+
+  expect_snapshot(snapshot <- Snapshot$new(data))
+  expect_equal(
+    snapshot$data$Simulations[[1]]$Parameters[[1]]$Path,
+    "Sim|Organism|Kidney|GlomerularFiltration|Plasma clearance"
+  )
+})
+
 test_that("Snapshot round-trip preserves localized parameters in Individuals", {
   snapshot <- test_snapshot$clone()
   temp_file <- withr::local_tempfile(fileext = ".json")

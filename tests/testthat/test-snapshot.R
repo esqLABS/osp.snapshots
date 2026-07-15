@@ -7,19 +7,10 @@ test_that("Snapshot class works", {
   expect_type(snapshot$data, "list")
   expect_false(is.null(snapshot$path))
 
-  # Test pksim_version mapping
-  if (!is.null(snapshot$data$Version)) {
-    raw_version <- as.integer(snapshot$data$Version)
-    expected_version <- switch(
-      as.character(raw_version),
-      "80" = "12.0",
-      "79" = "11.2",
-      "78" = "10.0",
-      "77" = "9.1",
-      "Unknown"
-    )
-    expect_equal(snapshot$pksim_version, expected_version)
-  }
+  # The v79 fixture is normalized to the current version on load, so both the
+  # reported version and its human-readable mapping reflect v12.
+  expect_equal(snapshot$data$Version, 80L)
+  expect_equal(snapshot$pksim_version, "12.0")
 
   # Test that snapshot has basic structure
   expect_true(
@@ -163,8 +154,9 @@ test_that("Snapshot data can be exported and reimported", {
   snapshot2 <- Snapshot$new(exported_data)
 
   # Use a more targeted approach to verify critical parts of the data
-  # Check version
-  expect_equal(snapshot$data$Version, snapshot2$data$Version)
+  # Both sides are normalized to the current version on load.
+  expect_equal(snapshot$data$Version, 80L)
+  expect_equal(snapshot2$data$Version, 80L)
 
   # Check Compounds if they exist
   if (!is.null(snapshot$data$Compounds)) {
@@ -215,6 +207,186 @@ test_that("Snapshot data can be exported and reimported", {
       )
     }
   }
+})
+
+# Version normalization on load ------------------------------------------------
+
+test_that("Loading and exporting the v79 fixture yields Version = 80", {
+  snapshot <- test_snapshot$clone()
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(temp_file)
+
+  exported_data <- jsonlite::fromJSON(
+    temp_file,
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
+  expect_equal(as.integer(exported_data$Version), 80L)
+})
+
+test_that("Applications is rewritten to Events in exported simulation paths", {
+  # The fixture's simulation parameters carry pre-v11 `Applications|...` paths
+  # on disk; after load and export every one must read `Events|...`.
+  snapshot <- test_snapshot$clone()
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(temp_file)
+
+  exported_data <- jsonlite::fromJSON(
+    temp_file,
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
+
+  exported_paths <- unlist(lapply(
+    exported_data$Simulations,
+    \(sim) {
+      vapply(
+        sim$Parameters %||% list(),
+        \(p) p$Path %||% NA_character_,
+        character(1)
+      )
+    }
+  ))
+  application_paths <- Filter(
+    \(path) startsWith(path, "Applications|"),
+    exported_paths
+  )
+  expect_length(application_paths, 0)
+})
+
+test_that("Non-container words in parameter paths are left unchanged on load", {
+  # `Kidney` (an organ) and `GFR (specific)` (a parameter) merely relate to
+  # the kidney; neither is a renal-clearance container segment to rename.
+  snapshot <- test_snapshot$clone()
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(temp_file)
+
+  exported_data <- jsonlite::fromJSON(
+    temp_file,
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
+
+  individual_paths <- unlist(lapply(
+    exported_data$Individuals,
+    \(ind) {
+      vapply(
+        ind$Parameters %||% list(),
+        \(p) p$Path %||% NA_character_,
+        character(1)
+      )
+    }
+  ))
+  expect_true("Organism|Kidney|GFR (specific)" %in% individual_paths)
+})
+
+test_that("ParameterIdentifications without renal paths round-trip unchanged", {
+  # The fixture's single ParameterIdentification has an empty `Simulations`
+  # array and no `IdentificationParameters`; normalization must preserve it.
+  snapshot <- test_snapshot$clone()
+  temp_file <- withr::local_tempfile(fileext = ".json")
+  snapshot$export(temp_file)
+
+  exported_data <- jsonlite::fromJSON(
+    temp_file,
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
+
+  original <- test_snapshot$.__enclos_env__$private$.original_data
+  expect_equal(
+    exported_data$ParameterIdentifications,
+    original$ParameterIdentifications
+  )
+})
+
+test_that("A v80 snapshot round-trips its parameter paths unchanged", {
+  # An already-current snapshot has no bare renal container segment to rename,
+  # so load then export must leave every path untouched (structural no-op).
+  data <- list(
+    Version = 80,
+    Compounds = list(list(Name = "Drug")),
+    Simulations = list(list(
+      Name = "Sim",
+      Parameters = list(
+        list(
+          Path = "Sim|Organism|Kidney|Drug|GlomerularFiltration-Drug|Plasma clearance",
+          Value = 1
+        ),
+        list(Path = "Sim|Organism|Liver|Volume", Value = 2)
+      )
+    ))
+  )
+  snapshot <- Snapshot$new(data)
+
+  exported_paths <- vapply(
+    snapshot$data$Simulations[[1]]$Parameters,
+    \(p) p$Path,
+    character(1)
+  )
+  expect_equal(
+    exported_paths,
+    c(
+      "Sim|Organism|Kidney|Drug|GlomerularFiltration-Drug|Plasma clearance",
+      "Sim|Organism|Liver|Volume"
+    )
+  )
+  expect_equal(snapshot$data$Version, 80L)
+})
+
+test_that("ParameterIdentifications linked renal paths are renamed on load", {
+  # `IdentificationParameter.LinkedParameters` are full parameter paths that
+  # flow through verbatim; the renal rename and Applications->Events rewrite
+  # must reach them.
+  data <- list(
+    Version = 79,
+    Compounds = list(list(Name = "Drug")),
+    ParameterIdentifications = list(list(
+      Name = "Parameter Identification 1",
+      Simulations = list(),
+      IdentificationParameters = list(list(
+        Name = "GFR fraction",
+        LinkedParameters = list(
+          "Sim1|Organism|Kidney|Drug|GlomerularFiltration|Plasma clearance",
+          "Sim1|Organism|Liver|Volume"
+        )
+      ))
+    ))
+  )
+  snapshot <- Snapshot$new(data)
+
+  linked <- snapshot$data$ParameterIdentifications[[
+    1
+  ]]$IdentificationParameters[[1]]$LinkedParameters
+  expect_equal(
+    unlist(linked),
+    c(
+      "Sim1|Organism|Kidney|Drug|GlomerularFiltration-Drug|Plasma clearance",
+      "Sim1|Organism|Liver|Volume"
+    )
+  )
+  expect_equal(snapshot$data$Version, 80L)
+})
+
+test_that("ParameterIdentifications with no renal container only bump the version", {
+  data <- list(
+    Version = 79,
+    Compounds = list(list(Name = "Drug")),
+    ParameterIdentifications = list(list(
+      Name = "PI",
+      IdentificationParameters = list(list(
+        Name = "P1",
+        LinkedParameters = list("Sim1|Organism|Liver|Volume")
+      ))
+    ))
+  )
+  snapshot <- Snapshot$new(data)
+
+  linked <- snapshot$data$ParameterIdentifications[[
+    1
+  ]]$IdentificationParameters[[1]]$LinkedParameters
+  expect_equal(unlist(linked), "Sim1|Organism|Liver|Volume")
+  expect_equal(snapshot$data$Version, 80L)
 })
 
 test_that("Snapshot round-trip preserves observed data and expression profile shape", {
@@ -597,22 +769,15 @@ test_that("Snapshot$export creates a valid JSON file", {
   expect_length(json_data$Individuals, 0)
 })
 
-test_that("Snapshot correctly handles version mapping for all known versions", {
-  versions <- list(
-    "80" = "12.0",
-    "79" = "11.2"
-  )
-
-  for (v in names(versions)) {
-    snapshot_data <- list(Version = as.numeric(v))
-    snapshot <- Snapshot$new(snapshot_data)
-    expect_equal(snapshot$pksim_version, versions[[v]])
+test_that("Loaded snapshots report the current version after normalization", {
+  # Normalization pins every accepted snapshot to the current version on load,
+  # so `pksim_version` reports "12.0" regardless of the file's original
+  # declared version (a v79 file, or an unrecognised-but-supported v999 file).
+  for (raw_version in c(79, 80, 999)) {
+    snapshot <- Snapshot$new(list(Version = raw_version))
+    expect_equal(snapshot$data$Version, 80L)
+    expect_equal(snapshot$pksim_version, "12.0")
   }
-
-  # Newer (unrecognised but supported) version maps to "Unknown".
-  snapshot_data <- list(Version = 999)
-  snapshot <- Snapshot$new(snapshot_data)
-  expect_equal(snapshot$pksim_version, "Unknown")
 })
 
 test_that("Snapshot rejects pre-v11 snapshots", {

@@ -17,6 +17,18 @@ package; \code{Snapshot$new()} aborts on them rather than silently rewriting
 fields. Hand-rolled list input must supply \code{Version} for the same reason.
 }
 
+\section{Snapshot version normalization}{
+A loaded snapshot is upconverted to the current \code{Version = 80} (PK-Sim
+v12) structure in memory at load time, so the whole in-memory model and
+every export are one coherent current-format snapshot. Renal-clearance
+parameter-container path segments (\code{GlomerularFiltration},
+\code{RenalClearance}) are qualified with their owning compound name, the
+\code{Applications} to \code{Events} path rewrite is applied throughout, and every
+export reports \code{Version = 80} regardless of the file's original declared
+version. On a snapshot already at \code{Version = 80} this is a structural
+no-op.
+}
+
 \examples{
 
 ## ------------------------------------------------

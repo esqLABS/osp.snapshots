@@ -1,5 +1,7 @@
 # osp.snapshots (development version)
 
+- Loaded snapshots are now normalized to the current PK-Sim version on load and always exported with `Version = 80`; renal-clearance parameter-container paths (`GlomerularFiltration`, `RenalClearance`) are upconverted to their v12 form and the `Applications` to `Events` path rewrite now also reaches `ParameterIdentifications` linked-parameter paths (#155).
+
 # osp.snapshots 1.0.0
 
 ## Breaking changes

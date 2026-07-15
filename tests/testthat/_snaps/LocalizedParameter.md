@@ -56,3 +56,12 @@
       Error in `initialize()`:
       ! <LocalizedParameter> requires a single non-empty path.
 
+# Renal rename leaves the segment unchanged when the compound is ambiguous
+
+    Code
+      snapshot <- Snapshot$new(data)
+    Message
+      i Creating snapshot from list data
+      i Could not determine the owning compound for the renal-clearance container "GlomerularFiltration" in path "Sim|Organism|Kidney|GlomerularFiltration|Plasma clearance"; leaving the segment unchanged.
+      v Snapshot loaded successfully
+

@@ -51,6 +51,18 @@ SUPPORTED_VERSION_MIN <- 79L
 #' package; `Snapshot$new()` aborts on them rather than silently rewriting
 #' fields. Hand-rolled list input must supply `Version` for the same reason.
 #'
+#' # Snapshot version normalization
+#'
+#' A loaded snapshot is upconverted to the current `Version = 80` (PK-Sim
+#' v12) structure in memory at load time, so the whole in-memory model and
+#' every export are one coherent current-format snapshot. Renal-clearance
+#' parameter-container path segments (`GlomerularFiltration`,
+#' `RenalClearance`) are qualified with their owning compound name, the
+#' `Applications` to `Events` path rewrite is applied throughout, and every
+#' export reports `Version = 80` regardless of the file's original declared
+#' version. On a snapshot already at `Version = 80` this is a structural
+#' no-op.
+#'
 #' @importFrom R6 R6Class
 #' @importFrom fs path_rel
 #'
@@ -87,6 +99,15 @@ Snapshot <- R6::R6Class(
       }
 
       private$.validate_version()
+
+      # Upconvert the parsed data to the current `Version = 80` structure in
+      # memory. Runs on `.original_data` before any lazy cache is built, so
+      # both R6-wrapped sections and verbatim-passthrough sections
+      # (`ParameterIdentifications`, `Version`) are normalized uniformly and no
+      # mixed-version file can form. See `normalize_snapshot_to_current()`.
+      private$.original_data <- normalize_snapshot_to_current(
+        private$.original_data
+      )
 
       # Building-block collections are constructed lazily on first access via
       # their active bindings; all `private$.<kind>` caches stay NULL here.

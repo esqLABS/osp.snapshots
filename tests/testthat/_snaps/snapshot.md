@@ -30,7 +30,7 @@
     Output
       
       -- PKSIM Snapshot --------------------------------------------------------------
-      i Version: 79 (PKSIM 11.2)
+      i Version: 80 (PKSIM 12.0)
       i Path: 'data/test_snapshot.json'
       * Compounds: 6
       * Events: 10
