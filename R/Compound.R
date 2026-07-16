@@ -373,7 +373,13 @@ Compound <- R6::R6Class(
 
         if ("Solubility at reference pH" %in% param_names) {
           id <- names[j]
-          pH <- purrr::keep(params, ~ .x$Name == "Reference pH")[[1]]$Value
+          # `Reference pH` is omitted from the snapshot when it holds PK-Sim's
+          # default, so fall back to that default (7) rather than erroring.
+          pH <- purrr::list_c(purrr::keep(
+            params,
+            ~ .x$Name == "Reference pH"
+          ))$Value %||%
+            7
           gain_per_charge <- purrr::list_c(purrr::keep(
             params,
             ~ .x$Name == "Solubility gain per charge"

@@ -149,6 +149,36 @@ test_that("permeability is surfaced in print and the properties tibble", {
   expect_equal(unname(perm_rows$unit), "cm/min")
 })
 
+test_that("solubility extraction defaults reference pH to 7 when it is omitted", {
+  # PK-Sim omits the `Reference pH` parameter from the snapshot when it holds
+  # the default value, so a reference-pH alternative can carry only the
+  # `Solubility at reference pH` parameter.
+  compound <- Compound$new(list(
+    Name = "OmittedRefPh",
+    Parameters = list(list(
+      Name = "Molecular weight",
+      Value = 250,
+      Unit = "g/mol"
+    )),
+    Solubility = list(list(
+      Name = "Water",
+      Parameters = list(list(
+        Name = "Solubility at reference pH",
+        Value = 2800,
+        Unit = "mg/l"
+      ))
+    ))
+  ))
+
+  properties <- compound$to_df()
+  sol_rows <- properties[properties$type == "solubility", ]
+
+  expect_equal(nrow(sol_rows), 1)
+  expect_equal(unname(sol_rows$parameter), "pH 7")
+  expect_equal(unname(sol_rows$value), "2800")
+  expect_equal(unname(sol_rows$unit), "mg/l")
+})
+
 
 # Process accessor -------------------------------------------------------
 
