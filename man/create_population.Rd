@@ -27,7 +27,8 @@ create_population(
 \item{name}{Character. Name of the population (required).}
 
 \item{number_of_individuals}{Integer. Number of subjects to generate
-(required, must be a positive integer).}
+(required, a whole number between 2 and 10000, matching PK-Sim's
+population-creation bounds).}
 
 \item{proportion_of_females}{Numeric. Percentage of females in the
 population, between 0 and 100. Defaults to \code{50}.}

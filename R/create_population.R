@@ -11,7 +11,8 @@
 #'
 #' @param name Character. Name of the population (required).
 #' @param number_of_individuals Integer. Number of subjects to generate
-#'   (required, must be a positive integer).
+#'   (required, a whole number between 2 and 10000, matching PK-Sim's
+#'   population-creation bounds).
 #' @param proportion_of_females Numeric. Percentage of females in the
 #'   population, between 0 and 100. Defaults to `50`.
 #' @param individual_name Character. Name of the base [Individual]
@@ -108,11 +109,12 @@ create_population <- function(
       !is.numeric(number_of_individuals) ||
       length(number_of_individuals) != 1 ||
       is.na(number_of_individuals) ||
-      number_of_individuals < 1 ||
-      number_of_individuals != round(number_of_individuals)
+      number_of_individuals != round(number_of_individuals) ||
+      number_of_individuals < 2 ||
+      number_of_individuals > 10000
   ) {
     cli::cli_abort(
-      "{.arg number_of_individuals} must be a positive integer"
+      "{.arg number_of_individuals} must be a whole number between 2 and 10000"
     )
   }
   if (

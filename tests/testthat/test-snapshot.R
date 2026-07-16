@@ -1159,7 +1159,7 @@ test_that("add_observed_data exported wrapper errors on wrong class", {
 
 test_that("mutators reject non-Snapshot inputs", {
   compound <- create_compound(name = "X")
-  population <- create_population(name = "P", number_of_individuals = 1)
+  population <- create_population(name = "P", number_of_individuals = 10)
   protocol <- create_protocol(
     name = "S",
     application_type = "Oral",
