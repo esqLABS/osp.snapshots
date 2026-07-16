@@ -109,6 +109,19 @@ to_raw_parameters <- function(parameters, name_key) {
     )
   }
   name_key <- match.arg(name_key, c("Path", "Name"))
+  valid <- vapply(
+    parameters,
+    function(param) {
+      inherits(param, "Parameter") || (is.list(param) && !is.object(param))
+    },
+    logical(1)
+  )
+  if (!all(valid)) {
+    cli::cli_abort(
+      "Every entry of {.arg parameters} must be a {.cls Parameter} or a raw list",
+      call = parent.frame()
+    )
+  }
   lapply(parameters, function(param) {
     raw <- if (inherits(param, "Parameter")) param$data else param
     if (identical(name_key, "Name")) {

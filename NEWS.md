@@ -1,5 +1,6 @@
 # osp.snapshots (development version)
 
+- `create_schema()` gains plain arguments `number_of_repetitions`, `time_between_repetitions` (with unit `time_between_repetitions_unit`, default `"h"`), and `start_time` (with unit `start_time_unit`, default `"h"`) for the schema-level repetition parameters, so callers no longer hand-write `create_parameter()` entries with PK-Sim's internal names; the `parameters` list still works for anything else, and supplying a value both ways is an error (#167).
 - `create_protocol()` gains `dose` (with `dose_unit`, default `"mg"`), `start_time` (with `start_time_unit`, default `"h"`), and `end_time` plain arguments for the Simple-Protocol dosing settings, as a validated, self-documenting alternative to hand-building the equivalent `InputDose`/`Start time`/`End time` entries in `parameters` (#157).
 - `create_snapshot()` now authors the current PK-Sim v13 snapshot version (`Version 81`) instead of `80`, ordering the top-level `Name` before `Version` and emitting the new `CheckNegativeValues` solver field when a simulation is added (#161).
 - `fraction_unbound()` gains a `species` argument (default `"Human"`, validated against `ospsuite::Species`) and now emits a `Species` field on the fraction-unbound alternative, which PK-Sim requires to load the snapshot (#156).
