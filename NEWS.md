@@ -1,5 +1,6 @@
 # osp.snapshots (development version)
 
+- `create_protocol()` gains `dose` (with `dose_unit`, default `"mg"`), `start_time` (with `start_time_unit`, default `"h"`), and `end_time` plain arguments for the Simple-Protocol dosing settings, as a validated, self-documenting alternative to hand-building the equivalent `InputDose`/`Start time`/`End time` entries in `parameters` (#157).
 - `create_snapshot()` now authors the current PK-Sim v13 snapshot version (`Version 81`) instead of `80`, ordering the top-level `Name` before `Version` and emitting the new `CheckNegativeValues` solver field when a simulation is added (#161).
 - `fraction_unbound()` gains a `species` argument (default `"Human"`, validated against `ospsuite::Species`) and now emits a `Species` field on the fraction-unbound alternative, which PK-Sim requires to load the snapshot (#156).
 - `load_snapshot()` and `Snapshot$new()` gain an `upgrade` argument (default `FALSE`) that migrates a below-floor PK-Sim snapshot (`Version 74-78`) up to the installed core's version via a PK-Sim round trip; without it, such a snapshot reports how to migrate and does not load (#161).
