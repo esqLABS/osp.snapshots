@@ -58,6 +58,25 @@
       ! Invalid dose unit: not-a-unit
       i Valid dose units are: kg, g, mg, µg, ng, pg, mol, mmol, µmol, nmol, pmol, ng/kg, µg/kg, mg/kg, g/kg, kg/kg, mg/m², kg/dm², µg/cm², mg/cm²
 
+# NULL or non-scalar dose_unit aborts with the invalid-unit error
+
+    Code
+      create_schema_item(name = "I", application_type = "Oral", dose = 5, dose_unit = NULL)
+    Condition
+      Error in `create_schema_item()`:
+      ! Invalid dose unit:
+      i Valid dose units are: kg, g, mg, µg, ng, pg, mol, mmol, µmol, nmol, pmol, ng/kg, µg/kg, mg/kg, g/kg, kg/kg, mg/m², kg/dm², µg/cm², mg/cm²
+
+---
+
+    Code
+      create_schema_item(name = "I", application_type = "Oral", dose = 5, dose_unit = c(
+        "mg", "mg/kg"))
+    Condition
+      Error in `create_schema_item()`:
+      ! Invalid dose unit: mg and mg/kg
+      i Valid dose units are: kg, g, mg, µg, ng, pg, mol, mmol, µmol, nmol, pmol, ng/kg, µg/kg, mg/kg, g/kg, kg/kg, mg/m², kg/dm², µg/cm², mg/cm²
+
 # invalid start_time_unit aborts
 
     Code

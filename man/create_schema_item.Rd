@@ -7,14 +7,14 @@
 create_schema_item(
   name,
   application_type,
-  dose = NULL,
-  dose_unit = "mg",
-  start_time = NULL,
-  start_time_unit = "h",
   formulation_key = NULL,
   target_organ = NULL,
   target_compartment = NULL,
-  parameters = NULL
+  parameters = NULL,
+  dose = NULL,
+  dose_unit = "mg",
+  start_time = NULL,
+  start_time_unit = "h"
 )
 }
 \arguments{
@@ -25,6 +25,21 @@ item (required). Must be one of the canonical PK-Sim application
 types: \code{"Oral"}, \code{"IntravenousBolus"}, \code{"IntravenousInfusion"},
 \code{"Intramuscular"}, \code{"Subcutaneous"}, \code{"Dermal"}, \code{"Rectal"},
 \code{"Inhalation"}, or \code{"Intraperitoneal"}.}
+
+\item{formulation_key}{Character. Formulation key linking the schema
+item to a formulation selection in the owning simulation.}
+
+\item{target_organ}{Character. Target organ for the application.}
+
+\item{target_compartment}{Character. Target compartment for the
+application.}
+
+\item{parameters}{List of \link{Parameter} objects (created with
+\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists. These become the
+application-level parameters (dose, start time, ...). The promoted
+\code{dose} and \code{start_time} arguments flow into the same \code{"InputDose"}
+and \code{"Start time"} parameters, so supplying a setting both as a
+promoted argument and as the matching \code{parameters} entry is an error.}
 
 \item{dose}{Numeric scalar dose for the application, written as a
 single \code{InputDose} parameter. \code{NULL} (default) emits no dose
@@ -43,21 +58,6 @@ parameter. Zero and negative values are allowed.}
 \item{start_time_unit}{Character. Unit for \code{start_time}, default \code{"h"},
 validated against the \code{"Time"} dimension. Consulted only when
 \code{start_time} is supplied.}
-
-\item{formulation_key}{Character. Formulation key linking the schema
-item to a formulation selection in the owning simulation.}
-
-\item{target_organ}{Character. Target organ for the application.}
-
-\item{target_compartment}{Character. Target compartment for the
-application.}
-
-\item{parameters}{List of \link{Parameter} objects (created with
-\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists. These become the
-application-level parameters (dose, start time, ...). The promoted
-\code{dose} and \code{start_time} arguments flow into the same \code{"InputDose"}
-and \code{"Start time"} parameters, so supplying a setting both as a
-promoted argument and as the matching \code{parameters} entry is an error.}
 }
 \value{
 A \link{SchemaItem} object.

@@ -174,7 +174,7 @@ resolve_parameter_name <- function(entry) {
 # `create_protocol()` can adopt it for the Simple-protocol dose.
 resolve_input_dose_parameter <- function(dose, unit, call = parent.frame()) {
   valid_units <- dose_family_units()
-  if (!(unit %in% valid_units)) {
+  if (!is_non_empty_scalar_string(unit) || !(unit %in% valid_units)) {
     cli::cli_abort(
       c(
         "Invalid dose unit: {unit}",

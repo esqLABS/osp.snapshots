@@ -76,14 +76,14 @@
 create_schema_item <- function(
   name,
   application_type,
-  dose = NULL,
-  dose_unit = "mg",
-  start_time = NULL,
-  start_time_unit = "h",
   formulation_key = NULL,
   target_organ = NULL,
   target_compartment = NULL,
-  parameters = NULL
+  parameters = NULL,
+  dose = NULL,
+  dose_unit = "mg",
+  start_time = NULL,
+  start_time_unit = "h"
 ) {
   check_required_string(name, "name")
   check_required_string(application_type, "application_type")

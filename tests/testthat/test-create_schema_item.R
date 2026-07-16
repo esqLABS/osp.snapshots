@@ -60,6 +60,13 @@ test_that("create_schema_item carries optional fields through", {
   expect_equal(item$target_compartment, "Lumen")
 })
 
+test_that("positional call binds the third argument to formulation_key", {
+  item <- create_schema_item("I", "Oral", "Tablet")
+
+  expect_equal(item$formulation_key, "Tablet")
+  expect_null(item$data$Parameters)
+})
+
 test_that("create_schema_item validates required arguments", {
   expect_snapshot(error = TRUE, create_schema_item())
   expect_snapshot(error = TRUE, create_schema_item(name = ""))
@@ -178,6 +185,27 @@ test_that("invalid dose unit aborts, attributed to create_schema_item()", {
       application_type = "Oral",
       dose = 10,
       dose_unit = "not-a-unit"
+    )
+  )
+})
+
+test_that("NULL or non-scalar dose_unit aborts with the invalid-unit error", {
+  expect_snapshot(
+    error = TRUE,
+    create_schema_item(
+      name = "I",
+      application_type = "Oral",
+      dose = 5,
+      dose_unit = NULL
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_schema_item(
+      name = "I",
+      application_type = "Oral",
+      dose = 5,
+      dose_unit = c("mg", "mg/kg")
     )
   )
 })
