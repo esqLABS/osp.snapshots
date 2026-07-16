@@ -194,3 +194,12 @@
       x `number_of_repetitions`, `time_between_repetitions`, and `start_time` are also supplied in `parameters`.
       i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
+# create_schema validates parameters entries before the conflict check
+
+    Code
+      create_schema(name = "S", number_of_repetitions = 2, parameters = list(
+        "not a parameter"))
+    Condition
+      Error in `create_schema()`:
+      ! Every entry of `parameters` must be a <Parameter> or a raw list
+

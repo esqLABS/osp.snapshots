@@ -100,11 +100,14 @@ create_schema <- function(
         "{.arg number_of_repetitions} must be a single finite whole number"
       )
     }
+    # Persist the exact integer: a value that clears the near-whole-number
+    # check above can still be a hair off an integer float, and it should
+    # be stored as the whole number it represents.
     promoted <- c(
       promoted,
       list(create_parameter(
         name = "NumberOfRepetitions",
-        value = number_of_repetitions
+        value = round(number_of_repetitions)
       ))
     )
   }
@@ -133,22 +136,29 @@ create_schema <- function(
     )
   }
 
+  # Normalise the `parameters` escape hatch once, up front. This validates
+  # every entry (a malformed entry raises `to_raw_parameters()`'s proper
+  # error rather than crashing later) and folds `Path` into `Name`, so the
+  # conflict check below and the merge further down both key off the same
+  # normalised `Name`. Schema parameters use Name (not Path) in the JSON
+  # shape, mirroring the simple-protocol path.
+  raw_parameters <- NULL
+  if (!is.null(parameters)) {
+    raw_parameters <- to_raw_parameters(parameters, "Name")
+  }
+
   # Detect a value supplied both as a promoted argument and in
-  # `parameters`, before merging. Resolve each `parameters` entry's name
-  # from `Name`, falling back to `Path` (mirroring how
-  # `to_raw_parameters(., "Name")` folds `Path` into `Name`).
+  # `parameters`, before merging. `raw_parameters` is already folded onto
+  # `Name`, so a conflict is a promoted name matching an entry's `Name`.
   promoted_names <- c(
     if (!is.null(number_of_repetitions)) "NumberOfRepetitions",
     if (!is.null(time_between_repetitions)) "TimeBetweenRepetitions",
     if (!is.null(start_time)) "Start time"
   )
-  if (!is.null(parameters) && length(promoted_names) > 0) {
+  if (!is.null(raw_parameters) && length(promoted_names) > 0) {
     existing_names <- vapply(
-      parameters,
-      function(param) {
-        raw <- if (inherits(param, "Parameter")) param$data else param
-        (raw$Name %||% raw$Path) %||% NA_character_
-      },
+      raw_parameters,
+      function(raw) raw$Name %||% NA_character_,
       character(1)
     )
     conflicting <- intersect(promoted_names, existing_names)
@@ -171,15 +181,9 @@ create_schema <- function(
 
   data <- list(Name = name)
 
-  # Merge the existing `parameters` entries (first) with the promoted
-  # entries (after, in signature order). When neither is supplied,
+  # Merge the already-normalised `parameters` entries (first) with the
+  # promoted entries (after, in signature order). When neither is supplied,
   # `data$Parameters` is left unset (byte-identical to a bare schema).
-  raw_parameters <- NULL
-  if (!is.null(parameters)) {
-    # Schema parameters use Name (not Path) in the JSON shape, mirroring the
-    # simple-protocol path.
-    raw_parameters <- to_raw_parameters(parameters, "Name")
-  }
   if (length(promoted) > 0) {
     raw_parameters <- c(
       raw_parameters %||% list(),

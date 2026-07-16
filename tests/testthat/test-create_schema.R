@@ -259,6 +259,31 @@ test_that("create_schema reports every conflict in a single error", {
   )
 })
 
+test_that("create_schema validates parameters entries before the conflict check", {
+  # A malformed (atomic) `parameters` entry supplied alongside a promoted
+  # argument must raise the parameters validation error, not the base-R
+  # "$ operator is invalid for atomic vectors" crash.
+  expect_snapshot(
+    error = TRUE,
+    create_schema(
+      name = "S",
+      number_of_repetitions = 2,
+      parameters = list("not a parameter")
+    )
+  )
+})
+
+test_that("create_schema persists a near-integer number_of_repetitions as the exact integer", {
+  schema <- create_schema(
+    name = "S",
+    number_of_repetitions = 2.9999999999999996
+  )
+
+  entry <- schema$data$Parameters[[1]]
+  expect_equal(entry$Name, "NumberOfRepetitions")
+  expect_identical(entry$Value, 3)
+})
+
 test_that("create_schema does not conflict when the promoted argument is absent", {
   schema <- create_schema(
     name = "S",
