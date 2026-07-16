@@ -2,6 +2,12 @@
 
 ## osp.snapshots (development version)
 
+- [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
+  gains `dose` (with `dose_unit`, default `"mg"`), `start_time` (with
+  `start_time_unit`, default `"h"`), and `end_time` plain arguments for
+  the Simple-Protocol dosing settings, as a validated, self-documenting
+  alternative to hand-building the equivalent
+  `InputDose`/`Start time`/`End time` entries in `parameters` (#157).
 - [`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md)
   gains plain arguments `number_of_repetitions`,
   `time_between_repetitions` (with unit `time_between_repetitions_unit`,
@@ -12,12 +18,16 @@
   entries with PK-Sim’s internal names; the `parameters` list still
   works for anything else, and supplying a value both ways is an error
   (#167).
-- [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
-  gains `dose` (with `dose_unit`, default `"mg"`), `start_time` (with
-  `start_time_unit`, default `"h"`), and `end_time` plain arguments for
-  the Simple-Protocol dosing settings, as a validated, self-documenting
-  alternative to hand-building the equivalent
-  `InputDose`/`Start time`/`End time` entries in `parameters` (#157).
+- [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
+  gains promoted `dose` (with `dose_unit`, default `"mg"`) and
+  `start_time` (with `start_time_unit`, default `"h"`) arguments,
+  mirroring
+  [`create_output_interval()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_output_interval.md)
+  and
+  [`create_event_selection()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_event_selection.md);
+  the dose is written as a single `InputDose` parameter whose unit
+  selects the dose family, and supplying a promoted argument together
+  with the matching `parameters` entry is an error (#168).
 - [`create_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_snapshot.md)
   now authors the current PK-Sim v13 snapshot version (`Version 81`)
   instead of `80`, ordering the top-level `Name` before `Version` and

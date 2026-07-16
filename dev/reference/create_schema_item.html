@@ -69,7 +69,11 @@ target organ and compartment, and the application-level parameters
 <span>  formulation_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  target_organ <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  target_compartment <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  parameters <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dose <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dose_unit <span class="op">=</span> <span class="st">"mg"</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time_unit <span class="op">=</span> <span class="st">"h"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,7 +110,36 @@ application.</p></dd>
 <dt id="arg-parameters">parameters<a class="anchor" aria-label="anchor" href="#arg-parameters"></a></dt>
 <dd><p>List of <a href="Parameter.html">Parameter</a> objects (created with
 <code><a href="create_parameter.html">create_parameter()</a></code>) or raw parameter lists. These become the
-application-level parameters (dose, start time, ...).</p></dd>
+application-level parameters (dose, start time, ...). The promoted
+<code>dose</code> and <code>start_time</code> arguments flow into the same <code>"InputDose"</code>
+and <code>"Start time"</code> parameters, so supplying a setting both as a
+promoted argument and as the matching <code>parameters</code> entry is an error.</p></dd>
+
+
+<dt id="arg-dose">dose<a class="anchor" aria-label="anchor" href="#arg-dose"></a></dt>
+<dd><p>Numeric scalar dose for the application, written as a
+single <code>InputDose</code> parameter. <code>NULL</code> (default) emits no dose
+parameter. The dose family (plain dose, per body weight, or per body
+surface area) is selected by <code>dose_unit</code>.</p></dd>
+
+
+<dt id="arg-dose-unit">dose_unit<a class="anchor" aria-label="anchor" href="#arg-dose-unit"></a></dt>
+<dd><p>Character. Unit for <code>dose</code>, default <code>"mg"</code>. Must be a
+dose-family unit (a Mass, Amount, dose-per-body-weight, or
+dose-per-body-surface-area unit, for example <code>"mg"</code>, <code>"mg/kg"</code>, or
+<code>"mg/m²"</code>). Consulted only when <code>dose</code> is supplied.</p></dd>
+
+
+<dt id="arg-start-time">start_time<a class="anchor" aria-label="anchor" href="#arg-start-time"></a></dt>
+<dd><p>Numeric scalar application start time, written as a
+<code>"Start time"</code> parameter. <code>NULL</code> (default) emits no start-time
+parameter. Zero and negative values are allowed.</p></dd>
+
+
+<dt id="arg-start-time-unit">start_time_unit<a class="anchor" aria-label="anchor" href="#arg-start-time-unit"></a></dt>
+<dd><p>Character. Unit for <code>start_time</code>, default <code>"h"</code>,
+validated against the <code>"Time"</code> dimension. Consulted only when
+<code>start_time</code> is supplied.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -116,7 +149,16 @@ application-level parameters (dose, start time, ...).</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># An oral schema item with one dose</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># An oral schema item using the promoted dose and start-time arguments</span></span></span>
+<span class="r-in"><span><span class="va">item</span> <span class="op">&lt;-</span> <span class="fu">create_schema_item</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Item 1"</span>,</span></span>
+<span class="r-in"><span>  application_type <span class="op">=</span> <span class="st">"Oral"</span>,</span></span>
+<span class="r-in"><span>  dose <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  dose_unit <span class="op">=</span> <span class="st">"mg"</span>,</span></span>
+<span class="r-in"><span>  start_time <span class="op">=</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The same, authored through the free-form `parameters` escape hatch</span></span></span>
 <span class="r-in"><span><span class="va">item</span> <span class="op">&lt;-</span> <span class="fu">create_schema_item</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Item 1"</span>,</span></span>
 <span class="r-in"><span>  application_type <span class="op">=</span> <span class="st">"Oral"</span>,</span></span>
@@ -132,9 +174,7 @@ application-level parameters (dose, start time, ...).</p></dd>
 <span class="r-in"><span>  application_type <span class="op">=</span> <span class="st">"IntravenousBolus"</span>,</span></span>
 <span class="r-in"><span>  target_organ <span class="op">=</span> <span class="st">"VenousBlood"</span>,</span></span>
 <span class="r-in"><span>  target_compartment <span class="op">=</span> <span class="st">"Plasma"</span>,</span></span>
-<span class="r-in"><span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="create_parameter.html">create_parameter</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"InputDose"</span>, value <span class="op">=</span> <span class="fl">5</span>, unit <span class="op">=</span> <span class="st">"mg"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  dose <span class="op">=</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
