@@ -263,6 +263,20 @@ test_that("dose conflicts with an InputDose entry in parameters", {
   )
 })
 
+test_that("a Path-form InputDose entry conflicts with promoted dose", {
+  expect_snapshot(
+    error = TRUE,
+    create_schema_item(
+      name = "I",
+      application_type = "Oral",
+      dose = 10,
+      parameters = list(
+        create_parameter(path = "InputDose", value = 5, unit = "mg")
+      )
+    )
+  )
+})
+
 test_that("start_time conflicts with a Start time entry in parameters", {
   expect_snapshot(
     error = TRUE,
@@ -271,6 +285,22 @@ test_that("start_time conflicts with a Start time entry in parameters", {
       application_type = "Oral",
       start_time = 0,
       parameters = list(
+        create_parameter(name = "Start time", value = 1, unit = "h")
+      )
+    )
+  )
+})
+
+test_that("all conflicting promoted arguments are reported in one error", {
+  expect_snapshot(
+    error = TRUE,
+    create_schema_item(
+      name = "I",
+      application_type = "Oral",
+      dose = 10,
+      start_time = 0,
+      parameters = list(
+        create_parameter(name = "InputDose", value = 5, unit = "mg"),
         create_parameter(name = "Start time", value = 1, unit = "h")
       )
     )

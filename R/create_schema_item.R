@@ -128,21 +128,23 @@ create_schema_item <- function(
   # Reject supplying a setting both as a promoted argument and as the matching
   # `parameters` entry. Names are resolved from both accepted entry shapes (a
   # `Parameter` R6 object or a raw list) exactly as `to_raw_parameters()` does,
-  # and compared case-sensitively against the canonical PK-Sim names. Dose is
-  # checked before start time, so a single, first-detected conflict is
-  # reported.
+  # and compared case-sensitively against the canonical PK-Sim names. Every
+  # offending promoted argument is collected and reported together in a single
+  # error, keyed back to its R argument name.
   if (!is.null(parameters)) {
     existing_names <- vapply(parameters, resolve_parameter_name, character(1))
-    if (!is.null(dose) && "InputDose" %in% existing_names) {
+    promoted_pksim_names <- c(
+      if (!is.null(dose)) c(dose = "InputDose"),
+      if (!is.null(start_time)) c(start_time = "Start time")
+    )
+    conflicting_args <- names(
+      promoted_pksim_names[promoted_pksim_names %in% existing_names]
+    )
+    if (length(conflicting_args) > 0) {
       cli::cli_abort(c(
-        "{.arg dose} conflicts with an {.val InputDose} entry in {.arg parameters}.",
-        "i" = "Supply the dose either as the {.arg dose} argument or as a {.val InputDose} entry in {.arg parameters}, not both."
-      ))
-    }
-    if (!is.null(start_time) && "Start time" %in% existing_names) {
-      cli::cli_abort(c(
-        "{.arg start_time} conflicts with a {.val Start time} entry in {.arg parameters}.",
-        "i" = "Supply the start time either as the {.arg start_time} argument or as a {.val Start time} entry in {.arg parameters}, not both."
+        "{cli::qty(conflicting_args)}Promoted argument{?s} conflict with {.arg parameters} entr{?y/ies}.",
+        "x" = "{.arg {conflicting_args}} {?is/are} also supplied in {.arg parameters}.",
+        "i" = "Supply each setting either as its promoted argument or as an entry in {.arg parameters}, not both."
       ))
     }
   }

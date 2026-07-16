@@ -139,8 +139,9 @@
         parameters = list(create_parameter(name = "InputDose", value = 5, unit = "mg")))
     Condition
       Error in `create_schema_item()`:
-      ! `dose` conflicts with an "InputDose" entry in `parameters`.
-      i Supply the dose either as the `dose` argument or as a "InputDose" entry in `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `dose` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 ---
 
@@ -149,8 +150,20 @@
         parameters = list(list(Name = "InputDose", Value = 5, Unit = "mg")))
     Condition
       Error in `create_schema_item()`:
-      ! `dose` conflicts with an "InputDose" entry in `parameters`.
-      i Supply the dose either as the `dose` argument or as a "InputDose" entry in `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `dose` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
+
+# a Path-form InputDose entry conflicts with promoted dose
+
+    Code
+      create_schema_item(name = "I", application_type = "Oral", dose = 10,
+        parameters = list(create_parameter(path = "InputDose", value = 5, unit = "mg")))
+    Condition
+      Error in `create_schema_item()`:
+      ! Promoted argument conflict with `parameters` entry.
+      x `dose` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 # start_time conflicts with a Start time entry in parameters
 
@@ -159,6 +172,19 @@
         parameters = list(create_parameter(name = "Start time", value = 1, unit = "h")))
     Condition
       Error in `create_schema_item()`:
-      ! `start_time` conflicts with a "Start time" entry in `parameters`.
-      i Supply the start time either as the `start_time` argument or as a "Start time" entry in `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `start_time` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
+
+# all conflicting promoted arguments are reported in one error
+
+    Code
+      create_schema_item(name = "I", application_type = "Oral", dose = 10,
+        start_time = 0, parameters = list(create_parameter(name = "InputDose", value = 5,
+          unit = "mg"), create_parameter(name = "Start time", value = 1, unit = "h")))
+    Condition
+      Error in `create_schema_item()`:
+      ! Promoted arguments conflict with `parameters` entries.
+      x `dose` and `start_time` are also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
