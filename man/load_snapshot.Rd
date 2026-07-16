@@ -4,7 +4,7 @@
 \alias{load_snapshot}
 \title{Load a snapshot from various sources}
 \usage{
-load_snapshot(source)
+load_snapshot(source, upgrade = FALSE)
 }
 \arguments{
 \item{source}{Character string. Can be:
@@ -13,6 +13,13 @@ load_snapshot(source)
 \item URL to a remote snapshot file
 \item Name of a template from the OSPSuite.BuildingBlockTemplates repository
 }}
+
+\item{upgrade}{Logical, default \code{FALSE}. When \code{TRUE}, a below-floor
+snapshot (\verb{Version 74-78}) is migrated up to the version the installed
+PK-Sim core emits via a round trip through \code{ospsuite} (slow, several
+minutes, and requires a compatible installed core). When \code{FALSE}, such a
+snapshot reports how to migrate and does not load. In-band snapshots
+(\verb{Version 79-81}) are never migrated regardless of this argument.}
 }
 \value{
 A Snapshot object

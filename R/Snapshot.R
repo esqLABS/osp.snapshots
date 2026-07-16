@@ -3,6 +3,18 @@
 # path segments instead of `Events|...`) that this package does not model.
 SUPPORTED_VERSION_MIN <- 79L
 
+# Highest snapshot `Version` this package models. PK-Sim v13 maps to numeric
+# 81. Snapshots above this ceiling are a hard "not supported yet" error: the
+# package cannot know what fields a newer format added, so silently loading
+# one and re-exporting it could corrupt it.
+SUPPORTED_VERSION_MAX <- 81L
+
+# Snapshots in the migration band `74:78` are below the supported floor but
+# can be upgraded to a supported version by round-tripping them through the
+# installed PK-Sim core (see `.migrate_snapshot()`); below `74` PK-Sim itself
+# does not support snapshots, so there is nothing to migrate.
+MIGRATION_VERSION_MIN <- 74L
+
 # Default export adapter for a building-block section. Pairs with the
 # per-section table `Snapshot$private$.export_adapters`; non-default sections
 # (currently only ObservedData) supply their own adapter.
@@ -44,12 +56,20 @@ SUPPORTED_VERSION_MIN <- 79L
 #'
 #' # Supported snapshot versions
 #'
-#' `Snapshot` only accepts PK-Sim v11+ snapshots, i.e. integer `Version`
-#' values of `79` or greater (see `osp.snapshots:::SUPPORTED_VERSION_MIN`).
-#' Earlier snapshots use different conventions (notably `Applications|...`
-#' instead of `Events|...` in parameter paths) and are not modelled by this
-#' package; `Snapshot$new()` aborts on them rather than silently rewriting
-#' fields. Hand-rolled list input must supply `Version` for the same reason.
+#' `Snapshot` accepts PK-Sim snapshots whose integer `Version` is within the
+#' supported band `79` (v11.2) to `81` (v13), inclusive (see
+#' `osp.snapshots:::SUPPORTED_VERSION_MIN` and
+#' `osp.snapshots:::SUPPORTED_VERSION_MAX`). A snapshot above the ceiling
+#' aborts as not supported in this version. A below-floor snapshot in the
+#' `74-78` band can be migrated by passing `upgrade = TRUE`, which round-trips
+#' it through PK-Sim up to the version the installed `ospsuite` core emits;
+#' migration requires that core to emit a supported version (`79` to `81`) and
+#' aborts before converting when it would emit something above the ceiling.
+#' Without `upgrade = TRUE`, a below-floor snapshot reports how to migrate and
+#' does not load. Snapshots below `74` are too old to migrate and abort. A
+#' snapshot newer than the installed `ospsuite` core (but still in band) loads
+#' with a warning that it may not load or run there. Hand-rolled list input
+#' must supply `Version`.
 #'
 #' @importFrom R6 R6Class
 #' @importFrom fs path_rel
@@ -61,11 +81,24 @@ Snapshot <- R6::R6Class(
     #' @description
     #' Create a new Snapshot object from a JSON file or a list
     #' @param input Path to the snapshot JSON file, URL, template name, or a
-    #'   list containing snapshot data. The parsed data must contain an
-    #'   integer `Version` field of `79` (v11.2) or greater; older or missing
-    #'   versions abort.
+    #'   list containing snapshot data. The parsed data must contain an integer
+    #'   `Version` field. Versions `79` to `81` load normally; versions `74` to
+    #'   `78` load only with `upgrade = TRUE` (otherwise they report how to
+    #'   migrate and abort); all other or missing versions abort (see the
+    #'   "Supported snapshot versions" section).
+    #' @param upgrade Logical, default `FALSE`. When `TRUE` and the snapshot's
+    #'   `Version` is in the below-floor migration band (`74-78`), the snapshot
+    #'   is round-tripped through the installed PK-Sim core to upgrade it to a
+    #'   supported version before loading (slow, several minutes). When `FALSE`,
+    #'   a below-floor snapshot reports how to migrate and aborts. Ignored for
+    #'   in-band snapshots, which are never migrated.
     #' @return A new Snapshot object
-    initialize = function(input) {
+    initialize = function(input, upgrade = FALSE) {
+      if (!is.logical(upgrade) || length(upgrade) != 1L || is.na(upgrade)) {
+        cli::cli_abort(
+          "{.arg upgrade} must be a single {.code TRUE} or {.code FALSE}."
+        )
+      }
       if (is.character(input)) {
         cli::cli_alert_info("Reading snapshot from {.file {input}}")
         # Store as absolute path
@@ -86,7 +119,42 @@ Snapshot <- R6::R6Class(
         cli::cli_abort("Input must be either a path to a JSON file or a list")
       }
 
-      private$.validate_version()
+      # Orchestrate migration before validation so `.validate_version()` sees
+      # the upgraded data. A below-floor snapshot with `upgrade = TRUE` is
+      # first guarded by the compatibility precondition, then round-tripped
+      # through PK-Sim; on success `.original_data` is replaced with the
+      # upgraded snapshot. Either migration succeeds and validation runs on
+      # the upgraded data, or the precondition / round trip errors and no
+      # object is constructed (no partial or unmigrated Snapshot escapes).
+      version_num <- private$.raw_version()
+      if (
+        isTRUE(upgrade) &&
+          !is.na(version_num) &&
+          version_num >= MIGRATION_VERSION_MIN &&
+          version_num < SUPPORTED_VERSION_MIN
+      ) {
+        installed <- .installed_core_version()
+        if (installed > SUPPORTED_VERSION_MAX) {
+          cli::cli_abort(c(
+            "Cannot migrate this snapshot with the installed {.pkg ospsuite} core.",
+            i = "The installed core would emit {.field Version} {installed}, which is above the highest version {.pkg osp.snapshots} supports ({.field Version} {SUPPORTED_VERSION_MAX}).",
+            i = "Upgrade {.pkg osp.snapshots} (or install a matching {.pkg ospsuite}) before migrating."
+          ))
+        }
+        # Migrate from the local file when `input` is one, so PK-Sim reads the
+        # snapshot directly; otherwise (a URL or a list) migrate the parsed
+        # data, since `input` is not itself a readable snapshot payload.
+        migration_input <- if (
+          is.character(input) && length(input) == 1L && file.exists(input)
+        ) {
+          input
+        } else {
+          private$.original_data
+        }
+        private$.original_data <- .migrate_snapshot(migration_input)
+      }
+
+      private$.validate_version(upgrade = upgrade)
 
       # Building-block collections are constructed lazily on first access via
       # their active bindings; all `private$.<kind>` caches stay NULL here.
@@ -879,29 +947,81 @@ Snapshot <- R6::R6Class(
     .pksim_version = NULL,
     .abs_path = NULL,
 
-    # Abort when the parsed snapshot is missing `Version` or sits below the
-    # supported v11+ floor. Below v11, snapshots use `Applications|...` in
-    # localized parameter paths and other older conventions this package does
-    # not model; refusing them is preferable to silently rewriting fields.
-    .validate_version = function() {
-      raw <- private$.original_data$Version
-      # `unlist()` guards against list-wrapped values (jsonlite is configured
-      # with `simplifyVector = FALSE`, so scalars can arrive as length-1 lists).
-      version_num <- suppressWarnings(as.integer(unlist(raw)))
+    # Unwrap the raw `Version` from `.original_data` to a single integer, or
+    # `NA_integer_` when it is missing, non-scalar, or non-integer. `unlist()`
+    # guards against list-wrapped values (jsonlite is configured with
+    # `simplifyVector = FALSE`, so scalars can arrive as length-1 lists).
+    # Shared by `.validate_version()`, `.get_pksim_version()`, and the version
+    # branch in `.build_simulation()` so they all read `Version` the same way.
+    .raw_version = function() {
+      raw <- unlist(private$.original_data$Version, use.names = FALSE)
+      # Reject anything that is not a single whole number: a fractional value
+      # (`81.9`) or a numeric string (`"81"`) must not be silently truncated
+      # or coerced past the version gate.
       if (
-        is.null(raw) ||
-          length(version_num) != 1 ||
-          is.na(version_num)
+        length(raw) != 1L ||
+          !is.numeric(raw) ||
+          is.na(raw) ||
+          !is.finite(raw) ||
+          raw != trunc(raw)
       ) {
+        return(NA_integer_)
+      }
+      as.integer(raw)
+    },
+
+    # Enforce the supported-version contract at the single load chokepoint.
+    # Checks run top to bottom: missing/malformed `Version`, then below the
+    # migration floor (too old to migrate), then the `74:78` migration band
+    # (only reached with `upgrade = FALSE`, since `upgrade = TRUE` migrates
+    # before this runs), then above the ceiling (not supported yet), then
+    # in-band success. On success, warn when the snapshot is newer than what
+    # the installed core would emit (still editable, but may not load there).
+    .validate_version = function(upgrade = FALSE) {
+      version_num <- private$.raw_version()
+      if (is.na(version_num)) {
         cli::cli_abort(c(
           "Snapshot is missing an integer {.field Version} field.",
           i = "{.pkg osp.snapshots} requires PK-Sim v11+ snapshots ({.field Version} >= {SUPPORTED_VERSION_MIN})."
         ))
       }
-      if (version_num < SUPPORTED_VERSION_MIN) {
+      if (version_num < MIGRATION_VERSION_MIN) {
         cli::cli_abort(c(
-          "Unsupported snapshot {.field Version} {version_num}.",
-          i = "{.pkg osp.snapshots} requires PK-Sim v11+ snapshots ({.field Version} >= {SUPPORTED_VERSION_MIN})."
+          "Snapshot {.field Version} {version_num} is too old to migrate.",
+          i = "{.pkg osp.snapshots} supports snapshots from {.field Version} {SUPPORTED_VERSION_MIN} to {SUPPORTED_VERSION_MAX}, and can migrate {.field Version} {MIGRATION_VERSION_MIN} to {SUPPORTED_VERSION_MIN - 1L}."
+        ))
+      }
+      if (version_num < SUPPORTED_VERSION_MIN) {
+        # `74:78` band, `upgrade = FALSE`: explain the migration path, then
+        # abort. Emitting the guidance as the bullets of a single
+        # `cli::cli_abort()` keeps message-and-abort atomic so no partial
+        # object escapes.
+        pksim_label <- private$.get_pksim_version()
+        detected <- if (identical(pksim_label, "Unknown")) {
+          "{.field Version} {version_num}"
+        } else {
+          "{.field Version} {version_num} (PK-Sim {pksim_label})"
+        }
+        installed <- .installed_core_version()
+        cli::cli_abort(c(
+          paste0("Snapshot ", detected, " is below the supported floor."),
+          i = "Set {.code upgrade = TRUE} to migrate it up to whatever the installed {.pkg ospsuite} core emits (currently {.field Version} {installed}).",
+          i = "Migration round-trips the snapshot through PK-Sim and can take several minutes."
+        ))
+      }
+      if (version_num > SUPPORTED_VERSION_MAX) {
+        pkg_version <- utils::packageVersion("osp.snapshots")
+        cli::cli_abort(c(
+          "Snapshot {.field Version} {version_num} is not supported in this version.",
+          i = "{.pkg osp.snapshots} v{pkg_version} supports snapshots up to {.field Version} {SUPPORTED_VERSION_MAX}."
+        ))
+      }
+      # In-band (`79:81`): warn if newer than the installed core would emit.
+      installed <- .installed_core_version()
+      if (version_num > installed) {
+        cli::cli_warn(c(
+          "Snapshot {.field Version} {version_num} is newer than the installed {.pkg ospsuite} core ({.field Version} {installed}).",
+          i = "It may not load or run in the installed {.pkg ospsuite}; editing and exporting still work here."
         ))
       }
     },
@@ -955,19 +1075,11 @@ Snapshot <- R6::R6Class(
       )
     ),
 
-    # Convert the raw version number to a human-readable PKSIM version
-    # Returns a string with the human-readable PKSIM version
+    # Convert the raw version number to a human-readable PKSIM version.
+    # Reads the shared `.VERSION_TABLE`; returns "Unknown" for an unmapped
+    # version. Returns a string with the human-readable PKSIM version.
     .get_pksim_version = function() {
-      version_num <- as.integer(unlist(private$.original_data$Version))
-
-      pksim_version <- switch(
-        as.character(version_num),
-        "80" = "12.0",
-        "79" = "11.2",
-        "Unknown"
-      )
-
-      return(pksim_version)
+      .pksim_label_for_version(private$.raw_version())
     },
 
     # Lazily build the unnamed object list for a building-block collection.
@@ -1384,6 +1496,20 @@ Snapshot <- R6::R6Class(
         data$Solver <- empty_named_list()
       }
 
+      # Version-aware authoring: PK-Sim v13 (Version 81) added the
+      # `CheckNegativeValues` solver field. Emit it when the snapshot is at 81
+      # or newer so a v81 snapshot round-trips against a v13 core and future
+      # versions inherit the (additive) field, while 79/80 snapshots stay free
+      # of the newer-only field. The 81 threshold is the version that
+      # introduced the field, independent of the current ceiling. Only set it
+      # when absent so an explicitly supplied value is preserved.
+      version_num <- private$.raw_version()
+      if (!is.na(version_num) && version_num >= 81L) {
+        if (is.null(data$Solver$CheckNegativeValues)) {
+          data$Solver$CheckNegativeValues <- TRUE
+        }
+      }
+
       if (!is.null(output_schema)) {
         if (inherits(output_schema, "OutputSchema")) {
           data$OutputSchema <- output_schema$data
@@ -1602,6 +1728,13 @@ Snapshot <- R6::R6Class(
 #'   - URL to a remote snapshot file
 #'   - Name of a template from the OSPSuite.BuildingBlockTemplates repository
 #'
+#' @param upgrade Logical, default `FALSE`. When `TRUE`, a below-floor
+#'   snapshot (`Version 74-78`) is migrated up to the version the installed
+#'   PK-Sim core emits via a round trip through `ospsuite` (slow, several
+#'   minutes, and requires a compatible installed core). When `FALSE`, such a
+#'   snapshot reports how to migrate and does not load. In-band snapshots
+#'   (`Version 79-81`) are never migrated regardless of this argument.
+#'
 #' @details
 #' Available templates can be listed with `osp_models()`.
 #'
@@ -1619,14 +1752,14 @@ Snapshot <- R6::R6Class(
 #' # Load a predefined template by name
 #' snapshot <- load_snapshot("Midazolam")
 #' }
-load_snapshot <- function(source) {
+load_snapshot <- function(source, upgrade = FALSE) {
   if (is.null(source) || !is.character(source) || length(source) != 1) {
     cli::cli_abort("Source must be a single character string")
   }
 
   # Check if source is a local file
   if (file.exists(source) && grepl("\\.json$", source, ignore.case = TRUE)) {
-    return(Snapshot$new(source))
+    return(Snapshot$new(source, upgrade = upgrade))
   }
 
   # Check if source is a URL
@@ -1640,7 +1773,7 @@ load_snapshot <- function(source) {
           simplifyDataFrame = FALSE,
           simplifyVector = FALSE
         )
-        return(Snapshot$new(json_data))
+        return(Snapshot$new(json_data, upgrade = upgrade))
       },
       error = function(e) {
         cli::cli_abort(
@@ -1680,7 +1813,7 @@ load_snapshot <- function(source) {
         simplifyDataFrame = FALSE,
         simplifyVector = FALSE
       )
-      return(Snapshot$new(json_data))
+      return(Snapshot$new(json_data, upgrade = upgrade))
     },
     error = function(e) {
       cli::cli_abort(
@@ -1703,6 +1836,144 @@ load_snapshot <- function(source) {
   }
 
   return(templates$Templates)
+}
+
+# The single source of truth mapping a snapshot schema `Version` to its
+# PK-Sim release: the schema integer, the `ospsuite` package major that emits
+# it, and the human-readable PK-Sim version label. Every version-to-version
+# lookup (schema -> label in `.get_pksim_version()`, ospsuite major -> schema
+# in `.installed_core_version()`) reads this one table, so a new PK-Sim
+# release is added in exactly one place.
+.VERSION_TABLE <- list(
+  list(schema = 79L, ospsuite_major = 11L, pksim_label = "11.2"),
+  list(schema = 80L, ospsuite_major = 12L, pksim_label = "12.0"),
+  list(schema = 81L, ospsuite_major = 13L, pksim_label = "13.0")
+)
+
+# Human-readable PK-Sim label for a snapshot schema `Version`, or "Unknown"
+# when the version is not in `.VERSION_TABLE`.
+.pksim_label_for_version <- function(version_num) {
+  for (entry in .VERSION_TABLE) {
+    if (identical(entry$schema, as.integer(version_num))) {
+      return(entry$pksim_label)
+    }
+  }
+  "Unknown"
+}
+
+# Returns the integer snapshot `Version` the *installed* ospsuite core would
+# emit, derived from the installed `ospsuite` package major via
+# `.VERSION_TABLE`. This is the only window osp.snapshots has onto the core's
+# schema version: OSPSuite-R exposes no core/schema getter, so we lean on the
+# installed package major.
+#
+# An unknown (future) major falls back to `SUPPORTED_VERSION_MAX` so a newer
+# core is treated as "at least current" and never spuriously trips the
+# newer-than-installed warning downward. If the version query itself fails
+# (no ospsuite installed), also fall back to the ceiling so in-band loads
+# still succeed without a spurious warning.
+#
+# Kept as a free internal function (not an R6 private method) so tests can
+# stub it with `withr::local_mocked_bindings()`; the compatibility and
+# newer-than-installed decisions all read this one seam.
+.installed_core_version <- function() {
+  major <- tryCatch(
+    as.integer(unclass(utils::packageVersion("ospsuite"))[[1]][1]),
+    error = function(e) NA_integer_
+  )
+  if (length(major) != 1 || is.na(major)) {
+    return(SUPPORTED_VERSION_MAX)
+  }
+  for (entry in .VERSION_TABLE) {
+    if (identical(entry$ospsuite_major, major)) {
+      return(entry$schema)
+    }
+  }
+  SUPPORTED_VERSION_MAX
+}
+
+# Two-step PK-Sim round trip that upgrades a below-floor snapshot to whatever
+# the installed core emits. Delegates the field-level transforms to PK-Sim
+# (a bare `Version` rewrite would corrupt the file); returns the *parsed*
+# upgraded snapshot data list so the caller can drop it into `.original_data`.
+#
+# All intermediate artifacts live in a `withr::local_tempdir()` scoped to this
+# call, cleaned up on exit including on error, so concurrent loads never
+# collide and nothing leaks into the package dir or the user's tree. Because
+# the temp dir is gone when this function returns, the parsed list is returned
+# rather than a path.
+#
+# Slow (~minutes) and core-dependent; callers gate on the compatibility
+# precondition (installed core within the supported ceiling) first.
+#
+# Kept as a free internal function (not an R6 private method) so the
+# integration test can exercise it directly and so callers can reason about
+# it in isolation.
+.migrate_snapshot <- function(input) {
+  work_dir <- withr::local_tempdir()
+
+  # Normalize the input to a `.json` file on disk: `loadProjectFromSnapshot()`
+  # needs a file path. A local `.json` path is used as-is; list / URL-derived
+  # data is written out first.
+  if (is.character(input) && length(input) == 1 && file.exists(input)) {
+    input_json <- input
+  } else {
+    input_json <- file.path(work_dir, "input.json")
+    jsonlite::write_json(
+      input,
+      input_json,
+      auto_unbox = TRUE,
+      digits = NA
+    )
+  }
+
+  cli::cli_alert_info(c(
+    "Migrating the snapshot through the installed PK-Sim core; ",
+    "this can take several minutes."
+  ))
+
+  # Step 1: old snapshot .json -> project .pksim5 (no simulations requested).
+  project_dir <- file.path(work_dir, "project")
+  dir.create(project_dir)
+  ospsuite::loadProjectFromSnapshot(
+    input_json,
+    output = project_dir,
+    runSimulations = FALSE
+  )
+  project_files <- list.files(
+    project_dir,
+    pattern = "\\.pksim5$",
+    full.names = TRUE
+  )
+  if (length(project_files) == 0) {
+    cli::cli_abort(
+      "Snapshot migration failed: no project file was produced by PK-Sim."
+    )
+  }
+
+  # Step 2: project .pksim5 -> upgraded snapshot .json.
+  snapshot_dir <- file.path(work_dir, "snapshot")
+  dir.create(snapshot_dir)
+  ospsuite::exportProjectToSnapshot(
+    project_files[[1]],
+    output = snapshot_dir
+  )
+  upgraded_files <- list.files(
+    snapshot_dir,
+    pattern = "\\.json$",
+    full.names = TRUE
+  )
+  if (length(upgraded_files) == 0) {
+    cli::cli_abort(
+      "Snapshot migration failed: no upgraded snapshot was produced by PK-Sim."
+    )
+  }
+
+  jsonlite::fromJSON(
+    upgraded_files[[1]],
+    simplifyDataFrame = FALSE,
+    simplifyVector = FALSE
+  )
 }
 
 #' Add one or more individuals to a snapshot

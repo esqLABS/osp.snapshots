@@ -12,6 +12,7 @@ test_that("Snapshot class works", {
     raw_version <- as.integer(snapshot$data$Version)
     expected_version <- switch(
       as.character(raw_version),
+      "81" = "13.0",
       "80" = "12.0",
       "79" = "11.2",
       "78" = "10.0",
@@ -599,24 +600,136 @@ test_that("Snapshot$export creates a valid JSON file", {
 
 test_that("Snapshot correctly handles version mapping for all known versions", {
   versions <- list(
+    "81" = "13.0",
     "80" = "12.0",
     "79" = "11.2"
   )
 
   for (v in names(versions)) {
+    # Stub the installed core to the latest so an 81 snapshot loads without
+    # the newer-than-installed warning on an older test machine.
+    withr::local_options(lifecycle_verbosity = "quiet")
+    testthat::local_mocked_bindings(
+      .installed_core_version = function() SUPPORTED_VERSION_MAX,
+      .package = "osp.snapshots"
+    )
     snapshot_data <- list(Version = as.numeric(v))
     snapshot <- Snapshot$new(snapshot_data)
     expect_equal(snapshot$pksim_version, versions[[v]])
   }
-
-  # Newer (unrecognised but supported) version maps to "Unknown".
-  snapshot_data <- list(Version = 999)
-  snapshot <- Snapshot$new(snapshot_data)
-  expect_equal(snapshot$pksim_version, "Unknown")
 })
 
-test_that("Snapshot rejects pre-v11 snapshots", {
+test_that("Snapshot migration-band snapshots report how to upgrade and abort", {
+  # A `74-78` snapshot with the default `upgrade = FALSE` names the detected
+  # version, points at `upgrade = TRUE`, warns about the round-trip cost, and
+  # returns no object. Covers both a list input and a file fixture.
   expect_snapshot(Snapshot$new(list(Version = 78)), error = TRUE)
+  expect_snapshot(
+    Snapshot$new(testthat::test_path("data", "snapshot_v78.json")),
+    error = TRUE
+  )
+})
+
+test_that("Snapshot rejects snapshots too old to migrate", {
+  # Below the `74` migration floor there is nothing to migrate, so this is a
+  # hard error distinct from the below-floor migration-band message.
+  expect_snapshot(Snapshot$new(list(Version = 73)), error = TRUE)
+  expect_snapshot(
+    Snapshot$new(testthat::test_path("data", "snapshot_v73.json")),
+    error = TRUE
+  )
+})
+
+test_that("Snapshot rejects snapshots newer than the supported ceiling", {
+  # Over the ceiling is a hard "not supported yet" error, independent of
+  # `upgrade` and the installed core.
+  expect_snapshot(Snapshot$new(list(Version = 82)), error = TRUE)
+  expect_snapshot(
+    Snapshot$new(testthat::test_path("data", "snapshot_v82.json")),
+    error = TRUE
+  )
+  expect_snapshot(
+    Snapshot$new(list(Version = 82), upgrade = TRUE),
+    error = TRUE
+  )
+})
+
+test_that("Snapshot loads in-band versions and never migrates them", {
+  # 79, 80, and 81 all load without migration, regardless of `upgrade`.
+  testthat::local_mocked_bindings(
+    .installed_core_version = function() SUPPORTED_VERSION_MAX,
+    .package = "osp.snapshots"
+  )
+  for (v in c(79, 80, 81)) {
+    expect_s3_class(Snapshot$new(list(Version = v)), "Snapshot")
+    expect_s3_class(Snapshot$new(list(Version = v), upgrade = TRUE), "Snapshot")
+  }
+  expect_s3_class(
+    Snapshot$new(testthat::test_path("data", "snapshot_v80.json")),
+    "Snapshot"
+  )
+  expect_s3_class(
+    Snapshot$new(testthat::test_path("data", "snapshot_v81.json")),
+    "Snapshot"
+  )
+})
+
+test_that("Snapshot warns when a snapshot is newer than the installed core", {
+  # Installed core emits 80: an in-band 81 snapshot loads with a warning; an
+  # 80 or 79 snapshot does not warn.
+  testthat::local_mocked_bindings(
+    .installed_core_version = function() 80L,
+    .package = "osp.snapshots"
+  )
+  expect_snapshot(s <- Snapshot$new(list(Version = 81)))
+  expect_s3_class(s, "Snapshot")
+  expect_no_warning(Snapshot$new(list(Version = 80)))
+  expect_no_warning(Snapshot$new(list(Version = 79)))
+
+  # Installed core emits 81: the same 81 snapshot loads without the warning.
+  testthat::local_mocked_bindings(
+    .installed_core_version = function() 81L,
+    .package = "osp.snapshots"
+  )
+  expect_no_warning(Snapshot$new(list(Version = 81)))
+})
+
+test_that("Snapshot migration aborts before converting on an incompatible core", {
+  # When the installed core would emit a version above the ceiling, migrating
+  # would produce a snapshot this package can no longer load, so the
+  # precondition aborts before any round trip and no object is returned.
+  testthat::local_mocked_bindings(
+    .installed_core_version = function() 82L,
+    .package = "osp.snapshots"
+  )
+  expect_snapshot(
+    Snapshot$new(list(Version = 78), upgrade = TRUE),
+    error = TRUE
+  )
+})
+
+test_that("Snapshot rejects an invalid upgrade argument", {
+  # `upgrade` must be a single, non-missing logical: numeric, character, NA,
+  # and vector inputs are rejected at the public boundary rather than being
+  # silently treated as FALSE.
+  expect_snapshot(Snapshot$new(list(Version = 80), upgrade = 1), error = TRUE)
+  expect_snapshot(
+    Snapshot$new(list(Version = 80), upgrade = "TRUE"),
+    error = TRUE
+  )
+  expect_snapshot(Snapshot$new(list(Version = 80), upgrade = NA), error = TRUE)
+  expect_snapshot(
+    Snapshot$new(list(Version = 80), upgrade = c(TRUE, FALSE)),
+    error = TRUE
+  )
+})
+
+test_that("Snapshot rejects a non-integer Version instead of truncating it", {
+  # A fractional version (`81.9`) or a numeric string (`"81"`) must not be
+  # silently coerced past the version gate; both are treated as a missing
+  # integer Version and abort.
+  expect_snapshot(Snapshot$new(list(Version = 81.9)), error = TRUE)
+  expect_snapshot(Snapshot$new(list(Version = "81")), error = TRUE)
 })
 
 test_that("Snapshot rejects snapshots missing a Version field", {

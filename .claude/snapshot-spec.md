@@ -10,8 +10,8 @@ The top-level snapshot object. All other snapshots are nested arrays within it.
 
 | Property | Type | Required | Domain Mapping |
 |----------|------|----------|----------------|
-| `Version` | `int` | Yes | Sets `PKSimProject.Creation.InternalVersion`. Used to create a `SnapshotContext` that controls version-specific mapping behavior throughout the entire conversion. Current version: `80` (v12). |
-| `Name` | `string` | No | `PKSimProject.Name` (also overridden by the input filename). |
+| `Version` | `int` | Yes | Sets `PKSimProject.Creation.InternalVersion`. Used to create a `SnapshotContext` that controls version-specific mapping behavior throughout the entire conversion. Current version: `81` (v13). |
+| `Name` | `string` | No | `PKSimProject.Name` (also overridden by the input filename). The field has existed since at least v80; at v81 it is reordered to precede `Version` in the serialized JSON because the root project object derives from a shared base type that carries a serialization ordering hint on `Name`. Only its position changed at v13, not its meaning. |
 | `Description` | `string` | No | `PKSimProject.Description`. |
 | `ExpressionProfiles` | [ExpressionProfile](#expressionprofile)[] | No | Mapped first and added to the project before any other building blocks, because Individuals reference them by name. |
 | `Individuals` | [Individual](#individual)[] | No | Mapped via `IndividualMapper`, added to project as building blocks. |
@@ -331,6 +331,7 @@ Created via `ISolverSettingsFactory.CreateDefault()`.
 | `HMin` | `double?` | No | `SolverSettings.HMin`. Uses default if null. |
 | `HMax` | `double?` | No | `SolverSettings.HMax`. Uses default if null. |
 | `MxStep` | `int?` | No | `SolverSettings.MxStep`. Uses default if null. |
+| `CheckNegativeValues` | `bool?` | No | `SolverSettings.CheckNegativeValues`. Uses default if null. Added at v81 (v13). |
 
 All properties use sparse serialization: absent/null values fall back to factory defaults.
 
@@ -945,8 +946,11 @@ Created as one of: `ValueMappingGroupingDefinition` (if `Mapping` present), `Fix
 | v7.3.0+ | 74+ | Minimum version for snapshot support. |
 | v9 | 77 | ExpressionProfile uses `MembraneLocation`/`TissueLocation`/`IntracellularVascularEndoLocation` (converted to `Localization`). Expression values are normalized after loading. |
 | v10 | 78 | Individual uses `Molecules[]` (embedded expression profiles). |
-| v11 | 79 | Individual switches to `ExpressionProfiles[]` (string references). `LocalizedParameter` paths convert `"Applications"` to `"Events"`. |
-| v12 | 80 | Current version. |
+| v11 | 79 | Individual switches to `ExpressionProfiles[]` (string references). `LocalizedParameter` paths convert `"Applications"` to `"Events"`. Top-level `ExpressionProfiles[]` is a first-class building block from this version; it is *not* a later addition. |
+| v12 | 80 | Prior version. |
+| v13 | 81 | Current version. Top-level `Name` is reordered to precede `Version` in the serialized JSON (the field itself already existed at v80). `CheckNegativeValues` is added to `SolverSettings`. |
+
+The v13 delta was verified by direct inspection of the upstream PK-Sim / OSPSuite.Core code, which supersedes an earlier framing that described v13 as "promoting `ExpressionProfiles` to a top-level block": top-level `ExpressionProfiles` predates v13 (it is the v11 / version-79 switch to `ExpressionProfiles[]` string references documented above) and is not a v80 -> v81 change. PK-Sim remains the authoritative schema source.
 
 ---
 

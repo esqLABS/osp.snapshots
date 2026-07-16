@@ -45,7 +45,7 @@
       * Protocols: 9
       * Simulations: 2
 
-# Snapshot rejects pre-v11 snapshots
+# Snapshot migration-band snapshots report how to upgrade and abort
 
     Code
       Snapshot$new(list(Version = 78))
@@ -53,7 +53,154 @@
       i Creating snapshot from list data
     Condition
       Error in `private$.validate_version()`:
-      ! Unsupported snapshot Version 78.
+      ! Snapshot Version 78 is below the supported floor.
+      i Set `upgrade = TRUE` to migrate it up to whatever the installed ospsuite core emits (currently Version 80).
+      i Migration round-trips the snapshot through PK-Sim and can take several minutes.
+
+---
+
+    Code
+      Snapshot$new(testthat::test_path("data", "snapshot_v78.json"))
+    Message
+      i Reading snapshot from 'data/snapshot_v78.json'
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot Version 78 is below the supported floor.
+      i Set `upgrade = TRUE` to migrate it up to whatever the installed ospsuite core emits (currently Version 80).
+      i Migration round-trips the snapshot through PK-Sim and can take several minutes.
+
+# Snapshot rejects snapshots too old to migrate
+
+    Code
+      Snapshot$new(list(Version = 73))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot Version 73 is too old to migrate.
+      i osp.snapshots supports snapshots from Version 79 to 81, and can migrate Version 74 to 78.
+
+---
+
+    Code
+      Snapshot$new(testthat::test_path("data", "snapshot_v73.json"))
+    Message
+      i Reading snapshot from 'data/snapshot_v73.json'
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot Version 73 is too old to migrate.
+      i osp.snapshots supports snapshots from Version 79 to 81, and can migrate Version 74 to 78.
+
+# Snapshot rejects snapshots newer than the supported ceiling
+
+    Code
+      Snapshot$new(list(Version = 82))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot Version 82 is not supported in this version.
+      i osp.snapshots v1.0.0.9001 supports snapshots up to Version 81.
+
+---
+
+    Code
+      Snapshot$new(testthat::test_path("data", "snapshot_v82.json"))
+    Message
+      i Reading snapshot from 'data/snapshot_v82.json'
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot Version 82 is not supported in this version.
+      i osp.snapshots v1.0.0.9001 supports snapshots up to Version 81.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 82), upgrade = TRUE)
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot Version 82 is not supported in this version.
+      i osp.snapshots v1.0.0.9001 supports snapshots up to Version 81.
+
+# Snapshot warns when a snapshot is newer than the installed core
+
+    Code
+      s <- Snapshot$new(list(Version = 81))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Warning:
+      Snapshot Version 81 is newer than the installed ospsuite core (Version 80).
+      i It may not load or run in the installed ospsuite; editing and exporting still work here.
+    Message
+      v Snapshot loaded successfully
+
+# Snapshot migration aborts before converting on an incompatible core
+
+    Code
+      Snapshot$new(list(Version = 78), upgrade = TRUE)
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `initialize()`:
+      ! Cannot migrate this snapshot with the installed ospsuite core.
+      i The installed core would emit Version 82, which is above the highest version osp.snapshots supports (Version 81).
+      i Upgrade osp.snapshots (or install a matching ospsuite) before migrating.
+
+# Snapshot rejects an invalid upgrade argument
+
+    Code
+      Snapshot$new(list(Version = 80), upgrade = 1)
+    Condition
+      Error in `initialize()`:
+      ! `upgrade` must be a single `TRUE` or `FALSE`.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 80), upgrade = "TRUE")
+    Condition
+      Error in `initialize()`:
+      ! `upgrade` must be a single `TRUE` or `FALSE`.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 80), upgrade = NA)
+    Condition
+      Error in `initialize()`:
+      ! `upgrade` must be a single `TRUE` or `FALSE`.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 80), upgrade = c(TRUE, FALSE))
+    Condition
+      Error in `initialize()`:
+      ! `upgrade` must be a single `TRUE` or `FALSE`.
+
+# Snapshot rejects a non-integer Version instead of truncating it
+
+    Code
+      Snapshot$new(list(Version = 81.9))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot is missing an integer Version field.
+      i osp.snapshots requires PK-Sim v11+ snapshots (Version >= 79).
+
+---
+
+    Code
+      Snapshot$new(list(Version = "81"))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_version()`:
+      ! Snapshot is missing an integer Version field.
       i osp.snapshots requires PK-Sim v11+ snapshots (Version >= 79).
 
 # Snapshot rejects snapshots missing a Version field
