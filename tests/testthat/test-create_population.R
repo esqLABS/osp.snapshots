@@ -47,6 +47,14 @@ test_that("create_population validates required arguments", {
   )
   expect_snapshot(
     error = TRUE,
+    create_population(name = "P", number_of_individuals = 1)
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_population(name = "P", number_of_individuals = 10001)
+  )
+  expect_snapshot(
+    error = TRUE,
     create_population(
       name = "P",
       number_of_individuals = 10,
@@ -76,6 +84,23 @@ test_that("create_population validates required arguments", {
       number_of_individuals = 10,
       gestational_age_range = list(min = 25, max = 42, unit = "week(s)")
     )
+  )
+})
+
+test_that("create_population accepts the PK-Sim bounds inclusively", {
+  expect_equal(
+    create_population(
+      name = "P",
+      number_of_individuals = 2
+    )$number_of_individuals,
+    2
+  )
+  expect_equal(
+    create_population(
+      name = "P",
+      number_of_individuals = 10000
+    )$number_of_individuals,
+    10000
   )
 })
 
