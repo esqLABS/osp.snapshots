@@ -40,10 +40,8 @@ create_protocol(
 
   Character. Application type for a Simple Protocol. Optional; when
   supplied it must be one of the canonical PK-Sim application types:
-  `"Oral"`, `"IntravenousBolus"`, `"IntravenousInfusion"`,
-  `"Intramuscular"`, `"Subcutaneous"`, `"Dermal"`, `"Rectal"`,
-  `"Inhalation"`, or `"Intraperitoneal"`. Mutually exclusive with
-  `schemas`.
+  `"Oral"`, `"Intravenous"`, `"IntravenousBolus"`, or `"UserDefined"`.
+  Mutually exclusive with `schemas`.
 
 - dosing_interval:
 
@@ -54,11 +52,13 @@ create_protocol(
 
 - target_organ:
 
-  Character. Target organ for the dose.
+  Character. Target organ for the dose. Only valid when
+  `application_type` is `"UserDefined"`.
 
 - target_compartment:
 
-  Character. Target compartment for the dose.
+  Character. Target compartment for the dose. Only valid when
+  `application_type` is `"UserDefined"`.
 
 - parameters:
 

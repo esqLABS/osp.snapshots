@@ -40,9 +40,7 @@ create_schema_item(
 
   Character. Application type for the schema item (required). Must be
   one of the canonical PK-Sim application types: `"Oral"`,
-  `"IntravenousBolus"`, `"IntravenousInfusion"`, `"Intramuscular"`,
-  `"Subcutaneous"`, `"Dermal"`, `"Rectal"`, `"Inhalation"`, or
-  `"Intraperitoneal"`.
+  `"Intravenous"`, `"IntravenousBolus"`, or `"UserDefined"`.
 
 - formulation_key:
 
@@ -51,11 +49,13 @@ create_schema_item(
 
 - target_organ:
 
-  Character. Target organ for the application.
+  Character. Target organ for the application. Only valid when
+  `application_type` is `"UserDefined"`.
 
 - target_compartment:
 
-  Character. Target compartment for the application.
+  Character. Target compartment for the application. Only valid when
+  `application_type` is `"UserDefined"`.
 
 - parameters:
 
@@ -122,10 +122,10 @@ item <- create_schema_item(
   )
 )
 
-# An intravenous bolus schema item targeting the venous blood
+# A user-defined schema item targeting the venous blood plasma
 item <- create_schema_item(
-  name = "IV bolus",
-  application_type = "IntravenousBolus",
+  name = "User defined",
+  application_type = "UserDefined",
   target_organ = "VenousBlood",
   target_compartment = "Plasma",
   dose = 5

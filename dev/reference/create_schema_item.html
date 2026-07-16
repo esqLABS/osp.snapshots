@@ -88,9 +88,8 @@ target organ and compartment, and the application-level parameters
 <dt id="arg-application-type">application_type<a class="anchor" aria-label="anchor" href="#arg-application-type"></a></dt>
 <dd><p>Character. Application type for the schema
 item (required). Must be one of the canonical PK-Sim application
-types: <code>"Oral"</code>, <code>"IntravenousBolus"</code>, <code>"IntravenousInfusion"</code>,
-<code>"Intramuscular"</code>, <code>"Subcutaneous"</code>, <code>"Dermal"</code>, <code>"Rectal"</code>,
-<code>"Inhalation"</code>, or <code>"Intraperitoneal"</code>.</p></dd>
+types: <code>"Oral"</code>, <code>"Intravenous"</code>, <code>"IntravenousBolus"</code>, or
+<code>"UserDefined"</code>.</p></dd>
 
 
 <dt id="arg-formulation-key">formulation_key<a class="anchor" aria-label="anchor" href="#arg-formulation-key"></a></dt>
@@ -99,12 +98,13 @@ item to a formulation selection in the owning simulation.</p></dd>
 
 
 <dt id="arg-target-organ">target_organ<a class="anchor" aria-label="anchor" href="#arg-target-organ"></a></dt>
-<dd><p>Character. Target organ for the application.</p></dd>
+<dd><p>Character. Target organ for the application. Only
+valid when <code>application_type</code> is <code>"UserDefined"</code>.</p></dd>
 
 
 <dt id="arg-target-compartment">target_compartment<a class="anchor" aria-label="anchor" href="#arg-target-compartment"></a></dt>
 <dd><p>Character. Target compartment for the
-application.</p></dd>
+application. Only valid when <code>application_type</code> is <code>"UserDefined"</code>.</p></dd>
 
 
 <dt id="arg-parameters">parameters<a class="anchor" aria-label="anchor" href="#arg-parameters"></a></dt>
@@ -168,10 +168,10 @@ validated against the <code>"Time"</code> dimension. Consulted only when
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># An intravenous bolus schema item targeting the venous blood</span></span></span>
+<span class="r-in"><span><span class="co"># A user-defined schema item targeting the venous blood plasma</span></span></span>
 <span class="r-in"><span><span class="va">item</span> <span class="op">&lt;-</span> <span class="fu">create_schema_item</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"IV bolus"</span>,</span></span>
-<span class="r-in"><span>  application_type <span class="op">=</span> <span class="st">"IntravenousBolus"</span>,</span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"User defined"</span>,</span></span>
+<span class="r-in"><span>  application_type <span class="op">=</span> <span class="st">"UserDefined"</span>,</span></span>
 <span class="r-in"><span>  target_organ <span class="op">=</span> <span class="st">"VenousBlood"</span>,</span></span>
 <span class="r-in"><span>  target_compartment <span class="op">=</span> <span class="st">"Plasma"</span>,</span></span>
 <span class="r-in"><span>  dose <span class="op">=</span> <span class="fl">5</span></span></span>

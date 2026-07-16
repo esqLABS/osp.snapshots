@@ -91,10 +91,9 @@ of schemas via <code>schemas</code> instead of <code>application_type</code> and
 <dt id="arg-application-type">application_type<a class="anchor" aria-label="anchor" href="#arg-application-type"></a></dt>
 <dd><p>Character. Application type for a Simple
 Protocol. Optional; when supplied it must be one of the canonical
-PK-Sim application types: <code>"Oral"</code>, <code>"IntravenousBolus"</code>,
-<code>"IntravenousInfusion"</code>, <code>"Intramuscular"</code>, <code>"Subcutaneous"</code>,
-<code>"Dermal"</code>, <code>"Rectal"</code>, <code>"Inhalation"</code>, or <code>"Intraperitoneal"</code>.
-Mutually exclusive with <code>schemas</code>.</p></dd>
+PK-Sim application types: <code>"Oral"</code>, <code>"Intravenous"</code>,
+<code>"IntravenousBolus"</code>, or <code>"UserDefined"</code>. Mutually exclusive with
+<code>schemas</code>.</p></dd>
 
 
 <dt id="arg-dosing-interval">dosing_interval<a class="anchor" aria-label="anchor" href="#arg-dosing-interval"></a></dt>
@@ -105,12 +104,13 @@ PK-Sim <code>DosingIntervalId</code> values: <code>"Single"</code>, <code>"DI_6_
 
 
 <dt id="arg-target-organ">target_organ<a class="anchor" aria-label="anchor" href="#arg-target-organ"></a></dt>
-<dd><p>Character. Target organ for the dose.</p></dd>
+<dd><p>Character. Target organ for the dose. Only valid
+when <code>application_type</code> is <code>"UserDefined"</code>.</p></dd>
 
 
 <dt id="arg-target-compartment">target_compartment<a class="anchor" aria-label="anchor" href="#arg-target-compartment"></a></dt>
 <dd><p>Character. Target compartment for the
-dose.</p></dd>
+dose. Only valid when <code>application_type</code> is <code>"UserDefined"</code>.</p></dd>
 
 
 <dt id="arg-parameters">parameters<a class="anchor" aria-label="anchor" href="#arg-parameters"></a></dt>

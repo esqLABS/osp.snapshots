@@ -32,6 +32,17 @@
   the dose is written as a single `InputDose` parameter whose unit
   selects the dose family, and supplying a promoted argument together
   with the matching `parameters` entry is an error (#168).
+- [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
+  (and
+  [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md),
+  `Protocol$application_type`, and `SchemaItem$application_type`) now
+  validate `application_type` against PK-Sim’s canonical four values
+  (`Oral`, `Intravenous`, `IntravenousBolus`, `UserDefined`), newly
+  accepting `UserDefined` and no longer accepting the previously listed
+  non-canonical values (`IntravenousInfusion`, `Intramuscular`,
+  `Subcutaneous`, `Dermal`, `Rectal`, `Inhalation`, `Intraperitoneal`);
+  `target_organ` and `target_compartment` are now accepted only when
+  `application_type` is `UserDefined` (#171).
 - [`create_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_snapshot.md)
   now authors the current PK-Sim v13 snapshot version (`Version 81`)
   instead of `80`, ordering the top-level `Name` before `Version` and
