@@ -2,6 +2,16 @@
 
 ## osp.snapshots (development version)
 
+- [`create_schema()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema.md)
+  gains plain arguments `number_of_repetitions`,
+  `time_between_repetitions` (with unit `time_between_repetitions_unit`,
+  default `"h"`), and `start_time` (with unit `start_time_unit`, default
+  `"h"`) for the schema-level repetition parameters, so callers no
+  longer hand-write
+  [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md)
+  entries with PK-Sim’s internal names; the `parameters` list still
+  works for anything else, and supplying a value both ways is an error
+  (#167).
 - [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
   gains `dose` (with `dose_unit`, default `"mg"`), `start_time` (with
   `start_time_unit`, default `"h"`), and `end_time` plain arguments for
