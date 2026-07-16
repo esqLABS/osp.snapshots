@@ -144,9 +144,9 @@
         create_parameter(name = "NumberOfRepetitions", value = 2)))
     Condition
       Error in `create_schema()`:
-      ! A schema parameter was supplied both as a promoted argument and in `parameters`.
-      i Supply each repetition parameter either as a plain argument (`number_of_repetitions`, `time_between_repetitions`, `start_time`) or as an entry in `parameters`, not both.
-      x Conflicting parameter: "NumberOfRepetitions".
+      ! Promoted argument conflict with `parameters` entry.
+      x `number_of_repetitions` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 # create_schema errors on a TimeBetweenRepetitions conflict
 
@@ -155,9 +155,9 @@
         create_parameter(name = "TimeBetweenRepetitions", value = 12)))
     Condition
       Error in `create_schema()`:
-      ! A schema parameter was supplied both as a promoted argument and in `parameters`.
-      i Supply each repetition parameter either as a plain argument (`number_of_repetitions`, `time_between_repetitions`, `start_time`) or as an entry in `parameters`, not both.
-      x Conflicting parameter: "TimeBetweenRepetitions".
+      ! Promoted argument conflict with `parameters` entry.
+      x `time_between_repetitions` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 # create_schema errors on a Start time conflict
 
@@ -166,9 +166,9 @@
         name = "Start time", value = 1)))
     Condition
       Error in `create_schema()`:
-      ! A schema parameter was supplied both as a promoted argument and in `parameters`.
-      i Supply each repetition parameter either as a plain argument (`number_of_repetitions`, `time_between_repetitions`, `start_time`) or as an entry in `parameters`, not both.
-      x Conflicting parameter: "Start time".
+      ! Promoted argument conflict with `parameters` entry.
+      x `start_time` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 # create_schema resolves a conflict from a path-bearing parameter
 
@@ -177,9 +177,9 @@
         path = "Start time", value = 0)))
     Condition
       Error in `create_schema()`:
-      ! A schema parameter was supplied both as a promoted argument and in `parameters`.
-      i Supply each repetition parameter either as a plain argument (`number_of_repetitions`, `time_between_repetitions`, `start_time`) or as an entry in `parameters`, not both.
-      x Conflicting parameter: "Start time".
+      ! Promoted argument conflict with `parameters` entry.
+      x `start_time` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 # create_schema reports every conflict in a single error
 
@@ -190,7 +190,7 @@
         create_parameter(name = "Start time", value = 1)))
     Condition
       Error in `create_schema()`:
-      ! A schema parameter was supplied both as a promoted argument and in `parameters`.
-      i Supply each repetition parameter either as a plain argument (`number_of_repetitions`, `time_between_repetitions`, `start_time`) or as an entry in `parameters`, not both.
-      x Conflicting parameters: "NumberOfRepetitions", "TimeBetweenRepetitions", and "Start time".
+      ! Promoted arguments conflict with `parameters` entries.
+      x `number_of_repetitions`, `time_between_repetitions`, and `start_time` are also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 

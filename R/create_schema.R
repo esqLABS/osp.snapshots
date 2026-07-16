@@ -153,10 +153,18 @@ create_schema <- function(
     )
     conflicting <- intersect(promoted_names, existing_names)
     if (length(conflicting) > 0) {
+      # Map the conflicting PK-Sim parameter names back to the R argument
+      # names the user actually typed, so the message names each offender.
+      arg_names <- c(
+        "NumberOfRepetitions" = "number_of_repetitions",
+        "TimeBetweenRepetitions" = "time_between_repetitions",
+        "Start time" = "start_time"
+      )
+      conflicting_args <- unname(arg_names[conflicting])
       cli::cli_abort(c(
-        "A schema parameter was supplied both as a promoted argument and in {.arg parameters}.",
-        "i" = "Supply each repetition parameter either as a plain argument ({.arg number_of_repetitions}, {.arg time_between_repetitions}, {.arg start_time}) or as an entry in {.arg parameters}, not both.",
-        "x" = "Conflicting parameter{?s}: {.val {conflicting}}."
+        "{cli::qty(conflicting_args)}Promoted argument{?s} conflict with {.arg parameters} entr{?y/ies}.",
+        "x" = "{.arg {conflicting_args}} {?is/are} also supplied in {.arg parameters}.",
+        "i" = "Supply each setting either as its promoted argument or as an entry in {.arg parameters}, not both."
       ))
     }
   }
