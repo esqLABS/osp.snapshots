@@ -109,6 +109,19 @@ to_raw_parameters <- function(parameters, name_key) {
     )
   }
   name_key <- match.arg(name_key, c("Path", "Name"))
+  valid <- vapply(
+    parameters,
+    function(param) {
+      inherits(param, "Parameter") || (is.list(param) && !is.object(param))
+    },
+    logical(1)
+  )
+  if (!all(valid)) {
+    cli::cli_abort(
+      "Every entry of {.arg parameters} must be a {.cls Parameter} or a raw list",
+      call = parent.frame()
+    )
+  }
   lapply(parameters, function(param) {
     raw <- if (inherits(param, "Parameter")) param$data else param
     if (identical(name_key, "Name")) {
@@ -126,30 +139,35 @@ to_raw_parameters <- function(parameters, name_key) {
   })
 }
 
-# Internal: the accepted dose-family units, the single source of truth shared
-# by `resolve_input_dose_parameter()`'s membership test and its error message.
-# PK-Sim's "Input dose" dose family is NOT a resolvable ospsuite dimension
-# (neither `ospsuite::getUnitsForDimension("Input dose")` nor
-# `ospsuite::ospUnits[["Input dose"]]` returns it), so the accepted set is the
-# union of the four real ospsuite dimensions the family maps onto: plain doses
-# (`Mass`, `Amount`), doses per body weight (`Dose per body weight`), and doses
-# per body surface area (`Dose per body surface area`). Each dimension is
-# resolved with the same tolerant lookup `validate_unit()` uses so behaviour
-# stays consistent with the rest of the package.
+# Internal: return every unit accepted for a promoted dose, read live from
+# ospsuite. In PK-Sim a dose is a single `InputDose` parameter whose display
+# unit selects its family, so the accepted set is the union of the four real
+# dose-family dimensions: base `Dose` (dimensions `"Mass"` and `"Amount"`),
+# `DosePerBodyWeight` (`"Dose per body weight"`), and `DosePerBodySurfaceArea`
+# (`"Dose per body surface area"`). There is no `"Input dose"` dimension in
+# ospsuite, so membership cannot be a single `validate_unit()` call. Units are
+# read with the same tolerant `getUnitsForDimension()` -> `ospUnits` fallback
+# `validate_unit()` uses, never hardcoded, so the accepted set tracks the
+# installed ospsuite. This is the single source of truth shared by the
+# membership test and the error message in `resolve_input_dose_parameter()`.
 dose_family_units <- function() {
-  dimensions <- c(
+  dose_dimensions <- c(
     "Mass",
     "Amount",
     "Dose per body weight",
     "Dose per body surface area"
   )
-  units <- unlist(lapply(dimensions, function(dim) {
-    tryCatch(
-      ospsuite::getUnitsForDimension(dim),
-      error = function(e) unlist(ospsuite::ospUnits[[dim]], use.names = FALSE)
-    )
-  }))
-  unique(units)
+  unlist(
+    lapply(dose_dimensions, function(dimension) {
+      tryCatch(
+        ospsuite::getUnitsForDimension(dimension),
+        error = function(e) {
+          unlist(ospsuite::ospUnits[[dimension]], use.names = FALSE)
+        }
+      )
+    }),
+    use.names = FALSE
+  )
 }
 
 # Internal: resolve the canonical name of a single parameter entry, handling
@@ -163,15 +181,17 @@ resolve_parameter_name <- function(entry) {
   raw$Name %||% raw$Path %||% NA_character_
 }
 
-# Internal: resolve a promoted dose value and unit into the single raw
-# `InputDose` parameter shape. Validates `unit` against the accepted
-# dose-family units (see `dose_family_units()`), aborting with `call` so the
-# error is attributed to the calling factory rather than this helper. Does NOT
-# validate the numeric `dose` value; the calling factory owns the finite-scalar
-# check. Always returns a parameter named `InputDose` (never `Dose`,
-# `DosePerBodyWeight`, or `DosePerBodySurfaceArea`); the unit alone carries the
-# dose family. Designed for reuse: it holds no schema-item-specific state, so
-# `create_protocol()` can adopt it for the Simple-protocol dose.
+# Internal: resolve a promoted dose value + unit into the single raw
+# `InputDose` parameter shape used in the Simple-Protocol JSON. The `unit` is
+# validated against the union of the four dose-family dimensions (see
+# `dose_family_units()`); an invalid unit aborts with `call = call` so the
+# error is attributed to the calling factory. The numeric `dose` value is NOT
+# validated here (the finite-scalar shape check is the caller's
+# responsibility), keeping this helper focused on family/unit resolution.
+# Regardless of which family the unit selects, the emitted parameter is always
+# `Name = "InputDose"`, never a per-weight or per-body-surface-area name. This
+# helper is shared with `create_schema_item()` so both factories resolve a dose
+# identically.
 resolve_input_dose_parameter <- function(dose, unit, call = parent.frame()) {
   valid_units <- dose_family_units()
   if (!is_non_empty_scalar_string(unit) || !(unit %in% valid_units)) {
