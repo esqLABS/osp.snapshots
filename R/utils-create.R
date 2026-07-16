@@ -139,6 +139,70 @@ to_raw_parameters <- function(parameters, name_key) {
   })
 }
 
+# Internal: build the promoted global-molecule-scalar `LocalizedParameter`
+# entries for `create_expression_profile()`. `specs` is a list with one entry
+# per promoted scalar, each `list(arg, value, unit, dimension, leaf)` in the
+# fixed argument order (reference concentration, liver half-life, intestine
+# half-life). `existing_paths` is the character vector of effective `Path`s
+# already present in the resolved `parameters` list, used for conflict
+# detection. A `NULL` value is a silent no-op (unit ignored, not validated).
+# For each supplied value the helper validates the value (a single finite
+# numeric) and the unit (via `validate_unit()`). It then scans every supplied
+# spec for a `Path` collision with `existing_paths` and, if any are found,
+# reports all conflicting promoted arguments in a single abort before building
+# any entry. Otherwise it accumulates an unnamed `list(Path, Value, Unit)`
+# entry per supplied value. Returns an unnamed list of entries (empty when none
+# supplied) so it serialises as a JSON array.
+build_promoted_molecule_parameters <- function(
+  molecule,
+  specs,
+  existing_paths,
+  call = parent.frame()
+) {
+  supplied <- Filter(function(spec) !is.null(spec$value), specs)
+  for (spec in supplied) {
+    if (
+      !is.numeric(spec$value) ||
+        length(spec$value) != 1 ||
+        !is.finite(spec$value)
+    ) {
+      cli::cli_abort(
+        "{.arg {spec$arg}} must be a single finite numeric value",
+        call = call
+      )
+    }
+    validate_unit(spec$unit, spec$dimension)
+  }
+  conflicting_args <- vapply(
+    supplied,
+    function(spec) spec$arg,
+    character(1)
+  )[
+    vapply(
+      supplied,
+      function(spec) paste0(molecule, "|", spec$leaf) %in% existing_paths,
+      logical(1)
+    )
+  ]
+  if (length(conflicting_args) > 0) {
+    cli::cli_abort(
+      c(
+        "{cli::qty(conflicting_args)}Promoted argument{?s} conflict with {.arg parameters} entr{?y/ies}.",
+        "x" = "{.arg {conflicting_args}} {?is/are} also supplied in {.arg parameters}.",
+        "i" = "Supply each setting either as its promoted argument or as an entry in {.arg parameters}, not both."
+      ),
+      call = call
+    )
+  }
+  lapply(supplied, function(spec) {
+    list(
+      Path = paste0(molecule, "|", spec$leaf),
+      Value = spec$value,
+      Unit = spec$unit
+    )
+  })
+}
+
 # Internal: return every unit accepted for a promoted dose, read live from
 # ospsuite. In PK-Sim a dose is a single `InputDose` parameter whose display
 # unit selects its family, so the accepted set is the union of the four real
