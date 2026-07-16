@@ -38,6 +38,10 @@
   [`ospsuite::Species`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html))
   and now emits a `Species` field on the fraction-unbound alternative,
   which PK-Sim requires to load the snapshot (#156).
+- [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
+  no longer errors on a reference-pH solubility alternative whose
+  `Reference pH` parameter is omitted (as PK-Sim does when it holds the
+  default), defaulting the reference pH to PK-Sim’s default of `7`.
 - [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
   and `Snapshot$new()` gain an `upgrade` argument (default `FALSE`) that
   migrates a below-floor PK-Sim snapshot (`Version 74-78`) up to the
