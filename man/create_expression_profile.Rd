@@ -13,15 +13,15 @@ create_expression_profile(
   transport_type = NULL,
   ontogeny = NULL,
   parameters = NULL,
+  expression = NULL,
+  disease = NULL,
+  description = NULL,
   reference_concentration = NULL,
   reference_concentration_unit = "µmol/l",
   half_life_liver = NULL,
   half_life_liver_unit = "h",
   half_life_intestine = NULL,
-  half_life_intestine_unit = "h",
-  expression = NULL,
-  disease = NULL,
-  description = NULL
+  half_life_intestine_unit = "h"
 )
 }
 \arguments{
@@ -48,6 +48,26 @@ list. If a string is supplied it is wrapped as
 \item{parameters}{List of \link{Parameter} objects (created with
 \code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists describing relative
 expression and other per-organ values.}
+
+\item{expression}{Per-organ relative expression, written to the
+snapshot's \code{Expression} array. Supply a data frame (or tibble), one
+row per organ/compartment, with a required \code{name} column
+(organ/container name, for example \code{"Liver"}) and the optional
+columns \code{value} (relative expression), \code{compartment} (for example
+\code{"Intracellular"}), and \code{transport_direction} (for transporter
+profiles). Missing (\code{NA}) or absent optional cells emit no key, so a
+row with only \code{name} and \code{value} produces a container with just those
+two fields. Row order is preserved and duplicate names are kept.
+Alternatively supply a raw list of container lists (each a named list
+with any of \code{Name}, \code{Value}, \code{CompartmentName}, \code{TransportDirection})
+to pass through verbatim. \code{NULL} or an empty input writes nothing.}
+
+\item{disease}{Disease state, written to the snapshot's \code{Disease}
+object. Supply a named list with \code{name} (required, the
+\code{DiseaseState} name) and an optional \code{parameters} list of \link{Parameter}
+objects or raw parameter lists. \code{NULL} writes nothing.}
+
+\item{description}{Character. Free-text description of the profile.}
 
 \item{reference_concentration}{Numeric or \code{NULL}. Global molecule
 reference concentration, written to the \code{Path}
@@ -77,26 +97,6 @@ Dimension \code{"Time"}.}
 \item{half_life_intestine_unit}{Character. Unit for
 \code{half_life_intestine}, validated against the \code{"Time"} dimension.
 Default \code{"h"}. Consulted only when \code{half_life_intestine} is supplied.}
-
-\item{expression}{Per-organ relative expression, written to the
-snapshot's \code{Expression} array. Supply a data frame (or tibble), one
-row per organ/compartment, with a required \code{name} column
-(organ/container name, for example \code{"Liver"}) and the optional
-columns \code{value} (relative expression), \code{compartment} (for example
-\code{"Intracellular"}), and \code{transport_direction} (for transporter
-profiles). Missing (\code{NA}) or absent optional cells emit no key, so a
-row with only \code{name} and \code{value} produces a container with just those
-two fields. Row order is preserved and duplicate names are kept.
-Alternatively supply a raw list of container lists (each a named list
-with any of \code{Name}, \code{Value}, \code{CompartmentName}, \code{TransportDirection})
-to pass through verbatim. \code{NULL} or an empty input writes nothing.}
-
-\item{disease}{Disease state, written to the snapshot's \code{Disease}
-object. Supply a named list with \code{name} (required, the
-\code{DiseaseState} name) and an optional \code{parameters} list of \link{Parameter}
-objects or raw parameter lists. \code{NULL} writes nothing.}
-
-\item{description}{Character. Free-text description of the profile.}
 }
 \value{
 An \link{ExpressionProfile} object.

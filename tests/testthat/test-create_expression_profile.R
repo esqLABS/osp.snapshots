@@ -492,6 +492,63 @@ test_that("create_expression_profile emits no Parameters when all promoted args 
   expect_null(profile$data$Parameters)
 })
 
+test_that("create_expression_profile binds pre-existing arguments positionally", {
+  # Legacy positional call through the pre-existing signature order
+  # (molecule, species, category, type, localization, transport_type,
+  # ontogeny, parameters, expression, disease, description). The promoted
+  # scalar arguments now sit after these, so the positional slots for
+  # expression, disease, and description must still bind to those fields.
+  profile <- create_expression_profile(
+    "CYP3A4",
+    "Human",
+    "Healthy",
+    "Enzyme",
+    "Intracellular",
+    "Efflux",
+    "P-gp",
+    NULL,
+    data.frame(name = "Liver", value = 1),
+    list(name = "CKD"),
+    "Legacy positional call"
+  )
+
+  expect_equal(profile$molecule, "CYP3A4")
+  expect_equal(profile$species, "Human")
+  expect_equal(profile$category, "Healthy")
+  expect_equal(profile$type, "Enzyme")
+  expect_equal(profile$localization, "Intracellular")
+  expect_equal(profile$transportType, "Efflux")
+  expect_equal(profile$ontogeny, list(Name = "P-gp"))
+  expect_equal(profile$data$Expression, list(list(Name = "Liver", Value = 1)))
+  expect_equal(profile$data$Disease, list(Name = "CKD"))
+  expect_equal(profile$data$Description, "Legacy positional call")
+  # The description string must not have been captured by a promoted argument.
+  expect_null(profile$data$Parameters)
+})
+
+test_that("create_expression_profile keeps an explicit empty parameters list", {
+  profile <- create_expression_profile(
+    molecule = "CYP3A4",
+    species = "Human",
+    category = "Healthy",
+    type = "Enzyme",
+    parameters = list()
+  )
+
+  # An explicitly supplied empty list yields an empty Parameters array.
+  expect_equal(profile$data$Parameters, list())
+  expect_null(names(profile$data$Parameters))
+
+  # Omitting parameters entirely still omits the key.
+  omitted <- create_expression_profile(
+    molecule = "CYP3A4",
+    species = "Human",
+    category = "Healthy",
+    type = "Enzyme"
+  )
+  expect_null(omitted$data$Parameters)
+})
+
 test_that("create_expression_profile validates required arguments", {
   expect_snapshot(error = TRUE, create_expression_profile())
   expect_snapshot(

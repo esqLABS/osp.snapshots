@@ -31,6 +31,23 @@
 #' @param parameters List of [Parameter] objects (created with
 #'   [create_parameter()]) or raw parameter lists describing relative
 #'   expression and other per-organ values.
+#' @param expression Per-organ relative expression, written to the
+#'   snapshot's `Expression` array. Supply a data frame (or tibble), one
+#'   row per organ/compartment, with a required `name` column
+#'   (organ/container name, for example `"Liver"`) and the optional
+#'   columns `value` (relative expression), `compartment` (for example
+#'   `"Intracellular"`), and `transport_direction` (for transporter
+#'   profiles). Missing (`NA`) or absent optional cells emit no key, so a
+#'   row with only `name` and `value` produces a container with just those
+#'   two fields. Row order is preserved and duplicate names are kept.
+#'   Alternatively supply a raw list of container lists (each a named list
+#'   with any of `Name`, `Value`, `CompartmentName`, `TransportDirection`)
+#'   to pass through verbatim. `NULL` or an empty input writes nothing.
+#' @param disease Disease state, written to the snapshot's `Disease`
+#'   object. Supply a named list with `name` (required, the
+#'   `DiseaseState` name) and an optional `parameters` list of [Parameter]
+#'   objects or raw parameter lists. `NULL` writes nothing.
+#' @param description Character. Free-text description of the profile.
 #' @param reference_concentration Numeric or `NULL`. Global molecule
 #'   reference concentration, written to the `Path`
 #'   `"{molecule}|Reference concentration"`. Validated as a single finite
@@ -54,23 +71,6 @@
 #' @param half_life_intestine_unit Character. Unit for
 #'   `half_life_intestine`, validated against the `"Time"` dimension.
 #'   Default `"h"`. Consulted only when `half_life_intestine` is supplied.
-#' @param expression Per-organ relative expression, written to the
-#'   snapshot's `Expression` array. Supply a data frame (or tibble), one
-#'   row per organ/compartment, with a required `name` column
-#'   (organ/container name, for example `"Liver"`) and the optional
-#'   columns `value` (relative expression), `compartment` (for example
-#'   `"Intracellular"`), and `transport_direction` (for transporter
-#'   profiles). Missing (`NA`) or absent optional cells emit no key, so a
-#'   row with only `name` and `value` produces a container with just those
-#'   two fields. Row order is preserved and duplicate names are kept.
-#'   Alternatively supply a raw list of container lists (each a named list
-#'   with any of `Name`, `Value`, `CompartmentName`, `TransportDirection`)
-#'   to pass through verbatim. `NULL` or an empty input writes nothing.
-#' @param disease Disease state, written to the snapshot's `Disease`
-#'   object. Supply a named list with `name` (required, the
-#'   `DiseaseState` name) and an optional `parameters` list of [Parameter]
-#'   objects or raw parameter lists. `NULL` writes nothing.
-#' @param description Character. Free-text description of the profile.
 #'
 #' @return An [ExpressionProfile] object.
 #' @export
@@ -123,15 +123,15 @@ create_expression_profile <- function(
   transport_type = NULL,
   ontogeny = NULL,
   parameters = NULL,
+  expression = NULL,
+  disease = NULL,
+  description = NULL,
   reference_concentration = NULL,
   reference_concentration_unit = "µmol/l",
   half_life_liver = NULL,
   half_life_liver_unit = "h",
   half_life_intestine = NULL,
-  half_life_intestine_unit = "h",
-  expression = NULL,
-  disease = NULL,
-  description = NULL
+  half_life_intestine_unit = "h"
 ) {
   check_required_string(molecule, "molecule")
   check_required_string(species, "species")
@@ -163,6 +163,7 @@ create_expression_profile <- function(
       cli::cli_abort("{.arg ontogeny} must be a scalar character or a list")
     }
   }
+  parameters_supplied <- !is.null(parameters)
   if (!is.null(parameters) && !is.list(parameters)) {
     cli::cli_abort("{.arg parameters} must be a list")
   }
@@ -204,7 +205,7 @@ create_expression_profile <- function(
     existing_paths = existing_paths
   )
   combined <- c(promoted, raw_params)
-  if (length(combined) > 0) {
+  if (parameters_supplied || length(combined) > 0) {
     data$Parameters <- combined
   }
 
