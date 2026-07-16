@@ -100,7 +100,7 @@
     Condition
       Error in `private$.validate_version()`:
       ! Snapshot Version 82 is not supported in this version.
-      i osp.snapshots v1.0.0.9001 supports snapshots up to Version 81.
+      i osp.snapshots v1.0.0.9002 supports snapshots up to Version 81.
 
 ---
 
@@ -111,7 +111,7 @@
     Condition
       Error in `private$.validate_version()`:
       ! Snapshot Version 82 is not supported in this version.
-      i osp.snapshots v1.0.0.9001 supports snapshots up to Version 81.
+      i osp.snapshots v1.0.0.9002 supports snapshots up to Version 81.
 
 ---
 
@@ -122,7 +122,7 @@
     Condition
       Error in `private$.validate_version()`:
       ! Snapshot Version 82 is not supported in this version.
-      i osp.snapshots v1.0.0.9001 supports snapshots up to Version 81.
+      i osp.snapshots v1.0.0.9002 supports snapshots up to Version 81.
 
 # Snapshot warns when a snapshot is newer than the installed core
 
