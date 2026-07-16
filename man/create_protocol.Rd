@@ -25,20 +25,20 @@ create_protocol(
 
 \item{application_type}{Character. Application type for a Simple
 Protocol. Optional; when supplied it must be one of the canonical
-PK-Sim application types: \code{"Oral"}, \code{"IntravenousBolus"},
-\code{"IntravenousInfusion"}, \code{"Intramuscular"}, \code{"Subcutaneous"},
-\code{"Dermal"}, \code{"Rectal"}, \code{"Inhalation"}, or \code{"Intraperitoneal"}.
-Mutually exclusive with \code{schemas}.}
+PK-Sim application types: \code{"Oral"}, \code{"Intravenous"},
+\code{"IntravenousBolus"}, or \code{"UserDefined"}. Mutually exclusive with
+\code{schemas}.}
 
 \item{dosing_interval}{Character. Dosing interval identifier for a
 Simple Protocol. Optional; when supplied it must be one of the fixed
 PK-Sim \code{DosingIntervalId} values: \code{"Single"}, \code{"DI_6_6_6_6"},
 \code{"DI_6_6_12"}, \code{"DI_8_8_8"}, \code{"DI_12_12"}, or \code{"DI_24"}.}
 
-\item{target_organ}{Character. Target organ for the dose.}
+\item{target_organ}{Character. Target organ for the dose. Only valid
+when \code{application_type} is \code{"UserDefined"}.}
 
 \item{target_compartment}{Character. Target compartment for the
-dose.}
+dose. Only valid when \code{application_type} is \code{"UserDefined"}.}
 
 \item{parameters}{List of \link{Parameter} objects (created with
 \code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists. This is the free-form

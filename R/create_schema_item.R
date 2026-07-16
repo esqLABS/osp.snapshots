@@ -13,9 +13,8 @@
 #' @param name Character. Name of the schema item (required).
 #' @param application_type Character. Application type for the schema
 #'   item (required). Must be one of the canonical PK-Sim application
-#'   types: `"Oral"`, `"IntravenousBolus"`, `"IntravenousInfusion"`,
-#'   `"Intramuscular"`, `"Subcutaneous"`, `"Dermal"`, `"Rectal"`,
-#'   `"Inhalation"`, or `"Intraperitoneal"`.
+#'   types: `"Oral"`, `"Intravenous"`, `"IntravenousBolus"`, or
+#'   `"UserDefined"`.
 #' @param dose Numeric scalar dose for the application, written as a
 #'   single `InputDose` parameter. `NULL` (default) emits no dose
 #'   parameter. The dose family (plain dose, per body weight, or per body
@@ -32,9 +31,10 @@
 #'   `start_time` is supplied.
 #' @param formulation_key Character. Formulation key linking the schema
 #'   item to a formulation selection in the owning simulation.
-#' @param target_organ Character. Target organ for the application.
+#' @param target_organ Character. Target organ for the application. Only
+#'   valid when `application_type` is `"UserDefined"`.
 #' @param target_compartment Character. Target compartment for the
-#'   application.
+#'   application. Only valid when `application_type` is `"UserDefined"`.
 #' @param parameters List of [Parameter] objects (created with
 #'   [create_parameter()]) or raw parameter lists. These become the
 #'   application-level parameters (dose, start time, ...). The promoted
@@ -65,10 +65,10 @@
 #'   )
 #' )
 #'
-#' # An intravenous bolus schema item targeting the venous blood
+#' # A user-defined schema item targeting the venous blood plasma
 #' item <- create_schema_item(
-#'   name = "IV bolus",
-#'   application_type = "IntravenousBolus",
+#'   name = "User defined",
+#'   application_type = "UserDefined",
 #'   target_organ = "VenousBlood",
 #'   target_compartment = "Plasma",
 #'   dose = 5
@@ -92,6 +92,16 @@ create_schema_item <- function(
       "{.arg application_type} must be one of the canonical PK-Sim application types.",
       "x" = "Got {.val {application_type}}.",
       "i" = "Valid values: {.val {schema_item_application_types()}}."
+    ))
+  }
+  if (
+    application_type != "UserDefined" &&
+      (!is.null(target_organ) || !is.null(target_compartment))
+  ) {
+    cli::cli_abort(c(
+      "{.arg target_organ} and {.arg target_compartment} are only valid when {.arg application_type} is {.val UserDefined}.",
+      "x" = "Got {.arg application_type} = {.val {application_type}}.",
+      "i" = "Remove the target field(s), or set {.arg application_type} to {.val UserDefined}."
     ))
   }
   if (!is.null(parameters) && !is.list(parameters)) {

@@ -91,7 +91,7 @@
       Error:
       ! `application_type` must be one of the canonical PK-Sim application types.
       x Got "Sublingual".
-      i Valid values: "Oral", "IntravenousBolus", "IntravenousInfusion", "Intramuscular", "Subcutaneous", "Dermal", "Rectal", "Inhalation", and "Intraperitoneal".
+      i Valid values: "Oral", "Intravenous", "IntravenousBolus", and "UserDefined".
 
 # Protocol$dosing_interval is validated against the enum
 
