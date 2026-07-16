@@ -188,8 +188,9 @@
         value = 5, unit = "mg")))
     Condition
       Error in `create_protocol()`:
-      ! `dose` conflicts with an "InputDose" entry in `parameters`.
-      i Supply the dose either as the `dose` argument or as an "InputDose" entry in `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `dose` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 ---
 
@@ -198,8 +199,9 @@
         name = "Start time", value = 1, unit = "h")))
     Condition
       Error in `create_protocol()`:
-      ! `start_time` conflicts with a "Start time" entry in `parameters`.
-      i Supply the start time either as the `start_time` argument or as a "Start time" entry in `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `start_time` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 ---
 
@@ -208,8 +210,22 @@
         name = "End time", value = 12, unit = "h")))
     Condition
       Error in `create_protocol()`:
-      ! `end_time` conflicts with an "End time" entry in `parameters`.
-      i Supply the end time either as the `end_time` argument or as an "End time" entry in `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `end_time` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
+
+# create_protocol reports every conflicting promoted argument in one error
+
+    Code
+      create_protocol(name = "P", dose = 10, start_time = 0, end_time = 24,
+        parameters = list(create_parameter(name = "InputDose", value = 5, unit = "mg"),
+        create_parameter(name = "Start time", value = 1, unit = "h"),
+        create_parameter(name = "End time", value = 12, unit = "h")))
+    Condition
+      Error in `create_protocol()`:
+      ! Promoted arguments conflict with `parameters` entries.
+      x `dose`, `start_time`, and `end_time` are also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 # create_protocol detects a Path-keyed conflict after Name normalisation
 
@@ -218,8 +234,9 @@
         value = 5, unit = "mg")))
     Condition
       Error in `create_protocol()`:
-      ! `dose` conflicts with an "InputDose" entry in `parameters`.
-      i Supply the dose either as the `dose` argument or as an "InputDose" entry in `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `dose` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 ---
 
@@ -228,8 +245,9 @@
         Value = 5, Unit = "mg")))
     Condition
       Error in `create_protocol()`:
-      ! `dose` conflicts with an "InputDose" entry in `parameters`.
-      i Supply the dose either as the `dose` argument or as an "InputDose" entry in `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `dose` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 # create_protocol rejects the promoted arguments combined with schemas
 

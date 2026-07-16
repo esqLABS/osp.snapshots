@@ -265,29 +265,32 @@ create_protocol <- function(
     # Reject supplying a dosing setting both as a promoted argument and as the
     # same-named entry in `parameters`. Compare against the `Name`-normalised
     # identifier so both `create_parameter(name=)` and `create_parameter(path=)`
-    # (Path-keyed) entries are caught.
+    # (Path-keyed) entries are caught. Collect every offender and report them in
+    # a single error rather than aborting on the first one.
     if (!is.null(parameters)) {
       existing_names <- vapply(
         to_raw_parameters(parameters, "Name"),
         function(param) param$Name %||% NA_character_,
         character(1)
       )
-      if (!is.null(dose) && "InputDose" %in% existing_names) {
+      # Map each supplied promoted argument to its PK-Sim parameter name.
+      promoted_to_pksim <- c(
+        dose = "InputDose",
+        start_time = "Start time",
+        end_time = "End time"
+      )[c(
+        if (!is.null(dose)) "dose",
+        if (!is.null(start_time)) "start_time",
+        if (!is.null(end_time)) "end_time"
+      )]
+      conflicting_args <- names(promoted_to_pksim)[
+        promoted_to_pksim %in% existing_names
+      ]
+      if (length(conflicting_args) > 0) {
         cli::cli_abort(c(
-          "{.arg dose} conflicts with an {.val InputDose} entry in {.arg parameters}.",
-          "i" = "Supply the dose either as the {.arg dose} argument or as an {.val InputDose} entry in {.arg parameters}, not both."
-        ))
-      }
-      if (!is.null(start_time) && "Start time" %in% existing_names) {
-        cli::cli_abort(c(
-          "{.arg start_time} conflicts with a {.val Start time} entry in {.arg parameters}.",
-          "i" = "Supply the start time either as the {.arg start_time} argument or as a {.val Start time} entry in {.arg parameters}, not both."
-        ))
-      }
-      if (!is.null(end_time) && "End time" %in% existing_names) {
-        cli::cli_abort(c(
-          "{.arg end_time} conflicts with an {.val End time} entry in {.arg parameters}.",
-          "i" = "Supply the end time either as the {.arg end_time} argument or as an {.val End time} entry in {.arg parameters}, not both."
+          "{cli::qty(conflicting_args)}Promoted argument{?s} conflict with {.arg parameters} entr{?y/ies}.",
+          "x" = "{.arg {conflicting_args}} {?is/are} also supplied in {.arg parameters}.",
+          "i" = "Supply each setting either as its promoted argument or as an entry in {.arg parameters}, not both."
         ))
       }
     }

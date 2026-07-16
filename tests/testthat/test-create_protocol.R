@@ -399,6 +399,23 @@ test_that("create_protocol errors when a promoted argument conflicts with parame
   )
 })
 
+test_that("create_protocol reports every conflicting promoted argument in one error", {
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      dose = 10,
+      start_time = 0,
+      end_time = 24,
+      parameters = list(
+        create_parameter(name = "InputDose", value = 5, unit = "mg"),
+        create_parameter(name = "Start time", value = 1, unit = "h"),
+        create_parameter(name = "End time", value = 12, unit = "h")
+      )
+    )
+  )
+})
+
 test_that("create_protocol detects a Path-keyed conflict after Name normalisation", {
   expect_snapshot(
     error = TRUE,
