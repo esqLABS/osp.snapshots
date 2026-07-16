@@ -170,6 +170,17 @@ dose_family_units <- function() {
   )
 }
 
+# Internal: resolve the canonical name of a single parameter entry, handling
+# both accepted shapes (a `Parameter` R6 object or a raw list) exactly as
+# `to_raw_parameters()` reconciles Name/Path. Falls back to `Path` when only
+# `Path` is present, and to `NA_character_` when neither resolves, so a caller
+# scanning entry names with `vapply(..., character(1))` stays character-typed
+# and a malformed entry simply never matches a target name.
+resolve_parameter_name <- function(entry) {
+  raw <- if (inherits(entry, "Parameter")) entry$data else entry
+  raw$Name %||% raw$Path %||% NA_character_
+}
+
 # Internal: resolve a promoted dose value + unit into the single raw
 # `InputDose` parameter shape used in the Simple-Protocol JSON. The `unit` is
 # validated against the union of the four dose-family dimensions (see
