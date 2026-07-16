@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9002</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,8 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ospsnapshots-development-version">osp.snapshots (development version)<a class="anchor" aria-label="anchor" href="#ospsnapshots-development-version"></a></h2>
 <ul><li>
+<code><a href="../reference/create_protocol.html">create_protocol()</a></code> gains <code>dose</code> (with <code>dose_unit</code>, default <code>"mg"</code>), <code>start_time</code> (with <code>start_time_unit</code>, default <code>"h"</code>), and <code>end_time</code> plain arguments for the Simple-Protocol dosing settings, as a validated, self-documenting alternative to hand-building the equivalent <code>InputDose</code>/<code>Start time</code>/<code>End time</code> entries in <code>parameters</code> (#157).</li>
+<li>
 <code><a href="../reference/create_snapshot.html">create_snapshot()</a></code> now authors the current PK-Sim v13 snapshot version (<code>Version 81</code>) instead of <code>80</code>, ordering the top-level <code>Name</code> before <code>Version</code> and emitting the new <code>CheckNegativeValues</code> solver field when a simulation is added (#161).</li>
 <li>
 <code><a href="../reference/fraction_unbound.html">fraction_unbound()</a></code> gains a <code>species</code> argument (default <code>"Human"</code>, validated against <code><a href="https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html" class="external-link">ospsuite::Species</a></code>) and now emits a <code>Species</code> field on the fraction-unbound alternative, which PK-Sim requires to load the snapshot (#156).</li>

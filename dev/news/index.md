@@ -2,6 +2,12 @@
 
 ## osp.snapshots (development version)
 
+- [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
+  gains `dose` (with `dose_unit`, default `"mg"`), `start_time` (with
+  `start_time_unit`, default `"h"`), and `end_time` plain arguments for
+  the Simple-Protocol dosing settings, as a validated, self-documenting
+  alternative to hand-building the equivalent
+  `InputDose`/`Start time`/`End time` entries in `parameters` (#157).
 - [`create_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_snapshot.md)
   now authors the current PK-Sim v13 snapshot version (`Version 81`)
   instead of `80`, ordering the top-level `Name` before `Version` and

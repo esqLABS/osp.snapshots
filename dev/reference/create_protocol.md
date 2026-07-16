@@ -21,7 +21,12 @@ create_protocol(
   target_compartment = NULL,
   parameters = NULL,
   schemas = NULL,
-  time_unit = NULL
+  time_unit = NULL,
+  dose = NULL,
+  dose_unit = "mg",
+  start_time = NULL,
+  start_time_unit = "h",
+  end_time = NULL
 )
 ```
 
@@ -61,8 +66,11 @@ create_protocol(
   [Parameter](https://esqlabs.github.io/osp.snapshots/dev/reference/Parameter.md)
   objects (created with
   [`create_parameter()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_parameter.md))
-  or raw parameter lists for Simple Protocol parameters such as start
-  time, end time, and dose.
+  or raw parameter lists. This is the free-form escape hatch for any
+  Simple-Protocol parameter that has no dedicated argument. Dose, start
+  time, and end time have the dedicated `dose`, `start_time`, and
+  `end_time` arguments; supplying one of those settings both here and
+  via its dedicated argument is an error.
 
 - schemas:
 
@@ -76,7 +84,49 @@ create_protocol(
 - time_unit:
 
   Character. Display time unit for the protocol, validated against
-  dimension `"Time"`.
+  dimension `"Time"`; valid units are those in
+  `ospsuite::ospUnits$Time`.
+
+- dose:
+
+  Numeric scalar. Optional dose for a Simple Protocol. When supplied it
+  is emitted as a single `InputDose` parameter carrying `dose` and
+  `dose_unit`. Mutually exclusive with `schemas`, and with an
+  `InputDose` entry in `parameters`.
+
+- dose_unit:
+
+  Character. Display unit for `dose`, default `"mg"`. Validated as a
+  dose-family unit: the unit must belong to one of the mass, amount,
+  dose per body weight, or dose per body surface area dimensions, and
+  the unit alone selects the family (the emitted parameter is always a
+  single `InputDose`). There is no single `ospsuite::ospUnits$Dose`
+  member, so the accepted units are the union of
+  `ospsuite::ospUnits$Mass`, `ospsuite::ospUnits$Amount`,
+  `ospsuite::ospUnits[["Dose per body weight"]]`, and
+  `ospsuite::ospUnits[["Dose per body surface area"]]`. Only consulted
+  when `dose` is supplied.
+
+- start_time:
+
+  Numeric scalar. Optional start time for a Simple Protocol. When
+  supplied it is emitted as a `Start time` parameter. Mutually exclusive
+  with `schemas`, and with a `Start time` entry in `parameters`.
+
+- start_time_unit:
+
+  Character. Display unit for `start_time`, default `"h"`, validated
+  against dimension `"Time"`; valid units are those in
+  `ospsuite::ospUnits$Time`. Only consulted when `start_time` is
+  supplied.
+
+- end_time:
+
+  Numeric scalar. Optional end time for a Simple Protocol. When supplied
+  it is emitted as an `End time` parameter. Its display unit is taken
+  from `time_unit`, falling back to `"h"` when `time_unit` is unset;
+  there is no separate end-time unit argument. Mutually exclusive with
+  `schemas`, and with an `End time` entry in `parameters`.
 
 ## Value
 
@@ -87,7 +137,17 @@ object.
 ## Examples
 
 ``` r
-# Create a simple oral protocol with one dose
+# Create a simple oral protocol with one dose via promoted arguments
+protocol <- create_protocol(
+  name = "Single dose 10mg",
+  application_type = "Oral",
+  dosing_interval = "Single",
+  dose = 10,
+  dose_unit = "mg",
+  start_time = 0
+)
+
+# The same protocol via the free-form `parameters` escape hatch
 protocol <- create_protocol(
   name = "Single dose 10mg",
   application_type = "Oral",

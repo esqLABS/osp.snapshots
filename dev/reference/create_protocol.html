@@ -19,7 +19,7 @@ dosing_interval."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9002</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,12 @@ of schemas via <code>schemas</code> instead of <code>application_type</code> and
 <span>  target_compartment <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  schemas <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  time_unit <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  time_unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dose <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dose_unit <span class="op">=</span> <span class="st">"mg"</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time_unit <span class="op">=</span> <span class="st">"h"</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -110,8 +115,11 @@ dose.</p></dd>
 
 <dt id="arg-parameters">parameters<a class="anchor" aria-label="anchor" href="#arg-parameters"></a></dt>
 <dd><p>List of <a href="Parameter.html">Parameter</a> objects (created with
-<code><a href="create_parameter.html">create_parameter()</a></code>) or raw parameter lists for Simple Protocol
-parameters such as start time, end time, and dose.</p></dd>
+<code><a href="create_parameter.html">create_parameter()</a></code>) or raw parameter lists. This is the free-form
+escape hatch for any Simple-Protocol parameter that has no dedicated
+argument. Dose, start time, and end time have the dedicated <code>dose</code>,
+<code>start_time</code>, and <code>end_time</code> arguments; supplying one of those
+settings both here and via its dedicated argument is an error.</p></dd>
 
 
 <dt id="arg-schemas">schemas<a class="anchor" aria-label="anchor" href="#arg-schemas"></a></dt>
@@ -123,7 +131,51 @@ the protocol is created as an Advanced Protocol.</p></dd>
 
 <dt id="arg-time-unit">time_unit<a class="anchor" aria-label="anchor" href="#arg-time-unit"></a></dt>
 <dd><p>Character. Display time unit for the protocol, validated
-against dimension <code>"Time"</code>.</p></dd>
+against dimension <code>"Time"</code>; valid units are those in
+<code>ospsuite::ospUnits$Time</code>.</p></dd>
+
+
+<dt id="arg-dose">dose<a class="anchor" aria-label="anchor" href="#arg-dose"></a></dt>
+<dd><p>Numeric scalar. Optional dose for a Simple Protocol. When
+supplied it is emitted as a single <code>InputDose</code> parameter carrying
+<code>dose</code> and <code>dose_unit</code>. Mutually exclusive with <code>schemas</code>, and with
+an <code>InputDose</code> entry in <code>parameters</code>.</p></dd>
+
+
+<dt id="arg-dose-unit">dose_unit<a class="anchor" aria-label="anchor" href="#arg-dose-unit"></a></dt>
+<dd><p>Character. Display unit for <code>dose</code>, default <code>"mg"</code>.
+Validated as a dose-family unit: the unit must belong to one of the
+mass, amount, dose per body weight, or dose per body surface area
+dimensions, and the unit alone selects the family (the emitted
+parameter is always a single <code>InputDose</code>). There is no single
+<code>ospsuite::ospUnits$Dose</code> member, so the accepted units are the union
+of <code>ospsuite::ospUnits$Mass</code>, <code>ospsuite::ospUnits$Amount</code>,
+<code>ospsuite::ospUnits[["Dose per body weight"]]</code>, and
+<code>ospsuite::ospUnits[["Dose per body surface area"]]</code>. Only consulted
+when <code>dose</code> is supplied.</p></dd>
+
+
+<dt id="arg-start-time">start_time<a class="anchor" aria-label="anchor" href="#arg-start-time"></a></dt>
+<dd><p>Numeric scalar. Optional start time for a Simple
+Protocol. When supplied it is emitted as a <code>Start time</code> parameter.
+Mutually exclusive with <code>schemas</code>, and with a <code>Start time</code> entry in
+<code>parameters</code>.</p></dd>
+
+
+<dt id="arg-start-time-unit">start_time_unit<a class="anchor" aria-label="anchor" href="#arg-start-time-unit"></a></dt>
+<dd><p>Character. Display unit for <code>start_time</code>,
+default <code>"h"</code>, validated against dimension <code>"Time"</code>; valid units are
+those in <code>ospsuite::ospUnits$Time</code>. Only consulted when <code>start_time</code>
+is supplied.</p></dd>
+
+
+<dt id="arg-end-time">end_time<a class="anchor" aria-label="anchor" href="#arg-end-time"></a></dt>
+<dd><p>Numeric scalar. Optional end time for a Simple
+Protocol. When supplied it is emitted as an <code>End time</code> parameter. Its
+display unit is taken from <code>time_unit</code>, falling back to <code>"h"</code> when
+<code>time_unit</code> is unset; there is no separate end-time unit argument.
+Mutually exclusive with <code>schemas</code>, and with an <code>End time</code> entry in
+<code>parameters</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -133,7 +185,17 @@ against dimension <code>"Time"</code>.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a simple oral protocol with one dose</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a simple oral protocol with one dose via promoted arguments</span></span></span>
+<span class="r-in"><span><span class="va">protocol</span> <span class="op">&lt;-</span> <span class="fu">create_protocol</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Single dose 10mg"</span>,</span></span>
+<span class="r-in"><span>  application_type <span class="op">=</span> <span class="st">"Oral"</span>,</span></span>
+<span class="r-in"><span>  dosing_interval <span class="op">=</span> <span class="st">"Single"</span>,</span></span>
+<span class="r-in"><span>  dose <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  dose_unit <span class="op">=</span> <span class="st">"mg"</span>,</span></span>
+<span class="r-in"><span>  start_time <span class="op">=</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The same protocol via the free-form `parameters` escape hatch</span></span></span>
 <span class="r-in"><span><span class="va">protocol</span> <span class="op">&lt;-</span> <span class="fu">create_protocol</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"Single dose 10mg"</span>,</span></span>
 <span class="r-in"><span>  application_type <span class="op">=</span> <span class="st">"Oral"</span>,</span></span>
