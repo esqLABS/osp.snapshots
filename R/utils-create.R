@@ -134,21 +134,20 @@ to_raw_parameters <- function(parameters, name_key) {
 # already present in the resolved `parameters` list, used for conflict
 # detection. A `NULL` value is a silent no-op (unit ignored, not validated).
 # For each supplied value the helper validates the value (a single finite
-# numeric) and the unit (via `validate_unit()`), aborts on a `Path` collision
-# with `existing_paths`, and accumulates an unnamed `list(Path, Value, Unit)`
-# entry. Returns an unnamed list of entries (empty when none supplied) so it
-# serialises as a JSON array.
+# numeric) and the unit (via `validate_unit()`). It then scans every supplied
+# spec for a `Path` collision with `existing_paths` and, if any are found,
+# reports all conflicting promoted arguments in a single abort before building
+# any entry. Otherwise it accumulates an unnamed `list(Path, Value, Unit)`
+# entry per supplied value. Returns an unnamed list of entries (empty when none
+# supplied) so it serialises as a JSON array.
 build_promoted_molecule_parameters <- function(
   molecule,
   specs,
   existing_paths,
   call = parent.frame()
 ) {
-  promoted <- list()
-  for (spec in specs) {
-    if (is.null(spec$value)) {
-      next
-    }
+  supplied <- Filter(function(spec) !is.null(spec$value), specs)
+  for (spec in supplied) {
     if (
       !is.numeric(spec$value) ||
         length(spec$value) != 1 ||
@@ -160,22 +159,35 @@ build_promoted_molecule_parameters <- function(
       )
     }
     validate_unit(spec$unit, spec$dimension)
-    path <- paste0(molecule, "|", spec$leaf)
-    if (path %in% existing_paths) {
-      cli::cli_abort(
-        c(
-          "{.arg {spec$arg}} conflicts with an entry in {.arg parameters}.",
-          "i" = "The parameter {.val {path}} may be set via {.arg {spec$arg}} or via {.arg parameters}, not both."
-        ),
-        call = call
-      )
-    }
-    promoted <- c(
-      promoted,
-      list(list(Path = path, Value = spec$value, Unit = spec$unit))
+  }
+  conflicting_args <- vapply(
+    supplied,
+    function(spec) spec$arg,
+    character(1)
+  )[
+    vapply(
+      supplied,
+      function(spec) paste0(molecule, "|", spec$leaf) %in% existing_paths,
+      logical(1)
+    )
+  ]
+  if (length(conflicting_args) > 0) {
+    cli::cli_abort(
+      c(
+        "{cli::qty(conflicting_args)}Promoted argument{?s} conflict with {.arg parameters} entr{?y/ies}.",
+        "x" = "{.arg {conflicting_args}} {?is/are} also supplied in {.arg parameters}.",
+        "i" = "Supply each setting either as its promoted argument or as an entry in {.arg parameters}, not both."
+      ),
+      call = call
     )
   }
-  promoted
+  lapply(supplied, function(spec) {
+    list(
+      Path = paste0(molecule, "|", spec$leaf),
+      Value = spec$value,
+      Unit = spec$unit
+    )
+  })
 }
 
 # Internal: map the `expression` argument of `create_expression_profile()`

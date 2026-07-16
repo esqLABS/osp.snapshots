@@ -109,8 +109,9 @@
             unit = "µmol/l")))
     Condition
       Error in `create_expression_profile()`:
-      ! `reference_concentration` conflicts with an entry in `parameters`.
-      i The parameter "CYP3A4|Reference concentration" may be set via `reference_concentration` or via `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `reference_concentration` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 # create_expression_profile rejects a Name-only conflict
 
@@ -121,8 +122,24 @@
             unit = "µmol/l")))
     Condition
       Error in `create_expression_profile()`:
-      ! `reference_concentration` conflicts with an entry in `parameters`.
-      i The parameter "CYP3A4|Reference concentration" may be set via `reference_concentration` or via `parameters`, not both.
+      ! Promoted argument conflict with `parameters` entry.
+      x `reference_concentration` is also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
+
+# create_expression_profile reports all conflicting promoted arguments at once
+
+    Code
+      create_expression_profile(molecule = "CYP3A4", species = "Human", category = "Healthy",
+        type = "Enzyme", reference_concentration = 4.32, half_life_liver = 36,
+        half_life_intestine = 24, parameters = list(create_parameter(path = "CYP3A4|Reference concentration",
+          value = 4.32, unit = "µmol/l"), create_parameter(path = "CYP3A4|t1/2 (liver)",
+          value = 36, unit = "h"), create_parameter(path = "CYP3A4|t1/2 (intestine)",
+          value = 24, unit = "h")))
+    Condition
+      Error in `create_expression_profile()`:
+      ! Promoted arguments conflict with `parameters` entries.
+      x `reference_concentration`, `half_life_liver`, and `half_life_intestine` are also supplied in `parameters`.
+      i Supply each setting either as its promoted argument or as an entry in `parameters`, not both.
 
 # create_expression_profile validates required arguments
 

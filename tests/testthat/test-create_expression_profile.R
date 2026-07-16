@@ -402,6 +402,38 @@ test_that("create_expression_profile rejects a Name-only conflict", {
   )
 })
 
+test_that("create_expression_profile reports all conflicting promoted arguments at once", {
+  expect_snapshot(
+    error = TRUE,
+    create_expression_profile(
+      molecule = "CYP3A4",
+      species = "Human",
+      category = "Healthy",
+      type = "Enzyme",
+      reference_concentration = 4.32,
+      half_life_liver = 36,
+      half_life_intestine = 24,
+      parameters = list(
+        create_parameter(
+          path = "CYP3A4|Reference concentration",
+          value = 4.32,
+          unit = "µmol/l"
+        ),
+        create_parameter(
+          path = "CYP3A4|t1/2 (liver)",
+          value = 36,
+          unit = "h"
+        ),
+        create_parameter(
+          path = "CYP3A4|t1/2 (intestine)",
+          value = 24,
+          unit = "h"
+        )
+      )
+    )
+  )
+})
+
 test_that("create_expression_profile does not conflict when a parameter is set only via parameters", {
   profile <- create_expression_profile(
     molecule = "CYP3A4",
