@@ -234,6 +234,49 @@ test_that("create_protocol validates required arguments", {
     error = TRUE,
     create_protocol(name = "P", application_type = "NotARealType")
   )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", application_type = "Subcutaneous")
+  )
+})
+
+test_that("create_protocol accepts UserDefined with target fields", {
+  protocol <- create_protocol(
+    name = "P",
+    application_type = "UserDefined",
+    target_organ = "Liver",
+    target_compartment = "Plasma"
+  )
+  expect_s3_class(protocol, "Protocol")
+  expect_equal(protocol$application_type, "UserDefined")
+  expect_equal(protocol$data$TargetOrgan, "Liver")
+  expect_equal(protocol$data$TargetCompartment, "Plasma")
+})
+
+test_that("create_protocol gates target fields to UserDefined", {
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      application_type = "Oral",
+      target_organ = "Liver"
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      application_type = "IntravenousBolus",
+      target_compartment = "Plasma"
+    )
+  )
+})
+
+test_that("create_protocol allows target fields when application_type is NULL", {
+  protocol <- create_protocol(name = "P", target_organ = "Liver")
+  expect_s3_class(protocol, "Protocol")
+  expect_null(protocol$application_type)
+  expect_equal(protocol$data$TargetOrgan, "Liver")
 })
 
 test_that("create_protocol accepts a valid application_type and omits the check when NULL", {

@@ -520,23 +520,18 @@ Protocol <- R6::R6Class(
 # Canonical PK-Sim application types accepted by `create_schema_item()` and
 # `Schema/SchemaItem` JSON, paired with their human-readable labels. PK-Sim
 # resolves the enum values via `ApplicationTypes.ByName()` (see
-# `snapshot-spec.md`). This is the single source of truth for the enum;
-# `schema_item_application_types()` (in `R/create_schema_item.R`) and
-# `human_application_type()` both read from it.
+# `snapshot-spec.md`), which knows exactly these four names. This is the
+# single source of truth for the enum; `schema_item_application_types()` (in
+# `R/create_schema_item.R`) and `human_application_type()` both read from it.
 #
 # Names are the enum values; values are the labels used by
 # `Protocol$get_human_application_type()`. Entries whose label matches the
 # name simply round-trip the enum value as its own label.
 PKSIM_APPLICATION_TYPES <- c(
   Oral = "Oral",
+  Intravenous = "Intravenous",
   IntravenousBolus = "Intravenous bolus",
-  IntravenousInfusion = "Intravenous infusion",
-  Intramuscular = "Intramuscular",
-  Subcutaneous = "Subcutaneous",
-  Dermal = "Dermal",
-  Rectal = "Rectal",
-  Inhalation = "Inhalation",
-  Intraperitoneal = "Intraperitoneal"
+  UserDefined = "User defined"
 )
 
 # Look up the human-readable label for a PK-Sim application type. Falls back

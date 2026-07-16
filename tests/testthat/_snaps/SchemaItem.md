@@ -22,7 +22,7 @@
       Error:
       ! `application_type` must be one of the canonical PK-Sim application types.
       x Got "nonsense".
-      i Valid values: "Oral", "IntravenousBolus", "IntravenousInfusion", "Intramuscular", "Subcutaneous", "Dermal", "Rectal", "Inhalation", and "Intraperitoneal".
+      i Valid values: "Oral", "Intravenous", "IntravenousBolus", and "UserDefined".
 
 # SchemaItem$data is read-only
 

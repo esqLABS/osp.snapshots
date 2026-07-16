@@ -1,3 +1,24 @@
+# create_schema_item gates target fields to UserDefined
+
+    Code
+      create_schema_item(name = "Item", application_type = "Oral", target_organ = "Liver")
+    Condition
+      Error in `create_schema_item()`:
+      ! `target_organ` and `target_compartment` are only valid when `application_type` is "UserDefined".
+      x Got `application_type` = "Oral".
+      i Remove the target field(s), or set `application_type` to "UserDefined".
+
+---
+
+    Code
+      create_schema_item(name = "Item", application_type = "IntravenousBolus",
+        target_compartment = "Plasma")
+    Condition
+      Error in `create_schema_item()`:
+      ! `target_organ` and `target_compartment` are only valid when `application_type` is "UserDefined".
+      x Got `application_type` = "IntravenousBolus".
+      i Remove the target field(s), or set `application_type` to "UserDefined".
+
 # create_schema_item validates required arguments
 
     Code
@@ -30,7 +51,17 @@
       Error in `create_schema_item()`:
       ! `application_type` must be one of the canonical PK-Sim application types.
       x Got "NotARealType".
-      i Valid values: "Oral", "IntravenousBolus", "IntravenousInfusion", "Intramuscular", "Subcutaneous", "Dermal", "Rectal", "Inhalation", and "Intraperitoneal".
+      i Valid values: "Oral", "Intravenous", "IntravenousBolus", and "UserDefined".
+
+---
+
+    Code
+      create_schema_item(name = "Item", application_type = "Subcutaneous")
+    Condition
+      Error in `create_schema_item()`:
+      ! `application_type` must be one of the canonical PK-Sim application types.
+      x Got "Subcutaneous".
+      i Valid values: "Oral", "Intravenous", "IntravenousBolus", and "UserDefined".
 
 ---
 

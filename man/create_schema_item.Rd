@@ -22,17 +22,17 @@ create_schema_item(
 
 \item{application_type}{Character. Application type for the schema
 item (required). Must be one of the canonical PK-Sim application
-types: \code{"Oral"}, \code{"IntravenousBolus"}, \code{"IntravenousInfusion"},
-\code{"Intramuscular"}, \code{"Subcutaneous"}, \code{"Dermal"}, \code{"Rectal"},
-\code{"Inhalation"}, or \code{"Intraperitoneal"}.}
+types: \code{"Oral"}, \code{"Intravenous"}, \code{"IntravenousBolus"}, or
+\code{"UserDefined"}.}
 
 \item{formulation_key}{Character. Formulation key linking the schema
 item to a formulation selection in the owning simulation.}
 
-\item{target_organ}{Character. Target organ for the application.}
+\item{target_organ}{Character. Target organ for the application. Only
+valid when \code{application_type} is \code{"UserDefined"}.}
 
 \item{target_compartment}{Character. Target compartment for the
-application.}
+application. Only valid when \code{application_type} is \code{"UserDefined"}.}
 
 \item{parameters}{List of \link{Parameter} objects (created with
 \code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists. These become the
@@ -92,10 +92,10 @@ item <- create_schema_item(
   )
 )
 
-# An intravenous bolus schema item targeting the venous blood
+# A user-defined schema item targeting the venous blood plasma
 item <- create_schema_item(
-  name = "IV bolus",
-  application_type = "IntravenousBolus",
+  name = "User defined",
+  application_type = "UserDefined",
   target_organ = "VenousBlood",
   target_compartment = "Plasma",
   dose = 5

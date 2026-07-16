@@ -49,7 +49,7 @@ test_that("create_schema_item accepts raw parameter lists", {
 test_that("create_schema_item carries optional fields through", {
   item <- create_schema_item(
     name = "Item 1",
-    application_type = "Oral",
+    application_type = "UserDefined",
     formulation_key = "Tablet",
     target_organ = "ProximalSmallIntestine",
     target_compartment = "Lumen"
@@ -58,6 +58,33 @@ test_that("create_schema_item carries optional fields through", {
   expect_equal(item$formulation_key, "Tablet")
   expect_equal(item$target_organ, "ProximalSmallIntestine")
   expect_equal(item$target_compartment, "Lumen")
+})
+
+test_that("create_schema_item accepts each canonical application_type", {
+  for (type in c("Oral", "Intravenous", "IntravenousBolus", "UserDefined")) {
+    item <- create_schema_item(name = "Item", application_type = type)
+    expect_r6_class(item, "SchemaItem")
+    expect_equal(item$application_type, type)
+  }
+})
+
+test_that("create_schema_item gates target fields to UserDefined", {
+  expect_snapshot(
+    error = TRUE,
+    create_schema_item(
+      name = "Item",
+      application_type = "Oral",
+      target_organ = "Liver"
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_schema_item(
+      name = "Item",
+      application_type = "IntravenousBolus",
+      target_compartment = "Plasma"
+    )
+  )
 })
 
 test_that("positional call binds the third argument to formulation_key", {
@@ -77,6 +104,10 @@ test_that("create_schema_item validates required arguments", {
   expect_snapshot(
     error = TRUE,
     create_schema_item(name = "Item", application_type = "NotARealType")
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_schema_item(name = "Item", application_type = "Subcutaneous")
   )
   expect_snapshot(
     error = TRUE,
@@ -152,7 +183,7 @@ test_that("promoted start_time emits a single Start time parameter", {
 test_that("promoted dose and start_time coexist with a passthrough entry", {
   item <- create_schema_item(
     name = "I",
-    application_type = "IntravenousInfusion",
+    application_type = "Intravenous",
     dose = 10,
     start_time = 0,
     parameters = list(

@@ -13,17 +13,17 @@
 #' @param name Character. Name of the protocol (required).
 #' @param application_type Character. Application type for a Simple
 #'   Protocol. Optional; when supplied it must be one of the canonical
-#'   PK-Sim application types: `"Oral"`, `"IntravenousBolus"`,
-#'   `"IntravenousInfusion"`, `"Intramuscular"`, `"Subcutaneous"`,
-#'   `"Dermal"`, `"Rectal"`, `"Inhalation"`, or `"Intraperitoneal"`.
-#'   Mutually exclusive with `schemas`.
+#'   PK-Sim application types: `"Oral"`, `"Intravenous"`,
+#'   `"IntravenousBolus"`, or `"UserDefined"`. Mutually exclusive with
+#'   `schemas`.
 #' @param dosing_interval Character. Dosing interval identifier for a
 #'   Simple Protocol. Optional; when supplied it must be one of the fixed
 #'   PK-Sim `DosingIntervalId` values: `"Single"`, `"DI_6_6_6_6"`,
 #'   `"DI_6_6_12"`, `"DI_8_8_8"`, `"DI_12_12"`, or `"DI_24"`.
-#' @param target_organ Character. Target organ for the dose.
+#' @param target_organ Character. Target organ for the dose. Only valid
+#'   when `application_type` is `"UserDefined"`.
 #' @param target_compartment Character. Target compartment for the
-#'   dose.
+#'   dose. Only valid when `application_type` is `"UserDefined"`.
 #' @param dose Numeric scalar. Optional dose for a Simple Protocol. When
 #'   supplied it is emitted as a single `InputDose` parameter carrying
 #'   `dose` and `dose_unit`. Mutually exclusive with `schemas`, and with
@@ -198,6 +198,17 @@ create_protocol <- function(
     }
     if (!is.null(dosing_interval)) {
       data$DosingInterval <- dosing_interval
+    }
+    if (
+      !is.null(application_type) &&
+        application_type != "UserDefined" &&
+        (!is.null(target_organ) || !is.null(target_compartment))
+    ) {
+      cli::cli_abort(c(
+        "{.arg target_organ} and {.arg target_compartment} are only valid when {.arg application_type} is {.val UserDefined}.",
+        "x" = "Got {.arg application_type} = {.val {application_type}}.",
+        "i" = "Remove the target field(s), or set {.arg application_type} to {.val UserDefined}."
+      ))
     }
     if (!is.null(target_organ)) {
       data$TargetOrgan <- target_organ

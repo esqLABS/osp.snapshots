@@ -294,7 +294,7 @@ qd_oral <- create_protocol(
 qd_oral
 ```
 
-`application_type` on a schema item is validated against the canonical PK-Sim application types (`"Oral"`, `"IntravenousBolus"`, `"IntravenousInfusion"`, `"Intramuscular"`, `"Subcutaneous"`, `"Dermal"`, `"Rectal"`, `"Inhalation"`, `"Intraperitoneal"`).
+`application_type` on a schema item is validated against the canonical PK-Sim application types (`"Oral"`, `"Intravenous"`, `"IntravenousBolus"`, `"UserDefined"`).
 
 ## Events
 

@@ -166,25 +166,26 @@ test_that("Protocol to_df method works correctly", {
 
 test_that("Protocol handles different types correctly", {
   # Test different application types
-  iv_data <- simple_protocol_data
-  iv_data$ApplicationType <- "IntravenousBolus"
-  iv_protocol <- Protocol$new(iv_data)
-  expect_equal(iv_protocol$get_human_application_type(), "Intravenous bolus")
-
-  infusion_data <- simple_protocol_data
-  infusion_data$ApplicationType <- "IntravenousInfusion"
-  infusion_protocol <- Protocol$new(infusion_data)
+  iv_bolus_data <- simple_protocol_data
+  iv_bolus_data$ApplicationType <- "IntravenousBolus"
+  iv_bolus_protocol <- Protocol$new(iv_bolus_data)
   expect_equal(
-    infusion_protocol$get_human_application_type(),
-    "Intravenous infusion"
+    iv_bolus_protocol$get_human_application_type(),
+    "Intravenous bolus"
   )
 
-  # Application types without a dedicated label round-trip the enum value
-  # (locks in the fallback behavior of PKSIM_APPLICATION_TYPES).
-  sc_data <- simple_protocol_data
-  sc_data$ApplicationType <- "Subcutaneous"
-  sc_protocol <- Protocol$new(sc_data)
-  expect_equal(sc_protocol$get_human_application_type(), "Subcutaneous")
+  iv_data <- simple_protocol_data
+  iv_data$ApplicationType <- "Intravenous"
+  iv_protocol <- Protocol$new(iv_data)
+  expect_equal(iv_protocol$get_human_application_type(), "Intravenous")
+
+  user_defined_data <- simple_protocol_data
+  user_defined_data$ApplicationType <- "UserDefined"
+  user_defined_protocol <- Protocol$new(user_defined_data)
+  expect_equal(
+    user_defined_protocol$get_human_application_type(),
+    "User defined"
+  )
 
   # Unknown application types fall back to the raw enum value.
   unknown_data <- simple_protocol_data
