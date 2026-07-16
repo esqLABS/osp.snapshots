@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9006</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9008</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,8 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ospsnapshots-development-version">osp.snapshots (development version)<a class="anchor" aria-label="anchor" href="#ospsnapshots-development-version"></a></h2>
 <ul><li>
+<code><a href="../reference/create_population.html">create_population()</a></code> now requires <code>number_of_individuals</code> to be a whole number between 2 and 10000, matching the bounds PK-Sim enforces when creating a population (#170).</li>
+<li>
 <code><a href="../reference/create_protocol.html">create_protocol()</a></code> gains <code>dose</code> (with <code>dose_unit</code>, default <code>"mg"</code>), <code>start_time</code> (with <code>start_time_unit</code>, default <code>"h"</code>), and <code>end_time</code> plain arguments for the Simple-Protocol dosing settings, as a validated, self-documenting alternative to hand-building the equivalent <code>InputDose</code>/<code>Start time</code>/<code>End time</code> entries in <code>parameters</code> (#157).</li>
 <li>
 <code><a href="../reference/create_schema.html">create_schema()</a></code> gains plain arguments <code>number_of_repetitions</code>, <code>time_between_repetitions</code> (with unit <code>time_between_repetitions_unit</code>, default <code>"h"</code>), and <code>start_time</code> (with unit <code>start_time_unit</code>, default <code>"h"</code>) for the schema-level repetition parameters, so callers no longer hand-write <code><a href="../reference/create_parameter.html">create_parameter()</a></code> entries with PK-Sim’s internal names; the <code>parameters</code> list still works for anything else, and supplying a value both ways is an error (#167).</li>

@@ -42,8 +42,8 @@ create_population(
 
 - number_of_individuals:
 
-  Integer. Number of subjects to generate (required, must be a positive
-  integer).
+  Integer. Number of subjects to generate (required, a whole number
+  between 2 and 10000, matching PK-Sim's population-creation bounds).
 
 - proportion_of_females:
 

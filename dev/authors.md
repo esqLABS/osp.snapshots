@@ -11,13 +11,13 @@
 ## Citation
 
 MIL F, Lefaudeux D (2026). *osp.snapshots: Import and Manipulate Open
-Systems Pharmacology Project Snapshots*. R package version 1.0.0.9006,
+Systems Pharmacology Project Snapshots*. R package version 1.0.0.9008,
 <https://esqlabs.github.io/osp.snapshots/>.
 
     @Manual{,
       title = {osp.snapshots: Import and Manipulate Open Systems Pharmacology Project Snapshots},
       author = {Felix MIL and Diane Lefaudeux},
       year = {2026},
-      note = {R package version 1.0.0.9006},
+      note = {R package version 1.0.0.9008},
       url = {https://esqlabs.github.io/osp.snapshots/},
     }

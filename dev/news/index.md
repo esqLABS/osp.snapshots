@@ -2,6 +2,10 @@
 
 ## osp.snapshots (development version)
 
+- [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
+  now requires `number_of_individuals` to be a whole number between 2
+  and 10000, matching the bounds PK-Sim enforces when creating a
+  population (#170).
 - [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
   gains `dose` (with `dose_unit`, default `"mg"`), `start_time` (with
   `start_time_unit`, default `"h"`), and `end_time` plain arguments for
