@@ -12,7 +12,7 @@
       create_population(name = "P")
     Condition
       Error in `create_population()`:
-      ! `number_of_individuals` must be a positive integer
+      ! `number_of_individuals` must be a whole number between 2 and 10000
 
 ---
 
@@ -20,7 +20,7 @@
       create_population(name = "P", number_of_individuals = 0)
     Condition
       Error in `create_population()`:
-      ! `number_of_individuals` must be a positive integer
+      ! `number_of_individuals` must be a whole number between 2 and 10000
 
 ---
 
@@ -28,7 +28,7 @@
       create_population(name = "P", number_of_individuals = NA_integer_)
     Condition
       Error in `create_population()`:
-      ! `number_of_individuals` must be a positive integer
+      ! `number_of_individuals` must be a whole number between 2 and 10000
 
 ---
 
@@ -36,7 +36,23 @@
       create_population(name = "P", number_of_individuals = 1.5)
     Condition
       Error in `create_population()`:
-      ! `number_of_individuals` must be a positive integer
+      ! `number_of_individuals` must be a whole number between 2 and 10000
+
+---
+
+    Code
+      create_population(name = "P", number_of_individuals = 1)
+    Condition
+      Error in `create_population()`:
+      ! `number_of_individuals` must be a whole number between 2 and 10000
+
+---
+
+    Code
+      create_population(name = "P", number_of_individuals = 10001)
+    Condition
+      Error in `create_population()`:
+      ! `number_of_individuals` must be a whole number between 2 and 10000
 
 ---
 
