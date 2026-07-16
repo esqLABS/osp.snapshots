@@ -17,6 +17,32 @@ test_that("create_protocol creates a simple protocol", {
   expect_length(protocol$parameters, 2)
 })
 
+test_that("create_protocol keeps `parameters` in the sixth positional slot", {
+  # Pre-existing positional calls pass the sixth argument as `parameters`.
+  # The promoted dosing arguments are appended after `time_unit`, so the
+  # sixth positional slot must still land on `parameters`, not `dose`.
+  protocol <- create_protocol(
+    "P",
+    "Oral",
+    "Single",
+    NULL,
+    NULL,
+    list(create_parameter(name = "InputDose", value = 5, unit = "mg"))
+  )
+
+  expect_s3_class(protocol, "Protocol")
+  input_dose <- Filter(
+    function(p) identical(p$Name, "InputDose"),
+    protocol$data$Parameters
+  )
+  expect_length(input_dose, 1)
+  expect_equal(input_dose[[1]]$Value, 5)
+  expect_equal(input_dose[[1]]$Unit, "mg")
+  # The value landed via `parameters`, not via `dose` promotion, so there is
+  # exactly one parameter and no promoted duplicate.
+  expect_length(protocol$data$Parameters, 1)
+})
+
 test_that("create_protocol creates an advanced protocol from schemas", {
   schemas <- list(list(
     Name = "Schema 1",
@@ -307,6 +333,29 @@ test_that("create_protocol rejects an invalid dose_unit", {
   expect_snapshot(
     error = TRUE,
     create_protocol(name = "P", dose = 5, dose_unit = "h")
+  )
+})
+
+test_that("create_protocol rejects a NULL or non-scalar dose_unit", {
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      application_type = "Oral",
+      dosing_interval = "Single",
+      dose = 5,
+      dose_unit = NULL
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(
+      name = "P",
+      application_type = "Oral",
+      dosing_interval = "Single",
+      dose = 5,
+      dose_unit = c("mg", "mmol")
+    )
   )
 })
 

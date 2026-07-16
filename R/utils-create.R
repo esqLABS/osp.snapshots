@@ -170,7 +170,7 @@ dose_family_units <- function() {
 # identically.
 resolve_input_dose_parameter <- function(dose, unit, call = parent.frame()) {
   valid_units <- dose_family_units()
-  if (!(unit %in% valid_units)) {
+  if (!is_non_empty_scalar_string(unit) || !(unit %in% valid_units)) {
     cli::cli_abort(
       c(
         "Invalid dose unit: {unit}",

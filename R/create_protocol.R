@@ -32,15 +32,20 @@
 #'   Validated as a dose-family unit: the unit must belong to one of the
 #'   mass, amount, dose per body weight, or dose per body surface area
 #'   dimensions, and the unit alone selects the family (the emitted
-#'   parameter is always a single `InputDose`). Only consulted when `dose`
-#'   is supplied.
+#'   parameter is always a single `InputDose`). There is no single
+#'   `ospsuite::ospUnits$Dose` member, so the accepted units are the union
+#'   of `ospsuite::ospUnits$Mass`, `ospsuite::ospUnits$Amount`,
+#'   `ospsuite::ospUnits[["Dose per body weight"]]`, and
+#'   `ospsuite::ospUnits[["Dose per body surface area"]]`. Only consulted
+#'   when `dose` is supplied.
 #' @param start_time Numeric scalar. Optional start time for a Simple
 #'   Protocol. When supplied it is emitted as a `Start time` parameter.
 #'   Mutually exclusive with `schemas`, and with a `Start time` entry in
 #'   `parameters`.
 #' @param start_time_unit Character. Display unit for `start_time`,
-#'   default `"h"`, validated against dimension `"Time"`. Only consulted
-#'   when `start_time` is supplied.
+#'   default `"h"`, validated against dimension `"Time"`; valid units are
+#'   those in `ospsuite::ospUnits$Time`. Only consulted when `start_time`
+#'   is supplied.
 #' @param end_time Numeric scalar. Optional end time for a Simple
 #'   Protocol. When supplied it is emitted as an `End time` parameter. Its
 #'   display unit is taken from `time_unit`, falling back to `"h"` when
@@ -48,17 +53,18 @@
 #'   Mutually exclusive with `schemas`, and with an `End time` entry in
 #'   `parameters`.
 #' @param parameters List of [Parameter] objects (created with
-#'   [create_parameter()]) or raw parameter lists for Simple Protocol
-#'   parameters such as start time, end time, and dose. The common dose,
-#'   start time, and end time settings can instead be supplied via the
-#'   `dose`, `start_time`, and `end_time` arguments; supplying both a
-#'   promoted argument and the same-named `parameters` entry is an error.
+#'   [create_parameter()]) or raw parameter lists. This is the free-form
+#'   escape hatch for any Simple-Protocol parameter that has no dedicated
+#'   argument. Dose, start time, and end time have the dedicated `dose`,
+#'   `start_time`, and `end_time` arguments; supplying one of those
+#'   settings both here and via its dedicated argument is an error.
 #' @param schemas List of schemas for an Advanced Protocol. Entries may
 #'   be [Schema] objects (created with [create_schema()]) or raw schema
 #'   lists with `Name`, `Parameters`, and `SchemaItems`. If provided,
 #'   the protocol is created as an Advanced Protocol.
 #' @param time_unit Character. Display time unit for the protocol, validated
-#'   against dimension `"Time"`.
+#'   against dimension `"Time"`; valid units are those in
+#'   `ospsuite::ospUnits$Time`.
 #'
 #' @return A [Protocol] object.
 #' @export
@@ -123,14 +129,14 @@ create_protocol <- function(
   dosing_interval = NULL,
   target_organ = NULL,
   target_compartment = NULL,
+  parameters = NULL,
+  schemas = NULL,
+  time_unit = NULL,
   dose = NULL,
   dose_unit = "mg",
   start_time = NULL,
   start_time_unit = "h",
-  end_time = NULL,
-  parameters = NULL,
-  schemas = NULL,
-  time_unit = NULL
+  end_time = NULL
 ) {
   check_required_string(name, "name")
   if (!is.null(schemas)) {
@@ -150,7 +156,7 @@ create_protocol <- function(
     if (length(conflicting) > 0) {
       cli::cli_abort(c(
         "{.arg schemas} is mutually exclusive with Simple Protocol fields.",
-        "i" = "A protocol is either Simple (use {.arg application_type}, {.arg dosing_interval}, {.arg target_organ}, {.arg target_compartment}, {.arg parameters}) or Advanced (use {.arg schemas}).",
+        "i" = "A protocol is either Simple (use {.arg application_type}, {.arg dosing_interval}, {.arg target_organ}, {.arg target_compartment}, {.arg dose}, {.arg start_time}, {.arg end_time}, {.arg parameters}) or Advanced (use {.arg schemas}).",
         "x" = "Conflicting argument{?s}: {.arg {conflicting}}."
       ))
     }

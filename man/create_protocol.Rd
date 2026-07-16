@@ -10,14 +10,14 @@ create_protocol(
   dosing_interval = NULL,
   target_organ = NULL,
   target_compartment = NULL,
+  parameters = NULL,
+  schemas = NULL,
+  time_unit = NULL,
   dose = NULL,
   dose_unit = "mg",
   start_time = NULL,
   start_time_unit = "h",
-  end_time = NULL,
-  parameters = NULL,
-  schemas = NULL,
-  time_unit = NULL
+  end_time = NULL
 )
 }
 \arguments{
@@ -40,6 +40,22 @@ PK-Sim \code{DosingIntervalId} values: \code{"Single"}, \code{"DI_6_6_6_6"},
 \item{target_compartment}{Character. Target compartment for the
 dose.}
 
+\item{parameters}{List of \link{Parameter} objects (created with
+\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists. This is the free-form
+escape hatch for any Simple-Protocol parameter that has no dedicated
+argument. Dose, start time, and end time have the dedicated \code{dose},
+\code{start_time}, and \code{end_time} arguments; supplying one of those
+settings both here and via its dedicated argument is an error.}
+
+\item{schemas}{List of schemas for an Advanced Protocol. Entries may
+be \link{Schema} objects (created with \code{\link[=create_schema]{create_schema()}}) or raw schema
+lists with \code{Name}, \code{Parameters}, and \code{SchemaItems}. If provided,
+the protocol is created as an Advanced Protocol.}
+
+\item{time_unit}{Character. Display time unit for the protocol, validated
+against dimension \code{"Time"}; valid units are those in
+\code{ospsuite::ospUnits$Time}.}
+
 \item{dose}{Numeric scalar. Optional dose for a Simple Protocol. When
 supplied it is emitted as a single \code{InputDose} parameter carrying
 \code{dose} and \code{dose_unit}. Mutually exclusive with \code{schemas}, and with
@@ -49,8 +65,12 @@ an \code{InputDose} entry in \code{parameters}.}
 Validated as a dose-family unit: the unit must belong to one of the
 mass, amount, dose per body weight, or dose per body surface area
 dimensions, and the unit alone selects the family (the emitted
-parameter is always a single \code{InputDose}). Only consulted when \code{dose}
-is supplied.}
+parameter is always a single \code{InputDose}). There is no single
+\code{ospsuite::ospUnits$Dose} member, so the accepted units are the union
+of \code{ospsuite::ospUnits$Mass}, \code{ospsuite::ospUnits$Amount},
+\code{ospsuite::ospUnits[["Dose per body weight"]]}, and
+\code{ospsuite::ospUnits[["Dose per body surface area"]]}. Only consulted
+when \code{dose} is supplied.}
 
 \item{start_time}{Numeric scalar. Optional start time for a Simple
 Protocol. When supplied it is emitted as a \verb{Start time} parameter.
@@ -58,8 +78,9 @@ Mutually exclusive with \code{schemas}, and with a \verb{Start time} entry in
 \code{parameters}.}
 
 \item{start_time_unit}{Character. Display unit for \code{start_time},
-default \code{"h"}, validated against dimension \code{"Time"}. Only consulted
-when \code{start_time} is supplied.}
+default \code{"h"}, validated against dimension \code{"Time"}; valid units are
+those in \code{ospsuite::ospUnits$Time}. Only consulted when \code{start_time}
+is supplied.}
 
 \item{end_time}{Numeric scalar. Optional end time for a Simple
 Protocol. When supplied it is emitted as an \verb{End time} parameter. Its
@@ -67,21 +88,6 @@ display unit is taken from \code{time_unit}, falling back to \code{"h"} when
 \code{time_unit} is unset; there is no separate end-time unit argument.
 Mutually exclusive with \code{schemas}, and with an \verb{End time} entry in
 \code{parameters}.}
-
-\item{parameters}{List of \link{Parameter} objects (created with
-\code{\link[=create_parameter]{create_parameter()}}) or raw parameter lists for Simple Protocol
-parameters such as start time, end time, and dose. The common dose,
-start time, and end time settings can instead be supplied via the
-\code{dose}, \code{start_time}, and \code{end_time} arguments; supplying both a
-promoted argument and the same-named \code{parameters} entry is an error.}
-
-\item{schemas}{List of schemas for an Advanced Protocol. Entries may
-be \link{Schema} objects (created with \code{\link[=create_schema]{create_schema()}}) or raw schema
-lists with \code{Name}, \code{Parameters}, and \code{SchemaItems}. If provided,
-the protocol is created as an Advanced Protocol.}
-
-\item{time_unit}{Character. Display time unit for the protocol, validated
-against dimension \code{"Time"}.}
 }
 \value{
 A \link{Protocol} object.

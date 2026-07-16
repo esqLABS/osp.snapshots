@@ -21,7 +21,7 @@
     Condition
       Error in `create_protocol()`:
       ! `schemas` is mutually exclusive with Simple Protocol fields.
-      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `parameters`) or Advanced (use `schemas`).
+      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `dose`, `start_time`, `end_time`, `parameters`) or Advanced (use `schemas`).
       x Conflicting argument: `application_type`.
 
 ---
@@ -32,7 +32,7 @@
     Condition
       Error in `create_protocol()`:
       ! `schemas` is mutually exclusive with Simple Protocol fields.
-      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `parameters`) or Advanced (use `schemas`).
+      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `dose`, `start_time`, `end_time`, `parameters`) or Advanced (use `schemas`).
       x Conflicting arguments: `dosing_interval` and `target_organ`.
 
 ---
@@ -129,6 +129,26 @@
       ! Invalid dose unit: h
       i Valid dose units are: kg, g, mg, µg, ng, pg, mol, mmol, µmol, nmol, pmol, ng/kg, µg/kg, mg/kg, g/kg, kg/kg, mg/m², kg/dm², µg/cm², mg/cm²
 
+# create_protocol rejects a NULL or non-scalar dose_unit
+
+    Code
+      create_protocol(name = "P", application_type = "Oral", dosing_interval = "Single",
+        dose = 5, dose_unit = NULL)
+    Condition
+      Error in `create_protocol()`:
+      ! Invalid dose unit:
+      i Valid dose units are: kg, g, mg, µg, ng, pg, mol, mmol, µmol, nmol, pmol, ng/kg, µg/kg, mg/kg, g/kg, kg/kg, mg/m², kg/dm², µg/cm², mg/cm²
+
+---
+
+    Code
+      create_protocol(name = "P", application_type = "Oral", dosing_interval = "Single",
+        dose = 5, dose_unit = c("mg", "mmol"))
+    Condition
+      Error in `create_protocol()`:
+      ! Invalid dose unit: mg and mmol
+      i Valid dose units are: kg, g, mg, µg, ng, pg, mol, mmol, µmol, nmol, pmol, ng/kg, µg/kg, mg/kg, g/kg, kg/kg, mg/m², kg/dm², µg/cm², mg/cm²
+
 # create_protocol rejects non-finite or non-scalar dose values
 
     Code
@@ -218,7 +238,7 @@
     Condition
       Error in `create_protocol()`:
       ! `schemas` is mutually exclusive with Simple Protocol fields.
-      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `parameters`) or Advanced (use `schemas`).
+      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `dose`, `start_time`, `end_time`, `parameters`) or Advanced (use `schemas`).
       x Conflicting argument: `dose`.
 
 ---
@@ -228,7 +248,7 @@
     Condition
       Error in `create_protocol()`:
       ! `schemas` is mutually exclusive with Simple Protocol fields.
-      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `parameters`) or Advanced (use `schemas`).
+      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `dose`, `start_time`, `end_time`, `parameters`) or Advanced (use `schemas`).
       x Conflicting argument: `start_time`.
 
 ---
@@ -238,6 +258,6 @@
     Condition
       Error in `create_protocol()`:
       ! `schemas` is mutually exclusive with Simple Protocol fields.
-      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `parameters`) or Advanced (use `schemas`).
+      i A protocol is either Simple (use `application_type`, `dosing_interval`, `target_organ`, `target_compartment`, `dose`, `start_time`, `end_time`, `parameters`) or Advanced (use `schemas`).
       x Conflicting argument: `end_time`.
 
