@@ -84,6 +84,16 @@
       x Got `application_type` = "IntravenousBolus".
       i Remove the target field(s), or set `application_type` to "UserDefined".
 
+# create_protocol rejects target fields when application_type is NULL
+
+    Code
+      create_protocol(name = "P", target_organ = "Liver")
+    Condition
+      Error in `create_protocol()`:
+      ! `target_organ` and `target_compartment` are only valid when `application_type` is "UserDefined".
+      x Got `application_type` = NULL.
+      i Remove the target field(s), or set `application_type` to "UserDefined".
+
 # create_protocol validates dosing_interval against the DosingIntervalId enum
 
     Code

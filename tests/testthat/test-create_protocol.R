@@ -272,11 +272,11 @@ test_that("create_protocol gates target fields to UserDefined", {
   )
 })
 
-test_that("create_protocol allows target fields when application_type is NULL", {
-  protocol <- create_protocol(name = "P", target_organ = "Liver")
-  expect_s3_class(protocol, "Protocol")
-  expect_null(protocol$application_type)
-  expect_equal(protocol$data$TargetOrgan, "Liver")
+test_that("create_protocol rejects target fields when application_type is NULL", {
+  expect_snapshot(
+    error = TRUE,
+    create_protocol(name = "P", target_organ = "Liver")
+  )
 })
 
 test_that("create_protocol accepts a valid application_type and omits the check when NULL", {

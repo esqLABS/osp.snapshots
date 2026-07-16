@@ -200,13 +200,17 @@ create_protocol <- function(
       data$DosingInterval <- dosing_interval
     }
     if (
-      !is.null(application_type) &&
-        application_type != "UserDefined" &&
+      (is.null(application_type) || application_type != "UserDefined") &&
         (!is.null(target_organ) || !is.null(target_compartment))
     ) {
+      got_type <- if (is.null(application_type)) {
+        "Got {.arg application_type} = NULL."
+      } else {
+        "Got {.arg application_type} = {.val {application_type}}."
+      }
       cli::cli_abort(c(
         "{.arg target_organ} and {.arg target_compartment} are only valid when {.arg application_type} is {.val UserDefined}.",
-        "x" = "Got {.arg application_type} = {.val {application_type}}.",
+        "x" = got_type,
         "i" = "Remove the target field(s), or set {.arg application_type} to {.val UserDefined}."
       ))
     }
