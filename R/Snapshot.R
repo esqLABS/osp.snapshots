@@ -1010,7 +1010,9 @@ Snapshot <- R6::R6Class(
         ))
       }
       if (version_num > SUPPORTED_VERSION_MAX) {
-        pkg_version <- utils::packageVersion("osp.snapshots")
+        # Report only the released major.minor.patch, not the dev suffix, so
+        # the message (and its snapshot) is stable across dev-version bumps.
+        pkg_version <- utils::packageVersion("osp.snapshots")[, 1:3]
         cli::cli_abort(c(
           "Snapshot {.field Version} {version_num} is not supported in this version.",
           i = "{.pkg osp.snapshots} v{pkg_version} supports snapshots up to {.field Version} {SUPPORTED_VERSION_MAX}."
