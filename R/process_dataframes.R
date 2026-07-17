@@ -151,17 +151,26 @@ legacy_category_named_list <- function(raw_processes, category) {
 }
 
 build_legacy_process_entry <- function(p, category) {
-  parameter_names <- purrr::list_c(purrr::map(p$Parameters, "Name"))
-  params <- purrr::map(
-    purrr::set_names(p$Parameters, parameter_names),
-    function(parameter) {
-      list(
-        Value = as.numeric(parameter$Value),
-        Unit = parameter$Unit,
-        Source = compound_value_origin_source(parameter$ValueOrigin)
-      )
-    }
-  )
+  # A process can carry an empty `Parameters` list (PK-Sim exports e.g.
+  # `GlomerularFiltration` with `"Parameters": []`). `purrr::set_names()`
+  # cannot name a zero-length input, so start from an empty parameter list
+  # and only build named entries when parameters are present.
+  raw_parameters <- p$Parameters %||% list()
+  if (length(raw_parameters) == 0) {
+    params <- list()
+  } else {
+    parameter_names <- purrr::list_c(purrr::map(raw_parameters, "Name"))
+    params <- purrr::map(
+      purrr::set_names(raw_parameters, parameter_names),
+      function(parameter) {
+        list(
+          Value = as.numeric(parameter$Value),
+          Unit = parameter$Unit,
+          Source = compound_value_origin_source(parameter$ValueOrigin)
+        )
+      }
+    )
+  }
 
   params$Process <- p$InternalName
   if (category != "hepatic_clearance" && category != "renal_clearance") {
