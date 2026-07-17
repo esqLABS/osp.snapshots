@@ -332,10 +332,18 @@ Compound <- R6::R6Class(
     },
 
     .extract_molecular_weight = function() {
-      list(private$.extract_parameters(
+      molecular_weight <- private$.extract_parameters(
         private$.data$Parameters,
         "Molecular weight"
-      ))
+      )
+      # Match the other `.extract_*` helpers: signal "absent" with `NULL` so
+      # `to_df()`'s `length(prop_data) > 0` guard skips it, rather than
+      # wrapping a `NULL` result in `list(NULL)` (a length-1 list that slips
+      # past the guard and then crashes `.property_to_rows()`).
+      if (is.null(molecular_weight)) {
+        return(NULL)
+      }
+      list(molecular_weight)
     },
 
     .extract_pka = function() {
@@ -477,6 +485,13 @@ Compound <- R6::R6Class(
     },
 
     .extract_parameters = function(parameters_list, property_name) {
+      # A compound (or an alternative) can omit its `Parameters` array
+      # entirely, so `parameters_list` is `NULL`. `purrr::keep(NULL, ...)`
+      # returns `NULL`, and `purrr::list_c(NULL)` errors, so bail out early
+      # when there are no parameters to match against.
+      if (length(parameters_list) == 0) {
+        return(NULL)
+      }
       source <- purrr::keep(parameters_list, ~ .x$Name == property_name) |>
         purrr::list_c()
       if (!is.null(source)) {
