@@ -1,16 +1,21 @@
 # osp.snapshots (development version)
 
-- `create_population()` now requires `number_of_individuals` to be a whole number between 2 and 10000, matching the bounds PK-Sim enforces when creating a population (#170).
+## New features
+
 - `create_protocol()` gains `dose` (with `dose_unit`, default `"mg"`), `start_time` (with `start_time_unit`, default `"h"`), and `end_time` plain arguments for the Simple-Protocol dosing settings, as a validated, self-documenting alternative to hand-building the equivalent `InputDose`/`Start time`/`End time` entries in `parameters` (#157).
 - `create_schema()` gains plain arguments `number_of_repetitions`, `time_between_repetitions` (with unit `time_between_repetitions_unit`, default `"h"`), and `start_time` (with unit `start_time_unit`, default `"h"`) for the schema-level repetition parameters, so callers no longer hand-write `create_parameter()` entries with PK-Sim's internal names; the `parameters` list still works for anything else, and supplying a value both ways is an error (#167).
 - `create_schema_item()` gains promoted `dose` (with `dose_unit`, default `"mg"`) and `start_time` (with `start_time_unit`, default `"h"`) arguments, mirroring `create_output_interval()` and `create_event_selection()`; the dose is written as a single `InputDose` parameter whose unit selects the dose family, and supplying a promoted argument together with the matching `parameters` entry is an error (#168).
-- `create_schema_item()` (and `create_protocol()`, `Protocol$application_type`, and `SchemaItem$application_type`) now validate `application_type` against PK-Sim's canonical four values (`Oral`, `Intravenous`, `IntravenousBolus`, `UserDefined`), newly accepting `UserDefined` and no longer accepting the previously listed non-canonical values (`IntravenousInfusion`, `Intramuscular`, `Subcutaneous`, `Dermal`, `Rectal`, `Inhalation`, `Intraperitoneal`); `target_organ` and `target_compartment` are now accepted only when `application_type` is `UserDefined` (#171).
-- `create_snapshot()` now authors the current PK-Sim v13 snapshot version (`Version 81`) instead of `80`, ordering the top-level `Name` before `Version` and emitting the new `CheckNegativeValues` solver field when a simulation is added (#161).
 - `fraction_unbound()` gains a `species` argument (default `"Human"`, validated against `ospsuite::Species`) and now emits a `Species` field on the fraction-unbound alternative, which PK-Sim requires to load the snapshot (#156).
-- `get_compounds_dfs()` no longer errors on a reference-pH solubility alternative whose `Reference pH` parameter is omitted (as PK-Sim does when it holds the default), defaulting the reference pH to PK-Sim's default of `7`.
-- `get_compounds_dfs()` no longer errors on a compound process with an empty `Parameters` list (as PK-Sim exports for a parameterless process such as `GlomerularFiltration`), omitting the parameterless process from the tibbles instead.
 - `load_snapshot()` and `Snapshot$new()` gain an `upgrade` argument (default `FALSE`) that migrates a below-floor PK-Sim snapshot (`Version 74-78`) up to the installed core's version via a PK-Sim round trip; without it, such a snapshot reports how to migrate and does not load (#161).
 - `load_snapshot()` now supports PK-Sim v13 snapshots (`Version 81`), reports their PK-Sim version, and rejects snapshots newer than it supports (`Version 82+`) with a clear error (#161).
+
+## Minor improvements and fixes
+
+- `create_population()` now requires `number_of_individuals` to be a whole number between 2 and 10000, matching the bounds PK-Sim enforces when creating a population (#170).
+- `create_schema_item()` (and `create_protocol()`, `Protocol$application_type`, and `SchemaItem$application_type`) now validate `application_type` against PK-Sim's canonical four values (`Oral`, `Intravenous`, `IntravenousBolus`, `UserDefined`), newly accepting `UserDefined` and no longer accepting the previously listed non-canonical values (`IntravenousInfusion`, `Intramuscular`, `Subcutaneous`, `Dermal`, `Rectal`, `Inhalation`, `Intraperitoneal`); `target_organ` and `target_compartment` are now accepted only when `application_type` is `UserDefined` (#171).
+- `create_snapshot()` now authors the current PK-Sim v13 snapshot version (`Version 81`) instead of `80`, ordering the top-level `Name` before `Version` and emitting the new `CheckNegativeValues` solver field when a simulation is added (#161).
+- `get_compounds_dfs()` no longer errors on a reference-pH solubility alternative whose `Reference pH` parameter is omitted (as PK-Sim does when it holds the default), defaulting the reference pH to PK-Sim's default of `7`.
+- `get_compounds_dfs()` no longer errors on a compound process with an empty `Parameters` list (as PK-Sim exports for a parameterless process such as `GlomerularFiltration`), omitting the parameterless process from the tibbles instead.
 - `load_snapshot()` warns, rather than fails, when a supported snapshot is newer than the installed `ospsuite` core, since it may not load or run there (#161).
 
 # osp.snapshots 1.0.0
