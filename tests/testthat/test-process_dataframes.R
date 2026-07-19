@@ -19,6 +19,69 @@ test_that("legacy df builder omits a process with an empty Parameters list", {
   expect_equal(nrow(df), 0)
 })
 
+test_that("legacy df builder returns the typed empty schema when every process is parameterless", {
+  # When a compound's only processes are parameterless, the builder must
+  # return the full 8-column typed empty tibble, not a bare 0x0 tibble
+  # that has lost the column schema.
+  raw_processes <- list(
+    list(
+      InternalName = "GlomerularFiltration",
+      DataSource = "Publication",
+      Parameters = list()
+    )
+  )
+
+  df <- compound_processes_to_legacy_df("Fluvoxamine", raw_processes)
+
+  expect_identical(df, empty_compound_processes_legacy_tibble())
+  expect_named(
+    df,
+    c(
+      "compound",
+      "category",
+      "type",
+      "parameter",
+      "value",
+      "unit",
+      "data_source",
+      "source"
+    )
+  )
+  expect_equal(nrow(df), 0)
+})
+
+test_that("legacy_entry_to_df returns the typed empty schema for a parameterless entry", {
+  # An entry that carries only metadata keys (a parameterless process) must
+  # yield the typed 8-column empty tibble rather than a zero-column one.
+  entry <- list(
+    Process = "GlomerularFiltration",
+    DataSource = "Publication"
+  )
+
+  df <- legacy_entry_to_df(
+    "Fluvoxamine",
+    "renal_clearance",
+    "Publication",
+    entry
+  )
+
+  expect_identical(df, empty_compound_processes_legacy_tibble())
+  expect_named(
+    df,
+    c(
+      "compound",
+      "category",
+      "type",
+      "parameter",
+      "value",
+      "unit",
+      "data_source",
+      "source"
+    )
+  )
+  expect_equal(nrow(df), 0)
+})
+
 test_that("long-form df builder omits a process with an empty Parameters list", {
   raw_processes <- list(
     list(

@@ -257,6 +257,12 @@ legacy_entry_to_df <- function(
   params <- entry[setdiff(names(entry), metadata_keys)]
   process_internal <- entry$Process
 
+  # A parameterless process leaves `params` empty; return the typed empty
+  # schema so the 8-column shape is preserved instead of a bare 0x0 tibble.
+  if (length(params) == 0) {
+    return(empty_compound_processes_legacy_tibble())
+  }
+
   purrr::map(seq_along(params), function(i) {
     param <- params[[i]]
     param_name <- names(params)[i]
