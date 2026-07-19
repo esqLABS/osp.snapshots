@@ -2,10 +2,8 @@
 
 ## osp.snapshots (development version)
 
-- [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
-  now requires `number_of_individuals` to be a whole number between 2
-  and 10000, matching the bounds PK-Sim enforces when creating a
-  population (#170).
+### New features
+
 - [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md)
   gains `dose` (with `dose_unit`, default `"mg"`), `start_time` (with
   `start_time_unit`, default `"h"`), and `end_time` plain arguments for
@@ -32,6 +30,27 @@
   the dose is written as a single `InputDose` parameter whose unit
   selects the dose family, and supplying a promoted argument together
   with the matching `parameters` entry is an error (#168).
+- [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
+  gains a `species` argument (default `"Human"`, validated against
+  [`ospsuite::Species`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html))
+  and now emits a `Species` field on the fraction-unbound alternative,
+  which PK-Sim requires to load the snapshot (#156).
+- [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
+  and `Snapshot$new()` gain an `upgrade` argument (default `FALSE`) that
+  migrates a below-floor PK-Sim snapshot (`Version 74-78`) up to the
+  installed core’s version via a PK-Sim round trip; without it, such a
+  snapshot reports how to migrate and does not load (#161).
+- [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
+  now supports PK-Sim v13 snapshots (`Version 81`), reports their PK-Sim
+  version, and rejects snapshots newer than it supports (`Version 82+`)
+  with a clear error (#161).
+
+### Minor improvements and fixes
+
+- [`create_population()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_population.md)
+  now requires `number_of_individuals` to be a whole number between 2
+  and 10000, matching the bounds PK-Sim enforces when creating a
+  population (#170).
 - [`create_schema_item()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_schema_item.md)
   (and
   [`create_protocol()`](https://esqlabs.github.io/osp.snapshots/dev/reference/create_protocol.md),
@@ -48,24 +67,17 @@
   instead of `80`, ordering the top-level `Name` before `Version` and
   emitting the new `CheckNegativeValues` solver field when a simulation
   is added (#161).
-- [`fraction_unbound()`](https://esqlabs.github.io/osp.snapshots/dev/reference/fraction_unbound.md)
-  gains a `species` argument (default `"Human"`, validated against
-  [`ospsuite::Species`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/Species.html))
-  and now emits a `Species` field on the fraction-unbound alternative,
-  which PK-Sim requires to load the snapshot (#156).
 - [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
   no longer errors on a reference-pH solubility alternative whose
   `Reference pH` parameter is omitted (as PK-Sim does when it holds the
   default), defaulting the reference pH to PK-Sim’s default of `7`.
-- [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
-  and `Snapshot$new()` gain an `upgrade` argument (default `FALSE`) that
-  migrates a below-floor PK-Sim snapshot (`Version 74-78`) up to the
-  installed core’s version via a PK-Sim round trip; without it, such a
-  snapshot reports how to migrate and does not load (#161).
-- [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
-  now supports PK-Sim v13 snapshots (`Version 81`), reports their PK-Sim
-  version, and rejects snapshots newer than it supports (`Version 82+`)
-  with a clear error (#161).
+- [`get_compounds_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_compounds_dfs.md)
+  no longer errors on a compound with no parameters to read: a process
+  with an empty `Parameters` list (as PK-Sim exports for a parameterless
+  process such as `GlomerularFiltration`) is omitted from the tibbles,
+  and a compound with no top-level `Parameters` (for example one built
+  from a value-object alternative alone) reads back without a
+  molecular-weight row.
 - [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
   warns, rather than fails, when a supported snapshot is newer than the
   installed `ospsuite` core, since it may not load or run there (#161).
