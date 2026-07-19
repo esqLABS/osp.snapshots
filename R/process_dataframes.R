@@ -151,17 +151,26 @@ legacy_category_named_list <- function(raw_processes, category) {
 }
 
 build_legacy_process_entry <- function(p, category) {
-  parameter_names <- purrr::list_c(purrr::map(p$Parameters, "Name"))
-  params <- purrr::map(
-    purrr::set_names(p$Parameters, parameter_names),
-    function(parameter) {
-      list(
-        Value = as.numeric(parameter$Value),
-        Unit = parameter$Unit,
-        Source = compound_value_origin_source(parameter$ValueOrigin)
-      )
-    }
-  )
+  # A process can carry an empty `Parameters` list (PK-Sim exports e.g.
+  # `GlomerularFiltration` with `"Parameters": []`). `purrr::set_names()`
+  # cannot name a zero-length input, so start from an empty parameter list
+  # and only build named entries when parameters are present.
+  raw_parameters <- p$Parameters %||% list()
+  if (length(raw_parameters) == 0) {
+    params <- list()
+  } else {
+    parameter_names <- purrr::list_c(purrr::map(raw_parameters, "Name"))
+    params <- purrr::map(
+      purrr::set_names(raw_parameters, parameter_names),
+      function(parameter) {
+        list(
+          Value = as.numeric(parameter$Value),
+          Unit = parameter$Unit,
+          Source = compound_value_origin_source(parameter$ValueOrigin)
+        )
+      }
+    )
+  }
 
   params$Process <- p$InternalName
   if (category != "hepatic_clearance" && category != "renal_clearance") {
@@ -247,6 +256,12 @@ legacy_entry_to_df <- function(
   metadata_keys <- intersect(names(entry), metadata_keys)
   params <- entry[setdiff(names(entry), metadata_keys)]
   process_internal <- entry$Process
+
+  # A parameterless process leaves `params` empty; return the typed empty
+  # schema so the 8-column shape is preserved instead of a bare 0x0 tibble.
+  if (length(params) == 0) {
+    return(empty_compound_processes_legacy_tibble())
+  }
 
   purrr::map(seq_along(params), function(i) {
     param <- params[[i]]

@@ -179,6 +179,44 @@ test_that("solubility extraction defaults reference pH to 7 when it is omitted",
   expect_equal(unname(sol_rows$unit), "mg/l")
 })
 
+test_that("to_df() handles a compound with no top-level Parameters", {
+  # A compound whose only property is a value-object alternative (here
+  # lipophilicity) has no top-level `Parameters` array, so
+  # `.extract_parameters()` receives `NULL` for the molecular-weight lookup.
+  # It must not error.
+  compound <- create_compound(name = "X", lipophilicity = lipophilicity(2.5))
+
+  properties <- compound$to_df()
+
+  lipo_rows <- properties[properties$type == "lipophilicity", ]
+  expect_equal(nrow(lipo_rows), 1)
+  expect_equal(unname(lipo_rows$value), "2.5")
+  expect_equal(nrow(properties[properties$type == "molecular_weight", ]), 0)
+})
+
+test_that("to_df() handles a compound whose process has empty Parameters", {
+  # PK-Sim exports a parameterless process (e.g. `GlomerularFiltration`) with
+  # `"Parameters": []`. Combined with a compound that has no top-level
+  # `Parameters`, this exercises both empty-input paths at once.
+  compound <- create_compound(
+    name = "Fluvoxamine",
+    lipophilicity = lipophilicity(2.5),
+    processes = list(
+      create_process(
+        internal_name = "GlomerularFiltration",
+        data_source = "Publication"
+      )
+    )
+  )
+
+  properties <- compound$to_df()
+
+  # The parameterless process contributes no process rows, and the
+  # physicochemical property still comes through.
+  expect_equal(nrow(properties[properties$category == "renal_clearance", ]), 0)
+  expect_equal(nrow(properties[properties$type == "lipophilicity", ]), 1)
+})
+
 
 # Process accessor -------------------------------------------------------
 
