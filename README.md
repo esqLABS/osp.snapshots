@@ -14,30 +14,40 @@ structure as R objects and data frames.
 
 ## Installation
 
-Install the released version of osp.snapshots from the R-universe.
-osp.snapshots is served by the [esqLABS
+osp.snapshots comes from the [esqLABS
 universe](https://esqlabs.r-universe.dev) and its `ospsuite` dependency
-by the [Open Systems Pharmacology
-universe](https://open-systems-pharmacology.r-universe.dev), so list
-both:
+from the [Open Systems Pharmacology
+universe](https://open-systems-pharmacology.r-universe.dev), so both go
+on `repos`.
+
+Released version, as a prebuilt binary on Windows and macOS:
 
 ``` r
-install.packages(
-  "osp.snapshots",
-  repos = c(
-    esqLABS = "https://esqlabs.r-universe.dev",
-    OSP = "https://open-systems-pharmacology.r-universe.dev",
-    getOption("repos")
-  )
-)
+options(repos = c(
+  esqLABS = "https://esqlabs.r-universe.dev",
+  OSP = "https://open-systems-pharmacology.r-universe.dev",
+  getOption("repos")
+))
+
+install.packages("osp.snapshots")
 ```
 
-The development version installs from GitHub with:
+Development version from GitHub:
 
 ``` r
 # install.packages("pak")
+options(repos = c(
+  esqLABS = "https://esqlabs.r-universe.dev",
+  OSP = "https://open-systems-pharmacology.r-universe.dev",
+  getOption("repos")
+))
+
 pak::pak("esqLABS/osp.snapshots")
 ```
+
+Setting `repos` is required either way, because `ospsuite` is not on CRAN
+and neither `install.packages()` nor pak reads the
+`Additional_repositories` field that `DESCRIPTION` declares.
 
 ## Usage
 
