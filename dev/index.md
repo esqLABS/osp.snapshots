@@ -4,12 +4,36 @@ structure as R objects and data frames.
 
 ## Installation
 
-You can install the development version of osp.snapshots from
-[GitHub](https://github.com/) with:
+Released version, as a prebuilt binary on Windows and macOS.
+osp.snapshots comes from the [esqLABS
+universe](https://esqlabs.r-universe.dev) and its `ospsuite` dependency
+from the [Open Systems Pharmacology
+universe](https://open-systems-pharmacology.r-universe.dev), so both go
+on `repos`:
+
+``` r
+
+install.packages(
+  "osp.snapshots",
+  repos = c(
+    esqLABS = "https://esqlabs.r-universe.dev",
+    OSP = "https://open-systems-pharmacology.r-universe.dev",
+    getOption("repos")
+  )
+)
+```
+
+Development version from GitHub. pak takes osp.snapshots from GitHub, so
+only the OSP universe is needed, for `ospsuite`:
 
 ``` r
 
 # install.packages("pak")
+options(repos = c(
+  OSP = "https://open-systems-pharmacology.r-universe.dev",
+  getOption("repos")
+))
+
 pak::pak("esqLABS/osp.snapshots")
 ```
 
