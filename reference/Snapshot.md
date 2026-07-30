@@ -6,13 +6,20 @@ structure.
 
 ## Supported snapshot versions
 
-`Snapshot` only accepts PK-Sim v11+ snapshots, i.e. integer `Version`
-values of `79` or greater (see `osp.snapshots:::SUPPORTED_VERSION_MIN`).
-Earlier snapshots use different conventions (notably `Applications|...`
-instead of `Events|...` in parameter paths) and are not modelled by this
-package; `Snapshot$new()` aborts on them rather than silently rewriting
-fields. Hand-rolled list input must supply `Version` for the same
-reason.
+`Snapshot` accepts PK-Sim snapshots whose integer `Version` is within
+the supported band `79` (v11.2) to `81` (v13), inclusive (see
+`osp.snapshots:::SUPPORTED_VERSION_MIN` and
+`osp.snapshots:::SUPPORTED_VERSION_MAX`). A snapshot above the ceiling
+aborts as not supported in this version. A below-floor snapshot in the
+`74-78` band can be migrated by passing `upgrade = TRUE`, which
+round-trips it through PK-Sim up to the version the installed `ospsuite`
+core emits; migration requires that core to emit a supported version
+(`79` to `81`) and aborts before converting when it would emit something
+above the ceiling. Without `upgrade = TRUE`, a below-floor snapshot
+reports how to migrate and does not load. Snapshots below `74` are too
+old to migrate and abort. A snapshot newer than the installed `ospsuite`
+core (but still in band) loads with a warning that it may not load or
+run there. Hand-rolled list input must supply `Version`.
 
 ## Active bindings
 
@@ -128,7 +135,7 @@ Create a new Snapshot object from a JSON file or a list
 
 #### Usage
 
-    Snapshot$new(input)
+    Snapshot$new(input, upgrade = FALSE)
 
 #### Arguments
 
@@ -136,8 +143,19 @@ Create a new Snapshot object from a JSON file or a list
 
   Path to the snapshot JSON file, URL, template name, or a list
   containing snapshot data. The parsed data must contain an integer
-  `Version` field of `79` (v11.2) or greater; older or missing versions
-  abort.
+  `Version` field. Versions `79` to `81` load normally; versions `74` to
+  `78` load only with `upgrade = TRUE` (otherwise they report how to
+  migrate and abort); all other or missing versions abort (see the
+  "Supported snapshot versions" section).
+
+- `upgrade`:
+
+  Logical, default `FALSE`. When `TRUE` and the snapshot's `Version` is
+  in the below-floor migration band (`74-78`), the snapshot is
+  round-tripped through the installed PK-Sim core to upgrade it to a
+  supported version before loading (slow, several minutes). When
+  `FALSE`, a below-floor snapshot reports how to migrate and aborts.
+  Ignored for in-band snapshots, which are never migrated.
 
 #### Returns
 

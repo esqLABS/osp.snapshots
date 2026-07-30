@@ -37,7 +37,7 @@ empty <- add_compound(empty, create_compound(name = "Drug X"))
 empty
 #> 
 #> ── PKSIM Snapshot ──────────────────────────────────────────────────────────────
-#> ℹ Version: 80 (PKSIM 12.0)
+#> ℹ Version: 81 (PKSIM 13.0)
 #> • Compounds: 1
 ```
 
@@ -497,9 +497,8 @@ qd_oral
 ```
 
 `application_type` on a schema item is validated against the canonical
-PK-Sim application types (`"Oral"`, `"IntravenousBolus"`,
-`"IntravenousInfusion"`, `"Intramuscular"`, `"Subcutaneous"`,
-`"Dermal"`, `"Rectal"`, `"Inhalation"`, `"Intraperitoneal"`).
+PK-Sim application types (`"Oral"`, `"Intravenous"`,
+`"IntravenousBolus"`, `"UserDefined"`).
 
 ## Events
 

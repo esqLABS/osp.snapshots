@@ -6,7 +6,7 @@ template name.
 ## Usage
 
 ``` r
-load_snapshot(source)
+load_snapshot(source, upgrade = FALSE)
 ```
 
 ## Arguments
@@ -21,6 +21,15 @@ load_snapshot(source)
 
   - Name of a template from the OSPSuite.BuildingBlockTemplates
     repository
+
+- upgrade:
+
+  Logical, default `FALSE`. When `TRUE`, a below-floor snapshot
+  (`Version 74-78`) is migrated up to the version the installed PK-Sim
+  core emits via a round trip through `ospsuite` (slow, several minutes,
+  and requires a compatible installed core). When `FALSE`, such a
+  snapshot reports how to migrate and does not load. In-band snapshots
+  (`Version 79-81`) are never migrated regardless of this argument.
 
 ## Value
 

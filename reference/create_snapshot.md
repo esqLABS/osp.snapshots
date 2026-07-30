@@ -52,16 +52,25 @@ object.
 # An empty snapshot
 snapshot <- create_snapshot()
 #> ℹ Creating snapshot from list data
+#> Warning: Snapshot Version 81 is newer than the installed ospsuite core (Version 80).
+#> ℹ It may not load or run in the installed ospsuite; editing and exporting still
+#>   work here.
 #> ✔ Snapshot loaded successfully
 
 # A named and described snapshot
 snapshot <- create_snapshot(name = "My Project", description = "Notes")
 #> ℹ Creating snapshot from list data
+#> Warning: Snapshot Version 81 is newer than the installed ospsuite core (Version 80).
+#> ℹ It may not load or run in the installed ospsuite; editing and exporting still
+#>   work here.
 #> ✔ Snapshot loaded successfully
 
 # Populate it with a building block
 snapshot <- add_compound(create_snapshot(), create_compound(name = "Drug X"))
 #> ℹ Creating snapshot from list data
+#> Warning: Snapshot Version 81 is newer than the installed ospsuite core (Version 80).
+#> ℹ It may not load or run in the installed ospsuite; editing and exporting still
+#>   work here.
 #> ✔ Snapshot loaded successfully
 #> ✔ Added 1 compound(s)
 ```

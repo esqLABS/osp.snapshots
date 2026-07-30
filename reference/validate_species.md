@@ -13,7 +13,7 @@ validate_species(species)
 
 - species:
 
-  Species value to validate
+  Species value to validate. Must be a single, non-`NA` value.
 
 ## Value
 
