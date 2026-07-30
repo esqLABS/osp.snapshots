@@ -45,10 +45,6 @@ options(repos = c(
 pak::pak("esqLABS/osp.snapshots")
 ```
 
-Setting `repos` is required either way, because `ospsuite` is not on CRAN
-and neither `install.packages()` nor pak reads the
-`Additional_repositories` field that `DESCRIPTION` declares.
-
 ## Usage
 
 ``` r
