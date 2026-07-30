@@ -26,7 +26,20 @@ osp.snapshots provides an R interface for working with PK-Sim project snapshots:
 
 ## Installation
 
-You can install the development version of osp.snapshots from [GitHub](https://github.com/) with:
+Install the released version of osp.snapshots from the R-universe. osp.snapshots is served by the [esqLABS universe](https://esqlabs.r-universe.dev) and its `ospsuite` dependency by the [Open Systems Pharmacology universe](https://open-systems-pharmacology.r-universe.dev), so list both:
+
+``` r
+install.packages(
+  "osp.snapshots",
+  repos = c(
+    esqLABS = "https://esqlabs.r-universe.dev",
+    OSP = "https://open-systems-pharmacology.r-universe.dev",
+    getOption("repos")
+  )
+)
+```
+
+The development version installs from GitHub with:
 
 ``` r
 # install.packages("pak")

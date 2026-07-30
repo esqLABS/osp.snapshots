@@ -1,9 +1,10 @@
 name: Check against development dependencies
 
-# Nightly R-CMD-check against the current (development) OSP dependencies, i.e.
-# the unpinned Remotes as they stand in DESCRIPTION. Complements
-# check-released-deps.yaml, which pins Remotes to @*release and checks against
-# the released dependencies instead.
+# Nightly R-CMD-check against the OSP dependencies as DESCRIPTION declares them.
+# Now that they resolve from the OSP R-universe rather than a Remotes entry, that
+# means the released ospsuite, which is what check-released-deps.yaml also gets:
+# the two are equivalent until a Remotes entry pointing at an unreleased OSP
+# package is deliberately added back here.
 
 on:
   schedule:
@@ -18,3 +19,4 @@ jobs:
     with:
       setup-quarto: true
       extra-packages: local::.
+      extra-repositories: https://open-systems-pharmacology.r-universe.dev
