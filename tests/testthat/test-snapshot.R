@@ -643,14 +643,25 @@ test_that("Snapshot rejects snapshots too old to migrate", {
 test_that("Snapshot rejects snapshots newer than the supported ceiling", {
   # Over the ceiling is a hard "not supported yet" error, independent of
   # `upgrade` and the installed core.
-  expect_snapshot(Snapshot$new(list(Version = 82)), error = TRUE)
+  # The message reports the installed package version, so scrub it: otherwise
+  # every release bump invalidates these snapshots.
+  scrub_pkg_version <- function(lines) {
+    sub("osp\\.snapshots v[0-9.]+", "osp.snapshots v<version>", lines)
+  }
+  expect_snapshot(
+    Snapshot$new(list(Version = 82)),
+    error = TRUE,
+    transform = scrub_pkg_version
+  )
   expect_snapshot(
     Snapshot$new(testthat::test_path("data", "snapshot_v82.json")),
-    error = TRUE
+    error = TRUE,
+    transform = scrub_pkg_version
   )
   expect_snapshot(
     Snapshot$new(list(Version = 82), upgrade = TRUE),
-    error = TRUE
+    error = TRUE,
+    transform = scrub_pkg_version
   )
 })
 
