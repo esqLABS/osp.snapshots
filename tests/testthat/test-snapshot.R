@@ -730,16 +730,25 @@ test_that("Snapshot accepts an absent or PK-Sim ApplicationName", {
   )
 })
 
-test_that("Snapshot rejects a snapshot written by another application", {
-  # Mirrors PK-Sim's own `SnapshotTask.validateApplication()`. The check runs
-  # before the version gate, so a MoBi snapshot is named as such rather than
-  # reported against PK-Sim's version band.
+test_that("Snapshot rejects a MoBi snapshot as not supported", {
+  # MoBi is the one other OSP application that writes this format, so it gets
+  # its own message. The check runs before the version gate, so a MoBi
+  # snapshot is reported as MoBi rather than against PK-Sim's version band.
   expect_snapshot(
     Snapshot$new(list(Version = 81, ApplicationName = "MoBi")),
     error = TRUE
   )
   expect_snapshot(
     Snapshot$new(list(Version = 12, ApplicationName = "MoBi")),
+    error = TRUE
+  )
+})
+
+test_that("Snapshot rejects a snapshot written by any other application", {
+  # Mirrors PK-Sim's own `SnapshotTask.validateApplication()`, which refuses
+  # every name but its own.
+  expect_snapshot(
+    Snapshot$new(list(Version = 81, ApplicationName = "Matlab")),
     error = TRUE
   )
 })

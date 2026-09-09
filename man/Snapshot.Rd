@@ -25,8 +25,8 @@ with a warning that it may not load or run there. Hand-rolled list input
 must supply \code{Version}.
 
 The v13 format also records which application wrote the file in the root
-\code{ApplicationName}. A snapshot naming another application (a MoBi project,
-for instance) is refused; an absent or empty value, as in every pre-v81
+\code{ApplicationName}. A MoBi snapshot is refused as not supported, and so is
+any other application's; an absent or empty value, as in every pre-v81
 file, is accepted as PK-Sim's own.
 }
 

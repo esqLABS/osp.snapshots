@@ -137,7 +137,7 @@
     Message
       v Snapshot loaded successfully
 
-# Snapshot rejects a snapshot written by another application
+# Snapshot rejects a MoBi snapshot as not supported
 
     Code
       Snapshot$new(list(Version = 81, ApplicationName = "MoBi"))
@@ -145,7 +145,7 @@
       i Creating snapshot from list data
     Condition
       Error in `private$.validate_application()`:
-      ! Snapshot was written by "MoBi", not "PK-Sim".
+      ! MoBi snapshots are not supported.
       i osp.snapshots reads PK-Sim project snapshots only.
 
 ---
@@ -156,7 +156,18 @@
       i Creating snapshot from list data
     Condition
       Error in `private$.validate_application()`:
-      ! Snapshot was written by "MoBi", not "PK-Sim".
+      ! MoBi snapshots are not supported.
+      i osp.snapshots reads PK-Sim project snapshots only.
+
+# Snapshot rejects a snapshot written by any other application
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = "Matlab"))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot was written by "Matlab", not "PK-Sim".
       i osp.snapshots reads PK-Sim project snapshots only.
 
 # Snapshot migration aborts before converting on an incompatible core

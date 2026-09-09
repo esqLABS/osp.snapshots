@@ -15,6 +15,11 @@ SUPPORTED_VERSION_MAX <- 81L
 # import, and so does this package (see `.validate_application()`).
 PKSIM_APPLICATION_NAME <- "PK-Sim"
 
+# The other OSP application that writes this format (`Origins.MoBi.DisplayName`
+# in OSPSuite.Core). Called out by name in `.validate_application()` because a
+# MoBi snapshot is the one foreign file a user is likely to try here.
+MOBI_APPLICATION_NAME <- "MoBi"
+
 # Snapshots in the migration band `74:78` are below the supported floor but
 # can be upgraded to a supported version by round-tripping them through the
 # installed PK-Sim core (see `.migrate_snapshot()`); below `74` PK-Sim itself
@@ -78,8 +83,8 @@ MIGRATION_VERSION_MIN <- 74L
 #' must supply `Version`.
 #'
 #' The v13 format also records which application wrote the file in the root
-#' `ApplicationName`. A snapshot naming another application (a MoBi project,
-#' for instance) is refused; an absent or empty value, as in every pre-v81
+#' `ApplicationName`. A MoBi snapshot is refused as not supported, and so is
+#' any other application's; an absent or empty value, as in every pre-v81
 #' file, is accepted as PK-Sim's own.
 #'
 #' @importFrom R6 R6Class
@@ -997,6 +1002,12 @@ Snapshot <- R6::R6Class(
       }
       if (identical(app[[1L]], PKSIM_APPLICATION_NAME)) {
         return(invisible(NULL))
+      }
+      if (identical(app[[1L]], MOBI_APPLICATION_NAME)) {
+        cli::cli_abort(c(
+          "MoBi snapshots are not supported.",
+          i = "{.pkg osp.snapshots} reads PK-Sim project snapshots only."
+        ))
       }
       cli::cli_abort(c(
         "Snapshot was written by {.val {app[[1L]]}}, not {.val {PKSIM_APPLICATION_NAME}}.",
