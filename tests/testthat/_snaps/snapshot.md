@@ -124,6 +124,31 @@
       ! Snapshot Version 82 is not supported in this version.
       i osp.snapshots v<version> supports snapshots up to Version 81.
 
+# upgrade = TRUE never downgrades a snapshot newer than the core
+
+    Code
+      s <- Snapshot$new(list(Version = 81), upgrade = TRUE)
+    Message
+      i Creating snapshot from list data
+    Condition
+      Warning:
+      Snapshot Version 81 is newer than the installed ospsuite core (Version 80).
+      i It may not load or run in the installed ospsuite; editing and exporting still work here.
+    Message
+      v Snapshot loaded successfully
+
+# upgrade = TRUE aborts before migrating an in-band snapshot on an incompatible core
+
+    Code
+      Snapshot$new(list(Version = 79), upgrade = TRUE)
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `initialize()`:
+      ! Cannot migrate this snapshot with the installed ospsuite core.
+      i The installed core would emit Version 82, which is above the highest version osp.snapshots supports (Version 81).
+      i Upgrade osp.snapshots (or install a matching ospsuite) before migrating.
+
 # Snapshot warns when a snapshot is newer than the installed core
 
     Code

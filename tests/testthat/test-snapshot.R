@@ -671,15 +671,22 @@ test_that("Snapshot rejects snapshots newer than the supported ceiling", {
   )
 })
 
-test_that("Snapshot loads in-band versions and never migrates them", {
-  # 79, 80, and 81 all load without migration, regardless of `upgrade`.
+test_that("Snapshot loads in-band versions and never migrates them without upgrade", {
+  # 79, 80, and 81 all load untouched with the `upgrade = FALSE` default, even
+  # when the installed core would emit a newer version.
+  migrate_calls <- 0L
   testthat::local_mocked_bindings(
     .installed_core_version = function() SUPPORTED_VERSION_MAX,
+    .migrate_snapshot = function(input) {
+      migrate_calls <<- migrate_calls + 1L
+      list(Version = SUPPORTED_VERSION_MAX)
+    },
     .package = "osp.snapshots"
   )
   for (v in c(79, 80, 81)) {
-    expect_s3_class(Snapshot$new(list(Version = v)), "Snapshot")
-    expect_s3_class(Snapshot$new(list(Version = v), upgrade = TRUE), "Snapshot")
+    snapshot <- Snapshot$new(list(Version = v))
+    expect_s3_class(snapshot, "Snapshot")
+    expect_equal(snapshot$data$Version, v)
   }
   expect_s3_class(
     Snapshot$new(testthat::test_path("data", "snapshot_v80.json")),
@@ -689,6 +696,92 @@ test_that("Snapshot loads in-band versions and never migrates them", {
     Snapshot$new(testthat::test_path("data", "snapshot_v81.json")),
     "Snapshot"
   )
+  expect_equal(migrate_calls, 0L)
+})
+
+# `.installed_core_version()` and `.migrate_snapshot()` are free internal
+# functions precisely so these cases can replace them; nothing below reaches a
+# real PK-Sim core. The stub returns the version the (stubbed) core emits, the
+# same contract `.migrate_snapshot()` has in production.
+local_stub_core <- function(installed, env = parent.frame()) {
+  calls <- new.env(parent = emptyenv())
+  calls$n <- 0L
+  calls$inputs <- list()
+  testthat::local_mocked_bindings(
+    .installed_core_version = function() as.integer(installed),
+    .migrate_snapshot = function(input) {
+      calls$n <- calls$n + 1L
+      calls$inputs <- c(calls$inputs, list(input))
+      list(Version = as.integer(installed))
+    },
+    .package = "osp.snapshots",
+    .env = env
+  )
+  calls
+}
+
+test_that("upgrade = TRUE raises an in-band snapshot to the installed version", {
+  # The new behavior: 79 and 80 are supported, so they load fine by default,
+  # but `upgrade = TRUE` now brings them up to what the installed core emits.
+  for (v in c(79, 80)) {
+    calls <- local_stub_core(81)
+    snapshot <- Snapshot$new(list(Version = v), upgrade = TRUE)
+    expect_s3_class(snapshot, "Snapshot")
+    expect_equal(snapshot$data$Version, 81L)
+    expect_equal(calls$n, 1L)
+  }
+})
+
+test_that("upgrade = TRUE skips the round trip when the version already matches", {
+  # The round trip takes minutes, so it must not run when there is nothing to
+  # gain.
+  calls <- local_stub_core(81)
+  snapshot <- Snapshot$new(list(Version = 81), upgrade = TRUE)
+  expect_s3_class(snapshot, "Snapshot")
+  expect_equal(snapshot$data$Version, 81)
+  expect_equal(calls$n, 0L)
+})
+
+test_that("upgrade = TRUE never downgrades a snapshot newer than the core", {
+  # PK-Sim cannot re-serialize at an older schema version, so an 81 snapshot on
+  # an 80 core keeps the current behavior: no round trip, and the same
+  # newer-than-installed warning as with `upgrade = FALSE`.
+  calls <- local_stub_core(80)
+  expect_snapshot(s <- Snapshot$new(list(Version = 81), upgrade = TRUE))
+  expect_s3_class(s, "Snapshot")
+  expect_equal(s$data$Version, 81)
+  expect_equal(calls$n, 0L)
+})
+
+test_that("upgrade = TRUE still migrates a below-floor snapshot", {
+  # The `74-78` band keeps its existing behavior; `upgrade = FALSE` for the
+  # same band is covered by the migration-band abort test above.
+  calls <- local_stub_core(81)
+  snapshot <- Snapshot$new(list(Version = 78), upgrade = TRUE)
+  expect_s3_class(snapshot, "Snapshot")
+  expect_equal(snapshot$data$Version, 81L)
+  expect_equal(calls$n, 1L)
+})
+
+test_that("upgrade = TRUE aborts before migrating an in-band snapshot on an incompatible core", {
+  # In-band twin of the below-floor incompatible-core case: a core emitting
+  # above the ceiling must abort before anything is handed to PK-Sim.
+  calls <- local_stub_core(82)
+  expect_snapshot(
+    Snapshot$new(list(Version = 79), upgrade = TRUE),
+    error = TRUE
+  )
+  expect_equal(calls$n, 0L)
+})
+
+test_that("upgrade = TRUE never migrates a snapshot above the ceiling", {
+  # An above-ceiling snapshot has to be rejected before the core sees it, on
+  # both a compatible and an incompatible core.
+  for (installed in c(81, 82)) {
+    calls <- local_stub_core(installed)
+    expect_error(Snapshot$new(list(Version = 82), upgrade = TRUE))
+    expect_equal(calls$n, 0L)
+  }
 })
 
 test_that("Snapshot warns when a snapshot is newer than the installed core", {

@@ -1,5 +1,9 @@
 # osp.snapshots (development version)
 
+## New features
+
+- `load_snapshot()` and `Snapshot$new()` now accept `upgrade = TRUE` for any snapshot older than the version the installed PK-Sim core writes, not only for the `Version 74-78` snapshots that fail to load without it. A v11.2 (`Version 79`) or v12.0 (`Version 80`) snapshot can now be raised to v13 (`Version 81`) at load time. The upgrade never lowers a version and does nothing when the snapshot is already up to date, so a newer-than-installed snapshot still loads with a warning and costs no time. The `upgrade = FALSE` default is unchanged: a supported snapshot still loads at its own version (#188).
+
 # osp.snapshots 1.1.0
 
 ## New features
