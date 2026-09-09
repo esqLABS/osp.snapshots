@@ -11,7 +11,7 @@ structure."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,16 +56,22 @@ structure.</p>
 supported band <code>79</code> (v11.2) to <code>81</code> (v13), inclusive (see
 <code>osp.snapshots:::SUPPORTED_VERSION_MIN</code> and
 <code>osp.snapshots:::SUPPORTED_VERSION_MAX</code>). A snapshot above the ceiling
-aborts as not supported in this version. A below-floor snapshot in the
-<code>74-78</code> band can be migrated by passing <code>upgrade = TRUE</code>, which round-trips
-it through PK-Sim up to the version the installed <code>ospsuite</code> core emits;
-migration requires that core to emit a supported version (<code>79</code> to <code>81</code>) and
-aborts before converting when it would emit something above the ceiling.
-Without <code>upgrade = TRUE</code>, a below-floor snapshot reports how to migrate and
-does not load. Snapshots below <code>74</code> are too old to migrate and abort. A
-snapshot newer than the installed <code>ospsuite</code> core (but still in band) loads
-with a warning that it may not load or run there. Hand-rolled list input
-must supply <code>Version</code>.</p>
+aborts as not supported in this version. Snapshots below <code>74</code> are too old
+to migrate and abort. Hand-rolled list input must supply <code>Version</code>.</p>
+<p>By default a supported snapshot loads at its own version and is left
+untouched, and a snapshot in the older <code>74-78</code> band reports how to upgrade
+it and does not load.</p>
+<p><code>upgrade = TRUE</code> raises the snapshot to the version the installed
+<code>ospsuite</code> core writes, by re-saving it through PK-Sim. This works both for
+an older <code>74-78</code> snapshot and for a supported one, so a v11.2 (<code>79</code>) or
+v12.0 (<code>80</code>) snapshot can be brought up to v13 (<code>81</code>). The upgrade takes
+several minutes. It never lowers a version, and it does nothing when the
+snapshot is already at the installed version. Upgrading requires the
+installed core to write a supported version (<code>79</code> to <code>81</code>) and stops
+before converting when it would write something above the ceiling.</p>
+<p>A snapshot newer than the installed <code>ospsuite</code> core (but still in the
+supported band) loads with a warning that it may not load or run there,
+with or without <code>upgrade = TRUE</code>.</p>
 <p>The v13 format also records which application wrote the file in the root
 <code>ApplicationName</code>. A MoBi snapshot is refused as not supported, and so is
 any other application's; an absent or empty value, as in every pre-v81
@@ -172,12 +178,14 @@ migrate and abort); all other or missing versions abort (see the
 "Supported snapshot versions" section).</p></dd>
 
       <dt><code>upgrade</code></dt>
-<dd><p>Logical, default <code>FALSE</code>. When <code>TRUE</code> and the snapshot's
-<code>Version</code> is in the below-floor migration band (<code>74-78</code>), the snapshot
-is round-tripped through the installed PK-Sim core to upgrade it to a
-supported version before loading (slow, several minutes). When <code>FALSE</code>,
-a below-floor snapshot reports how to migrate and aborts. Ignored for
-in-band snapshots, which are never migrated.</p></dd>
+<dd><p>Logical, default <code>FALSE</code>. When <code>TRUE</code>, a snapshot older
+than the version the installed PK-Sim core writes is re-saved through
+that core to bring it up to date before loading. This takes several
+minutes. It applies to an older <code>74-78</code> snapshot and to a supported
+<code>79-81</code> one alike, never lowers a version, and does nothing when the
+snapshot is already up to date. When <code>FALSE</code>, nothing is upgraded: a
+supported snapshot loads at its own version and a <code>74-78</code> snapshot
+reports how to upgrade it and aborts.</p></dd>
 
 
 </dl><p></p></div>

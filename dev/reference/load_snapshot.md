@@ -24,12 +24,15 @@ load_snapshot(source, upgrade = FALSE)
 
 - upgrade:
 
-  Logical, default `FALSE`. When `TRUE`, a below-floor snapshot
-  (`Version 74-78`) is migrated up to the version the installed PK-Sim
-  core emits via a round trip through `ospsuite` (slow, several minutes,
-  and requires a compatible installed core). When `FALSE`, such a
-  snapshot reports how to migrate and does not load. In-band snapshots
-  (`Version 79-81`) are never migrated regardless of this argument.
+  Logical, default `FALSE`. When `TRUE`, a snapshot older than the
+  version the installed PK-Sim core writes is re-saved through that core
+  to bring it up to date before loading (several minutes, and requires a
+  compatible installed core). This applies to an older `Version 74-78`
+  snapshot and to a supported `Version 79-81` one alike, so a v11.2 or
+  v12.0 snapshot can be raised to v13. It never lowers a version and
+  does nothing when the snapshot is already up to date. When `FALSE`,
+  nothing is upgraded: a supported snapshot loads at its own version and
+  a `74-78` snapshot reports how to upgrade it and does not load.
 
 ## Value
 

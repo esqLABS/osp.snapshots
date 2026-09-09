@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,12 +60,15 @@
 
 
 <dt id="arg-upgrade">upgrade<a class="anchor" aria-label="anchor" href="#arg-upgrade"></a></dt>
-<dd><p>Logical, default <code>FALSE</code>. When <code>TRUE</code>, a below-floor
-snapshot (<code>Version 74-78</code>) is migrated up to the version the installed
-PK-Sim core emits via a round trip through <code>ospsuite</code> (slow, several
-minutes, and requires a compatible installed core). When <code>FALSE</code>, such a
-snapshot reports how to migrate and does not load. In-band snapshots
-(<code>Version 79-81</code>) are never migrated regardless of this argument.</p></dd>
+<dd><p>Logical, default <code>FALSE</code>. When <code>TRUE</code>, a snapshot older than
+the version the installed PK-Sim core writes is re-saved through that core
+to bring it up to date before loading (several minutes, and requires a
+compatible installed core). This applies to an older <code>Version 74-78</code>
+snapshot and to a supported <code>Version 79-81</code> one alike, so a v11.2 or v12.0
+snapshot can be raised to v13. It never lowers a version and does nothing
+when the snapshot is already up to date. When <code>FALSE</code>, nothing is
+upgraded: a supported snapshot loads at its own version and a <code>74-78</code>
+snapshot reports how to upgrade it and does not load.</p></dd>
 
 </dl></div>
     <div class="section level2">

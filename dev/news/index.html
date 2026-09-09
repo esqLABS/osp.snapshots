@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,8 @@
 <code><a href="../reference/create_solver_settings.html">create_solver_settings()</a></code> gains a <code>check_for_negative_values</code> argument, and <code>SolverSettings</code> a matching <code>check_for_negative_values</code> field, for the solver’s negative-value check exposed by the PK-Sim v13 snapshot format (<code>Version 81</code>). Leave it unset to keep PK-Sim’s default of <code>TRUE</code>.</li>
 <li>
 <code><a href="../reference/load_snapshot.html">load_snapshot()</a></code> (and <code>Snapshot$new()</code>) now reject a snapshot whose root <code>ApplicationName</code> names another OSP application, mirroring PK-Sim’s own import check. A MoBi snapshot is reported as not supported; any other application is named in the error. An absent or empty value, as in every pre-<code>Version 81</code> snapshot, still loads.</li>
+<li>
+<code><a href="../reference/load_snapshot.html">load_snapshot()</a></code> and <code>Snapshot$new()</code> now accept <code>upgrade = TRUE</code> for any snapshot from <code>Version 74</code> upwards that is older than the version the installed PK-Sim core writes, not only for the <code>Version 74-78</code> snapshots that fail to load without it. A snapshot below <code>Version 74</code> is still too old to upgrade and is refused either way. A v11.2 (<code>Version 79</code>) or v12.0 (<code>Version 80</code>) snapshot can now be raised to v13 (<code>Version 81</code>) at load time. The upgrade never lowers a version and does nothing when the snapshot is already up to date, so a newer-than-installed snapshot still loads with a warning and costs no time. The <code>upgrade = FALSE</code> default is unchanged: a supported snapshot still loads at its own version (#188).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="ospsnapshots-110">osp.snapshots 1.1.0<a class="anchor" aria-label="anchor" href="#ospsnapshots-110"></a></h2>

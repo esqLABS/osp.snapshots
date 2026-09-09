@@ -10,16 +10,26 @@ structure.
 the supported band `79` (v11.2) to `81` (v13), inclusive (see
 `osp.snapshots:::SUPPORTED_VERSION_MIN` and
 `osp.snapshots:::SUPPORTED_VERSION_MAX`). A snapshot above the ceiling
-aborts as not supported in this version. A below-floor snapshot in the
-`74-78` band can be migrated by passing `upgrade = TRUE`, which
-round-trips it through PK-Sim up to the version the installed `ospsuite`
-core emits; migration requires that core to emit a supported version
-(`79` to `81`) and aborts before converting when it would emit something
-above the ceiling. Without `upgrade = TRUE`, a below-floor snapshot
-reports how to migrate and does not load. Snapshots below `74` are too
-old to migrate and abort. A snapshot newer than the installed `ospsuite`
-core (but still in band) loads with a warning that it may not load or
-run there. Hand-rolled list input must supply `Version`.
+aborts as not supported in this version. Snapshots below `74` are too
+old to migrate and abort. Hand-rolled list input must supply `Version`.
+
+By default a supported snapshot loads at its own version and is left
+untouched, and a snapshot in the older `74-78` band reports how to
+upgrade it and does not load.
+
+`upgrade = TRUE` raises the snapshot to the version the installed
+`ospsuite` core writes, by re-saving it through PK-Sim. This works both
+for an older `74-78` snapshot and for a supported one, so a v11.2 (`79`)
+or v12.0 (`80`) snapshot can be brought up to v13 (`81`). The upgrade
+takes several minutes. It never lowers a version, and it does nothing
+when the snapshot is already at the installed version. Upgrading
+requires the installed core to write a supported version (`79` to `81`)
+and stops before converting when it would write something above the
+ceiling.
+
+A snapshot newer than the installed `ospsuite` core (but still in the
+supported band) loads with a warning that it may not load or run there,
+with or without `upgrade = TRUE`.
 
 The v13 format also records which application wrote the file in the root
 `ApplicationName`. A MoBi snapshot is refused as not supported, and so
@@ -155,12 +165,14 @@ Create a new Snapshot object from a JSON file or a list
 
 - `upgrade`:
 
-  Logical, default `FALSE`. When `TRUE` and the snapshot's `Version` is
-  in the below-floor migration band (`74-78`), the snapshot is
-  round-tripped through the installed PK-Sim core to upgrade it to a
-  supported version before loading (slow, several minutes). When
-  `FALSE`, a below-floor snapshot reports how to migrate and aborts.
-  Ignored for in-band snapshots, which are never migrated.
+  Logical, default `FALSE`. When `TRUE`, a snapshot older than the
+  version the installed PK-Sim core writes is re-saved through that core
+  to bring it up to date before loading. This takes several minutes. It
+  applies to an older `74-78` snapshot and to a supported `79-81` one
+  alike, never lowers a version, and does nothing when the snapshot is
+  already up to date. When `FALSE`, nothing is upgraded: a supported
+  snapshot loads at its own version and a `74-78` snapshot reports how
+  to upgrade it and aborts.
 
 #### Returns
 

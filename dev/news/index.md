@@ -23,6 +23,18 @@
   own import check. A MoBi snapshot is reported as not supported; any
   other application is named in the error. An absent or empty value, as
   in every pre-`Version 81` snapshot, still loads.
+- [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
+  and `Snapshot$new()` now accept `upgrade = TRUE` for any snapshot from
+  `Version 74` upwards that is older than the version the installed
+  PK-Sim core writes, not only for the `Version 74-78` snapshots that
+  fail to load without it. A snapshot below `Version 74` is still too
+  old to upgrade and is refused either way. A v11.2 (`Version 79`) or
+  v12.0 (`Version 80`) snapshot can now be raised to v13 (`Version 81`)
+  at load time. The upgrade never lowers a version and does nothing when
+  the snapshot is already up to date, so a newer-than-installed snapshot
+  still loads with a warning and costs no time. The `upgrade = FALSE`
+  default is unchanged: a supported snapshot still loads at its own
+  version (#188).
 
 ## osp.snapshots 1.1.0
 
