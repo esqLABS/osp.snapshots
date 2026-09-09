@@ -71,16 +71,25 @@ MIGRATION_VERSION_MIN <- 74L
 #' supported band `79` (v11.2) to `81` (v13), inclusive (see
 #' `osp.snapshots:::SUPPORTED_VERSION_MIN` and
 #' `osp.snapshots:::SUPPORTED_VERSION_MAX`). A snapshot above the ceiling
-#' aborts as not supported in this version. A below-floor snapshot in the
-#' `74-78` band can be migrated by passing `upgrade = TRUE`, which round-trips
-#' it through PK-Sim up to the version the installed `ospsuite` core emits;
-#' migration requires that core to emit a supported version (`79` to `81`) and
-#' aborts before converting when it would emit something above the ceiling.
-#' Without `upgrade = TRUE`, a below-floor snapshot reports how to migrate and
-#' does not load. Snapshots below `74` are too old to migrate and abort. A
-#' snapshot newer than the installed `ospsuite` core (but still in band) loads
-#' with a warning that it may not load or run there. Hand-rolled list input
-#' must supply `Version`.
+#' aborts as not supported in this version. Snapshots below `74` are too old
+#' to migrate and abort. Hand-rolled list input must supply `Version`.
+#'
+#' By default a supported snapshot loads at its own version and is left
+#' untouched, and a snapshot in the older `74-78` band reports how to upgrade
+#' it and does not load.
+#'
+#' `upgrade = TRUE` raises the snapshot to the version the installed
+#' `ospsuite` core writes, by re-saving it through PK-Sim. This works both for
+#' an older `74-78` snapshot and for a supported one, so a v11.2 (`79`) or
+#' v12.0 (`80`) snapshot can be brought up to v13 (`81`). The upgrade takes
+#' several minutes. It never lowers a version, and it does nothing when the
+#' snapshot is already at the installed version. Upgrading requires the
+#' installed core to write a supported version (`79` to `81`) and stops
+#' before converting when it would write something above the ceiling.
+#'
+#' A snapshot newer than the installed `ospsuite` core (but still in the
+#' supported band) loads with a warning that it may not load or run there,
+#' with or without `upgrade = TRUE`.
 #'
 #' The v13 format also records which application wrote the file in the root
 #' `ApplicationName`. A MoBi snapshot is refused as not supported, and so is
@@ -102,12 +111,14 @@ Snapshot <- R6::R6Class(
     #'   `78` load only with `upgrade = TRUE` (otherwise they report how to
     #'   migrate and abort); all other or missing versions abort (see the
     #'   "Supported snapshot versions" section).
-    #' @param upgrade Logical, default `FALSE`. When `TRUE` and the snapshot's
-    #'   `Version` is in the below-floor migration band (`74-78`), the snapshot
-    #'   is round-tripped through the installed PK-Sim core to upgrade it to a
-    #'   supported version before loading (slow, several minutes). When `FALSE`,
-    #'   a below-floor snapshot reports how to migrate and aborts. Ignored for
-    #'   in-band snapshots, which are never migrated.
+    #' @param upgrade Logical, default `FALSE`. When `TRUE`, a snapshot older
+    #'   than the version the installed PK-Sim core writes is re-saved through
+    #'   that core to bring it up to date before loading. This takes several
+    #'   minutes. It applies to an older `74-78` snapshot and to a supported
+    #'   `79-81` one alike, never lowers a version, and does nothing when the
+    #'   snapshot is already up to date. When `FALSE`, nothing is upgraded: a
+    #'   supported snapshot loads at its own version and a `74-78` snapshot
+    #'   reports how to upgrade it and aborts.
     #' @return A new Snapshot object
     initialize = function(input, upgrade = FALSE) {
       if (!is.logical(upgrade) || length(upgrade) != 1L || is.na(upgrade)) {
@@ -135,21 +146,34 @@ Snapshot <- R6::R6Class(
         cli::cli_abort("Input must be either a path to a JSON file or a list")
       }
 
+      # Reject a snapshot from another OSP application before anything else
+      # touches it: the application does not change under migration, so a MoBi
+      # file must not spend minutes in the PK-Sim round trip only to be
+      # refused afterwards.
+      private$.validate_application()
+
       # Orchestrate migration before validation so `.validate_version()` sees
-      # the upgraded data. A below-floor snapshot with `upgrade = TRUE` is
-      # first guarded by the compatibility precondition, then round-tripped
-      # through PK-Sim; on success `.original_data` is replaced with the
-      # upgraded snapshot. Either migration succeeds and validation runs on
-      # the upgraded data, or the precondition / round trip errors and no
-      # object is constructed (no partial or unmigrated Snapshot escapes).
+      # the upgraded data. With `upgrade = TRUE`, any snapshot from the
+      # migration floor up to (but not including) the version the installed
+      # core emits is first guarded by the compatibility precondition, then
+      # round-tripped through PK-Sim; on success `.original_data` is replaced
+      # with the upgraded snapshot. Either migration succeeds and validation
+      # runs on the upgraded data, or the precondition / round trip errors and
+      # no object is constructed (no partial or unmigrated Snapshot escapes).
+      #
+      # `version_num < installed` also keeps an above-ceiling snapshot away
+      # from the core without a separate check: `installed` above
+      # `SUPPORTED_VERSION_MAX` aborts in the precondition below, so a
+      # `version_num` above the ceiling can never satisfy this condition and
+      # falls through to `.validate_version()`, which rejects it.
       version_num <- private$.raw_version()
+      installed <- .installed_core_version()
       if (
         isTRUE(upgrade) &&
           !is.na(version_num) &&
           version_num >= MIGRATION_VERSION_MIN &&
-          version_num < SUPPORTED_VERSION_MIN
+          version_num < installed
       ) {
-        installed <- .installed_core_version()
         if (installed > SUPPORTED_VERSION_MAX) {
           cli::cli_abort(c(
             "Cannot migrate this snapshot with the installed {.pkg ospsuite} core.",
@@ -170,7 +194,6 @@ Snapshot <- R6::R6Class(
         private$.original_data <- .migrate_snapshot(migration_input)
       }
 
-      private$.validate_application()
       private$.validate_version(upgrade = upgrade)
 
       # Building-block collections are constructed lazily on first access via
@@ -1030,8 +1053,11 @@ Snapshot <- R6::R6Class(
     # migration floor (too old to migrate), then the `74:78` migration band
     # (only reached with `upgrade = FALSE`, since `upgrade = TRUE` migrates
     # before this runs), then above the ceiling (not supported yet), then
-    # in-band success. On success, warn when the snapshot is newer than what
-    # the installed core would emit (still editable, but may not load there).
+    # in-band success. An in-band snapshot below the installed core's version
+    # has likewise already been migrated when `upgrade = TRUE`, so by the time
+    # this runs its `Version` is the installed one. On success, warn when the
+    # snapshot is newer than what the installed core would emit (still
+    # editable, but may not load there).
     .validate_version = function(upgrade = FALSE) {
       version_num <- private$.raw_version()
       if (is.na(version_num)) {
@@ -1771,12 +1797,15 @@ Snapshot <- R6::R6Class(
 #'   - URL to a remote snapshot file
 #'   - Name of a template from the OSPSuite.BuildingBlockTemplates repository
 #'
-#' @param upgrade Logical, default `FALSE`. When `TRUE`, a below-floor
-#'   snapshot (`Version 74-78`) is migrated up to the version the installed
-#'   PK-Sim core emits via a round trip through `ospsuite` (slow, several
-#'   minutes, and requires a compatible installed core). When `FALSE`, such a
-#'   snapshot reports how to migrate and does not load. In-band snapshots
-#'   (`Version 79-81`) are never migrated regardless of this argument.
+#' @param upgrade Logical, default `FALSE`. When `TRUE`, a snapshot older than
+#'   the version the installed PK-Sim core writes is re-saved through that core
+#'   to bring it up to date before loading (several minutes, and requires a
+#'   compatible installed core). This applies to an older `Version 74-78`
+#'   snapshot and to a supported `Version 79-81` one alike, so a v11.2 or v12.0
+#'   snapshot can be raised to v13. It never lowers a version and does nothing
+#'   when the snapshot is already up to date. When `FALSE`, nothing is
+#'   upgraded: a supported snapshot loads at its own version and a `74-78`
+#'   snapshot reports how to upgrade it and does not load.
 #'
 #' @details
 #' Available templates can be listed with `osp_models()`.

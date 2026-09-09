@@ -14,12 +14,15 @@ load_snapshot(source, upgrade = FALSE)
 \item Name of a template from the OSPSuite.BuildingBlockTemplates repository
 }}
 
-\item{upgrade}{Logical, default \code{FALSE}. When \code{TRUE}, a below-floor
-snapshot (\verb{Version 74-78}) is migrated up to the version the installed
-PK-Sim core emits via a round trip through \code{ospsuite} (slow, several
-minutes, and requires a compatible installed core). When \code{FALSE}, such a
-snapshot reports how to migrate and does not load. In-band snapshots
-(\verb{Version 79-81}) are never migrated regardless of this argument.}
+\item{upgrade}{Logical, default \code{FALSE}. When \code{TRUE}, a snapshot older than
+the version the installed PK-Sim core writes is re-saved through that core
+to bring it up to date before loading (several minutes, and requires a
+compatible installed core). This applies to an older \verb{Version 74-78}
+snapshot and to a supported \verb{Version 79-81} one alike, so a v11.2 or v12.0
+snapshot can be raised to v13. It never lowers a version and does nothing
+when the snapshot is already up to date. When \code{FALSE}, nothing is
+upgraded: a supported snapshot loads at its own version and a \code{74-78}
+snapshot reports how to upgrade it and does not load.}
 }
 \value{
 A Snapshot object
