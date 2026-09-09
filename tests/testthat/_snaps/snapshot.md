@@ -54,7 +54,7 @@
     Condition
       Error in `private$.validate_version()`:
       ! Snapshot Version 78 is below the supported floor.
-      i Set `upgrade = TRUE` to migrate it up to whatever the installed ospsuite core emits (currently Version 80).
+      i Set `upgrade = TRUE` to migrate it up to whatever the installed ospsuite core emits (currently Version 81).
       i Migration round-trips the snapshot through PK-Sim and can take several minutes.
 
 ---
@@ -66,7 +66,7 @@
     Condition
       Error in `private$.validate_version()`:
       ! Snapshot Version 78 is below the supported floor.
-      i Set `upgrade = TRUE` to migrate it up to whatever the installed ospsuite core emits (currently Version 80).
+      i Set `upgrade = TRUE` to migrate it up to whatever the installed ospsuite core emits (currently Version 81).
       i Migration round-trips the snapshot through PK-Sim and can take several minutes.
 
 # Snapshot rejects snapshots too old to migrate

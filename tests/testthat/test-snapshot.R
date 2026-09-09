@@ -623,6 +623,12 @@ test_that("Snapshot migration-band snapshots report how to upgrade and abort", {
   # A `74-78` snapshot with the default `upgrade = FALSE` names the detected
   # version, points at `upgrade = TRUE`, warns about the round-trip cost, and
   # returns no object. Covers both a list input and a file fixture.
+  # The message quotes the installed core's version, so stub it: otherwise the
+  # recorded snapshot only matches on a machine with that exact ospsuite.
+  testthat::local_mocked_bindings(
+    .installed_core_version = function() SUPPORTED_VERSION_MAX,
+    .package = "osp.snapshots"
+  )
   expect_snapshot(Snapshot$new(list(Version = 78)), error = TRUE)
   expect_snapshot(
     Snapshot$new(testthat::test_path("data", "snapshot_v78.json")),
