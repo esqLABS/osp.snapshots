@@ -2,10 +2,10 @@
 #'
 #' @description
 #' Create an in-memory [Snapshot] from scratch, carrying the current
-#' supported PK-Sim version and no building blocks. This is the
-#' snapshot-level constructor that pairs with [load_snapshot()] and
-#' [export_snapshot()]: rather than loading an existing project, it starts
-#' an empty one you can then populate.
+#' supported PK-Sim version, PK-Sim as the writing application, and no
+#' building blocks. This is the snapshot-level constructor that pairs with
+#' [load_snapshot()] and [export_snapshot()]: rather than loading an existing
+#' project, it starts an empty one you can then populate.
 #'
 #' The result touches no files and has no path. Mutate it with the
 #' `add_*()` verbs (for example [add_compound()]) and serialize it with
@@ -48,12 +48,14 @@ create_snapshot <- function(name = NULL, description = NULL) {
   # Author at the highest supported version so a freshly created snapshot
   # matches the current PK-Sim format. At v81 the top-level `Name` precedes
   # `Version` in the serialized JSON, and `jsonlite::write_json()` preserves
-  # list order, so build `Name` first when it is supplied.
+  # list order, so build `Name` first when it is supplied. `ApplicationName`
+  # follows `Version`, the order PK-Sim's own project mapper writes.
   data <- if (!is.null(name)) {
     list(Name = name, Version = SUPPORTED_VERSION_MAX)
   } else {
     list(Version = SUPPORTED_VERSION_MAX)
   }
+  data$ApplicationName <- PKSIM_APPLICATION_NAME
 
   if (!is.null(description)) {
     data$Description <- description

@@ -13,6 +13,7 @@ The top-level snapshot object. All other snapshots are nested arrays within it.
 | `Version` | `int` | Yes | Sets `PKSimProject.Creation.InternalVersion`. Used to create a `SnapshotContext` that controls version-specific mapping behavior throughout the entire conversion. Current version: `81` (v13). |
 | `Name` | `string` | No | `PKSimProject.Name` (also overridden by the input filename). The field has existed since at least v80; at v81 it is reordered to precede `Version` in the serialized JSON because the root project object derives from a shared base type that carries a serialization ordering hint on `Name`. Only its position changed at v13, not its meaning. |
 | `Description` | `string` | No | `PKSimProject.Description`. |
+| `ApplicationName` | `string` | No | Added at v81 (v13). Records which OSP application wrote the file, since the snapshot format is now shared with MoBi. PK-Sim writes `Origins.PKSim.DisplayName` (`"PK-Sim"`) on every export. On import, `SnapshotTask.validateApplication()` accepts an absent or empty value (every pre-v81 file) and PK-Sim's own name, and throws `ProjectSnapshotCannotBeLoaded` for anything else. Not mapped onto the project. |
 | `ExpressionProfiles` | [ExpressionProfile](#expressionprofile)[] | No | Mapped first and added to the project before any other building blocks, because Individuals reference them by name. |
 | `Individuals` | [Individual](#individual)[] | No | Mapped via `IndividualMapper`, added to project as building blocks. |
 | `Populations` | [Population](#population)[] | No | Mapped via `PopulationMapper`, added to project as building blocks. |
@@ -25,10 +26,20 @@ The top-level snapshot object. All other snapshots are nested arrays within it.
 | `ObservedData` | [DataRepository](#datarepository-observed-data)[] | No | Mapped via `DataRepositoryMapper`, added to project as observed data. |
 | `ParameterIdentifications` | [ParameterIdentification](#parameteridentification)[] | No | Mapped via `ParameterIdentificationMapper`. References simulations by name. |
 | `SimulationComparisons` | [SimulationComparison](#simulationcomparison)[] | No | Mapped via `SimulationComparisonMapper`. References simulations by name. |
+| `QualificationPlans` | `QualificationPlan[]` | No | Qualification plan definitions. Not new at v81; previously missing from this table. |
 | `ObservedDataClassifications` | [Classification](#classification)[] | No | Folder hierarchy for observed data. Applied after all data is loaded. |
 | `SimulationClassifications` | [Classification](#classification)[] | No | Folder hierarchy for simulations. |
 | `SimulationComparisonClassifications` | [Classification](#classification)[] | No | Folder hierarchy for simulation comparisons. |
 | `ParameterIdentificationClassifications` | [Classification](#classification)[] | No | Folder hierarchy for parameter identifications. |
+| `QualificationPlanClassifications` | [Classification](#classification)[] | No | Folder hierarchy for qualification plans. |
+| `CompoundClassifications` | [Classification](#classification)[] | No | Added at v81 (v13). Folder hierarchy for compound building blocks. |
+| `FormulationClassifications` | [Classification](#classification)[] | No | Added at v81 (v13). Folder hierarchy for formulation building blocks. |
+| `IndividualClassifications` | [Classification](#classification)[] | No | Added at v81 (v13). Folder hierarchy for individual building blocks. |
+| `PopulationClassifications` | [Classification](#classification)[] | No | Added at v81 (v13). Folder hierarchy for population building blocks. |
+| `ProtocolClassifications` | [Classification](#classification)[] | No | Added at v81 (v13). Folder hierarchy for protocol building blocks. |
+| `EventClassifications` | [Classification](#classification)[] | No | Added at v81 (v13). Folder hierarchy for event building blocks. |
+| `ObserverSetClassifications` | [Classification](#classification)[] | No | Added at v81 (v13). Folder hierarchy for observer set building blocks. |
+| `ExpressionProfileClassifications` | [Classification](#classification)[] | No | Added at v81 (v13). Folder hierarchy for expression profile building blocks. |
 
 **Loading order**: ExpressionProfiles -> (Individuals, Compounds, Events, Formulations, Protocols, Populations, ObserverSets) -> ObservedData -> Simulations -> SimulationComparisons -> ParameterIdentifications -> Classifications.
 
@@ -52,9 +63,11 @@ Created via `ICompoundFactory.Create()`.
 | `Solubility` | [Alternative](#alternative)[] | No | Mapped to the `COMPOUND_SOLUBILITY` alternative group. Has special handling for table-based solubility formulas. |
 | `IntestinalPermeability` | [Alternative](#alternative)[] | No | Mapped to the `COMPOUND_INTESTINAL_PERMEABILITY` alternative group. |
 | `Permeability` | [Alternative](#alternative)[] | No | Mapped to the `COMPOUND_PERMEABILITY` alternative group. |
+| `BileSaltPartitionCoefficient` | [Alternative](#alternative)[] | No | Added at v81 (v13). A fifth alternative group, identical in shape to the four above. Absent in every v80 file. |
 | `PkaTypes` | [PkaType](#pkatype)[] | No | Each entry sets the compound type parameter (`ParameterCompoundType(index)`) and pKa value parameter (`ParameterPKa(index)`) on the compound. Value origins are synchronized across all pKa parameters. |
 | `Processes` | [CompoundProcess](#compoundprocess)[] | No | Each process is mapped via `CompoundProcessMapper` and added to the compound via `Compound.AddProcess()`. |
 | `Parameters` | [Parameter](#parameter)[] | No | User-overridden parameters mapped via `ParameterMapper` onto the compound's parameter container. |
+| `OverwriteParameterSets` | [OverwriteParameterSet](#overwriteparameterset)[] | No | Added at v81 (v13). Named bundles of parameter overrides stored on the compound; a simulation activates one by name through [OverwriteParameterSetSelection](#overwriteparametersetselection). |
 
 ---
 
@@ -137,6 +150,7 @@ Created via `ISimulationFactory.CreateFrom(simulationSubject, compounds, modelPr
 | `OutputMappings` | [OutputMapping](#outputmapping)[] | No | Mapped via `OutputMappingMapper`. Each mapping links a simulation output path to observed data. |
 | `Parameters` | [LocalizedParameter](#localizedparameter)[] | No | Overridden simulation parameters. Mapped via `ParameterMapper.MapLocalizedParameters()` onto the simulation model root. After mapping, changes are synced back to the simulation's used building blocks. |
 | `AdvancedParameters` | [AdvancedParameter](#advancedparameter)[] | No | Only for population simulations. Mapped via `AdvancedParameterMapper`. |
+| `OverwriteParameterSetSelections` | [OverwriteParameterSetSelection](#overwriteparametersetselection)[] | No | Added at v81 (v13). Selects, per compound, which of that compound's overwrite parameter sets is active in this simulation. |
 | `Interactions` | [CompoundProcessSelection](#compoundproperties)[] | No | Interaction selections. Each process is resolved by name from the compound. Unselected interactions create `NoInteractionProcess` placeholders. |
 | `AlteredBuildingBlocks` | [AlteredBuildingBlock](#alteredbuildingblock)[] | No | Marks which building blocks have been modified within this simulation. Sets `UsedBuildingBlock.Altered = true`. |
 | `IndividualAnalyses` | [CurveChart](#curvechart)[] | No | Chart analyses for individual simulations. Mapped via `SimulationTimeProfileChartMapper`. |
@@ -331,7 +345,7 @@ Created via `ISolverSettingsFactory.CreateDefault()`.
 | `HMin` | `double?` | No | `SolverSettings.HMin`. Uses default if null. |
 | `HMax` | `double?` | No | `SolverSettings.HMax`. Uses default if null. |
 | `MxStep` | `int?` | No | `SolverSettings.MxStep`. Uses default if null. |
-| `CheckNegativeValues` | `bool?` | No | `SolverSettings.CheckNegativeValues`. Uses default if null. Added at v81 (v13). |
+| `CheckForNegativeValues` | `bool?` | No | `SolverSettings.CheckForNegativeValues`. Uses default if null. Added at v81 (v13). The domain property is backed by the `CHECK_FOR_NEGATIVE_VALUES` solver parameter, created with value `1`, so the default is `true` and PK-Sim omits the key whenever the check is on. Only `false` is ever written. |
 
 All properties use sparse serialization: absent/null values fall back to factory defaults.
 
@@ -376,6 +390,7 @@ An array of output path strings.
 |----------|------|----------|----------------|
 | `Name` | `string` | Yes | Protocol name. Resolved from the project's building blocks by name. |
 | `Formulations` | [FormulationSelection](#formulationselection)[] | No | Each entry maps a formulation key to a formulation building block. |
+| `Events` | [EventPlaceholderSelection](#eventplaceholderselection)[] | No | Added at v81 (v13). Each entry binds an event placeholder key declared by the protocol to an event building block. The sibling of `Formulations`, with the same shape. |
 
 ### FormulationSelection
 
@@ -383,6 +398,52 @@ An array of output path strings.
 |----------|------|----------|----------------|
 | `Name` | `string` | Yes | Formulation name. Resolved from the project's building blocks by name. The formulation's template ID is stored. |
 | `Key` | `string` | Yes | Formulation key identifying which application in the protocol uses this formulation. |
+
+### EventPlaceholderSelection
+
+Added at v81 (v13). The binding half of a protocol event placeholder, shaped exactly like [FormulationSelection](#formulationselection).
+
+| Property | Type | Required | Domain Mapping |
+|----------|------|----------|----------------|
+| `Name` | `string` | Yes | Event name. Resolved from the project's building blocks by name. |
+| `Key` | `string` | Yes | Event key identifying which application in the protocol this event fills. Matches a [SchemaItem](#schemaitem) `EventKey`. |
+
+### OverwriteParameterSet
+
+Added at v81 (v13). Derives from `SnapshotBase`, which supplies `Name` and `Description`. Stored on a [Compound](#compound) and activated per simulation.
+
+| Property | Type | Required | Domain Mapping |
+|----------|------|----------|----------------|
+| `Name` | `string` | No | Set name. Referenced by [OverwriteParameterSetSelection](#overwriteparametersetselection) `OverwriteParameterSetName`. |
+| `Description` | `string` | No | Free-text description. |
+| `IsDefault` | `bool?` | No | Marks this set as the compound's default. |
+| `ExtendedProperties` | [ExtendedProperty](#extendedproperty)[] | No | Free-form user annotations on the set. |
+| `ParameterValues` | [ParameterValue](#parametervalue)[] | No | The overrides themselves. |
+
+### ParameterValue
+
+Added at v81 (v13). One parameter override inside an [OverwriteParameterSet](#overwriteparameterset). The set lives on a compound while the parameter lives in a simulation, so the entry carries enough to be read without resolving the parameter.
+
+| Property | Type | Required | Domain Mapping |
+|----------|------|----------|----------------|
+| `Path` | `string` | Yes | Path identifying the parameter to override. |
+| `Value` | `double` | Yes | The override value, in the unit named by `Unit`. |
+| `Dimension` | `string` | No | Dimension of the value. Omitted when the parameter is dimensionless. |
+| `Unit` | `string` | No | Unit the value is expressed in. |
+| `MinValue` | `double?` | No | Lower bound of the parameter's allowed range, captured when the set is saved so an override can be validated without resolving the parameter. |
+| `MinIsAllowed` | `bool?` | No | Whether `MinValue` itself is allowed. |
+| `MaxValue` | `double?` | No | Upper bound of the allowed range. |
+| `MaxIsAllowed` | `bool?` | No | Whether `MaxValue` itself is allowed. |
+| `ValueOrigin` | [ValueOrigin](#valueorigin) | No | Carried over from the parameter the value was taken from. |
+
+### OverwriteParameterSetSelection
+
+Added at v81 (v13). The simulation side of the feature: a by-name reference pair.
+
+| Property | Type | Required | Domain Mapping |
+|----------|------|----------|----------------|
+| `CompoundName` | `string` | Yes | Name of the compound whose set is selected. |
+| `OverwriteParameterSetName` | `string` | Yes | Name of the [OverwriteParameterSet](#overwriteparameterset) on that compound. |
 
 ### Schema (Advanced Protocol)
 
@@ -399,6 +460,7 @@ An array of output path strings.
 | `Name` | `string` | No | `SchemaItem.Name` |
 | `ApplicationType` | `string` | Yes | Resolved via `ApplicationTypes.ByName()`. |
 | `FormulationKey` | `string` | No | `SchemaItem.FormulationKey`. Links to a formulation in the simulation. |
+| `EventKey` | `string` | No | Added at v81 (v13). `SchemaItem.EventKey`. Declares an event placeholder the simulation then binds through [EventPlaceholderSelection](#eventplaceholderselection). The default key is `"Event"`, mirroring `"Formulation"`. Only advanced protocols write a `Schemas` array, so a simple protocol has nowhere to record an event. |
 | `TargetOrgan` | `string` | No | `SchemaItem.TargetOrgan` |
 | `TargetCompartment` | `string` | No | `SchemaItem.TargetCompartment` |
 | `Parameters` | [Parameter](#parameter)[] | No | Schema item parameters (dose, start time, etc.). |
@@ -786,6 +848,8 @@ Created as `new Axis(snapshot.Type)`.
 | `Visible` | `bool` | No | `Axis.Visible`. Whether the axis is visible. |
 | `Min` | `float?` | No | `Axis.Min`. Minimum axis value. |
 | `Max` | `float?` | No | `Axis.Max`. Maximum axis value. |
+| `MajorInterval` | `float?` | No | Added at v81 (v13). `Axis.MajorInterval`. Manual override of major tick spacing. Absent when the axis uses automatic ticks, which is the default. |
+| `MinorTicks` | `int?` | No | Added at v81 (v13). `Axis.MinorTicks`. Manual override of the minor tick count. Absent under automatic ticks. |
 | `DefaultColor` | `Color` | No | `Axis.DefaultColor`. Default color for curves on this axis. |
 | `DefaultLineStyle` | [LineStyles](#linestyles) | No | `Axis.DefaultLineStyle`. Default line style for curves on this axis. |
 | `Scaling` | [Scalings](#scalings) | No | `Axis.Scaling`. Linear or logarithmic scale. |
@@ -948,9 +1012,24 @@ Created as one of: `ValueMappingGroupingDefinition` (if `Mapping` present), `Fix
 | v10 | 78 | Individual uses `Molecules[]` (embedded expression profiles). |
 | v11 | 79 | Individual switches to `ExpressionProfiles[]` (string references). `LocalizedParameter` paths convert `"Applications"` to `"Events"`. Top-level `ExpressionProfiles[]` is a first-class building block from this version; it is *not* a later addition. |
 | v12 | 80 | Prior version. |
-| v13 | 81 | Current version. Top-level `Name` is reordered to precede `Version` in the serialized JSON (the field itself already existed at v80). `CheckNegativeValues` is added to `SolverSettings`. |
+| v13 | 81 | Current version. Purely additive: 33 new optional keys and 4 new object shapes, with nothing removed, renamed, or retyped. See the v13 delta below. |
 
-The v13 delta was verified by direct inspection of the upstream PK-Sim / OSPSuite.Core code, which supersedes an earlier framing that described v13 as "promoting `ExpressionProfiles` to a top-level block": top-level `ExpressionProfiles` predates v13 (it is the v11 / version-79 switch to `ExpressionProfiles[]` string references documented above) and is not a v80 -> v81 change. PK-Sim remains the authoritative schema source.
+### The v80 -> v81 delta
+
+Every v81 addition is optional and absent unless its feature is used, so a v13 file from a project that touches none of them differs from its v12 equivalent only in `Version` and `ApplicationName`. A v12 file therefore opens in PK-Sim 13 with no conversion step; a v81 file is refused outright by PK-Sim 12, whose ceiling is 80.
+
+Four features account for almost all of it:
+
+- **Overwrite parameter sets.** [Compound](#compound) `OverwriteParameterSets`, [Simulation](#simulation) `OverwriteParameterSetSelections`, and the three new shapes [OverwriteParameterSet](#overwriteparameterset), [ParameterValue](#parametervalue), [OverwriteParameterSetSelection](#overwriteparametersetselection).
+- **Event placeholders on protocols.** [SchemaItem](#schemaitem) `EventKey` declares the placeholder, [ProtocolSelection](#protocolselection) `Events` binds it, via the new shape [EventPlaceholderSelection](#eventplaceholderselection).
+- **Subfolders for every building block type.** Eight new `Classification[]` arrays on the [Project](#project) root, reusing the [Classification](#classification) shape the five pre-v81 arrays already used.
+- **Application name.** [Project](#project) `ApplicationName`, because the snapshot format is now shared with MoBi.
+
+Three smaller additions: [Axis](#axis) `MajorInterval` and `MinorTicks`, and [SolverSettings](#solversettings) `CheckForNegativeValues`.
+
+One positional change matters only to a textual diff: the top-level `Name` is now emitted as the first key of the project object, where at v80 it followed `Version`. Its spelling, value, and meaning are unchanged, and JSON key order carries no meaning for a parser.
+
+The v13 delta was verified by direct inspection of the upstream PK-Sim / OSPSuite.Core snapshot DTOs and mappers. That inspection also supersedes an earlier framing that described v13 as "promoting `ExpressionProfiles` to a top-level block": top-level `ExpressionProfiles` predates v13 (it is the v11 / version-79 switch to `ExpressionProfiles[]` string references documented above) and is not a v80 -> v81 change. PK-Sim remains the authoritative schema source.
 
 ---
 

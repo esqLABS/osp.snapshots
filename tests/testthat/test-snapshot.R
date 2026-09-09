@@ -623,6 +623,13 @@ test_that("Snapshot migration-band snapshots report how to upgrade and abort", {
   # A `74-78` snapshot with the default `upgrade = FALSE` names the detected
   # version, points at `upgrade = TRUE`, warns about the round-trip cost, and
   # returns no object. Covers both a list input and a file fixture.
+  # The message quotes the version the installed core would emit, so pin it:
+  # unmocked, the recorded snapshot would depend on which `ospsuite` the test
+  # machine has, and a fixed literal keeps it independent of the ceiling too.
+  testthat::local_mocked_bindings(
+    .installed_core_version = function() 80L,
+    .package = "osp.snapshots"
+  )
   expect_snapshot(Snapshot$new(list(Version = 78)), error = TRUE)
   expect_snapshot(
     Snapshot$new(testthat::test_path("data", "snapshot_v78.json")),
@@ -703,6 +710,60 @@ test_that("Snapshot warns when a snapshot is newer than the installed core", {
     .package = "osp.snapshots"
   )
   expect_no_warning(Snapshot$new(list(Version = 81)))
+})
+
+test_that("Snapshot accepts an absent or PK-Sim ApplicationName", {
+  # The v13 format records its author in the root `ApplicationName`. An absent
+  # value (every pre-v81 file) and PK-Sim's own name both load.
+  testthat::local_mocked_bindings(
+    .installed_core_version = function() SUPPORTED_VERSION_MAX,
+    .package = "osp.snapshots"
+  )
+  expect_s3_class(local_snapshot(list(Version = 81)), "Snapshot")
+  expect_s3_class(
+    local_snapshot(list(Version = 81, ApplicationName = "PK-Sim")),
+    "Snapshot"
+  )
+  expect_s3_class(
+    local_snapshot(list(Version = 81, ApplicationName = "")),
+    "Snapshot"
+  )
+})
+
+test_that("Snapshot rejects a snapshot written by another application", {
+  # Mirrors PK-Sim's own `SnapshotTask.validateApplication()`. The check runs
+  # before the version gate, so a MoBi snapshot is named as such rather than
+  # reported against PK-Sim's version band.
+  expect_snapshot(
+    Snapshot$new(list(Version = 81, ApplicationName = "MoBi")),
+    error = TRUE
+  )
+  expect_snapshot(
+    Snapshot$new(list(Version = 12, ApplicationName = "MoBi")),
+    error = TRUE
+  )
+})
+
+test_that("v81 keys this package does not model survive a round trip", {
+  # PK-Sim v13 added 33 optional keys; this package models only two of them
+  # (`ApplicationName` and the solver's `CheckForNegativeValues`). The rest
+  # ride through because every wrapper keeps its raw parsed slice and
+  # overwrites only the fields it models. The fixture carries one of each, so
+  # a re-export that is not structurally identical to the input means a key
+  # was dropped, and the failure names the path.
+  testthat::local_mocked_bindings(
+    .installed_core_version = function() SUPPORTED_VERSION_MAX,
+    .package = "osp.snapshots"
+  )
+  fixture <- testthat::test_path("data", "snapshot_v81_new_keys.json")
+  path <- withr::local_tempfile(fileext = ".json")
+  read_raw <- function(p) {
+    jsonlite::fromJSON(p, simplifyDataFrame = FALSE, simplifyVector = FALSE)
+  }
+
+  export_snapshot(Snapshot$new(fixture), path)
+
+  expect_equal(read_raw(path), read_raw(fixture))
 })
 
 test_that("Snapshot migration aborts before converting on an incompatible core", {

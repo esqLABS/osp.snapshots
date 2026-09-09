@@ -23,6 +23,11 @@ does not load. Snapshots below \code{74} are too old to migrate and abort. A
 snapshot newer than the installed \code{ospsuite} core (but still in band) loads
 with a warning that it may not load or run there. Hand-rolled list input
 must supply \code{Version}.
+
+The v13 format also records which application wrote the file in the root
+\code{ApplicationName}. A snapshot naming another application (a MoBi project,
+for instance) is refused; an absent or empty value, as in every pre-v81
+file, is accepted as PK-Sim's own.
 }
 
 \examples{

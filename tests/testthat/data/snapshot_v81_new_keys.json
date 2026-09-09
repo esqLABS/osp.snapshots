@@ -1,0 +1,116 @@
+{
+  "Name": "V81 new keys",
+  "Version": 81,
+  "ApplicationName": "PK-Sim",
+  "Compounds": [
+    {
+      "Name": "Drug X",
+      "BileSaltPartitionCoefficient": [
+        {
+          "Name": "Measurement",
+          "IsDefault": true,
+          "Parameters": [
+            {
+              "Name": "Partition coefficient (bile salt micelle/water) neutral",
+              "Value": 2.4
+            }
+          ]
+        }
+      ],
+      "OverwriteParameterSets": [
+        {
+          "Name": "Fasted state",
+          "Description": "Fasted arm",
+          "IsDefault": true,
+          "ExtendedProperties": [
+            { "Name": "Source", "Value": "Acosta 2007", "Type": "String" }
+          ],
+          "ParameterValues": [
+            {
+              "Path": "Organism|Lumen|Stomach|Gastric emptying time",
+              "Value": 0.25,
+              "Dimension": "Time",
+              "Unit": "h",
+              "MinValue": 0.0,
+              "MinIsAllowed": false,
+              "ValueOrigin": {
+                "Source": "Publication",
+                "Description": "Fasted subjects"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Protocols": [
+    {
+      "Name": "300 mg BID",
+      "TimeUnit": "h",
+      "Schemas": [
+        {
+          "Name": "Schema",
+          "SchemaItems": [
+            {
+              "ApplicationType": "Oral",
+              "FormulationKey": "Formulation",
+              "EventKey": "Event",
+              "Parameters": [
+                { "Name": "Dose", "Value": 300.0, "Unit": "mg" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Simulations": [
+    {
+      "Name": "Sim",
+      "Model": "4Comp",
+      "Individual": "Ind",
+      "Solver": { "CheckForNegativeValues": false },
+      "Compounds": [
+        {
+          "Name": "Drug X",
+          "Protocol": {
+            "Name": "300 mg BID",
+            "Formulations": [{ "Name": "Tablet", "Key": "Formulation" }],
+            "Events": [{ "Name": "High fat meal", "Key": "Event" }]
+          }
+        }
+      ],
+      "OverwriteParameterSetSelections": [
+        {
+          "CompoundName": "Drug X",
+          "OverwriteParameterSetName": "Fasted state"
+        }
+      ],
+      "IndividualAnalyses": [
+        {
+          "Axes": [
+            {
+              "Type": "X",
+              "Dimension": "Time",
+              "Unit": "h",
+              "MajorInterval": 24.0,
+              "MinorTicks": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "CompoundClassifications": [
+    {
+      "Name": "Substrates",
+      "Classifications": [
+        { "Name": "Protease inhibitors", "Classifiables": ["Drug X"] }
+      ],
+      "Classifiables": ["Midazolam"]
+    }
+  ],
+  "ExpressionProfileClassifications": [
+    { "Name": "Enzymes", "Classifiables": ["CYP3A4|Human|Healthy"] }
+  ]
+}

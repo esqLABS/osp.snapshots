@@ -137,6 +137,28 @@
     Message
       v Snapshot loaded successfully
 
+# Snapshot rejects a snapshot written by another application
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = "MoBi"))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot was written by "MoBi", not "PK-Sim".
+      i osp.snapshots reads PK-Sim project snapshots only.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 12, ApplicationName = "MoBi"))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot was written by "MoBi", not "PK-Sim".
+      i osp.snapshots reads PK-Sim project snapshots only.
+
 # Snapshot migration aborts before converting on an incompatible core
 
     Code
