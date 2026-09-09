@@ -22,3 +22,11 @@
       Error in `create_solver_settings()`:
       ! `mx_step` must be a single positive whole number
 
+---
+
+    Code
+      create_solver_settings(check_for_negative_values = "x")
+    Condition
+      Error in `create_solver_settings()`:
+      ! `check_for_negative_values` must be a single logical value
+

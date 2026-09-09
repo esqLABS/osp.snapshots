@@ -11,7 +11,8 @@ create_solver_settings(
   h0 = NULL,
   h_min = NULL,
   h_max = NULL,
-  mx_step = NULL
+  mx_step = NULL,
+  check_for_negative_values = NULL
 )
 }
 \arguments{
@@ -29,6 +30,11 @@ integration.}
 \item{h_max}{Numeric. Maximum step size.}
 
 \item{mx_step}{Integer. Maximum number of internal solver steps.}
+
+\item{check_for_negative_values}{Logical. Whether the solver aborts when a
+state variable turns negative. Only set this to switch the check off;
+leaving it absent keeps the PK-Sim default (\code{TRUE}). Requires the PK-Sim
+v13 snapshot format (\verb{Version 81}).}
 }
 \value{
 A \link{SolverSettings} object.

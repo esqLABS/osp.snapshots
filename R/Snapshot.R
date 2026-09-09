@@ -9,6 +9,17 @@ SUPPORTED_VERSION_MIN <- 79L
 # one and re-exporting it could corrupt it.
 SUPPORTED_VERSION_MAX <- 81L
 
+# Value PK-Sim writes to the root `ApplicationName` field, added by the v13
+# snapshot format (`Version 81`). The format is shared with MoBi, so the field
+# records which application wrote the file; PK-Sim rejects any other value on
+# import, and so does this package (see `.validate_application()`).
+PKSIM_APPLICATION_NAME <- "PK-Sim"
+
+# The other OSP application that writes this format (`Origins.MoBi.DisplayName`
+# in OSPSuite.Core). Called out by name in `.validate_application()` because a
+# MoBi snapshot is the one foreign file a user is likely to try here.
+MOBI_APPLICATION_NAME <- "MoBi"
+
 # Snapshots in the migration band `74:78` are below the supported floor but
 # can be upgraded to a supported version by round-tripping them through the
 # installed PK-Sim core (see `.migrate_snapshot()`); below `74` PK-Sim itself
@@ -80,6 +91,11 @@ MIGRATION_VERSION_MIN <- 74L
 #' supported band) loads with a warning that it may not load or run there,
 #' with or without `upgrade = TRUE`.
 #'
+#' The v13 format also records which application wrote the file in the root
+#' `ApplicationName`. A MoBi snapshot is refused as not supported, and so is
+#' any other application's; an absent or empty value, as in every pre-v81
+#' file, is accepted as PK-Sim's own.
+#'
 #' @importFrom R6 R6Class
 #' @importFrom fs path_rel
 #'
@@ -129,6 +145,12 @@ Snapshot <- R6::R6Class(
       } else {
         cli::cli_abort("Input must be either a path to a JSON file or a list")
       }
+
+      # Reject a snapshot from another OSP application before anything else
+      # touches it: the application does not change under migration, so a MoBi
+      # file must not spend minutes in the PK-Sim round trip only to be
+      # refused afterwards.
+      private$.validate_application()
 
       # Orchestrate migration before validation so `.validate_version()` sees
       # the upgraded data. With `upgrade = TRUE`, any snapshot from the
@@ -969,8 +991,8 @@ Snapshot <- R6::R6Class(
     # `NA_integer_` when it is missing, non-scalar, or non-integer. `unlist()`
     # guards against list-wrapped values (jsonlite is configured with
     # `simplifyVector = FALSE`, so scalars can arrive as length-1 lists).
-    # Shared by `.validate_version()`, `.get_pksim_version()`, and the version
-    # branch in `.build_simulation()` so they all read `Version` the same way.
+    # Shared by `.validate_version()` and `.get_pksim_version()` so they both
+    # read `Version` the same way.
     .raw_version = function() {
       raw <- unlist(private$.original_data$Version, use.names = FALSE)
       # Reject anything that is not a single whole number: a fractional value
@@ -986,6 +1008,44 @@ Snapshot <- R6::R6Class(
         return(NA_integer_)
       }
       as.integer(raw)
+    },
+
+    # Reject a snapshot written by another OSP application. The v13 format
+    # (`Version 81`) is shared with MoBi and records its author in the root
+    # `ApplicationName`; PK-Sim's own `SnapshotTask.validateApplication()`
+    # accepts an absent or empty value (every pre-v81 file) and its own name,
+    # and refuses anything else. This package models PK-Sim building blocks
+    # only, so it mirrors that rule. Runs before the version gate, since
+    # another application numbers its versions on its own scale and a
+    # version-band message would only mislead.
+    .validate_application = function() {
+      app <- unlist(private$.original_data$ApplicationName, use.names = FALSE)
+      # Absent: PK-Sim's own file, as every pre-v81 snapshot is.
+      if (length(app) == 0L) {
+        return(invisible(NULL))
+      }
+      # PK-Sim serializes a single string here. Reject anything else rather
+      # than reading the first element, which would let a hand-rolled
+      # `c("PK-Sim", "MoBi")` slip a foreign snapshot past the gate.
+      if (length(app) != 1L || !is.character(app) || is.na(app)) {
+        cli::cli_abort(c(
+          "Snapshot has a malformed {.field ApplicationName} field.",
+          i = "Expected a single string, or no field at all."
+        ))
+      }
+      if (!nzchar(app) || identical(app, PKSIM_APPLICATION_NAME)) {
+        return(invisible(NULL))
+      }
+      if (identical(app, MOBI_APPLICATION_NAME)) {
+        cli::cli_abort(c(
+          "MoBi snapshots are not supported.",
+          i = "{.pkg osp.snapshots} reads PK-Sim project snapshots only."
+        ))
+      }
+      cli::cli_abort(c(
+        "Snapshot was written by {.val {app}}, not {.val {PKSIM_APPLICATION_NAME}}.",
+        i = "{.pkg osp.snapshots} reads PK-Sim project snapshots only."
+      ))
     },
 
     # Enforce the supported-version contract at the single load chokepoint.
@@ -1517,20 +1577,6 @@ Snapshot <- R6::R6Class(
         # unnamed `list()` serialises to `[]` (an array), which PK-Sim's
         # snapshot mapper rejects silently.
         data$Solver <- empty_named_list()
-      }
-
-      # Version-aware authoring: PK-Sim v13 (Version 81) added the
-      # `CheckNegativeValues` solver field. Emit it when the snapshot is at 81
-      # or newer so a v81 snapshot round-trips against a v13 core and future
-      # versions inherit the (additive) field, while 79/80 snapshots stay free
-      # of the newer-only field. The 81 threshold is the version that
-      # introduced the field, independent of the current ceiling. Only set it
-      # when absent so an explicitly supplied value is preserved.
-      version_num <- private$.raw_version()
-      if (!is.na(version_num) && version_num >= 81L) {
-        if (is.null(data$Solver$CheckNegativeValues)) {
-          data$Solver$CheckNegativeValues <- TRUE
-        }
       }
 
       if (!is.null(output_schema)) {

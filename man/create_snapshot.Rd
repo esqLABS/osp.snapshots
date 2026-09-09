@@ -19,10 +19,10 @@ A \link{Snapshot} object.
 }
 \description{
 Create an in-memory \link{Snapshot} from scratch, carrying the current
-supported PK-Sim version and no building blocks. This is the
-snapshot-level constructor that pairs with \code{\link[=load_snapshot]{load_snapshot()}} and
-\code{\link[=export_snapshot]{export_snapshot()}}: rather than loading an existing project, it starts
-an empty one you can then populate.
+supported PK-Sim version, PK-Sim as the writing application, and no
+building blocks. This is the snapshot-level constructor that pairs with
+\code{\link[=load_snapshot]{load_snapshot()}} and \code{\link[=export_snapshot]{export_snapshot()}}: rather than loading an existing
+project, it starts an empty one you can then populate.
 
 The result touches no files and has no path. Mutate it with the
 \verb{add_*()} verbs (for example \code{\link[=add_compound]{add_compound()}}) and serialize it with

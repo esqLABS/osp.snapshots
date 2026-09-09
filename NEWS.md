@@ -1,7 +1,9 @@
 # osp.snapshots (development version)
 
-## New features
-
+- `add_simulation()` no longer writes a `CheckNegativeValues` solver field into a `Version 81` snapshot. No such field exists in the PK-Sim schema, so PK-Sim dropped it silently; the real key is `CheckForNegativeValues` and its default is already `TRUE`, which is why PK-Sim itself omits it.
+- `create_snapshot()` now writes the root `ApplicationName` field (`"PK-Sim"`) that the PK-Sim v13 format added, in PK-Sim's own key order (`Name`, `Version`, `ApplicationName`).
+- `create_solver_settings()` gains a `check_for_negative_values` argument, and `SolverSettings` a matching `check_for_negative_values` field, for the solver's negative-value check exposed by the PK-Sim v13 snapshot format (`Version 81`). Leave it unset to keep PK-Sim's default of `TRUE`.
+- `load_snapshot()` (and `Snapshot$new()`) now reject a snapshot whose root `ApplicationName` names another OSP application, mirroring PK-Sim's own import check. A MoBi snapshot is reported as not supported; any other application is named in the error. An absent or empty value, as in every pre-`Version 81` snapshot, still loads.
 - `load_snapshot()` and `Snapshot$new()` now accept `upgrade = TRUE` for any snapshot older than the version the installed PK-Sim core writes, not only for the `Version 74-78` snapshots that fail to load without it. A v11.2 (`Version 79`) or v12.0 (`Version 80`) snapshot can now be raised to v13 (`Version 81`) at load time. The upgrade never lowers a version and does nothing when the snapshot is already up to date, so a newer-than-installed snapshot still loads with a warning and costs no time. The `upgrade = FALSE` default is unchanged: a supported snapshot still loads at its own version (#188).
 
 # osp.snapshots 1.1.0

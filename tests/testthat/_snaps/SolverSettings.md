@@ -86,6 +86,14 @@
       Error:
       ! `use_jacobian` must be a single logical value
 
+# SolverSettings$check_for_negative_values requires a single logical
+
+    Code
+      solver$check_for_negative_values <- 1
+    Condition
+      Error:
+      ! `check_for_negative_values` must be a single logical value
+
 # SolverSettings$mx_step requires a single positive whole number
 
     Code

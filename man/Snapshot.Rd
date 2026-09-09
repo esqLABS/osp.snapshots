@@ -32,6 +32,11 @@ before converting when it would write something above the ceiling.
 A snapshot newer than the installed \code{ospsuite} core (but still in the
 supported band) loads with a warning that it may not load or run there,
 with or without \code{upgrade = TRUE}.
+
+The v13 format also records which application wrote the file in the root
+\code{ApplicationName}. A MoBi snapshot is refused as not supported, and so is
+any other application's; an absent or empty value, as in every pre-v81
+file, is accepted as PK-Sim's own.
 }
 
 \examples{

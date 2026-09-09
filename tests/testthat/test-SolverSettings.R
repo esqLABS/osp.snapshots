@@ -6,7 +6,8 @@ test_that("SolverSettings exposes every field", {
     H0 = 1e-5,
     HMin = 1e-10,
     HMax = 60,
-    MxStep = 100000
+    MxStep = 100000,
+    CheckForNegativeValues = FALSE
   )
   solver <- SolverSettings$new(raw)
 
@@ -18,6 +19,7 @@ test_that("SolverSettings exposes every field", {
   expect_equal(solver$h_min, 1e-10)
   expect_equal(solver$h_max, 60)
   expect_equal(solver$mx_step, 100000)
+  expect_identical(solver$check_for_negative_values, FALSE)
   expect_identical(solver$data, raw)
 })
 
@@ -61,6 +63,32 @@ test_that("SolverSettings$use_jacobian requires a single logical", {
   solver$use_jacobian <- TRUE
   expect_true(solver$use_jacobian)
   expect_snapshot(error = TRUE, solver$use_jacobian <- 1)
+})
+
+test_that("SolverSettings$check_for_negative_values requires a single logical", {
+  solver <- SolverSettings$new(list())
+  solver$check_for_negative_values <- FALSE
+  expect_false(solver$check_for_negative_values)
+  expect_identical(solver$data$CheckForNegativeValues, FALSE)
+
+  solver$check_for_negative_values <- NULL
+  expect_null(solver$check_for_negative_values)
+  expect_length(solver$data, 0)
+
+  expect_snapshot(error = TRUE, solver$check_for_negative_values <- 1)
+})
+
+test_that("SolverSettings$check_for_negative_values keeps an explicit TRUE", {
+  # `TRUE` equals the PK-Sim default, so PK-Sim omits the key when writing.
+  # That is a rule about PK-Sim's serializer, not a licence to discard a
+  # value the caller set: an explicit `TRUE` must read back as `TRUE`, and a
+  # file that already carries `CheckForNegativeValues: true` must survive a
+  # set-then-read without the key being deleted.
+  solver <- SolverSettings$new(list(CheckForNegativeValues = TRUE))
+  expect_true(solver$check_for_negative_values)
+
+  solver$check_for_negative_values <- solver$check_for_negative_values
+  expect_identical(solver$data$CheckForNegativeValues, TRUE)
 })
 
 test_that("SolverSettings$mx_step requires a single positive whole number", {

@@ -2,8 +2,9 @@ test_that("create_snapshot creates an empty snapshot", {
   s <- create_snapshot()
 
   expect_s3_class(s, "Snapshot")
-  expect_named(s$data, "Version")
+  expect_named(s$data, c("Version", "ApplicationName"))
   expect_equal(s$data$Version, 81)
+  expect_equal(s$data$ApplicationName, "PK-Sim")
   expect_equal(s$pksim_version, "13.0")
 })
 
@@ -61,7 +62,7 @@ test_that("create_snapshot result round-trips through export and load", {
   expect_equal(reloaded$data$Version, 81)
 })
 
-test_that("v81 authoring serializes Name first and a CheckNegativeValues solver", {
+test_that("v81 authoring serializes Name, Version, then ApplicationName", {
   path <- withr::local_tempfile(fileext = ".json")
 
   s <- create_snapshot(name = "P")
@@ -71,42 +72,45 @@ test_that("v81 authoring serializes Name first and a CheckNegativeValues solver"
   export_snapshot(s, path)
   txt <- paste(readLines(path), collapse = "\n")
 
-  # Top-level `Name` precedes `Version` in the exported JSON.
-  expect_lt(regexpr("\"Name\"", txt), regexpr("\"Version\"", txt))
-  # The authored v81 solver carries `CheckNegativeValues`.
-  expect_match(txt, "CheckNegativeValues")
+  # PK-Sim's own project mapper writes `Name`, then `Version`, then
+  # `ApplicationName`; list order is the serialization order under `jsonlite`.
+  expect_lt(regexpr('"Name"', txt), regexpr('"Version"', txt))
+  expect_lt(regexpr('"Version"', txt), regexpr('"ApplicationName"', txt))
+  expect_match(txt, '"ApplicationName": "PK-Sim"')
 })
 
-test_that("v80 authoring omits the v81-only CheckNegativeValues solver field", {
-  s <- Snapshot$new(list(Version = 80))
+test_that("an authored simulation writes no negative-value solver field", {
+  # The PK-Sim schema key is `CheckForNegativeValues` and its default is
+  # `TRUE`, so a snapshot that wants the default must omit it: PK-Sim itself
+  # writes nothing. Guards against re-introducing an authored key, correctly
+  # spelled or not.
   s <- suppressWarnings(
-    add_simulation(s, name = "Sim", model = "M", individual = "I")
+    add_simulation(
+      create_snapshot(),
+      name = "Sim",
+      model = "M",
+      individual = "I"
+    )
   )
 
   solver <- s$data$Simulations[[1]]$Solver
+  expect_length(solver, 0)
+  expect_null(solver$CheckForNegativeValues)
   expect_null(solver$CheckNegativeValues)
 })
 
-test_that("authoring above v81 still emits CheckNegativeValues (future-proof)", {
-  # The field is anchored to the fixed version 81 that introduced it, not to
-  # the current ceiling, so raising `SUPPORTED_VERSION_MAX` must not stop it
-  # being emitted for versions at or above 81. Lift the ceiling above the
-  # snapshot version so a version-82 snapshot loads in band, and pin the
-  # installed core to 82 so no newer-than-installed warning fires, then
-  # confirm the solver still carries the field. Under a ceiling-coupled test
-  # (version equal to the ceiling) this case could not distinguish the fixed
-  # anchor from the ceiling; keeping version < ceiling is what pins it.
-  testthat::local_mocked_bindings(
-    SUPPORTED_VERSION_MAX = 83L,
-    .installed_core_version = function() 82L,
-    .package = "osp.snapshots"
+test_that("an explicit solver setting survives authoring", {
+  s <- suppressWarnings(
+    add_simulation(
+      create_snapshot(),
+      name = "Sim",
+      model = "M",
+      individual = "I",
+      solver = create_solver_settings(check_for_negative_values = FALSE)
+    )
   )
 
-  s <- Snapshot$new(list(Version = 82))
-  s <- add_simulation(s, name = "Sim", model = "M", individual = "I")
-
-  solver <- s$data$Simulations[[1]]$Solver
-  expect_true(solver$CheckNegativeValues)
+  expect_false(s$data$Simulations[[1]]$Solver$CheckForNegativeValues)
 })
 
 test_that("create_snapshot result composes with add_*() mutators", {
