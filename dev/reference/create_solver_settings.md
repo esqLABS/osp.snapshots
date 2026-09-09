@@ -17,7 +17,8 @@ create_solver_settings(
   h0 = NULL,
   h_min = NULL,
   h_max = NULL,
-  mx_step = NULL
+  mx_step = NULL,
+  check_for_negative_values = NULL
 )
 ```
 
@@ -51,6 +52,13 @@ create_solver_settings(
 
   Integer. Maximum number of internal solver steps.
 
+- check_for_negative_values:
+
+  Logical. Whether the solver aborts when a state variable turns
+  negative. Only set this to switch the check off; leaving it absent
+  keeps the PK-Sim default (`TRUE`). Requires the PK-Sim v13 snapshot
+  format (`Version 81`).
+
 ## Value
 
 A
@@ -64,6 +72,7 @@ create_solver_settings()
 #> <SolverSettings>
 #>   Public:
 #>     abs_tol: active binding
+#>     check_for_negative_values: active binding
 #>     clone: function (deep = FALSE) 
 #>     data: active binding
 #>     h0: active binding
@@ -80,6 +89,7 @@ create_solver_settings(abs_tol = 1e-9, rel_tol = 1e-9, mx_step = 100000)
 #> <SolverSettings>
 #>   Public:
 #>     abs_tol: active binding
+#>     check_for_negative_values: active binding
 #>     clone: function (deep = FALSE) 
 #>     data: active binding
 #>     h0: active binding

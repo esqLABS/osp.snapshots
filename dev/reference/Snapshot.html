@@ -11,7 +11,7 @@ structure."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9010</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,6 +66,10 @@ does not load. Snapshots below <code>74</code> are too old to migrate and abort.
 snapshot newer than the installed <code>ospsuite</code> core (but still in band) loads
 with a warning that it may not load or run there. Hand-rolled list input
 must supply <code>Version</code>.</p>
+<p>The v13 format also records which application wrote the file in the root
+<code>ApplicationName</code>. A MoBi snapshot is refused as not supported, and so is
+any other application's; an absent or empty value, as in every pre-v81
+file, is accepted as PK-Sim's own.</p>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>

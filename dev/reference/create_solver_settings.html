@@ -11,7 +11,7 @@ defaults at load time."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9010</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,8 @@ defaults at load time.</p>
 <span>  h0 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  h_min <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  h_max <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  mx_step <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  mx_step <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  check_for_negative_values <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -94,6 +95,13 @@ integration.</p></dd>
 <dt id="arg-mx-step">mx_step<a class="anchor" aria-label="anchor" href="#arg-mx-step"></a></dt>
 <dd><p>Integer. Maximum number of internal solver steps.</p></dd>
 
+
+<dt id="arg-check-for-negative-values">check_for_negative_values<a class="anchor" aria-label="anchor" href="#arg-check-for-negative-values"></a></dt>
+<dd><p>Logical. Whether the solver aborts when a
+state variable turns negative. Only set this to switch the check off;
+leaving it absent keeps the PK-Sim default (<code>TRUE</code>). Requires the PK-Sim
+v13 snapshot format (<code>Version 81</code>).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -106,6 +114,7 @@ integration.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;SolverSettings&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Public:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     abs_tol: active binding</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     check_for_negative_values: active binding</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     clone: function (deep = FALSE) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     data: active binding</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     h0: active binding</span>
@@ -122,6 +131,7 @@ integration.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;SolverSettings&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Public:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     abs_tol: active binding</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     check_for_negative_values: active binding</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     clone: function (deep = FALSE) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     data: active binding</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     h0: active binding</span>

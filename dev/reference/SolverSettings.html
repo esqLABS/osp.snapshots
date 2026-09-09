@@ -13,7 +13,7 @@ absent on export."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9010</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,6 +96,14 @@ Writable: a single logical value, or <code>NULL</code> to clear.</p></dd>
 <dd><p>Maximum number of internal solver steps. Writable: a
 single positive whole number (stored as an integer), or <code>NULL</code> to
 clear.</p></dd>
+
+
+    <dt><code>check_for_negative_values</code></dt>
+<dd><p>Whether the solver aborts when a
+state variable turns negative. Absent means the PK-Sim default
+(<code>TRUE</code>), so the only reason to set it is to switch the check off.
+Added by the PK-Sim v13 snapshot format (<code>Version 81</code>); a v12 core
+ignores it. Writable: a single logical value, or <code>NULL</code> to clear.</p></dd>
 
 
 </dl><p></p></div>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">osp.snapshots</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9010</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,8 +40,19 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ospsnapshots-development-version">osp.snapshots (development version)<a class="anchor" aria-label="anchor" href="#ospsnapshots-development-version"></a></h2>
+<ul><li>
+<code><a href="../reference/add_simulation.html">add_simulation()</a></code> no longer writes a <code>CheckNegativeValues</code> solver field into a <code>Version 81</code> snapshot. No such field exists in the PK-Sim schema, so PK-Sim dropped it silently; the real key is <code>CheckForNegativeValues</code> and its default is already <code>TRUE</code>, which is why PK-Sim itself omits it.</li>
+<li>
+<code><a href="../reference/create_snapshot.html">create_snapshot()</a></code> now writes the root <code>ApplicationName</code> field (<code>"PK-Sim"</code>) that the PK-Sim v13 format added, in PK-Sim’s own key order (<code>Name</code>, <code>Version</code>, <code>ApplicationName</code>).</li>
+<li>
+<code><a href="../reference/create_solver_settings.html">create_solver_settings()</a></code> gains a <code>check_for_negative_values</code> argument, and <code>SolverSettings</code> a matching <code>check_for_negative_values</code> field, for the solver’s negative-value check exposed by the PK-Sim v13 snapshot format (<code>Version 81</code>). Leave it unset to keep PK-Sim’s default of <code>TRUE</code>.</li>
+<li>
+<code><a href="../reference/load_snapshot.html">load_snapshot()</a></code> (and <code>Snapshot$new()</code>) now reject a snapshot whose root <code>ApplicationName</code> names another OSP application, mirroring PK-Sim’s own import check. A MoBi snapshot is reported as not supported; any other application is named in the error. An absent or empty value, as in every pre-<code>Version 81</code> snapshot, still loads.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="ospsnapshots-110">osp.snapshots 1.1.0<a class="anchor" aria-label="anchor" href="#ospsnapshots-110"></a></h2>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-1-1-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0"></a></h3>
 <ul><li>
 <code><a href="../reference/create_protocol.html">create_protocol()</a></code> gains <code>dose</code> (with <code>dose_unit</code>, default <code>"mg"</code>), <code>start_time</code> (with <code>start_time_unit</code>, default <code>"h"</code>), and <code>end_time</code> plain arguments for the Simple-Protocol dosing settings, as a validated, self-documenting alternative to hand-building the equivalent <code>InputDose</code>/<code>Start time</code>/<code>End time</code> entries in <code>parameters</code> (#157).</li>
 <li>
@@ -56,7 +67,7 @@
 <code><a href="../reference/load_snapshot.html">load_snapshot()</a></code> now supports PK-Sim v13 snapshots (<code>Version 81</code>), reports their PK-Sim version, and rejects snapshots newer than it supports (<code>Version 82+</code>) with a clear error (#161).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="minor-improvements-and-fixes-development-version">Minor improvements and fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-fixes-development-version"></a></h3>
+<h3 id="minor-improvements-and-fixes-1-1-0">Minor improvements and fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-fixes-1-1-0"></a></h3>
 <ul><li>
 <code><a href="../reference/create_population.html">create_population()</a></code> now requires <code>number_of_individuals</code> to be a whole number between 2 and 10000, matching the bounds PK-Sim enforces when creating a population (#170).</li>
 <li>

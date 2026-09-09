@@ -21,6 +21,11 @@ old to migrate and abort. A snapshot newer than the installed `ospsuite`
 core (but still in band) loads with a warning that it may not load or
 run there. Hand-rolled list input must supply `Version`.
 
+The v13 format also records which application wrote the file in the root
+`ApplicationName`. A MoBi snapshot is refused as not supported, and so
+is any other application's; an absent or empty value, as in every
+pre-v81 file, is accepted as PK-Sim's own.
+
 ## Active bindings
 
 - `data`:

@@ -2,8 +2,9 @@
 
 Create an in-memory
 [Snapshot](https://esqlabs.github.io/osp.snapshots/dev/reference/Snapshot.md)
-from scratch, carrying the current supported PK-Sim version and no
-building blocks. This is the snapshot-level constructor that pairs with
+from scratch, carrying the current supported PK-Sim version, PK-Sim as
+the writing application, and no building blocks. This is the
+snapshot-level constructor that pairs with
 [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
 and
 [`export_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/export_snapshot.md):

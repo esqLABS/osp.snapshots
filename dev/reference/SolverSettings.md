@@ -50,6 +50,14 @@ remain absent on export.
   Maximum number of internal solver steps. Writable: a single positive
   whole number (stored as an integer), or `NULL` to clear.
 
+- `check_for_negative_values`:
+
+  Whether the solver aborts when a state variable turns negative. Absent
+  means the PK-Sim default (`TRUE`), so the only reason to set it is to
+  switch the check off. Added by the PK-Sim v13 snapshot format
+  (`Version 81`); a v12 core ignores it. Writable: a single logical
+  value, or `NULL` to clear.
+
 ## Methods
 
 ### Public methods
