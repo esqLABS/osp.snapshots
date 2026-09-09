@@ -744,6 +744,24 @@ test_that("Snapshot rejects a MoBi snapshot as not supported", {
   )
 })
 
+test_that("Snapshot rejects a malformed ApplicationName", {
+  # PK-Sim serializes a single string. Reading only the first element of a
+  # vector would let `c("PK-Sim", "MoBi")` slip a foreign snapshot past the
+  # gate, and a non-character value would bypass it entirely.
+  expect_snapshot(
+    Snapshot$new(list(Version = 81, ApplicationName = c("PK-Sim", "MoBi"))),
+    error = TRUE
+  )
+  expect_snapshot(
+    Snapshot$new(list(Version = 81, ApplicationName = 5)),
+    error = TRUE
+  )
+  expect_snapshot(
+    Snapshot$new(list(Version = 81, ApplicationName = NA_character_)),
+    error = TRUE
+  )
+})
+
 test_that("Snapshot rejects a snapshot written by any other application", {
   # Mirrors PK-Sim's own `SnapshotTask.validateApplication()`, which refuses
   # every name but its own.

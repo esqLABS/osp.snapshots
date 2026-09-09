@@ -159,6 +159,39 @@
       ! MoBi snapshots are not supported.
       i osp.snapshots reads PK-Sim project snapshots only.
 
+# Snapshot rejects a malformed ApplicationName
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = c("PK-Sim", "MoBi")))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot has a malformed ApplicationName field.
+      i Expected a single string, or no field at all.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = 5))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot has a malformed ApplicationName field.
+      i Expected a single string, or no field at all.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = NA_character_))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot has a malformed ApplicationName field.
+      i Expected a single string, or no field at all.
+
 # Snapshot rejects a snapshot written by any other application
 
     Code

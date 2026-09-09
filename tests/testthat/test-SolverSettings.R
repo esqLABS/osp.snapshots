@@ -78,6 +78,19 @@ test_that("SolverSettings$check_for_negative_values requires a single logical", 
   expect_snapshot(error = TRUE, solver$check_for_negative_values <- 1)
 })
 
+test_that("SolverSettings$check_for_negative_values keeps an explicit TRUE", {
+  # `TRUE` equals the PK-Sim default, so PK-Sim omits the key when writing.
+  # That is a rule about PK-Sim's serializer, not a licence to discard a
+  # value the caller set: an explicit `TRUE` must read back as `TRUE`, and a
+  # file that already carries `CheckForNegativeValues: true` must survive a
+  # set-then-read without the key being deleted.
+  solver <- SolverSettings$new(list(CheckForNegativeValues = TRUE))
+  expect_true(solver$check_for_negative_values)
+
+  solver$check_for_negative_values <- solver$check_for_negative_values
+  expect_identical(solver$data$CheckForNegativeValues, TRUE)
+})
+
 test_that("SolverSettings$mx_step requires a single positive whole number", {
   solver <- SolverSettings$new(list())
   solver$mx_step <- 100000

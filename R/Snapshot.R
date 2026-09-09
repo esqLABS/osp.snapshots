@@ -997,20 +997,30 @@ Snapshot <- R6::R6Class(
     # version-band message would only mislead.
     .validate_application = function() {
       app <- unlist(private$.original_data$ApplicationName, use.names = FALSE)
-      if (length(app) == 0L || !is.character(app) || !nzchar(app[[1L]])) {
+      # Absent: PK-Sim's own file, as every pre-v81 snapshot is.
+      if (length(app) == 0L) {
         return(invisible(NULL))
       }
-      if (identical(app[[1L]], PKSIM_APPLICATION_NAME)) {
+      # PK-Sim serializes a single string here. Reject anything else rather
+      # than reading the first element, which would let a hand-rolled
+      # `c("PK-Sim", "MoBi")` slip a foreign snapshot past the gate.
+      if (length(app) != 1L || !is.character(app) || is.na(app)) {
+        cli::cli_abort(c(
+          "Snapshot has a malformed {.field ApplicationName} field.",
+          i = "Expected a single string, or no field at all."
+        ))
+      }
+      if (!nzchar(app) || identical(app, PKSIM_APPLICATION_NAME)) {
         return(invisible(NULL))
       }
-      if (identical(app[[1L]], MOBI_APPLICATION_NAME)) {
+      if (identical(app, MOBI_APPLICATION_NAME)) {
         cli::cli_abort(c(
           "MoBi snapshots are not supported.",
           i = "{.pkg osp.snapshots} reads PK-Sim project snapshots only."
         ))
       }
       cli::cli_abort(c(
-        "Snapshot was written by {.val {app[[1L]]}}, not {.val {PKSIM_APPLICATION_NAME}}.",
+        "Snapshot was written by {.val {app}}, not {.val {PKSIM_APPLICATION_NAME}}.",
         i = "{.pkg osp.snapshots} reads PK-Sim project snapshots only."
       ))
     },
