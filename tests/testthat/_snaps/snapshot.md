@@ -137,6 +137,72 @@
     Message
       v Snapshot loaded successfully
 
+# Snapshot rejects a MoBi snapshot as not supported
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = "MoBi"))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! MoBi snapshots are not supported.
+      i osp.snapshots reads PK-Sim project snapshots only.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 12, ApplicationName = "MoBi"))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! MoBi snapshots are not supported.
+      i osp.snapshots reads PK-Sim project snapshots only.
+
+# Snapshot rejects a malformed ApplicationName
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = c("PK-Sim", "MoBi")))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot has a malformed ApplicationName field.
+      i Expected a single string, or no field at all.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = 5))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot has a malformed ApplicationName field.
+      i Expected a single string, or no field at all.
+
+---
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = NA_character_))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot has a malformed ApplicationName field.
+      i Expected a single string, or no field at all.
+
+# Snapshot rejects a snapshot written by any other application
+
+    Code
+      Snapshot$new(list(Version = 81, ApplicationName = "Matlab"))
+    Message
+      i Creating snapshot from list data
+    Condition
+      Error in `private$.validate_application()`:
+      ! Snapshot was written by "Matlab", not "PK-Sim".
+      i osp.snapshots reads PK-Sim project snapshots only.
+
 # Snapshot migration aborts before converting on an incompatible core
 
     Code

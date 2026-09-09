@@ -38,6 +38,12 @@ Writable: a single logical value, or \code{NULL} to clear.}
     \item{\code{mx_step}}{Maximum number of internal solver steps. Writable: a
 single positive whole number (stored as an integer), or \code{NULL} to
 clear.}
+
+    \item{\code{check_for_negative_values}}{Whether the solver aborts when a
+state variable turns negative. Absent means the PK-Sim default
+(\code{TRUE}), so the only reason to set it is to switch the check off.
+Added by the PK-Sim v13 snapshot format (\verb{Version 81}); a v12 core
+ignores it. Writable: a single logical value, or \code{NULL} to clear.}
   }
   \if{html}{\out{</div>}}
 }

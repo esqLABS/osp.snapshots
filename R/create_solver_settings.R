@@ -13,6 +13,10 @@
 #' @param h_min Numeric. Minimum step size.
 #' @param h_max Numeric. Maximum step size.
 #' @param mx_step Integer. Maximum number of internal solver steps.
+#' @param check_for_negative_values Logical. Whether the solver aborts when a
+#'   state variable turns negative. Only set this to switch the check off;
+#'   leaving it absent keeps the PK-Sim default (`TRUE`). Requires the PK-Sim
+#'   v13 snapshot format (`Version 81`).
 #'
 #' @return A [SolverSettings] object.
 #' @export
@@ -28,7 +32,8 @@ create_solver_settings <- function(
   h0 = NULL,
   h_min = NULL,
   h_max = NULL,
-  mx_step = NULL
+  mx_step = NULL,
+  check_for_negative_values = NULL
 ) {
   data <- list()
   if (!is.null(abs_tol)) {
@@ -58,6 +63,10 @@ create_solver_settings <- function(
   if (!is.null(mx_step)) {
     check_positive_whole_number(mx_step, "mx_step")
     data$MxStep <- as.integer(mx_step)
+  }
+  if (!is.null(check_for_negative_values)) {
+    check_single_logical(check_for_negative_values, "check_for_negative_values")
+    data$CheckForNegativeValues <- check_for_negative_values
   }
   SolverSettings$new(data)
 }

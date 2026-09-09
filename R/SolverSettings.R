@@ -119,6 +119,21 @@ SolverSettings <- R6::R6Class(
         value <- as.integer(value)
       }
       private$.data$MxStep <- value
+    },
+
+    #' @field check_for_negative_values Whether the solver aborts when a
+    #'   state variable turns negative. Absent means the PK-Sim default
+    #'   (`TRUE`), so the only reason to set it is to switch the check off.
+    #'   Added by the PK-Sim v13 snapshot format (`Version 81`); a v12 core
+    #'   ignores it. Writable: a single logical value, or `NULL` to clear.
+    check_for_negative_values = function(value) {
+      if (missing(value)) {
+        return(private$.data$CheckForNegativeValues)
+      }
+      if (!is.null(value)) {
+        check_single_logical(value, "check_for_negative_values")
+      }
+      private$.data$CheckForNegativeValues <- value
     }
   ),
   private = list(
