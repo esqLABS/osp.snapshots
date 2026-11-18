@@ -2,13 +2,13 @@ name: Check against released dependencies
 
 # Nightly R-CMD-check against the latest *released* OSP dependencies, which come
 # from the OSP R-universe (see Additional_repositories in DESCRIPTION). The
-# reusable workflow also pins Remotes to @*release, which is a no-op while there
-# is no Remotes entry to pin.
+# reusable workflow pins Remotes to @*release, so the development ospsuite
+# named in Remotes is swapped for its latest GitHub release.
 #
-# This is the only nightly dependency check: with no Remotes entry there is no
-# unreleased ospsuite to resolve, so nothing checks this package against a
-# development OSP dependency. Reinstating that needs a deliberate Remotes entry
-# plus an Imports floor on the corresponding .9000 version.
+# While the Imports floor on ospsuite sits on a development (.9000-series)
+# version, this check is expected to fail: no released ospsuite satisfies it
+# yet. A failure here then means "an ospsuite release is needed before
+# osp.snapshots can be released", not a bug in this package.
 
 on:
   schedule:

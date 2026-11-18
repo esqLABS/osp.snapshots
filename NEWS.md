@@ -1,5 +1,6 @@
 # osp.snapshots (development version)
 
+- osp.snapshots now requires the development version of `ospsuite` (>= 13.0.1.9014), installed from GitHub through a `Remotes` entry. That version ships `OSPSuite.SimModel` 5.0.0.86, which links libxml2 statically, so `ospsuite` loads on Ubuntu 26.04 (`libxml2.so.16`); the released `ospsuite` 12.4.5 fails there with `Assembly not found: OSPSuite.R`.
 - `add_simulation()` no longer writes a `CheckNegativeValues` solver field into a `Version 81` snapshot. No such field exists in the PK-Sim schema, so PK-Sim dropped it silently; the real key is `CheckForNegativeValues` and its default is already `TRUE`, which is why PK-Sim itself omits it.
 - `create_snapshot()` now writes the root `ApplicationName` field (`"PK-Sim"`) that the PK-Sim v13 format added, in PK-Sim's own key order (`Name`, `Version`, `ApplicationName`).
 - `create_solver_settings()` gains a `check_for_negative_values` argument, and `SolverSettings` a matching `check_for_negative_values` field, for the solver's negative-value check exposed by the PK-Sim v13 snapshot format (`Version 81`). Leave it unset to keep PK-Sim's default of `TRUE`.

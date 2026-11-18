@@ -1,8 +1,9 @@
 name: Pull Request Workflow
 
-# Runs on every pull request. OSP dependencies resolve from the OSP R-universe
-# (see Additional_repositories in DESCRIPTION), so the checks run directly on the
-# PR tree with no DESCRIPTION rewriting beforehand.
+# Runs on every pull request. ospsuite resolves from GitHub through the Remotes
+# entry in DESCRIPTION; its other OSP dependencies resolve from the OSP
+# R-universe (see Additional_repositories). The checks run directly on the PR
+# tree with no DESCRIPTION rewriting beforehand.
 
 on:
   pull_request:
