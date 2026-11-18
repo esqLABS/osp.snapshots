@@ -55,7 +55,8 @@ Suggests:
     tidyr,
     withr
 Remotes:
-    Open-Systems-Pharmacology/OSPSuite-R
+    Open-Systems-Pharmacology/OSPSuite-R,
+    Open-Systems-Pharmacology/rSharp@v2.0.0
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Additional_repositories: https://open-systems-pharmacology.r-universe.dev
