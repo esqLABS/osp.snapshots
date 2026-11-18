@@ -36,7 +36,7 @@ Imports:
     cli,
     fs,
     lifecycle,
-    ospsuite (>= 13.0.1.9014),
+    ospsuite (>= 13.0),
     purrr,
     tibble,
     dplyr,

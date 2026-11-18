@@ -1,9 +1,6 @@
 name: Pull Request Workflow
 
-# Runs on every pull request. ospsuite resolves from GitHub through the Remotes
-# entry in DESCRIPTION; its other OSP dependencies resolve from the OSP
-# R-universe (see Additional_repositories). The checks run directly on the PR
-# tree with no DESCRIPTION rewriting beforehand.
+# Checks every pull request: R CMD check, test coverage, link check and pkgdown build.
 
 on:
   pull_request:
