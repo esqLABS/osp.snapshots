@@ -11,6 +11,7 @@ jobs:
   R-CMD-Check:
     uses: Open-Systems-Pharmacology/Workflows/.github/workflows/R-CMD-check-build.yaml@main
     with:
+      dotnet-version: '10.0.x'
       setup-quarto: true
       extra-packages: local::.
       extra-repositories: https://open-systems-pharmacology.r-universe.dev
@@ -18,6 +19,7 @@ jobs:
   test-coverage:
     uses: Open-Systems-Pharmacology/Workflows/.github/workflows/test-coverage.yaml@main
     with:
+      dotnet-version: '10.0.x'
       extra-repositories: https://open-systems-pharmacology.r-universe.dev
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
