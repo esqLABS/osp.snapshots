@@ -32,8 +32,16 @@ install.packages(
 )
 ```
 
-Development version from GitHub. pak takes osp.snapshots from GitHub, so
-only the OSP universe is needed, for `ospsuite`:
+Development version from GitHub. The development `ospsuite` requires .NET
+10. Install .NET 10 first; see the Pre-requisites section of the
+[OSPSuite-R README](https://github.com/Open-Systems-Pharmacology/OSPSuite-R).
+
+On macOS, the development dependencies run on Apple Silicon only.
+`rSharp` 2.0.0 ships no Intel (x86_64) binary. On an Intel Mac, install the
+released version above instead.
+
+pak takes osp.snapshots and the development `ospsuite` it requires from
+GitHub; the OSP universe supplies the remaining OSP dependencies:
 
 ``` r
 # install.packages("pak")

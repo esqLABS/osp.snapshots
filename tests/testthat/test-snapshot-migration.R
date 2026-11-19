@@ -2,7 +2,7 @@
 # (`load_snapshot(..., upgrade = TRUE)` -> `.migrate_snapshot()`).
 #
 # This exercises the live PK-Sim core, which is slow (minutes) and, on the v12
-# core, segfaults during `loadProjectFromSnapshot()` on macOS (the whole
+# core, segfaults during `snapshotToProject()` on macOS (the whole
 # OSPSuite-R snapshot-conversion suite is skipped on macOS for that reason).
 # It therefore runs only where a compatible core exists: it is skipped on CI
 # and skipped unless the installed core is at least the supported floor. In

@@ -1,0 +1,2 @@
+# Protected by Cloudflare: returns 403 to automated link checkers.
+^https://[^/]+\.r-universe\.dev

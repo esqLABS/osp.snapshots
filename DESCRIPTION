@@ -29,14 +29,14 @@ Encoding: UTF-8
 LazyData: true
 URL: https://esqlabs.github.io/osp.snapshots/
 Depends:
-    R (>= 4.1.0)
+    R (>= 4.4.0)
 Imports:
     R6,
     jsonlite,
     cli,
     fs,
     lifecycle,
-    ospsuite (>= 12.2.0),
+    ospsuite (>= 13.0),
     purrr,
     tibble,
     dplyr,
@@ -54,6 +54,9 @@ Suggests:
     testthat (>= 3.1.6),
     tidyr,
     withr
+Remotes:
+    ospsuite=Open-Systems-Pharmacology/OSPSuite-R,
+    Open-Systems-Pharmacology/rSharp@v2.0.0
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Additional_repositories: https://open-systems-pharmacology.r-universe.dev

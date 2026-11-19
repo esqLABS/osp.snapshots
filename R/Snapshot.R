@@ -1984,7 +1984,7 @@ load_snapshot <- function(source, upgrade = FALSE) {
 .migrate_snapshot <- function(input) {
   work_dir <- withr::local_tempdir()
 
-  # Normalize the input to a `.json` file on disk: `loadProjectFromSnapshot()`
+  # Normalize the input to a `.json` file on disk: `snapshotToProject()`
   # needs a file path. A local `.json` path is used as-is; list / URL-derived
   # data is written out first.
   if (is.character(input) && length(input) == 1 && file.exists(input)) {
@@ -2007,7 +2007,7 @@ load_snapshot <- function(source, upgrade = FALSE) {
   # Step 1: old snapshot .json -> project .pksim5 (no simulations requested).
   project_dir <- file.path(work_dir, "project")
   dir.create(project_dir)
-  ospsuite::loadProjectFromSnapshot(
+  ospsuite::snapshotToProject(
     input_json,
     output = project_dir,
     runSimulations = FALSE
@@ -2026,7 +2026,7 @@ load_snapshot <- function(source, upgrade = FALSE) {
   # Step 2: project .pksim5 -> upgraded snapshot .json.
   snapshot_dir <- file.path(work_dir, "snapshot")
   dir.create(snapshot_dir)
-  ospsuite::exportProjectToSnapshot(
+  ospsuite::projectToSnapshot(
     project_files[[1]],
     output = snapshot_dir
   )
