@@ -32,9 +32,12 @@ install.packages(
 )
 ```
 
-Development version from GitHub. pak takes osp.snapshots and the
-development `ospsuite` it requires from GitHub; the OSP universe supplies
-the remaining OSP dependencies:
+Development version from GitHub. The development `ospsuite` requires .NET
+10. Install .NET 10 first; see the Pre-requisites section of the
+[OSPSuite-R README](https://github.com/Open-Systems-Pharmacology/OSPSuite-R).
+
+pak takes osp.snapshots and the development `ospsuite` it requires from
+GitHub; the OSP universe supplies the remaining OSP dependencies:
 
 ``` r
 # install.packages("pak")

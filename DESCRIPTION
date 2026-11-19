@@ -29,7 +29,7 @@ Encoding: UTF-8
 LazyData: true
 URL: https://esqlabs.github.io/osp.snapshots/
 Depends:
-    R (>= 4.1.0)
+    R (>= 4.4.0)
 Imports:
     R6,
     jsonlite,
