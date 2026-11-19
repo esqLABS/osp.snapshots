@@ -10,9 +10,12 @@ get_observed_data_dfs(snapshot)
 \item{snapshot}{A \code{Snapshot} object.}
 }
 \value{
-A tibble in long format with columns \code{name}, \code{xValues},
-\code{yValues}, \code{yErrorValues}, \code{xDimension}, \code{xUnit}, \code{yDimension},
-\code{yUnit}, \code{yErrorType}, \code{yErrorUnit}, \code{molWeight}, \code{lloq}.
+A tibble in long format. The installed \code{ospsuite} decides the
+columns, through \code{\link[ospsuite:dataSetToTibble]{ospsuite::dataSetToTibble()}}. Every version returns at
+least \code{name}, \code{xValues}, \code{yValues}, \code{yErrorValues}, \code{xDimension},
+\code{xUnit}, \code{yDimension}, \code{yUnit}, \code{yErrorType}, \code{yErrorUnit}, \code{molWeight}
+and \code{lloq}, plus one column per meta-data field of the observed data.
+A snapshot with no observed data returns the same columns with no rows.
 }
 \description{
 Thin wrapper around \code{\link[=as_tibbles]{as_tibbles()}} with \code{kind = "observed_data"}.

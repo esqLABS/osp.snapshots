@@ -92,6 +92,23 @@ test_that("as_tibbles() returns the observed_data tibble", {
   expect_true("xValues" %in% names(result))
 })
 
+test_that("the empty observed_data tibble keeps the non-empty base schema", {
+  # The columns come from the installed ospsuite, which changes them between
+  # versions (13.0.1.9014 added `subjectCount`). Both paths must agree on the
+  # base schema, or `select()` on a column works only for a non-empty snapshot.
+  filled <- as_tibbles(test_snapshot, "observed_data")
+  empty <- as_tibbles(empty_snapshot, "observed_data")
+
+  # The non-empty tibble carries one extra column per meta-data field.
+  meta_columns <- unique(unlist(lapply(
+    test_snapshot$observed_data,
+    function(dataset) names(dataset$metaData)
+  )))
+
+  expect_equal(nrow(empty), 0L)
+  expect_equal(names(empty), setdiff(names(filled), meta_columns))
+})
+
 test_that("as_tibbles() returns empty shapes for an empty snapshot", {
   for (kind in c(
     "compounds",

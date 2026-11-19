@@ -292,9 +292,12 @@ get_observer_sets_dfs <- function(snapshot) {
 #' Prefer [as_tibbles()] in new code.
 #'
 #' @inheritParams as_tibbles
-#' @return A tibble in long format with columns `name`, `xValues`,
-#'   `yValues`, `yErrorValues`, `xDimension`, `xUnit`, `yDimension`,
-#'   `yUnit`, `yErrorType`, `yErrorUnit`, `molWeight`, `lloq`.
+#' @return A tibble in long format. The installed `ospsuite` decides the
+#'   columns, through [ospsuite::dataSetToTibble()]. Every version returns at
+#'   least `name`, `xValues`, `yValues`, `yErrorValues`, `xDimension`,
+#'   `xUnit`, `yDimension`, `yUnit`, `yErrorType`, `yErrorUnit`, `molWeight`
+#'   and `lloq`, plus one column per meta-data field of the observed data.
+#'   A snapshot with no observed data returns the same columns with no rows.
 #'
 #' @export
 #'
@@ -675,26 +678,19 @@ empty_observers_tibble <- function() {
   )
 }
 
+# Base schema of `ospsuite::dataSetToTibble()`, read from the installed
+# ospsuite instead of hard-coded, so the empty and the non-empty result never
+# disagree on the columns. The set is version-dependent: ospsuite 13.0.1.9014
+# added `subjectCount`, which earlier 13.0 builds do not have.
+empty_observed_data_tibble <- function() {
+  ospsuite::dataSetToTibble(loadDataSetFromSnapshot(list(Name = "empty")))[0, ]
+}
+
 as_tibbles_observed_data <- function(snapshot) {
   observed_data_items <- snapshot$observed_data
 
-  result <- tibble::tibble(
-    name = character(0),
-    xValues = numeric(0),
-    yValues = numeric(0),
-    yErrorValues = numeric(0),
-    xDimension = character(0),
-    xUnit = character(0),
-    yDimension = character(0),
-    yUnit = character(0),
-    yErrorType = character(0),
-    yErrorUnit = character(0),
-    molWeight = numeric(0),
-    lloq = numeric(0)
-  )
-
   if (length(observed_data_items) == 0) {
-    return(result)
+    return(empty_observed_data_tibble())
   }
 
   result <- ospsuite::dataSetToTibble(dataSets = unname(observed_data_items))
