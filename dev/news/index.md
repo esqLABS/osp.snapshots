@@ -2,6 +2,10 @@
 
 ## osp.snapshots (development version)
 
+- osp.snapshots now requires `ospsuite` (\>= 13.0), installed from
+  GitHub through a `Remotes` entry until it is released. This
+  development version loads on Ubuntu 26.04, where the released
+  `ospsuite` fails with `Assembly not found: OSPSuite.R`.
 - [`add_simulation()`](https://esqlabs.github.io/osp.snapshots/dev/reference/add_simulation.md)
   no longer writes a `CheckNegativeValues` solver field into a
   `Version 81` snapshot. No such field exists in the PK-Sim schema, so
@@ -17,6 +21,14 @@
   matching `check_for_negative_values` field, for the solver’s
   negative-value check exposed by the PK-Sim v13 snapshot format
   (`Version 81`). Leave it unset to keep PK-Sim’s default of `TRUE`.
+- [`get_observed_data_dfs()`](https://esqlabs.github.io/osp.snapshots/dev/reference/get_observed_data_dfs.md)
+  and `as_tibbles(snapshot, "observed_data")` now read the tibble
+  columns from the installed `ospsuite` for an empty snapshot too,
+  instead of a hard-coded list. An empty and a filled snapshot therefore
+  return the same base columns. The set depends on the `ospsuite` build:
+  13.0.1.9014 added a `subjectCount` column that earlier 13.0 builds do
+  not have, so read the columns from the result rather than assuming a
+  fixed list.
 - [`load_snapshot()`](https://esqlabs.github.io/osp.snapshots/dev/reference/load_snapshot.md)
   (and `Snapshot$new()`) now reject a snapshot whose root
   `ApplicationName` names another OSP application, mirroring PK-Sim’s

@@ -20,9 +20,14 @@ get_observed_data_dfs(snapshot)
 
 ## Value
 
-A tibble in long format with columns `name`, `xValues`, `yValues`,
+A tibble in long format. The installed `ospsuite` decides the columns,
+through
+[`ospsuite::dataSetToTibble()`](https://www.open-systems-pharmacology.org/OSPSuite-R/reference/dataSetToDataFrame.html).
+Every version returns at least `name`, `xValues`, `yValues`,
 `yErrorValues`, `xDimension`, `xUnit`, `yDimension`, `yUnit`,
-`yErrorType`, `yErrorUnit`, `molWeight`, `lloq`.
+`yErrorType`, `yErrorUnit`, `molWeight` and `lloq`, plus one column per
+meta-data field of the observed data. A snapshot with no observed data
+returns the same columns with no rows.
 
 ## Examples
 

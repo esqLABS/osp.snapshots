@@ -633,6 +633,7 @@ obs
 #>   • Error unit: NULL
 #>   • Molecular weight: NULL
 #>   • LLOQ: NULL
+#>   • Subject count: NULL
 #> Meta data:
 ```
 
