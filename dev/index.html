@@ -77,14 +77,9 @@
 <span><span class="op">)</span></span></code></pre></div>
 <p>Development version from GitHub. The development <code>ospsuite</code> requires .NET 10. Install .NET 10 first; see the Pre-requisites section of the <a href="https://github.com/Open-Systems-Pharmacology/OSPSuite-R" class="external-link">OSPSuite-R README</a>.</p>
 <p>On macOS, the development dependencies run on Apple Silicon only. <code>rSharp</code> 2.0.0 ships no Intel (x86_64) binary. On an Intel Mac, install the released version above instead.</p>
-<p>pak takes osp.snapshots and the development <code>ospsuite</code> it requires from GitHub; the OSP universe supplies the remaining OSP dependencies:</p>
+<p>pak takes osp.snapshots and its OSP dependencies (<code>ospsuite</code>, <code>rSharp</code> and the packages they need) from GitHub, through the <code>Remotes</code> field of each package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  OSP <span class="op">=</span> <span class="st">"https://open-systems-pharmacology.r-universe.dev"</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"repos"</span><span class="op">)</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"esqLABS/osp.snapshots"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
