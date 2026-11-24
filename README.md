@@ -40,16 +40,12 @@ On macOS, the development dependencies run on Apple Silicon only.
 `rSharp` 2.0.0 ships no Intel (x86_64) binary. On an Intel Mac, install the
 released version above instead.
 
-pak takes osp.snapshots and the development `ospsuite` it requires from
-GitHub; the OSP universe supplies the remaining OSP dependencies:
+pak takes osp.snapshots and its OSP dependencies (`ospsuite`, `rSharp`
+and the packages they need) from GitHub, through the `Remotes` field of
+each package:
 
 ``` r
 # install.packages("pak")
-options(repos = c(
-  OSP = "https://open-systems-pharmacology.r-universe.dev",
-  getOption("repos")
-))
-
 pak::pak("esqLABS/osp.snapshots")
 ```
 
